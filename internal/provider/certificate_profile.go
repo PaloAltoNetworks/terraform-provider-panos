@@ -57,11 +57,11 @@ type CertificateProfileDataSourceFilter struct {
 type CertificateProfileDataSourceModel struct {
 	Location                        types.Object                                     `tfsdk:"location"`
 	Name                            types.String                                     `tfsdk:"name"`
-	Certificate                     types.List                                       `tfsdk:"certificate"`
 	BlockExpiredCertificate         types.Bool                                       `tfsdk:"block_expired_certificate"`
 	BlockTimeoutCertificate         types.Bool                                       `tfsdk:"block_timeout_certificate"`
 	BlockUnauthenticatedCertificate types.Bool                                       `tfsdk:"block_unauthenticated_certificate"`
 	BlockUnknownCertificate         types.Bool                                       `tfsdk:"block_unknown_certificate"`
+	Certificate                     types.List                                       `tfsdk:"certificate"`
 	CertificateStatusTimeout        types.Int64                                      `tfsdk:"certificate_status_timeout"`
 	CrlReceiveTimeout               types.Int64                                      `tfsdk:"crl_receive_timeout"`
 	Domain                          types.String                                     `tfsdk:"domain"`
@@ -92,11 +92,11 @@ func (o *CertificateProfileDataSourceModel) AttributeTypes() map[string]attr.Typ
 			AttrTypes: locationObj.AttributeTypes(),
 		},
 		"name":                              types.StringType,
-		"certificate":                       types.ListType{},
 		"block_expired_certificate":         types.BoolType,
 		"block_timeout_certificate":         types.BoolType,
 		"block_unauthenticated_certificate": types.BoolType,
 		"block_unknown_certificate":         types.BoolType,
+		"certificate":                       types.ListType{},
 		"certificate_status_timeout":        types.Int64Type,
 		"crl_receive_timeout":               types.Int64Type,
 		"domain":                            types.StringType,
@@ -109,6 +109,14 @@ func (o *CertificateProfileDataSourceModel) AttributeTypes() map[string]attr.Typ
 		},
 	}
 }
+
+func (o CertificateProfileDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o CertificateProfileDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *CertificateProfileDataSourceCertificateObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -118,6 +126,14 @@ func (o *CertificateProfileDataSourceCertificateObject) AttributeTypes() map[str
 		"template_name":           types.StringType,
 	}
 }
+
+func (o CertificateProfileDataSourceCertificateObject) AncestorName() string {
+	return "certificate"
+}
+
+func (o CertificateProfileDataSourceCertificateObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *CertificateProfileDataSourceUsernameFieldObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -126,8 +142,20 @@ func (o *CertificateProfileDataSourceUsernameFieldObject) AttributeTypes() map[s
 	}
 }
 
-func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, obj **certificate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o CertificateProfileDataSourceUsernameFieldObject) AncestorName() string {
+	return "username-field"
+}
+
+func (o CertificateProfileDataSourceUsernameFieldObject) EntryName() *string {
+	return nil
+}
+
+func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
+	blockExpiredCertificate_value := o.BlockExpiredCertificate.ValueBoolPointer()
+	blockTimeoutCertificate_value := o.BlockTimeoutCertificate.ValueBoolPointer()
+	blockUnauthenticatedCertificate_value := o.BlockUnauthenticatedCertificate.ValueBoolPointer()
+	blockUnknownCertificate_value := o.BlockUnknownCertificate.ValueBoolPointer()
 	var certificate_tf_entries []CertificateProfileDataSourceCertificateObject
 	var certificate_pango_entries []certificate.Certificate
 	{
@@ -138,17 +166,13 @@ func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 		}
 		for _, elt := range certificate_tf_entries {
 			var entry *certificate.Certificate
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
 			certificate_pango_entries = append(certificate_pango_entries, *entry)
 		}
 	}
-	blockExpiredCertificate_value := o.BlockExpiredCertificate.ValueBoolPointer()
-	blockTimeoutCertificate_value := o.BlockTimeoutCertificate.ValueBoolPointer()
-	blockUnauthenticatedCertificate_value := o.BlockUnauthenticatedCertificate.ValueBoolPointer()
-	blockUnknownCertificate_value := o.BlockUnknownCertificate.ValueBoolPointer()
 	certificateStatusTimeout_value := o.CertificateStatusTimeout.ValueInt64Pointer()
 	crlReceiveTimeout_value := o.CrlReceiveTimeout.ValueInt64Pointer()
 	domain_value := o.Domain.ValueStringPointer()
@@ -163,8 +187,8 @@ func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			usernameField_entry = new(certificate.UsernameField)
 		}
-
-		diags.Append(o.UsernameField.CopyToPango(ctx, &usernameField_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.UsernameField.CopyToPango(ctx, ancestors, &usernameField_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -174,11 +198,11 @@ func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 		*obj = new(certificate.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Certificate = certificate_pango_entries
 	(*obj).BlockExpiredCertificate = blockExpiredCertificate_value
 	(*obj).BlockTimeoutCertificate = blockTimeoutCertificate_value
 	(*obj).BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
 	(*obj).BlockUnknownCertificate = blockUnknownCertificate_value
+	(*obj).Certificate = certificate_pango_entries
 	(*obj).CertificateStatusTimeout = certificateStatusTimeout_value
 	(*obj).CrlReceiveTimeout = crlReceiveTimeout_value
 	(*obj).Domain = domain_value
@@ -190,7 +214,7 @@ func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *CertificateProfileDataSourceCertificateObject) CopyToPango(ctx context.Context, obj **certificate.Certificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileDataSourceCertificateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.Certificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	defaultOcspUrl_value := o.DefaultOcspUrl.ValueStringPointer()
 	ocspVerifyCertificate_value := o.OcspVerifyCertificate.ValueStringPointer()
@@ -206,7 +230,7 @@ func (o *CertificateProfileDataSourceCertificateObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *CertificateProfileDataSourceUsernameFieldObject) CopyToPango(ctx context.Context, obj **certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileDataSourceUsernameFieldObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.UsernameField, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	subject_value := o.Subject.ValueStringPointer()
 	subjectAlt_value := o.SubjectAlt.ValueStringPointer()
@@ -220,15 +244,19 @@ func (o *CertificateProfileDataSourceUsernameFieldObject) CopyToPango(ctx contex
 	return diags
 }
 
-func (o *CertificateProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *certificate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificate_list types.List
 	{
 		var certificate_tf_entries []CertificateProfileDataSourceCertificateObject
 		for _, elt := range obj.Certificate {
-			var entry CertificateProfileDataSourceCertificateObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := CertificateProfileDataSourceCertificateObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			certificate_tf_entries = append(certificate_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -239,8 +267,7 @@ func (o *CertificateProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 	var usernameField_object *CertificateProfileDataSourceUsernameFieldObject
 	if obj.UsernameField != nil {
 		usernameField_object = new(CertificateProfileDataSourceUsernameFieldObject)
-
-		diags.Append(usernameField_object.CopyFromPango(ctx, obj.UsernameField, encrypted)...)
+		diags.Append(usernameField_object.CopyFromPango(ctx, ancestors, obj.UsernameField, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -291,11 +318,11 @@ func (o *CertificateProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 		useOcsp_value = types.BoolValue(*obj.UseOcsp)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Certificate = certificate_list
 	o.BlockExpiredCertificate = blockExpiredCertificate_value
 	o.BlockTimeoutCertificate = blockTimeoutCertificate_value
 	o.BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
 	o.BlockUnknownCertificate = blockUnknownCertificate_value
+	o.Certificate = certificate_list
 	o.CertificateStatusTimeout = certificateStatusTimeout_value
 	o.CrlReceiveTimeout = crlReceiveTimeout_value
 	o.Domain = domain_value
@@ -308,7 +335,7 @@ func (o *CertificateProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *CertificateProfileDataSourceCertificateObject) CopyFromPango(ctx context.Context, obj *certificate.Certificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileDataSourceCertificateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.Certificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var defaultOcspUrl_value types.String
@@ -331,7 +358,7 @@ func (o *CertificateProfileDataSourceCertificateObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *CertificateProfileDataSourceUsernameFieldObject) CopyFromPango(ctx context.Context, obj *certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileDataSourceUsernameFieldObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.UsernameField, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var subject_value types.String
@@ -348,6 +375,11 @@ func (o *CertificateProfileDataSourceUsernameFieldObject) CopyFromPango(ctx cont
 	return diags
 }
 
+func (o *CertificateProfileDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func CertificateProfileDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
@@ -360,15 +392,6 @@ func CertificateProfileDataSourceSchema() dsschema.Schema {
 				Required:    true,
 				Optional:    false,
 				Sensitive:   false,
-			},
-
-			"certificate": dsschema.ListNestedAttribute{
-				Description:  "CA Certificate to assign to the profile.",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: CertificateProfileDataSourceCertificateSchema(),
 			},
 
 			"block_expired_certificate": dsschema.BoolAttribute{
@@ -401,6 +424,15 @@ func CertificateProfileDataSourceSchema() dsschema.Schema {
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+			},
+
+			"certificate": dsschema.ListNestedAttribute{
+				Description:  "CA Certificate to assign to the profile.",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: CertificateProfileDataSourceCertificateSchema(),
 			},
 
 			"certificate_status_timeout": dsschema.Int64Attribute{
@@ -613,13 +645,20 @@ func (d *CertificateProfileDataSource) Configure(_ context.Context, req datasour
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, certificate.NewService(d.client), batchSize, specifier, certificate.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*certificate.Entry, certificate.Location, *certificate.Service](d.client, certificate.NewService(d.client), batchSize, specifier, certificate.SpecMatches)
 }
 func (o *CertificateProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state CertificateProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -706,8 +745,12 @@ func (o *CertificateProfileDataSource) Read(ctx context.Context, req datasource.
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -717,7 +760,7 @@ func (o *CertificateProfileDataSource) Read(ctx context.Context, req datasource.
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -761,11 +804,11 @@ func CertificateProfileResourceLocationSchema() rsschema.Attribute {
 type CertificateProfileResourceModel struct {
 	Location                        types.Object                                   `tfsdk:"location"`
 	Name                            types.String                                   `tfsdk:"name"`
-	Certificate                     types.List                                     `tfsdk:"certificate"`
 	BlockExpiredCertificate         types.Bool                                     `tfsdk:"block_expired_certificate"`
 	BlockTimeoutCertificate         types.Bool                                     `tfsdk:"block_timeout_certificate"`
 	BlockUnauthenticatedCertificate types.Bool                                     `tfsdk:"block_unauthenticated_certificate"`
 	BlockUnknownCertificate         types.Bool                                     `tfsdk:"block_unknown_certificate"`
+	Certificate                     types.List                                     `tfsdk:"certificate"`
 	CertificateStatusTimeout        types.Int64                                    `tfsdk:"certificate_status_timeout"`
 	CrlReceiveTimeout               types.Int64                                    `tfsdk:"crl_receive_timeout"`
 	Domain                          types.String                                   `tfsdk:"domain"`
@@ -805,15 +848,6 @@ func CertificateProfileResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
-			"certificate": rsschema.ListNestedAttribute{
-				Description:  "CA Certificate to assign to the profile.",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: CertificateProfileResourceCertificateSchema(),
-			},
-
 			"block_expired_certificate": rsschema.BoolAttribute{
 				Description: "Whether to block a session if certificate status is expired.",
 				Computed:    false,
@@ -844,6 +878,15 @@ func CertificateProfileResourceSchema() rsschema.Schema {
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
+			},
+
+			"certificate": rsschema.ListNestedAttribute{
+				Description:  "CA Certificate to assign to the profile.",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: CertificateProfileResourceCertificateSchema(),
 			},
 
 			"certificate_status_timeout": rsschema.Int64Attribute{
@@ -1062,7 +1105,7 @@ func (r *CertificateProfileResource) Configure(ctx context.Context, req resource
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, certificate.NewService(r.client), batchSize, specifier, certificate.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*certificate.Entry, certificate.Location, *certificate.Service](r.client, certificate.NewService(r.client), batchSize, specifier, certificate.SpecMatches)
 }
 
 func (o *CertificateProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -1075,11 +1118,11 @@ func (o *CertificateProfileResourceModel) AttributeTypes() map[string]attr.Type 
 			AttrTypes: locationObj.AttributeTypes(),
 		},
 		"name":                              types.StringType,
-		"certificate":                       types.ListType{},
 		"block_expired_certificate":         types.BoolType,
 		"block_timeout_certificate":         types.BoolType,
 		"block_unauthenticated_certificate": types.BoolType,
 		"block_unknown_certificate":         types.BoolType,
+		"certificate":                       types.ListType{},
 		"certificate_status_timeout":        types.Int64Type,
 		"crl_receive_timeout":               types.Int64Type,
 		"domain":                            types.StringType,
@@ -1092,6 +1135,14 @@ func (o *CertificateProfileResourceModel) AttributeTypes() map[string]attr.Type 
 		},
 	}
 }
+
+func (o CertificateProfileResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o CertificateProfileResourceModel) EntryName() *string {
+	return nil
+}
 func (o *CertificateProfileResourceCertificateObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1101,6 +1152,14 @@ func (o *CertificateProfileResourceCertificateObject) AttributeTypes() map[strin
 		"template_name":           types.StringType,
 	}
 }
+
+func (o CertificateProfileResourceCertificateObject) AncestorName() string {
+	return "certificate"
+}
+
+func (o CertificateProfileResourceCertificateObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *CertificateProfileResourceUsernameFieldObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1109,8 +1168,20 @@ func (o *CertificateProfileResourceUsernameFieldObject) AttributeTypes() map[str
 	}
 }
 
-func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, obj **certificate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o CertificateProfileResourceUsernameFieldObject) AncestorName() string {
+	return "username-field"
+}
+
+func (o CertificateProfileResourceUsernameFieldObject) EntryName() *string {
+	return nil
+}
+
+func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
+	blockExpiredCertificate_value := o.BlockExpiredCertificate.ValueBoolPointer()
+	blockTimeoutCertificate_value := o.BlockTimeoutCertificate.ValueBoolPointer()
+	blockUnauthenticatedCertificate_value := o.BlockUnauthenticatedCertificate.ValueBoolPointer()
+	blockUnknownCertificate_value := o.BlockUnknownCertificate.ValueBoolPointer()
 	var certificate_tf_entries []CertificateProfileResourceCertificateObject
 	var certificate_pango_entries []certificate.Certificate
 	{
@@ -1121,17 +1192,13 @@ func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, obj *
 		}
 		for _, elt := range certificate_tf_entries {
 			var entry *certificate.Certificate
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
 			certificate_pango_entries = append(certificate_pango_entries, *entry)
 		}
 	}
-	blockExpiredCertificate_value := o.BlockExpiredCertificate.ValueBoolPointer()
-	blockTimeoutCertificate_value := o.BlockTimeoutCertificate.ValueBoolPointer()
-	blockUnauthenticatedCertificate_value := o.BlockUnauthenticatedCertificate.ValueBoolPointer()
-	blockUnknownCertificate_value := o.BlockUnknownCertificate.ValueBoolPointer()
 	certificateStatusTimeout_value := o.CertificateStatusTimeout.ValueInt64Pointer()
 	crlReceiveTimeout_value := o.CrlReceiveTimeout.ValueInt64Pointer()
 	domain_value := o.Domain.ValueStringPointer()
@@ -1146,8 +1213,8 @@ func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			usernameField_entry = new(certificate.UsernameField)
 		}
-
-		diags.Append(o.UsernameField.CopyToPango(ctx, &usernameField_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.UsernameField.CopyToPango(ctx, ancestors, &usernameField_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1157,11 +1224,11 @@ func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, obj *
 		*obj = new(certificate.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Certificate = certificate_pango_entries
 	(*obj).BlockExpiredCertificate = blockExpiredCertificate_value
 	(*obj).BlockTimeoutCertificate = blockTimeoutCertificate_value
 	(*obj).BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
 	(*obj).BlockUnknownCertificate = blockUnknownCertificate_value
+	(*obj).Certificate = certificate_pango_entries
 	(*obj).CertificateStatusTimeout = certificateStatusTimeout_value
 	(*obj).CrlReceiveTimeout = crlReceiveTimeout_value
 	(*obj).Domain = domain_value
@@ -1173,7 +1240,7 @@ func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *CertificateProfileResourceCertificateObject) CopyToPango(ctx context.Context, obj **certificate.Certificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileResourceCertificateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.Certificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	defaultOcspUrl_value := o.DefaultOcspUrl.ValueStringPointer()
 	ocspVerifyCertificate_value := o.OcspVerifyCertificate.ValueStringPointer()
@@ -1189,7 +1256,7 @@ func (o *CertificateProfileResourceCertificateObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *CertificateProfileResourceUsernameFieldObject) CopyToPango(ctx context.Context, obj **certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileResourceUsernameFieldObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.UsernameField, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	subject_value := o.Subject.ValueStringPointer()
 	subjectAlt_value := o.SubjectAlt.ValueStringPointer()
@@ -1203,15 +1270,19 @@ func (o *CertificateProfileResourceUsernameFieldObject) CopyToPango(ctx context.
 	return diags
 }
 
-func (o *CertificateProfileResourceModel) CopyFromPango(ctx context.Context, obj *certificate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificate_list types.List
 	{
 		var certificate_tf_entries []CertificateProfileResourceCertificateObject
 		for _, elt := range obj.Certificate {
-			var entry CertificateProfileResourceCertificateObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := CertificateProfileResourceCertificateObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			certificate_tf_entries = append(certificate_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1222,8 +1293,7 @@ func (o *CertificateProfileResourceModel) CopyFromPango(ctx context.Context, obj
 	var usernameField_object *CertificateProfileResourceUsernameFieldObject
 	if obj.UsernameField != nil {
 		usernameField_object = new(CertificateProfileResourceUsernameFieldObject)
-
-		diags.Append(usernameField_object.CopyFromPango(ctx, obj.UsernameField, encrypted)...)
+		diags.Append(usernameField_object.CopyFromPango(ctx, ancestors, obj.UsernameField, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1274,11 +1344,11 @@ func (o *CertificateProfileResourceModel) CopyFromPango(ctx context.Context, obj
 		useOcsp_value = types.BoolValue(*obj.UseOcsp)
 	}
 	o.Name = types.StringValue(obj.Name)
-	o.Certificate = certificate_list
 	o.BlockExpiredCertificate = blockExpiredCertificate_value
 	o.BlockTimeoutCertificate = blockTimeoutCertificate_value
 	o.BlockUnauthenticatedCertificate = blockUnauthenticatedCertificate_value
 	o.BlockUnknownCertificate = blockUnknownCertificate_value
+	o.Certificate = certificate_list
 	o.CertificateStatusTimeout = certificateStatusTimeout_value
 	o.CrlReceiveTimeout = crlReceiveTimeout_value
 	o.Domain = domain_value
@@ -1291,7 +1361,7 @@ func (o *CertificateProfileResourceModel) CopyFromPango(ctx context.Context, obj
 	return diags
 }
 
-func (o *CertificateProfileResourceCertificateObject) CopyFromPango(ctx context.Context, obj *certificate.Certificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileResourceCertificateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.Certificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var defaultOcspUrl_value types.String
@@ -1314,7 +1384,7 @@ func (o *CertificateProfileResourceCertificateObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *CertificateProfileResourceUsernameFieldObject) CopyFromPango(ctx context.Context, obj *certificate.UsernameField, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CertificateProfileResourceUsernameFieldObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.UsernameField, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var subject_value types.String
@@ -1329,6 +1399,11 @@ func (o *CertificateProfileResourceUsernameFieldObject) CopyFromPango(ctx contex
 	o.SubjectAlt = subjectAlt_value
 
 	return diags
+}
+
+func (o *CertificateProfileResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *CertificateProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -1348,6 +1423,13 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1436,8 +1518,7 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 
 	// Load the desired config.
 	var obj *certificate.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1449,17 +1530,29 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1469,6 +1562,17 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 	var savestate, state CertificateProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1555,8 +1659,12 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1566,7 +1674,7 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1576,6 +1684,13 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1587,6 +1702,17 @@ func (r *CertificateProfileResource) Update(ctx context.Context, req resource.Up
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1677,19 +1803,31 @@ func (r *CertificateProfileResource) Update(ctx context.Context, req resource.Up
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1703,11 +1841,18 @@ func (r *CertificateProfileResource) Update(ctx context.Context, req resource.Up
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1810,9 +1955,15 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

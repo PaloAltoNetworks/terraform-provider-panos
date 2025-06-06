@@ -1,19 +1,14 @@
 package provider_test
 
 import (
-	"context"
 	"fmt"
 	"testing"
-
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/objects/extdynlist"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -25,7 +20,6 @@ func TestAccPanosExternalDynamicList_1(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccExternalDynamicListCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: externalDynamicList1Tmpl,
@@ -89,7 +83,6 @@ func TestAccPanosExternalDynamicList_2(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccExternalDynamicListCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: externalDynamicList2Tmpl,
@@ -150,7 +143,6 @@ func TestAccPanosExternalDynamicList_3(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccExternalDynamicListCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: externalDynamicList3Tmpl,
@@ -211,7 +203,6 @@ func TestAccPanosExternalDynamicList_4(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccExternalDynamicListCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: externalDynamicList4Tmpl,
@@ -275,7 +266,6 @@ func TestAccPanosExternalDynamicList_5(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccExternalDynamicListCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: externalDynamicList5Tmpl,
@@ -324,7 +314,6 @@ func TestAccPanosExternalDynamicList_6(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccExternalDynamicListCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: externalDynamicList6Tmpl,
@@ -373,7 +362,6 @@ func TestAccPanosExternalDynamicList_7(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccExternalDynamicListCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: externalDynamicList7Tmpl,
@@ -653,29 +641,3 @@ resource "panos_external_dynamic_list" "list" {
   }
 }
 `
-
-func testAccExternalDynamicListCheckDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := extdynlist.NewService(sdkClient)
-		location := extdynlist.NewDeviceGroupLocation()
-
-		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
-
-		ctx := context.TODO()
-
-		entry := fmt.Sprintf("%s-list", prefix)
-
-		reply, err := api.Read(ctx, *location, entry, "show")
-		if err != nil && !sdkErrors.IsObjectNotFound(err) {
-			return fmt.Errorf("reading external dynamic list entry %s via sdk: %w", entry, err)
-		}
-
-		if reply != nil {
-			if reply.EntryName() == entry {
-				return fmt.Errorf("external dynamic list object still exists: %s", entry)
-			}
-		}
-
-		return nil
-	}
-}

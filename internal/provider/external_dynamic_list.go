@@ -58,7 +58,6 @@ type ExternalDynamicListDataSourceModel struct {
 	Name            types.String                             `tfsdk:"name"`
 	DisableOverride types.String                             `tfsdk:"disable_override"`
 	Type            *ExternalDynamicListDataSourceTypeObject `tfsdk:"type"`
-	EncryptedValues types.Map                                `tfsdk:"encrypted_values"`
 }
 type ExternalDynamicListDataSourceTypeObject struct {
 	Domain        *ExternalDynamicListDataSourceTypeDomainObject        `tfsdk:"domain"`
@@ -256,7 +255,6 @@ func (o *ExternalDynamicListDataSourceModel) AttributeTypes() map[string]attr.Ty
 	var locationObj ExternalDynamicListLocation
 
 	var typeObj *ExternalDynamicListDataSourceTypeObject
-
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
@@ -266,8 +264,15 @@ func (o *ExternalDynamicListDataSourceModel) AttributeTypes() map[string]attr.Ty
 		"type": types.ObjectType{
 			AttrTypes: typeObj.AttributeTypes(),
 		},
-		"encrypted_values": types.MapType{},
 	}
+}
+
+func (o ExternalDynamicListDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o ExternalDynamicListDataSourceModel) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -308,6 +313,14 @@ func (o *ExternalDynamicListDataSourceTypeObject) AttributeTypes() map[string]at
 		},
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o ExternalDynamicListDataSourceTypeObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeDomainObject) AttributeTypes() map[string]attr.Type {
 
 	var authObj *ExternalDynamicListDataSourceTypeDomainAuthObject
@@ -328,12 +341,28 @@ func (o *ExternalDynamicListDataSourceTypeDomainObject) AttributeTypes() map[str
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeDomainObject) AncestorName() string {
+	return "domain"
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -364,17 +393,49 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) AttributeTypes(
 		},
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -383,12 +444,28 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) Attribut
 		"day_of_month": types.Int64Type,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at":          types.StringType,
 		"day_of_week": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeImeiObject) AttributeTypes() map[string]attr.Type {
 
@@ -409,12 +486,28 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) AttributeTypes() map[strin
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeImeiObject) AncestorName() string {
+	return "imei"
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -445,17 +538,49 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) AttributeTypes() 
 		},
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -464,12 +589,28 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) AttributeT
 		"day_of_month": types.Int64Type,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at":          types.StringType,
 		"day_of_week": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeImsiObject) AttributeTypes() map[string]attr.Type {
 
@@ -490,12 +631,28 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) AttributeTypes() map[strin
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeImsiObject) AncestorName() string {
+	return "imsi"
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -526,17 +683,49 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) AttributeTypes() 
 		},
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -545,12 +734,28 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) AttributeT
 		"day_of_month": types.Int64Type,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at":          types.StringType,
 		"day_of_week": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeIpObject) AttributeTypes() map[string]attr.Type {
 
@@ -571,12 +776,28 @@ func (o *ExternalDynamicListDataSourceTypeIpObject) AttributeTypes() map[string]
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeIpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o ExternalDynamicListDataSourceTypeIpObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeIpAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeIpAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListDataSourceTypeIpAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -607,17 +828,49 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -626,12 +879,28 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) AttributeTyp
 		"day_of_month": types.Int64Type,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at":          types.StringType,
 		"day_of_week": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) AttributeTypes() map[string]attr.Type {
 
@@ -641,6 +910,14 @@ func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) AttributeTypes() m
 		"url":            types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypePredefinedIpObject) AncestorName() string {
+	return "predefined-ip"
+}
+
+func (o ExternalDynamicListDataSourceTypePredefinedIpObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -648,6 +925,14 @@ func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) AttributeTypes() 
 		"exception_list": types.ListType{},
 		"url":            types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypePredefinedUrlObject) AncestorName() string {
+	return "predefined-url"
+}
+
+func (o ExternalDynamicListDataSourceTypePredefinedUrlObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeUrlObject) AttributeTypes() map[string]attr.Type {
 
@@ -668,12 +953,28 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) AttributeTypes() map[string
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeUrlObject) AncestorName() string {
+	return "url"
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -704,17 +1005,49 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) AttributeTypes() m
 		},
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -722,6 +1055,14 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) AttributeTy
 		"at":           types.StringType,
 		"day_of_month": types.Int64Type,
 	}
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
@@ -731,7 +1072,15 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) AttributeTyp
 	}
 }
 
-func (o *ExternalDynamicListDataSourceModel) CopyToPango(ctx context.Context, obj **extdynlist.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) EntryName() *string {
+	return nil
+}
+
+func (o *ExternalDynamicListDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	var type_entry *extdynlist.Type
@@ -741,8 +1090,8 @@ func (o *ExternalDynamicListDataSourceModel) CopyToPango(ctx context.Context, ob
 		} else {
 			type_entry = new(extdynlist.Type)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Type.CopyToPango(ctx, ancestors, &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -757,7 +1106,7 @@ func (o *ExternalDynamicListDataSourceModel) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Context, obj **extdynlist.Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var domain_entry *extdynlist.TypeDomain
 	if o.Domain != nil {
@@ -766,8 +1115,8 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Contex
 		} else {
 			domain_entry = new(extdynlist.TypeDomain)
 		}
-
-		diags.Append(o.Domain.CopyToPango(ctx, &domain_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Domain.CopyToPango(ctx, append(ancestors, o), &domain_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -779,8 +1128,8 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Contex
 		} else {
 			imei_entry = new(extdynlist.TypeImei)
 		}
-
-		diags.Append(o.Imei.CopyToPango(ctx, &imei_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Imei.CopyToPango(ctx, append(ancestors, o), &imei_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -792,8 +1141,8 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Contex
 		} else {
 			imsi_entry = new(extdynlist.TypeImsi)
 		}
-
-		diags.Append(o.Imsi.CopyToPango(ctx, &imsi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Imsi.CopyToPango(ctx, append(ancestors, o), &imsi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -805,8 +1154,8 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Contex
 		} else {
 			ip_entry = new(extdynlist.TypeIp)
 		}
-
-		diags.Append(o.Ip.CopyToPango(ctx, &ip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ip.CopyToPango(ctx, append(ancestors, o), &ip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -818,8 +1167,8 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Contex
 		} else {
 			predefinedIp_entry = new(extdynlist.TypePredefinedIp)
 		}
-
-		diags.Append(o.PredefinedIp.CopyToPango(ctx, &predefinedIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PredefinedIp.CopyToPango(ctx, append(ancestors, o), &predefinedIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -831,8 +1180,8 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Contex
 		} else {
 			predefinedUrl_entry = new(extdynlist.TypePredefinedUrl)
 		}
-
-		diags.Append(o.PredefinedUrl.CopyToPango(ctx, &predefinedUrl_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PredefinedUrl.CopyToPango(ctx, append(ancestors, o), &predefinedUrl_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -844,8 +1193,8 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Contex
 		} else {
 			url_entry = new(extdynlist.TypeUrl)
 		}
-
-		diags.Append(o.Url.CopyToPango(ctx, &url_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Url.CopyToPango(ctx, append(ancestors, o), &url_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -864,7 +1213,7 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomain, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomain, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeDomainAuth
 	if o.Auth != nil {
@@ -873,8 +1222,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyToPango(ctx context.
 		} else {
 			auth_entry = new(extdynlist.TypeDomainAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -894,8 +1243,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyToPango(ctx context.
 		} else {
 			recurring_entry = new(extdynlist.TypeDomainRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -915,10 +1264,21 @@ func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | domain | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -929,7 +1289,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeDomainRecurringDaily
 	if o.Daily != nil {
@@ -938,8 +1298,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx
 		} else {
 			daily_entry = new(extdynlist.TypeDomainRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -951,8 +1311,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeDomainRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -964,8 +1324,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx
 		} else {
 			hourly_entry = new(extdynlist.TypeDomainRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -977,8 +1337,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx
 		} else {
 			monthly_entry = new(extdynlist.TypeDomainRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -990,8 +1350,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx
 		} else {
 			weekly_entry = new(extdynlist.TypeDomainRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1008,7 +1368,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -1019,7 +1379,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) CopyToPang
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1028,7 +1388,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) CopyT
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1037,7 +1397,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) CopyToPan
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -1050,7 +1410,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) CopyToPa
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -1063,7 +1423,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) CopyToPan
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImei, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImei, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeImeiAuth
 	if o.Auth != nil {
@@ -1072,8 +1432,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyToPango(ctx context.Co
 		} else {
 			auth_entry = new(extdynlist.TypeImeiAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1092,8 +1452,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyToPango(ctx context.Co
 		} else {
 			recurring_entry = new(extdynlist.TypeImeiRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1112,10 +1472,21 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | imei | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -1126,7 +1497,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeImeiRecurringDaily
 	if o.Daily != nil {
@@ -1135,8 +1506,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx c
 		} else {
 			daily_entry = new(extdynlist.TypeImeiRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1148,8 +1519,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx c
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeImeiRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1161,8 +1532,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx c
 		} else {
 			hourly_entry = new(extdynlist.TypeImeiRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1174,8 +1545,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx c
 		} else {
 			monthly_entry = new(extdynlist.TypeImeiRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1187,8 +1558,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx c
 		} else {
 			weekly_entry = new(extdynlist.TypeImeiRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1205,7 +1576,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -1216,7 +1587,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) CopyToPango(
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1225,7 +1596,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) CopyToP
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1234,7 +1605,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) CopyToPango
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -1247,7 +1618,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) CopyToPang
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -1260,7 +1631,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) CopyToPango
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeImsiAuth
 	if o.Auth != nil {
@@ -1269,8 +1640,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyToPango(ctx context.Co
 		} else {
 			auth_entry = new(extdynlist.TypeImsiAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1289,8 +1660,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyToPango(ctx context.Co
 		} else {
 			recurring_entry = new(extdynlist.TypeImsiRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1309,10 +1680,21 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | imsi | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -1323,7 +1705,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeImsiRecurringDaily
 	if o.Daily != nil {
@@ -1332,8 +1714,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyToPango(ctx c
 		} else {
 			daily_entry = new(extdynlist.TypeImsiRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1345,8 +1727,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyToPango(ctx c
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeImsiRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1358,8 +1740,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyToPango(ctx c
 		} else {
 			hourly_entry = new(extdynlist.TypeImsiRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1371,8 +1753,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyToPango(ctx c
 		} else {
 			monthly_entry = new(extdynlist.TypeImsiRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1384,8 +1766,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyToPango(ctx c
 		} else {
 			weekly_entry = new(extdynlist.TypeImsiRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1402,7 +1784,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -1413,7 +1795,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) CopyToPango(
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1422,7 +1804,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) CopyToP
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1431,7 +1813,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) CopyToPango
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -1444,7 +1826,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) CopyToPang
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -1457,7 +1839,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyToPango
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeIpObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeIpAuth
 	if o.Auth != nil {
@@ -1466,8 +1848,8 @@ func (o *ExternalDynamicListDataSourceTypeIpObject) CopyToPango(ctx context.Cont
 		} else {
 			auth_entry = new(extdynlist.TypeIpAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1486,8 +1868,8 @@ func (o *ExternalDynamicListDataSourceTypeIpObject) CopyToPango(ctx context.Cont
 		} else {
 			recurring_entry = new(extdynlist.TypeIpRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1506,10 +1888,21 @@ func (o *ExternalDynamicListDataSourceTypeIpObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | ip | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -1520,7 +1913,7 @@ func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeIpRecurringDaily
 	if o.Daily != nil {
@@ -1529,8 +1922,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx con
 		} else {
 			daily_entry = new(extdynlist.TypeIpRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1542,8 +1935,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx con
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeIpRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1555,8 +1948,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx con
 		} else {
 			hourly_entry = new(extdynlist.TypeIpRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1568,8 +1961,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx con
 		} else {
 			monthly_entry = new(extdynlist.TypeIpRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1581,8 +1974,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx con
 		} else {
 			weekly_entry = new(extdynlist.TypeIpRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1599,7 +1992,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -1610,7 +2003,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) CopyToPango(ct
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1619,7 +2012,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) CopyToPan
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1628,7 +2021,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) CopyToPango(c
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -1641,7 +2034,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) CopyToPango(
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -1654,7 +2047,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) CopyToPango(c
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) CopyToPango(ctx context.Context, obj **extdynlist.TypePredefinedIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypePredefinedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
@@ -1673,7 +2066,7 @@ func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) CopyToPango(ctx context.Context, obj **extdynlist.TypePredefinedUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypePredefinedUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
@@ -1692,7 +2085,7 @@ func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeUrlAuth
 	if o.Auth != nil {
@@ -1701,8 +2094,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyToPango(ctx context.Con
 		} else {
 			auth_entry = new(extdynlist.TypeUrlAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1721,8 +2114,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyToPango(ctx context.Con
 		} else {
 			recurring_entry = new(extdynlist.TypeUrlRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1741,10 +2134,21 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | url | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -1755,7 +2159,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeUrlRecurringDaily
 	if o.Daily != nil {
@@ -1764,8 +2168,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyToPango(ctx co
 		} else {
 			daily_entry = new(extdynlist.TypeUrlRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1777,8 +2181,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyToPango(ctx co
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeUrlRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1790,8 +2194,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyToPango(ctx co
 		} else {
 			hourly_entry = new(extdynlist.TypeUrlRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1803,8 +2207,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyToPango(ctx co
 		} else {
 			monthly_entry = new(extdynlist.TypeUrlRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1816,8 +2220,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyToPango(ctx co
 		} else {
 			weekly_entry = new(extdynlist.TypeUrlRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1834,7 +2238,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -1845,7 +2249,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) CopyToPango(c
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1854,7 +2258,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) CopyToPa
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1863,7 +2267,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) CopyToPango(
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -1876,7 +2280,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) CopyToPango
 
 	return diags
 }
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -1890,13 +2294,12 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) CopyToPango(
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceModel) CopyFromPango(ctx context.Context, obj *extdynlist.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_object *ExternalDynamicListDataSourceTypeObject
 	if obj.Type != nil {
 		type_object = new(ExternalDynamicListDataSourceTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, ancestors, obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1913,13 +2316,12 @@ func (o *ExternalDynamicListDataSourceModel) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Context, obj *extdynlist.Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var domain_object *ExternalDynamicListDataSourceTypeDomainObject
 	if obj.Domain != nil {
 		domain_object = new(ExternalDynamicListDataSourceTypeDomainObject)
-
-		diags.Append(domain_object.CopyFromPango(ctx, obj.Domain, encrypted)...)
+		diags.Append(domain_object.CopyFromPango(ctx, append(ancestors, o), obj.Domain, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1927,8 +2329,7 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Cont
 	var imei_object *ExternalDynamicListDataSourceTypeImeiObject
 	if obj.Imei != nil {
 		imei_object = new(ExternalDynamicListDataSourceTypeImeiObject)
-
-		diags.Append(imei_object.CopyFromPango(ctx, obj.Imei, encrypted)...)
+		diags.Append(imei_object.CopyFromPango(ctx, append(ancestors, o), obj.Imei, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1936,8 +2337,7 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Cont
 	var imsi_object *ExternalDynamicListDataSourceTypeImsiObject
 	if obj.Imsi != nil {
 		imsi_object = new(ExternalDynamicListDataSourceTypeImsiObject)
-
-		diags.Append(imsi_object.CopyFromPango(ctx, obj.Imsi, encrypted)...)
+		diags.Append(imsi_object.CopyFromPango(ctx, append(ancestors, o), obj.Imsi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1945,8 +2345,7 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Cont
 	var ip_object *ExternalDynamicListDataSourceTypeIpObject
 	if obj.Ip != nil {
 		ip_object = new(ExternalDynamicListDataSourceTypeIpObject)
-
-		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
+		diags.Append(ip_object.CopyFromPango(ctx, append(ancestors, o), obj.Ip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1954,8 +2353,7 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Cont
 	var predefinedIp_object *ExternalDynamicListDataSourceTypePredefinedIpObject
 	if obj.PredefinedIp != nil {
 		predefinedIp_object = new(ExternalDynamicListDataSourceTypePredefinedIpObject)
-
-		diags.Append(predefinedIp_object.CopyFromPango(ctx, obj.PredefinedIp, encrypted)...)
+		diags.Append(predefinedIp_object.CopyFromPango(ctx, append(ancestors, o), obj.PredefinedIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1963,8 +2361,7 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Cont
 	var predefinedUrl_object *ExternalDynamicListDataSourceTypePredefinedUrlObject
 	if obj.PredefinedUrl != nil {
 		predefinedUrl_object = new(ExternalDynamicListDataSourceTypePredefinedUrlObject)
-
-		diags.Append(predefinedUrl_object.CopyFromPango(ctx, obj.PredefinedUrl, encrypted)...)
+		diags.Append(predefinedUrl_object.CopyFromPango(ctx, append(ancestors, o), obj.PredefinedUrl, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1972,8 +2369,7 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Cont
 	var url_object *ExternalDynamicListDataSourceTypeUrlObject
 	if obj.Url != nil {
 		url_object = new(ExternalDynamicListDataSourceTypeUrlObject)
-
-		diags.Append(url_object.CopyFromPango(ctx, obj.Url, encrypted)...)
+		diags.Append(url_object.CopyFromPango(ctx, append(ancestors, o), obj.Url, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1990,19 +2386,21 @@ func (o *ExternalDynamicListDataSourceTypeObject) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomain, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomain, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListDataSourceTypeDomainAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListDataSourceTypeDomainAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2010,8 +2408,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyFromPango(ctx contex
 	var recurring_object *ExternalDynamicListDataSourceTypeDomainRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListDataSourceTypeDomainRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2044,14 +2441,32 @@ func (o *ExternalDynamicListDataSourceTypeDomainObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | domain | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | domain | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -2064,13 +2479,12 @@ func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListDataSourceTypeDomainRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2078,8 +2492,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyFromPango(c
 	var fiveMinute_object *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2087,8 +2500,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyFromPango(c
 	var hourly_object *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2096,8 +2508,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyFromPango(c
 	var monthly_object *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2105,8 +2516,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyFromPango(c
 	var weekly_object *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2121,7 +2531,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) CopyFromPango(c
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2133,19 +2543,19 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) CopyFromPa
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2162,7 +2572,7 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) CopyFrom
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2179,19 +2589,21 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) CopyFromP
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImei, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImei, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListDataSourceTypeImeiAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListDataSourceTypeImeiAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2199,8 +2611,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyFromPango(ctx context.
 	var recurring_object *ExternalDynamicListDataSourceTypeImeiRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListDataSourceTypeImeiRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2228,14 +2639,32 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | imei | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | imei | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -2248,13 +2677,12 @@ func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListDataSourceTypeImeiRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2262,8 +2690,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyFromPango(ctx
 	var fiveMinute_object *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2271,8 +2698,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyFromPango(ctx
 	var hourly_object *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2280,8 +2706,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyFromPango(ctx
 	var monthly_object *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2289,8 +2714,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyFromPango(ctx
 	var weekly_object *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2305,7 +2729,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2317,19 +2741,19 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) CopyFromPang
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2346,7 +2770,7 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) CopyFromPa
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2363,19 +2787,21 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) CopyFromPan
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListDataSourceTypeImsiAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListDataSourceTypeImsiAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2383,8 +2809,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyFromPango(ctx context.
 	var recurring_object *ExternalDynamicListDataSourceTypeImsiRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListDataSourceTypeImsiRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2412,14 +2837,32 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | imsi | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | imsi | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -2432,13 +2875,12 @@ func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListDataSourceTypeImsiRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2446,8 +2888,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyFromPango(ctx
 	var fiveMinute_object *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2455,8 +2896,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyFromPango(ctx
 	var hourly_object *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2464,8 +2904,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyFromPango(ctx
 	var monthly_object *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2473,8 +2912,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyFromPango(ctx
 	var weekly_object *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2489,7 +2927,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2501,19 +2939,19 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) CopyFromPang
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2530,7 +2968,7 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) CopyFromPa
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2547,19 +2985,21 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) CopyFromPan
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeIpObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListDataSourceTypeIpAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListDataSourceTypeIpAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2567,8 +3007,7 @@ func (o *ExternalDynamicListDataSourceTypeIpObject) CopyFromPango(ctx context.Co
 	var recurring_object *ExternalDynamicListDataSourceTypeIpRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListDataSourceTypeIpRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2596,14 +3035,32 @@ func (o *ExternalDynamicListDataSourceTypeIpObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | ip | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | ip | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -2616,13 +3073,12 @@ func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListDataSourceTypeIpRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListDataSourceTypeIpRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2630,8 +3086,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyFromPango(ctx c
 	var fiveMinute_object *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2639,8 +3094,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyFromPango(ctx c
 	var hourly_object *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListDataSourceTypeIpRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2648,8 +3102,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyFromPango(ctx c
 	var monthly_object *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2657,8 +3110,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyFromPango(ctx c
 	var weekly_object *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2673,7 +3125,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2685,19 +3137,19 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) CopyFromPango(
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2714,7 +3166,7 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) CopyFromPang
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2731,13 +3183,16 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) CopyFromPango
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypePredefinedIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypePredefinedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var description_value types.String
@@ -2755,13 +3210,16 @@ func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypePredefinedUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypePredefinedUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var description_value types.String
@@ -2779,19 +3237,21 @@ func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListDataSourceTypeUrlAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListDataSourceTypeUrlAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2799,8 +3259,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyFromPango(ctx context.C
 	var recurring_object *ExternalDynamicListDataSourceTypeUrlRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListDataSourceTypeUrlRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2828,14 +3287,32 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | url | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | url | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -2848,13 +3325,12 @@ func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListDataSourceTypeUrlRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2862,8 +3338,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyFromPango(ctx 
 	var fiveMinute_object *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2871,8 +3346,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyFromPango(ctx 
 	var hourly_object *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2880,8 +3354,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyFromPango(ctx 
 	var monthly_object *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2889,8 +3362,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyFromPango(ctx 
 	var weekly_object *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2905,7 +3377,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2917,19 +3389,19 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) CopyFromPango
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2946,7 +3418,7 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) CopyFromPan
 	return diags
 }
 
-func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -2963,20 +3435,16 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringWeeklyObject) CopyFromPang
 	return diags
 }
 
+func (o *ExternalDynamicListDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func ExternalDynamicListDataSourceSchema() dsschema.Schema {
 	return dsschema.Schema{
 		Attributes: map[string]dsschema.Attribute{
 
 			"location": ExternalDynamicListDataSourceLocationSchema(),
-
-			"encrypted_values": dsschema.MapAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    false,
-				Computed:    true,
-				Sensitive:   true,
-				ElementType: types.StringType,
-			},
 
 			"name": dsschema.StringAttribute{
 				Description: "",
@@ -5246,13 +5714,20 @@ func (d *ExternalDynamicListDataSource) Configure(_ context.Context, req datasou
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, extdynlist.NewService(d.client), batchSize, specifier, extdynlist.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*extdynlist.Entry, extdynlist.Location, *extdynlist.Service](d.client, extdynlist.NewService(d.client), batchSize, specifier, extdynlist.SpecMatches)
 }
 func (o *ExternalDynamicListDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state ExternalDynamicListDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -5274,6 +5749,17 @@ func (o *ExternalDynamicListDataSource) Read(ctx context.Context, req datasource
 			}
 		}
 
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &extdynlist.VsysLocation{}
+			var innerLocation ExternalDynamicListVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
 		if !terraformLocation.DeviceGroup.IsNull() {
 			location.DeviceGroup = &extdynlist.DeviceGroupLocation{}
 			var innerLocation ExternalDynamicListDeviceGroupLocation
@@ -5286,12 +5772,6 @@ func (o *ExternalDynamicListDataSource) Read(ctx context.Context, req datasource
 		}
 	}
 
-	ev := make(map[string]types.String, len(state.EncryptedValues.Elements()))
-	resp.Diagnostics.Append(savestate.EncryptedValues.ElementsAs(ctx, &ev, false)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_external_dynamic_list_resource",
@@ -5299,8 +5779,12 @@ func (o *ExternalDynamicListDataSource) Read(ctx context.Context, req datasource
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -5310,7 +5794,7 @@ func (o *ExternalDynamicListDataSource) Read(ctx context.Context, req datasource
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, &ev)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -5320,9 +5804,6 @@ func (o *ExternalDynamicListDataSource) Read(ctx context.Context, req datasource
 	*/
 
 	state.Location = savestate.Location
-	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
-	state.EncryptedValues = ev_map
-	resp.Diagnostics.Append(ev_diags...)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -5359,7 +5840,6 @@ type ExternalDynamicListResourceModel struct {
 	Name            types.String                           `tfsdk:"name"`
 	DisableOverride types.String                           `tfsdk:"disable_override"`
 	Type            *ExternalDynamicListResourceTypeObject `tfsdk:"type"`
-	EncryptedValues types.Map                              `tfsdk:"encrypted_values"`
 }
 type ExternalDynamicListResourceTypeObject struct {
 	Domain        *ExternalDynamicListResourceTypeDomainObject        `tfsdk:"domain"`
@@ -5562,15 +6042,6 @@ func ExternalDynamicListResourceSchema() rsschema.Schema {
 		Attributes: map[string]rsschema.Attribute{
 
 			"location": ExternalDynamicListResourceLocationSchema(),
-
-			"encrypted_values": rsschema.MapAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    false,
-				Computed:    true,
-				Sensitive:   true,
-				ElementType: types.StringType,
-			},
 
 			"name": rsschema.StringAttribute{
 				Description: "",
@@ -7868,7 +8339,7 @@ func (r *ExternalDynamicListResource) Configure(ctx context.Context, req resourc
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, extdynlist.NewService(r.client), batchSize, specifier, extdynlist.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*extdynlist.Entry, extdynlist.Location, *extdynlist.Service](r.client, extdynlist.NewService(r.client), batchSize, specifier, extdynlist.SpecMatches)
 }
 
 func (o *ExternalDynamicListResourceModel) AttributeTypes() map[string]attr.Type {
@@ -7876,7 +8347,6 @@ func (o *ExternalDynamicListResourceModel) AttributeTypes() map[string]attr.Type
 	var locationObj ExternalDynamicListLocation
 
 	var typeObj *ExternalDynamicListResourceTypeObject
-
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
@@ -7886,8 +8356,15 @@ func (o *ExternalDynamicListResourceModel) AttributeTypes() map[string]attr.Type
 		"type": types.ObjectType{
 			AttrTypes: typeObj.AttributeTypes(),
 		},
-		"encrypted_values": types.MapType{},
 	}
+}
+
+func (o ExternalDynamicListResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o ExternalDynamicListResourceModel) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -7928,6 +8405,14 @@ func (o *ExternalDynamicListResourceTypeObject) AttributeTypes() map[string]attr
 		},
 	}
 }
+
+func (o ExternalDynamicListResourceTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o ExternalDynamicListResourceTypeObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeDomainObject) AttributeTypes() map[string]attr.Type {
 
 	var authObj *ExternalDynamicListResourceTypeDomainAuthObject
@@ -7948,12 +8433,28 @@ func (o *ExternalDynamicListResourceTypeDomainObject) AttributeTypes() map[strin
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeDomainObject) AncestorName() string {
+	return "domain"
+}
+
+func (o ExternalDynamicListResourceTypeDomainObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeDomainAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeDomainAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListResourceTypeDomainAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeDomainRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -7984,17 +8485,49 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) AttributeTypes() 
 		},
 	}
 }
+
+func (o ExternalDynamicListResourceTypeDomainRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListResourceTypeDomainRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeDomainRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListResourceTypeDomainRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListResourceTypeDomainRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListResourceTypeDomainRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -8003,12 +8536,28 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) AttributeT
 		"day_of_month": types.Int64Type,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at":          types.StringType,
 		"day_of_week": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeImeiObject) AttributeTypes() map[string]attr.Type {
 
@@ -8029,12 +8578,28 @@ func (o *ExternalDynamicListResourceTypeImeiObject) AttributeTypes() map[string]
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeImeiObject) AncestorName() string {
+	return "imei"
+}
+
+func (o ExternalDynamicListResourceTypeImeiObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImeiAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeImeiAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListResourceTypeImeiAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeImeiRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -8065,17 +8630,49 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o ExternalDynamicListResourceTypeImeiRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListResourceTypeImeiRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeImeiRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListResourceTypeImeiRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListResourceTypeImeiRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListResourceTypeImeiRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -8084,12 +8681,28 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) AttributeTyp
 		"day_of_month": types.Int64Type,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at":          types.StringType,
 		"day_of_week": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeImsiObject) AttributeTypes() map[string]attr.Type {
 
@@ -8110,12 +8723,28 @@ func (o *ExternalDynamicListResourceTypeImsiObject) AttributeTypes() map[string]
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeImsiObject) AncestorName() string {
+	return "imsi"
+}
+
+func (o ExternalDynamicListResourceTypeImsiObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImsiAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeImsiAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListResourceTypeImsiAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeImsiRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -8146,17 +8775,49 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o ExternalDynamicListResourceTypeImsiRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListResourceTypeImsiRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeImsiRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListResourceTypeImsiRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListResourceTypeImsiRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListResourceTypeImsiRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -8165,12 +8826,28 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) AttributeTyp
 		"day_of_month": types.Int64Type,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at":          types.StringType,
 		"day_of_week": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeIpObject) AttributeTypes() map[string]attr.Type {
 
@@ -8191,12 +8868,28 @@ func (o *ExternalDynamicListResourceTypeIpObject) AttributeTypes() map[string]at
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeIpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o ExternalDynamicListResourceTypeIpObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeIpAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeIpAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListResourceTypeIpAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeIpRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -8227,17 +8920,49 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) AttributeTypes() map[
 		},
 	}
 }
+
+func (o ExternalDynamicListResourceTypeIpRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListResourceTypeIpRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeIpRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListResourceTypeIpRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListResourceTypeIpRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListResourceTypeIpRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -8246,12 +8971,28 @@ func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) AttributeTypes
 		"day_of_month": types.Int64Type,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeIpRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListResourceTypeIpRecurringMonthlyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at":          types.StringType,
 		"day_of_week": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeIpRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListResourceTypeIpRecurringWeeklyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypePredefinedIpObject) AttributeTypes() map[string]attr.Type {
 
@@ -8261,6 +9002,14 @@ func (o *ExternalDynamicListResourceTypePredefinedIpObject) AttributeTypes() map
 		"url":            types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypePredefinedIpObject) AncestorName() string {
+	return "predefined-ip"
+}
+
+func (o ExternalDynamicListResourceTypePredefinedIpObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypePredefinedUrlObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -8268,6 +9017,14 @@ func (o *ExternalDynamicListResourceTypePredefinedUrlObject) AttributeTypes() ma
 		"exception_list": types.ListType{},
 		"url":            types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypePredefinedUrlObject) AncestorName() string {
+	return "predefined-url"
+}
+
+func (o ExternalDynamicListResourceTypePredefinedUrlObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeUrlObject) AttributeTypes() map[string]attr.Type {
 
@@ -8288,12 +9045,28 @@ func (o *ExternalDynamicListResourceTypeUrlObject) AttributeTypes() map[string]a
 		"url": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeUrlObject) AncestorName() string {
+	return "url"
+}
+
+func (o ExternalDynamicListResourceTypeUrlObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeUrlAuthObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"password": types.StringType,
 		"username": types.StringType,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeUrlAuthObject) AncestorName() string {
+	return "auth"
+}
+
+func (o ExternalDynamicListResourceTypeUrlAuthObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeUrlRecurringObject) AttributeTypes() map[string]attr.Type {
 
@@ -8324,17 +9097,49 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) AttributeTypes() map
 		},
 	}
 }
+
+func (o ExternalDynamicListResourceTypeUrlRecurringObject) AncestorName() string {
+	return "recurring"
+}
+
+func (o ExternalDynamicListResourceTypeUrlRecurringObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"at": types.StringType,
 	}
 }
+
+func (o ExternalDynamicListResourceTypeUrlRecurringDailyObject) AncestorName() string {
+	return "daily"
+}
+
+func (o ExternalDynamicListResourceTypeUrlRecurringDailyObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) AncestorName() string {
+	return "five-minute"
+}
+
+func (o ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) EntryName() *string {
+	return nil
+}
 func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ExternalDynamicListResourceTypeUrlRecurringHourlyObject) AncestorName() string {
+	return "hourly"
+}
+
+func (o ExternalDynamicListResourceTypeUrlRecurringHourlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) AttributeTypes() map[string]attr.Type {
 
@@ -8342,6 +9147,14 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) AttributeType
 		"at":           types.StringType,
 		"day_of_month": types.Int64Type,
 	}
+}
+
+func (o ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) AncestorName() string {
+	return "monthly"
+}
+
+func (o ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) EntryName() *string {
+	return nil
 }
 func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) AttributeTypes() map[string]attr.Type {
 
@@ -8351,7 +9164,15 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) AttributeTypes
 	}
 }
 
-func (o *ExternalDynamicListResourceModel) CopyToPango(ctx context.Context, obj **extdynlist.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) AncestorName() string {
+	return "weekly"
+}
+
+func (o ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) EntryName() *string {
+	return nil
+}
+
+func (o *ExternalDynamicListResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
 	var type_entry *extdynlist.Type
@@ -8361,8 +9182,8 @@ func (o *ExternalDynamicListResourceModel) CopyToPango(ctx context.Context, obj 
 		} else {
 			type_entry = new(extdynlist.Type)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Type.CopyToPango(ctx, ancestors, &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8377,7 +9198,7 @@ func (o *ExternalDynamicListResourceModel) CopyToPango(ctx context.Context, obj 
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context, obj **extdynlist.Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var domain_entry *extdynlist.TypeDomain
 	if o.Domain != nil {
@@ -8386,8 +9207,8 @@ func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context,
 		} else {
 			domain_entry = new(extdynlist.TypeDomain)
 		}
-
-		diags.Append(o.Domain.CopyToPango(ctx, &domain_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Domain.CopyToPango(ctx, append(ancestors, o), &domain_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8399,8 +9220,8 @@ func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context,
 		} else {
 			imei_entry = new(extdynlist.TypeImei)
 		}
-
-		diags.Append(o.Imei.CopyToPango(ctx, &imei_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Imei.CopyToPango(ctx, append(ancestors, o), &imei_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8412,8 +9233,8 @@ func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context,
 		} else {
 			imsi_entry = new(extdynlist.TypeImsi)
 		}
-
-		diags.Append(o.Imsi.CopyToPango(ctx, &imsi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Imsi.CopyToPango(ctx, append(ancestors, o), &imsi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8425,8 +9246,8 @@ func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context,
 		} else {
 			ip_entry = new(extdynlist.TypeIp)
 		}
-
-		diags.Append(o.Ip.CopyToPango(ctx, &ip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ip.CopyToPango(ctx, append(ancestors, o), &ip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8438,8 +9259,8 @@ func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context,
 		} else {
 			predefinedIp_entry = new(extdynlist.TypePredefinedIp)
 		}
-
-		diags.Append(o.PredefinedIp.CopyToPango(ctx, &predefinedIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PredefinedIp.CopyToPango(ctx, append(ancestors, o), &predefinedIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8451,8 +9272,8 @@ func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context,
 		} else {
 			predefinedUrl_entry = new(extdynlist.TypePredefinedUrl)
 		}
-
-		diags.Append(o.PredefinedUrl.CopyToPango(ctx, &predefinedUrl_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PredefinedUrl.CopyToPango(ctx, append(ancestors, o), &predefinedUrl_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8464,8 +9285,8 @@ func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context,
 		} else {
 			url_entry = new(extdynlist.TypeUrl)
 		}
-
-		diags.Append(o.Url.CopyToPango(ctx, &url_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Url.CopyToPango(ctx, append(ancestors, o), &url_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8484,7 +9305,7 @@ func (o *ExternalDynamicListResourceTypeObject) CopyToPango(ctx context.Context,
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeDomainObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomain, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomain, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeDomainAuth
 	if o.Auth != nil {
@@ -8493,8 +9314,8 @@ func (o *ExternalDynamicListResourceTypeDomainObject) CopyToPango(ctx context.Co
 		} else {
 			auth_entry = new(extdynlist.TypeDomainAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8514,8 +9335,8 @@ func (o *ExternalDynamicListResourceTypeDomainObject) CopyToPango(ctx context.Co
 		} else {
 			recurring_entry = new(extdynlist.TypeDomainRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8535,10 +9356,21 @@ func (o *ExternalDynamicListResourceTypeDomainObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeDomainAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | domain | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -8549,7 +9381,7 @@ func (o *ExternalDynamicListResourceTypeDomainAuthObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeDomainRecurringDaily
 	if o.Daily != nil {
@@ -8558,8 +9390,8 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx c
 		} else {
 			daily_entry = new(extdynlist.TypeDomainRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8571,8 +9403,8 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx c
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeDomainRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8584,8 +9416,8 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx c
 		} else {
 			hourly_entry = new(extdynlist.TypeDomainRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8597,8 +9429,8 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx c
 		} else {
 			monthly_entry = new(extdynlist.TypeDomainRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8610,8 +9442,8 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx c
 		} else {
 			weekly_entry = new(extdynlist.TypeDomainRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8628,7 +9460,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -8639,7 +9471,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) CopyToPango(
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -8648,7 +9480,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) CopyToP
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -8657,7 +9489,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) CopyToPango
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -8670,7 +9502,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) CopyToPang
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeDomainRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeDomainRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -8683,7 +9515,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) CopyToPango
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImeiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImei, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImei, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeImeiAuth
 	if o.Auth != nil {
@@ -8692,8 +9524,8 @@ func (o *ExternalDynamicListResourceTypeImeiObject) CopyToPango(ctx context.Cont
 		} else {
 			auth_entry = new(extdynlist.TypeImeiAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8712,8 +9544,8 @@ func (o *ExternalDynamicListResourceTypeImeiObject) CopyToPango(ctx context.Cont
 		} else {
 			recurring_entry = new(extdynlist.TypeImeiRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8732,10 +9564,21 @@ func (o *ExternalDynamicListResourceTypeImeiObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | imei | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -8746,7 +9589,7 @@ func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeImeiRecurringDaily
 	if o.Daily != nil {
@@ -8755,8 +9598,8 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx con
 		} else {
 			daily_entry = new(extdynlist.TypeImeiRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8768,8 +9611,8 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx con
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeImeiRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8781,8 +9624,8 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx con
 		} else {
 			hourly_entry = new(extdynlist.TypeImeiRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8794,8 +9637,8 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx con
 		} else {
 			monthly_entry = new(extdynlist.TypeImeiRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8807,8 +9650,8 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx con
 		} else {
 			weekly_entry = new(extdynlist.TypeImeiRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8825,7 +9668,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -8836,7 +9679,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) CopyToPango(ct
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -8845,7 +9688,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) CopyToPan
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -8854,7 +9697,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) CopyToPango(c
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -8867,7 +9710,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) CopyToPango(
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImeiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImeiRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -8880,7 +9723,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) CopyToPango(c
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImsiObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeImsiAuth
 	if o.Auth != nil {
@@ -8889,8 +9732,8 @@ func (o *ExternalDynamicListResourceTypeImsiObject) CopyToPango(ctx context.Cont
 		} else {
 			auth_entry = new(extdynlist.TypeImsiAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8909,8 +9752,8 @@ func (o *ExternalDynamicListResourceTypeImsiObject) CopyToPango(ctx context.Cont
 		} else {
 			recurring_entry = new(extdynlist.TypeImsiRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8929,10 +9772,21 @@ func (o *ExternalDynamicListResourceTypeImsiObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | imsi | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -8943,7 +9797,7 @@ func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeImsiRecurringDaily
 	if o.Daily != nil {
@@ -8952,8 +9806,8 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx con
 		} else {
 			daily_entry = new(extdynlist.TypeImsiRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8965,8 +9819,8 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx con
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeImsiRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8978,8 +9832,8 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx con
 		} else {
 			hourly_entry = new(extdynlist.TypeImsiRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8991,8 +9845,8 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx con
 		} else {
 			monthly_entry = new(extdynlist.TypeImsiRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9004,8 +9858,8 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx con
 		} else {
 			weekly_entry = new(extdynlist.TypeImsiRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9022,7 +9876,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -9033,7 +9887,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyToPango(ct
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -9042,7 +9896,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) CopyToPan
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -9051,7 +9905,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) CopyToPango(c
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -9064,7 +9918,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyToPango(
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeImsiRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -9077,7 +9931,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyToPango(c
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeIpObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeIpAuth
 	if o.Auth != nil {
@@ -9086,8 +9940,8 @@ func (o *ExternalDynamicListResourceTypeIpObject) CopyToPango(ctx context.Contex
 		} else {
 			auth_entry = new(extdynlist.TypeIpAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9106,8 +9960,8 @@ func (o *ExternalDynamicListResourceTypeIpObject) CopyToPango(ctx context.Contex
 		} else {
 			recurring_entry = new(extdynlist.TypeIpRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9126,10 +9980,21 @@ func (o *ExternalDynamicListResourceTypeIpObject) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | ip | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -9140,7 +10005,7 @@ func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeIpRecurringDaily
 	if o.Daily != nil {
@@ -9149,8 +10014,8 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx conte
 		} else {
 			daily_entry = new(extdynlist.TypeIpRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9162,8 +10027,8 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx conte
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeIpRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9175,8 +10040,8 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx conte
 		} else {
 			hourly_entry = new(extdynlist.TypeIpRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9188,8 +10053,8 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx conte
 		} else {
 			monthly_entry = new(extdynlist.TypeIpRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9201,8 +10066,8 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx conte
 		} else {
 			weekly_entry = new(extdynlist.TypeIpRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9219,7 +10084,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -9230,7 +10095,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -9239,7 +10104,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) CopyToPango
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -9248,7 +10113,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -9261,7 +10126,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyToPango(ct
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeIpRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeIpRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -9274,7 +10139,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyToPango(ctx context.Context, obj **extdynlist.TypePredefinedIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypePredefinedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
@@ -9293,7 +10158,7 @@ func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypePredefinedUrlObject) CopyToPango(ctx context.Context, obj **extdynlist.TypePredefinedUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypePredefinedUrlObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypePredefinedUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	exceptionList_pango_entries := make([]string, 0)
@@ -9312,7 +10177,7 @@ func (o *ExternalDynamicListResourceTypePredefinedUrlObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeUrlObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var auth_entry *extdynlist.TypeUrlAuth
 	if o.Auth != nil {
@@ -9321,8 +10186,8 @@ func (o *ExternalDynamicListResourceTypeUrlObject) CopyToPango(ctx context.Conte
 		} else {
 			auth_entry = new(extdynlist.TypeUrlAuth)
 		}
-
-		diags.Append(o.Auth.CopyToPango(ctx, &auth_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Auth.CopyToPango(ctx, append(ancestors, o), &auth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9341,8 +10206,8 @@ func (o *ExternalDynamicListResourceTypeUrlObject) CopyToPango(ctx context.Conte
 		} else {
 			recurring_entry = new(extdynlist.TypeUrlRecurring)
 		}
-
-		diags.Append(o.Recurring.CopyToPango(ctx, &recurring_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9361,10 +10226,21 @@ func (o *ExternalDynamicListResourceTypeUrlObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | type | url | auth | password"] = o.Password
-	password_value := o.Password.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var password_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	password_value = o.Password.ValueStringPointer()
 	username_value := o.Username.ValueStringPointer()
 
 	if (*obj) == nil {
@@ -9375,7 +10251,7 @@ func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *extdynlist.TypeUrlRecurringDaily
 	if o.Daily != nil {
@@ -9384,8 +10260,8 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyToPango(ctx cont
 		} else {
 			daily_entry = new(extdynlist.TypeUrlRecurringDaily)
 		}
-
-		diags.Append(o.Daily.CopyToPango(ctx, &daily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9397,8 +10273,8 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyToPango(ctx cont
 		} else {
 			fiveMinute_entry = new(extdynlist.TypeUrlRecurringFiveMinute)
 		}
-
-		diags.Append(o.FiveMinute.CopyToPango(ctx, &fiveMinute_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FiveMinute.CopyToPango(ctx, append(ancestors, o), &fiveMinute_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9410,8 +10286,8 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyToPango(ctx cont
 		} else {
 			hourly_entry = new(extdynlist.TypeUrlRecurringHourly)
 		}
-
-		diags.Append(o.Hourly.CopyToPango(ctx, &hourly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9423,8 +10299,8 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyToPango(ctx cont
 		} else {
 			monthly_entry = new(extdynlist.TypeUrlRecurringMonthly)
 		}
-
-		diags.Append(o.Monthly.CopyToPango(ctx, &monthly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monthly.CopyToPango(ctx, append(ancestors, o), &monthly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9436,8 +10312,8 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyToPango(ctx cont
 		} else {
 			weekly_entry = new(extdynlist.TypeUrlRecurringWeekly)
 		}
-
-		diags.Append(o.Weekly.CopyToPango(ctx, &weekly_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9454,7 +10330,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 
@@ -9465,7 +10341,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -9474,7 +10350,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) CopyToPang
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -9483,7 +10359,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) CopyToPango(ct
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfMonth_value := o.DayOfMonth.ValueInt64Pointer()
@@ -9496,7 +10372,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) CopyToPango(c
 
 	return diags
 }
-func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) CopyToPango(ctx context.Context, obj **extdynlist.TypeUrlRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **extdynlist.TypeUrlRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	at_value := o.At.ValueStringPointer()
 	dayOfWeek_value := o.DayOfWeek.ValueStringPointer()
@@ -9510,13 +10386,12 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) CopyToPango(ct
 	return diags
 }
 
-func (o *ExternalDynamicListResourceModel) CopyFromPango(ctx context.Context, obj *extdynlist.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_object *ExternalDynamicListResourceTypeObject
 	if obj.Type != nil {
 		type_object = new(ExternalDynamicListResourceTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, ancestors, obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9533,13 +10408,12 @@ func (o *ExternalDynamicListResourceModel) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Context, obj *extdynlist.Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var domain_object *ExternalDynamicListResourceTypeDomainObject
 	if obj.Domain != nil {
 		domain_object = new(ExternalDynamicListResourceTypeDomainObject)
-
-		diags.Append(domain_object.CopyFromPango(ctx, obj.Domain, encrypted)...)
+		diags.Append(domain_object.CopyFromPango(ctx, append(ancestors, o), obj.Domain, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9547,8 +10421,7 @@ func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Contex
 	var imei_object *ExternalDynamicListResourceTypeImeiObject
 	if obj.Imei != nil {
 		imei_object = new(ExternalDynamicListResourceTypeImeiObject)
-
-		diags.Append(imei_object.CopyFromPango(ctx, obj.Imei, encrypted)...)
+		diags.Append(imei_object.CopyFromPango(ctx, append(ancestors, o), obj.Imei, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9556,8 +10429,7 @@ func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Contex
 	var imsi_object *ExternalDynamicListResourceTypeImsiObject
 	if obj.Imsi != nil {
 		imsi_object = new(ExternalDynamicListResourceTypeImsiObject)
-
-		diags.Append(imsi_object.CopyFromPango(ctx, obj.Imsi, encrypted)...)
+		diags.Append(imsi_object.CopyFromPango(ctx, append(ancestors, o), obj.Imsi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9565,8 +10437,7 @@ func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Contex
 	var ip_object *ExternalDynamicListResourceTypeIpObject
 	if obj.Ip != nil {
 		ip_object = new(ExternalDynamicListResourceTypeIpObject)
-
-		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
+		diags.Append(ip_object.CopyFromPango(ctx, append(ancestors, o), obj.Ip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9574,8 +10445,7 @@ func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Contex
 	var predefinedIp_object *ExternalDynamicListResourceTypePredefinedIpObject
 	if obj.PredefinedIp != nil {
 		predefinedIp_object = new(ExternalDynamicListResourceTypePredefinedIpObject)
-
-		diags.Append(predefinedIp_object.CopyFromPango(ctx, obj.PredefinedIp, encrypted)...)
+		diags.Append(predefinedIp_object.CopyFromPango(ctx, append(ancestors, o), obj.PredefinedIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9583,8 +10453,7 @@ func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Contex
 	var predefinedUrl_object *ExternalDynamicListResourceTypePredefinedUrlObject
 	if obj.PredefinedUrl != nil {
 		predefinedUrl_object = new(ExternalDynamicListResourceTypePredefinedUrlObject)
-
-		diags.Append(predefinedUrl_object.CopyFromPango(ctx, obj.PredefinedUrl, encrypted)...)
+		diags.Append(predefinedUrl_object.CopyFromPango(ctx, append(ancestors, o), obj.PredefinedUrl, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9592,8 +10461,7 @@ func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Contex
 	var url_object *ExternalDynamicListResourceTypeUrlObject
 	if obj.Url != nil {
 		url_object = new(ExternalDynamicListResourceTypeUrlObject)
-
-		diags.Append(url_object.CopyFromPango(ctx, obj.Url, encrypted)...)
+		diags.Append(url_object.CopyFromPango(ctx, append(ancestors, o), obj.Url, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9610,19 +10478,21 @@ func (o *ExternalDynamicListResourceTypeObject) CopyFromPango(ctx context.Contex
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeDomainObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomain, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomain, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListResourceTypeDomainAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListResourceTypeDomainAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9630,8 +10500,7 @@ func (o *ExternalDynamicListResourceTypeDomainObject) CopyFromPango(ctx context.
 	var recurring_object *ExternalDynamicListResourceTypeDomainRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListResourceTypeDomainRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9664,14 +10533,32 @@ func (o *ExternalDynamicListResourceTypeDomainObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeDomainAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | domain | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | domain | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -9684,13 +10571,12 @@ func (o *ExternalDynamicListResourceTypeDomainAuthObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListResourceTypeDomainRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListResourceTypeDomainRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9698,8 +10584,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyFromPango(ctx
 	var fiveMinute_object *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9707,8 +10592,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyFromPango(ctx
 	var hourly_object *ExternalDynamicListResourceTypeDomainRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListResourceTypeDomainRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9716,8 +10600,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyFromPango(ctx
 	var monthly_object *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListResourceTypeDomainRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9725,8 +10608,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyFromPango(ctx
 	var weekly_object *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListResourceTypeDomainRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9741,7 +10623,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -9753,19 +10635,19 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) CopyFromPang
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -9782,7 +10664,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) CopyFromPa
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeDomainRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeDomainRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -9799,19 +10681,21 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) CopyFromPan
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImeiObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImei, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImei, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListResourceTypeImeiAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListResourceTypeImeiAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9819,8 +10703,7 @@ func (o *ExternalDynamicListResourceTypeImeiObject) CopyFromPango(ctx context.Co
 	var recurring_object *ExternalDynamicListResourceTypeImeiRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListResourceTypeImeiRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9848,14 +10731,32 @@ func (o *ExternalDynamicListResourceTypeImeiObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | imei | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | imei | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -9868,13 +10769,12 @@ func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListResourceTypeImeiRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListResourceTypeImeiRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9882,8 +10782,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyFromPango(ctx c
 	var fiveMinute_object *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9891,8 +10790,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyFromPango(ctx c
 	var hourly_object *ExternalDynamicListResourceTypeImeiRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListResourceTypeImeiRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9900,8 +10798,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyFromPango(ctx c
 	var monthly_object *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListResourceTypeImeiRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9909,8 +10806,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyFromPango(ctx c
 	var weekly_object *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListResourceTypeImeiRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9925,7 +10821,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -9937,19 +10833,19 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) CopyFromPango(
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -9966,7 +10862,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) CopyFromPang
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImeiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImeiRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -9983,19 +10879,21 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) CopyFromPango
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListResourceTypeImsiAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListResourceTypeImsiAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10003,8 +10901,7 @@ func (o *ExternalDynamicListResourceTypeImsiObject) CopyFromPango(ctx context.Co
 	var recurring_object *ExternalDynamicListResourceTypeImsiRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListResourceTypeImsiRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10032,14 +10929,32 @@ func (o *ExternalDynamicListResourceTypeImsiObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | imsi | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | imsi | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -10052,13 +10967,12 @@ func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListResourceTypeImsiRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListResourceTypeImsiRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10066,8 +10980,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyFromPango(ctx c
 	var fiveMinute_object *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10075,8 +10988,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyFromPango(ctx c
 	var hourly_object *ExternalDynamicListResourceTypeImsiRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListResourceTypeImsiRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10084,8 +10996,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyFromPango(ctx c
 	var monthly_object *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListResourceTypeImsiRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10093,8 +11004,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyFromPango(ctx c
 	var weekly_object *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListResourceTypeImsiRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10109,7 +11019,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -10121,19 +11031,19 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) CopyFromPango(
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -10150,7 +11060,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) CopyFromPang
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeImsiRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeImsiRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -10167,19 +11077,21 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) CopyFromPango
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeIpObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListResourceTypeIpAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListResourceTypeIpAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10187,8 +11099,7 @@ func (o *ExternalDynamicListResourceTypeIpObject) CopyFromPango(ctx context.Cont
 	var recurring_object *ExternalDynamicListResourceTypeIpRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListResourceTypeIpRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10216,14 +11127,32 @@ func (o *ExternalDynamicListResourceTypeIpObject) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | ip | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | ip | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -10236,13 +11165,12 @@ func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListResourceTypeIpRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListResourceTypeIpRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10250,8 +11178,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyFromPango(ctx con
 	var fiveMinute_object *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10259,8 +11186,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyFromPango(ctx con
 	var hourly_object *ExternalDynamicListResourceTypeIpRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListResourceTypeIpRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10268,8 +11194,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyFromPango(ctx con
 	var monthly_object *ExternalDynamicListResourceTypeIpRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListResourceTypeIpRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10277,8 +11202,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyFromPango(ctx con
 	var weekly_object *ExternalDynamicListResourceTypeIpRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListResourceTypeIpRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10293,7 +11217,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -10305,19 +11229,19 @@ func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -10334,7 +11258,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) CopyFromPango(
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeIpRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeIpRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -10351,13 +11275,16 @@ func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) CopyFromPango(c
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypePredefinedIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypePredefinedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var description_value types.String
@@ -10375,13 +11302,16 @@ func (o *ExternalDynamicListResourceTypePredefinedIpObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypePredefinedUrlObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypePredefinedUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypePredefinedUrlObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypePredefinedUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var description_value types.String
@@ -10399,19 +11329,21 @@ func (o *ExternalDynamicListResourceTypePredefinedUrlObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeUrlObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exceptionList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		exceptionList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExceptionList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var auth_object *ExternalDynamicListResourceTypeUrlAuthObject
 	if obj.Auth != nil {
 		auth_object = new(ExternalDynamicListResourceTypeUrlAuthObject)
-
-		diags.Append(auth_object.CopyFromPango(ctx, obj.Auth, encrypted)...)
+		diags.Append(auth_object.CopyFromPango(ctx, append(ancestors, o), obj.Auth, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10419,8 +11351,7 @@ func (o *ExternalDynamicListResourceTypeUrlObject) CopyFromPango(ctx context.Con
 	var recurring_object *ExternalDynamicListResourceTypeUrlRecurringObject
 	if obj.Recurring != nil {
 		recurring_object = new(ExternalDynamicListResourceTypeUrlRecurringObject)
-
-		diags.Append(recurring_object.CopyFromPango(ctx, obj.Recurring, encrypted)...)
+		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10448,14 +11379,32 @@ func (o *ExternalDynamicListResourceTypeUrlObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlAuth, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlAuth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var password_value types.String
 	if obj.Password != nil {
-		(*encrypted)["solo | encrypted | type | url | auth | password"] = types.StringValue(*obj.Password)
-		if value, ok := (*encrypted)["solo | plaintext | type | url | auth | password"]; ok {
-			password_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	var username_value types.String
@@ -10468,13 +11417,12 @@ func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurring, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_object *ExternalDynamicListResourceTypeUrlRecurringDailyObject
 	if obj.Daily != nil {
 		daily_object = new(ExternalDynamicListResourceTypeUrlRecurringDailyObject)
-
-		diags.Append(daily_object.CopyFromPango(ctx, obj.Daily, encrypted)...)
+		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10482,8 +11430,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyFromPango(ctx co
 	var fiveMinute_object *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject
 	if obj.FiveMinute != nil {
 		fiveMinute_object = new(ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject)
-
-		diags.Append(fiveMinute_object.CopyFromPango(ctx, obj.FiveMinute, encrypted)...)
+		diags.Append(fiveMinute_object.CopyFromPango(ctx, append(ancestors, o), obj.FiveMinute, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10491,8 +11438,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyFromPango(ctx co
 	var hourly_object *ExternalDynamicListResourceTypeUrlRecurringHourlyObject
 	if obj.Hourly != nil {
 		hourly_object = new(ExternalDynamicListResourceTypeUrlRecurringHourlyObject)
-
-		diags.Append(hourly_object.CopyFromPango(ctx, obj.Hourly, encrypted)...)
+		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10500,8 +11446,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyFromPango(ctx co
 	var monthly_object *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject
 	if obj.Monthly != nil {
 		monthly_object = new(ExternalDynamicListResourceTypeUrlRecurringMonthlyObject)
-
-		diags.Append(monthly_object.CopyFromPango(ctx, obj.Monthly, encrypted)...)
+		diags.Append(monthly_object.CopyFromPango(ctx, append(ancestors, o), obj.Monthly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10509,8 +11454,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyFromPango(ctx co
 	var weekly_object *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject
 	if obj.Weekly != nil {
 		weekly_object = new(ExternalDynamicListResourceTypeUrlRecurringWeeklyObject)
-
-		diags.Append(weekly_object.CopyFromPango(ctx, obj.Weekly, encrypted)...)
+		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10525,7 +11469,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringDaily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -10537,19 +11481,19 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) CopyFromPango(c
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringFiveMinute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringFiveMinute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringHourly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringMonthly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringMonthly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -10566,7 +11510,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) CopyFromPango
 	return diags
 }
 
-func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) CopyFromPango(ctx context.Context, obj *extdynlist.TypeUrlRecurringWeekly, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *extdynlist.TypeUrlRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var at_value types.String
@@ -10581,6 +11525,11 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) CopyFromPango(
 	o.DayOfWeek = dayOfWeek_value
 
 	return diags
+}
+
+func (o *ExternalDynamicListResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *ExternalDynamicListResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -10600,6 +11549,13 @@ func (r *ExternalDynamicListResource) Create(ctx context.Context, req resource.C
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -10623,6 +11579,17 @@ func (r *ExternalDynamicListResource) Create(ctx context.Context, req resource.C
 			}
 		}
 
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &extdynlist.VsysLocation{}
+			var innerLocation ExternalDynamicListVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
 		if !terraformLocation.DeviceGroup.IsNull() {
 			location.DeviceGroup = &extdynlist.DeviceGroupLocation{}
 			var innerLocation ExternalDynamicListDeviceGroupLocation
@@ -10642,9 +11609,7 @@ func (r *ExternalDynamicListResource) Create(ctx context.Context, req resource.C
 
 	// Load the desired config.
 	var obj *extdynlist.Entry
-
-	ev := make(map[string]types.String)
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, &ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -10656,23 +11621,29 @@ func (r *ExternalDynamicListResource) Create(ctx context.Context, req resource.C
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, &ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
-	state.EncryptedValues = ev_map
-	resp.Diagnostics.Append(ev_diags...)
-	if resp.Diagnostics.HasError() {
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -10682,6 +11653,17 @@ func (o *ExternalDynamicListResource) Read(ctx context.Context, req resource.Rea
 	var savestate, state ExternalDynamicListResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -10703,6 +11685,17 @@ func (o *ExternalDynamicListResource) Read(ctx context.Context, req resource.Rea
 			}
 		}
 
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &extdynlist.VsysLocation{}
+			var innerLocation ExternalDynamicListVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
 		if !terraformLocation.DeviceGroup.IsNull() {
 			location.DeviceGroup = &extdynlist.DeviceGroupLocation{}
 			var innerLocation ExternalDynamicListDeviceGroupLocation
@@ -10715,12 +11708,6 @@ func (o *ExternalDynamicListResource) Read(ctx context.Context, req resource.Rea
 		}
 	}
 
-	ev := make(map[string]types.String, len(state.EncryptedValues.Elements()))
-	resp.Diagnostics.Append(savestate.EncryptedValues.ElementsAs(ctx, &ev, false)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_external_dynamic_list_resource",
@@ -10728,8 +11715,12 @@ func (o *ExternalDynamicListResource) Read(ctx context.Context, req resource.Rea
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -10739,7 +11730,7 @@ func (o *ExternalDynamicListResource) Read(ctx context.Context, req resource.Rea
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, &ev)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -10749,9 +11740,13 @@ func (o *ExternalDynamicListResource) Read(ctx context.Context, req resource.Rea
 	*/
 
 	state.Location = savestate.Location
-	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
-	state.EncryptedValues = ev_map
-	resp.Diagnostics.Append(ev_diags...)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -10765,9 +11760,15 @@ func (r *ExternalDynamicListResource) Update(ctx context.Context, req resource.U
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	ev := make(map[string]types.String, len(state.EncryptedValues.Elements()))
-	resp.Diagnostics.Append(state.EncryptedValues.ElementsAs(ctx, &ev, false)...)
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -10787,6 +11788,17 @@ func (r *ExternalDynamicListResource) Update(ctx context.Context, req resource.U
 			if resp.Diagnostics.HasError() {
 				return
 			}
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &extdynlist.VsysLocation{}
+			var innerLocation ExternalDynamicListVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 
 		if !terraformLocation.DeviceGroup.IsNull() {
@@ -10812,19 +11824,31 @@ func (r *ExternalDynamicListResource) Update(ctx context.Context, req resource.U
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, &ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -10838,14 +11862,18 @@ func (r *ExternalDynamicListResource) Update(ctx context.Context, req resource.U
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, &ev)
-	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
-	state.EncryptedValues = ev_map
-	resp.Diagnostics.Append(ev_diags...)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -10890,6 +11918,17 @@ func (r *ExternalDynamicListResource) Delete(ctx context.Context, req resource.D
 			}
 		}
 
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &extdynlist.VsysLocation{}
+			var innerLocation ExternalDynamicListVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
+		}
+
 		if !terraformLocation.DeviceGroup.IsNull() {
 			location.DeviceGroup = &extdynlist.DeviceGroupLocation{}
 			var innerLocation ExternalDynamicListDeviceGroupLocation
@@ -10902,9 +11941,15 @@ func (r *ExternalDynamicListResource) Delete(ctx context.Context, req resource.D
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }
@@ -11027,12 +12072,17 @@ func (r *ExternalDynamicListResource) ImportState(ctx context.Context, req resou
 
 type ExternalDynamicListSharedLocation struct {
 }
+type ExternalDynamicListVsysLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
+}
 type ExternalDynamicListDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
 type ExternalDynamicListLocation struct {
 	Shared      types.Object `tfsdk:"shared"`
+	Vsys        types.Object `tfsdk:"vsys"`
 	DeviceGroup types.Object `tfsdk:"device_group"`
 }
 
@@ -11051,8 +12101,36 @@ func ExternalDynamicListLocationSchema() rsschema.Attribute {
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
+						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
 					}...),
+				},
+			},
+			"vsys": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Virtual System",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The Virtual System name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 			},
 			"device_group": rsschema.SingleNestedAttribute{
@@ -11106,6 +12184,35 @@ func (o *ExternalDynamicListSharedLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o ExternalDynamicListVsysLocation) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+		Name:       o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *ExternalDynamicListVsysLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
 func (o ExternalDynamicListDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
@@ -11138,6 +12245,7 @@ func (o *ExternalDynamicListDeviceGroupLocation) UnmarshalJSON(data []byte) erro
 func (o ExternalDynamicListLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		Shared      *ExternalDynamicListSharedLocation      `json:"shared,omitempty"`
+		Vsys        *ExternalDynamicListVsysLocation        `json:"vsys,omitempty"`
 		DeviceGroup *ExternalDynamicListDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 	var shared_object *ExternalDynamicListSharedLocation
@@ -11145,6 +12253,13 @@ func (o ExternalDynamicListLocation) MarshalJSON() ([]byte, error) {
 		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
 			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
+		}
+	}
+	var vsys_object *ExternalDynamicListVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
 		}
 	}
 	var deviceGroup_object *ExternalDynamicListDeviceGroupLocation
@@ -11157,6 +12272,7 @@ func (o ExternalDynamicListLocation) MarshalJSON() ([]byte, error) {
 
 	obj := shadow{
 		Shared:      shared_object,
+		Vsys:        vsys_object,
 		DeviceGroup: deviceGroup_object,
 	}
 
@@ -11166,6 +12282,7 @@ func (o ExternalDynamicListLocation) MarshalJSON() ([]byte, error) {
 func (o *ExternalDynamicListLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 		Shared      *ExternalDynamicListSharedLocation      `json:"shared,omitempty"`
+		Vsys        *ExternalDynamicListVsysLocation        `json:"vsys,omitempty"`
 		DeviceGroup *ExternalDynamicListDeviceGroupLocation `json:"device_group,omitempty"`
 	}
 
@@ -11181,6 +12298,14 @@ func (o *ExternalDynamicListLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
 		}
 	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
 	var deviceGroup_object types.Object
 	{
 		var diags_tmp diag.Diagnostics
@@ -11190,6 +12315,7 @@ func (o *ExternalDynamicListLocation) UnmarshalJSON(data []byte) error {
 		}
 	}
 	o.Shared = shared_object
+	o.Vsys = vsys_object
 	o.DeviceGroup = deviceGroup_object
 
 	return nil
@@ -11197,6 +12323,12 @@ func (o *ExternalDynamicListLocation) UnmarshalJSON(data []byte) error {
 
 func (o *ExternalDynamicListSharedLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+func (o *ExternalDynamicListVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
 }
 func (o *ExternalDynamicListDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
@@ -11206,10 +12338,14 @@ func (o *ExternalDynamicListDeviceGroupLocation) AttributeTypes() map[string]att
 }
 func (o *ExternalDynamicListLocation) AttributeTypes() map[string]attr.Type {
 	var sharedObj ExternalDynamicListSharedLocation
+	var vsysObj ExternalDynamicListVsysLocation
 	var deviceGroupObj ExternalDynamicListDeviceGroupLocation
 	return map[string]attr.Type{
 		"shared": types.ObjectType{
 			AttrTypes: sharedObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
 		},
 		"device_group": types.ObjectType{
 			AttrTypes: deviceGroupObj.AttributeTypes(),

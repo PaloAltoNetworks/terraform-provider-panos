@@ -67,10 +67,6 @@ resource "panos_ldap_profile" "example" {
 - `timelimit` (Number) number of seconds to wait for performing searches
 - `verify_server_certificate` (Boolean) Verify server certificate for SSL sessions
 
-### Read-Only
-
-- `encrypted_values` (Map of String, Sensitive)
-
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 

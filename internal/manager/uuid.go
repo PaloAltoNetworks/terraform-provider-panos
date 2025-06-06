@@ -30,7 +30,7 @@ type UuidObject interface {
 }
 
 type UuidLocation interface {
-	XpathWithEntryName(version.Number, string) ([]string, error)
+	XpathWithComponents(version.Number, ...string) ([]string, error)
 }
 
 type SDKUuidService[E UuidObject, L UuidLocation] interface {
@@ -219,7 +219,7 @@ func (o *UuidObjectManager[E, L, S]) moveNonExhaustive(ctx context.Context, loca
 	return nil
 }
 
-func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L, planEntries []E, exhaustive ExhaustiveType, sdkPosition movement.Position) ([]E, error) {
+func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L, parentComponents []string, planEntries []E, exhaustive ExhaustiveType, sdkPosition movement.Position) ([]E, error) {
 	var diags diag.Diagnostics
 
 	planEntriesByName := o.entriesByName(planEntries, entryUnknown)
@@ -237,9 +237,10 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	switch exhaustive {
 	case Exhaustive:
 		for _, elt := range existing {
-			path, err := location.XpathWithEntryName(o.client.Versioning(), elt.EntryName())
+			components := append(parentComponents, util.AsEntryXpath(elt.EntryName()))
+			path, err := location.XpathWithComponents(o.client.Versioning(), components...)
 			if err != nil {
-				return nil, ErrMarshaling
+				return nil, err
 			}
 
 			updates.Add(&xmlapi.Config{
@@ -257,9 +258,9 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	}
 
 	for _, elt := range planEntries {
-		path, err := location.XpathWithEntryName(o.client.Versioning(), elt.EntryName())
+		path, err := location.XpathWithComponents(o.client.Versioning(), util.AsEntryXpath(elt.EntryName()))
 		if err != nil {
-			return nil, ErrMarshaling
+			return nil, err
 		}
 
 		xmlEntry, err := o.specifier(elt)
@@ -279,7 +280,7 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	if len(updates.Operations) > 0 {
 		_, err := o.client.ChunkedMultiConfig(ctx, updates, false, nil)
 		if err != nil {
-			cleanupErr := o.cleanUpIncompleteUpdate(ctx, location, planEntriesByName, exhaustive)
+			cleanupErr := o.cleanUpIncompleteUpdate(ctx, location, parentComponents, planEntriesByName, exhaustive)
 			return nil, errors.Join(fmt.Errorf("failed to create entries on the server: %w", err), cleanupErr)
 		}
 	}
@@ -312,7 +313,7 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	return entries, nil
 }
 
-func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L, stateEntries []E, planEntries []E, exhaustive ExhaustiveType, position movement.Position) ([]E, error) {
+func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L, parentComponents []string, stateEntries []E, planEntries []E, exhaustive ExhaustiveType, position movement.Position) ([]E, error) {
 	stateEntriesByName := o.entriesByName(stateEntries, entryUnknown)
 	planEntriesByName := o.entriesByName(planEntries, entryUnknown)
 	if len(planEntriesByName) != len(planEntries) {
@@ -414,7 +415,7 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 	// state to find any required updates.
 	for _, existingEntry := range existing {
 		existingEntryName := existingEntry.EntryName()
-		path, err := location.XpathWithEntryName(o.client.Versioning(), existingEntryName)
+		path, err := location.XpathWithComponents(o.client.Versioning(), util.AsEntryXpath(existingEntryName))
 		if err != nil {
 			return nil, &Error{err: err, message: "failed to create xpath for an existing entry"}
 		}
@@ -486,7 +487,8 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 	createOps := make([]*xmlapi.Config, len(planEntries))
 
 	for _, elt := range processedStateEntries {
-		path, err := location.XpathWithEntryName(o.client.Versioning(), elt.Entry.EntryName())
+		components := append(parentComponents, util.AsEntryXpath(elt.Entry.EntryName()))
+		path, err := location.XpathWithComponents(o.client.Versioning(), components...)
 		if err != nil {
 			return nil, &Error{err: err, message: "failed to create xpath for an existing entry"}
 		}
@@ -547,7 +549,7 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 
 	if len(updates.Operations) > 0 {
 		if _, err := o.client.ChunkedMultiConfig(ctx, updates, false, nil); err != nil {
-			cleanupErr := o.cleanUpIncompleteUpdate(ctx, location, processedStateEntries, exhaustive)
+			cleanupErr := o.cleanUpIncompleteUpdate(ctx, location, parentComponents, processedStateEntries, exhaustive)
 			return nil, errors.Join(&Error{err: err, message: "failed to execute MultiConfig command"}, cleanupErr)
 		}
 	}
@@ -639,29 +641,32 @@ func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, s
 	return common, false, nil
 }
 
-func (o *UuidObjectManager[E, L, S]) Delete(ctx context.Context, location L, entryNames []string, exhaustive ExhaustiveType) error {
+func (o *UuidObjectManager[E, L, S]) Delete(ctx context.Context, location L, parentComponents []string, names []string, exhaustive ExhaustiveType) error {
+	deletes := xmlapi.NewChunkedMultiConfig(o.batchSize, len(names))
 
-	var batches [][]string
-	for i := 0; i < len(entryNames); i += o.batchSize {
-		end := i + o.batchSize
-		if end > len(entryNames) {
-			end = len(entryNames)
+	for _, elt := range names {
+		components := append(parentComponents, util.AsEntryXpath(elt))
+		xpath, err := location.XpathWithComponents(o.client.Versioning(), components...)
+		if err != nil {
+			return err
 		}
 
-		batches = append(batches, entryNames[i:end])
+		deletes.Add(&xmlapi.Config{
+			Action: "delete",
+			Xpath:  util.AsXpath(xpath),
+			Target: o.client.GetTarget(),
+		})
 	}
 
-	for _, elt := range batches {
-		err := o.service.Delete(ctx, location, elt...)
-		if err != nil {
-			return &Error{err: err, message: "sdk error while deleting"}
-		}
+	_, _, _, err := o.client.MultiConfig(ctx, deletes, false, nil)
+	if err != nil {
+		return &Error{err: err, message: "sdk error while deleting"}
 	}
 
 	return nil
 }
 
-func (o *UuidObjectManager[E, L, S]) cleanUpIncompleteUpdate(ctx context.Context, location L, entries map[string]uuidObjectWithState[E], exhaustive ExhaustiveType) error {
+func (o *UuidObjectManager[E, L, S]) cleanUpIncompleteUpdate(ctx context.Context, location L, parentComponents []string, entries map[string]uuidObjectWithState[E], exhaustive ExhaustiveType) error {
 	var names []string
 	for _, elt := range entries {
 		if elt.State == entryMissing {
@@ -669,5 +674,5 @@ func (o *UuidObjectManager[E, L, S]) cleanUpIncompleteUpdate(ctx context.Context
 		}
 	}
 
-	return o.Delete(ctx, location, names, exhaustive)
+	return o.Delete(ctx, location, parentComponents, names, exhaustive)
 }

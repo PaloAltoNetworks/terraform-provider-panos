@@ -197,6 +197,14 @@ func (o *IkeGatewayDataSourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o IkeGatewayDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o IkeGatewayDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourceAuthenticationObject) AttributeTypes() map[string]attr.Type {
 
 	var certificateObj *IkeGatewayDataSourceAuthenticationCertificateObject
@@ -210,6 +218,14 @@ func (o *IkeGatewayDataSourceAuthenticationObject) AttributeTypes() map[string]a
 			AttrTypes: preSharedKeyObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o IkeGatewayDataSourceAuthenticationObject) AncestorName() string {
+	return "authentication"
+}
+
+func (o IkeGatewayDataSourceAuthenticationObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayDataSourceAuthenticationCertificateObject) AttributeTypes() map[string]attr.Type {
 
@@ -225,6 +241,14 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateObject) AttributeTypes() m
 		"use_management_as_source":     types.BoolType,
 	}
 }
+
+func (o IkeGatewayDataSourceAuthenticationCertificateObject) AncestorName() string {
+	return "certificate"
+}
+
+func (o IkeGatewayDataSourceAuthenticationCertificateObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) AttributeTypes() map[string]attr.Type {
 
 	var hashAndUrlObj *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject
@@ -236,6 +260,14 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) At
 		"name": types.StringType,
 	}
 }
+
+func (o IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) AncestorName() string {
+	return "local-certificate"
+}
+
+func (o IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -243,11 +275,27 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrl
 		"enable":   types.BoolType,
 	}
 }
+
+func (o IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject) AncestorName() string {
+	return "hash-and-url"
+}
+
+func (o IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IkeGatewayDataSourceAuthenticationPreSharedKeyObject) AncestorName() string {
+	return "pre-shared-key"
+}
+
+func (o IkeGatewayDataSourceAuthenticationPreSharedKeyObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayDataSourceLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -257,12 +305,28 @@ func (o *IkeGatewayDataSourceLocalAddressObject) AttributeTypes() map[string]att
 		"ip":          types.StringType,
 	}
 }
+
+func (o IkeGatewayDataSourceLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o IkeGatewayDataSourceLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourceLocalIdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"id":   types.StringType,
 		"type": types.StringType,
 	}
+}
+
+func (o IkeGatewayDataSourceLocalIdObject) AncestorName() string {
+	return "local-id"
+}
+
+func (o IkeGatewayDataSourceLocalIdObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayDataSourcePeerAddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -276,8 +340,24 @@ func (o *IkeGatewayDataSourcePeerAddressObject) AttributeTypes() map[string]attr
 		"ip":   types.StringType,
 	}
 }
+
+func (o IkeGatewayDataSourcePeerAddressObject) AncestorName() string {
+	return "peer-address"
+}
+
+func (o IkeGatewayDataSourcePeerAddressObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourcePeerAddressDynamicObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o IkeGatewayDataSourcePeerAddressDynamicObject) AncestorName() string {
+	return "dynamic"
+}
+
+func (o IkeGatewayDataSourcePeerAddressDynamicObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayDataSourcePeerIdObject) AttributeTypes() map[string]attr.Type {
 
@@ -286,6 +366,14 @@ func (o *IkeGatewayDataSourcePeerIdObject) AttributeTypes() map[string]attr.Type
 		"matching": types.StringType,
 		"type":     types.StringType,
 	}
+}
+
+func (o IkeGatewayDataSourcePeerIdObject) AncestorName() string {
+	return "peer-id"
+}
+
+func (o IkeGatewayDataSourcePeerIdObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayDataSourceProtocolObject) AttributeTypes() map[string]attr.Type {
 
@@ -303,6 +391,14 @@ func (o *IkeGatewayDataSourceProtocolObject) AttributeTypes() map[string]attr.Ty
 		"version": types.StringType,
 	}
 }
+
+func (o IkeGatewayDataSourceProtocolObject) AncestorName() string {
+	return "protocol"
+}
+
+func (o IkeGatewayDataSourceProtocolObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourceProtocolIkev1Object) AttributeTypes() map[string]attr.Type {
 
 	var dpdObj *IkeGatewayDataSourceProtocolIkev1DpdObject
@@ -315,6 +411,14 @@ func (o *IkeGatewayDataSourceProtocolIkev1Object) AttributeTypes() map[string]at
 		"ike_crypto_profile": types.StringType,
 	}
 }
+
+func (o IkeGatewayDataSourceProtocolIkev1Object) AncestorName() string {
+	return "ikev1"
+}
+
+func (o IkeGatewayDataSourceProtocolIkev1Object) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -322,6 +426,14 @@ func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) AttributeTypes() map[string
 		"interval": types.Int64Type,
 		"retry":    types.Int64Type,
 	}
+}
+
+func (o IkeGatewayDataSourceProtocolIkev1DpdObject) AncestorName() string {
+	return "dpd"
+}
+
+func (o IkeGatewayDataSourceProtocolIkev1DpdObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayDataSourceProtocolIkev2Object) AttributeTypes() map[string]attr.Type {
 
@@ -335,12 +447,28 @@ func (o *IkeGatewayDataSourceProtocolIkev2Object) AttributeTypes() map[string]at
 		"require_cookie":     types.BoolType,
 	}
 }
+
+func (o IkeGatewayDataSourceProtocolIkev2Object) AncestorName() string {
+	return "ikev2"
+}
+
+func (o IkeGatewayDataSourceProtocolIkev2Object) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enable":   types.BoolType,
 		"interval": types.Int64Type,
 	}
+}
+
+func (o IkeGatewayDataSourceProtocolIkev2DpdObject) AncestorName() string {
+	return "dpd"
+}
+
+func (o IkeGatewayDataSourceProtocolIkev2DpdObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayDataSourceProtocolCommonObject) AttributeTypes() map[string]attr.Type {
 
@@ -358,11 +486,27 @@ func (o *IkeGatewayDataSourceProtocolCommonObject) AttributeTypes() map[string]a
 		"passive_mode": types.BoolType,
 	}
 }
+
+func (o IkeGatewayDataSourceProtocolCommonObject) AncestorName() string {
+	return "protocol-common"
+}
+
+func (o IkeGatewayDataSourceProtocolCommonObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enable": types.BoolType,
 	}
+}
+
+func (o IkeGatewayDataSourceProtocolCommonFragmentationObject) AncestorName() string {
+	return "fragmentation"
+}
+
+func (o IkeGatewayDataSourceProtocolCommonFragmentationObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) AttributeTypes() map[string]attr.Type {
 
@@ -373,7 +517,15 @@ func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) AttributeTypes() 
 	}
 }
 
-func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o IkeGatewayDataSourceProtocolCommonNatTraversalObject) AncestorName() string {
+	return "nat-traversal"
+}
+
+func (o IkeGatewayDataSourceProtocolCommonNatTraversalObject) EntryName() *string {
+	return nil
+}
+
+func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_entry *gateway.Authentication
 	if o.Authentication != nil {
@@ -382,8 +534,8 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 		} else {
 			authentication_entry = new(gateway.Authentication)
 		}
-
-		diags.Append(o.Authentication.CopyToPango(ctx, &authentication_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Authentication.CopyToPango(ctx, ancestors, &authentication_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -398,8 +550,8 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 		} else {
 			localAddress_entry = new(gateway.LocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.LocalAddress.CopyToPango(ctx, ancestors, &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -411,8 +563,8 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 		} else {
 			localId_entry = new(gateway.LocalId)
 		}
-
-		diags.Append(o.LocalId.CopyToPango(ctx, &localId_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.LocalId.CopyToPango(ctx, ancestors, &localId_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -424,8 +576,8 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 		} else {
 			peerAddress_entry = new(gateway.PeerAddress)
 		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.PeerAddress.CopyToPango(ctx, ancestors, &peerAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -437,8 +589,8 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 		} else {
 			peerId_entry = new(gateway.PeerId)
 		}
-
-		diags.Append(o.PeerId.CopyToPango(ctx, &peerId_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.PeerId.CopyToPango(ctx, ancestors, &peerId_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -450,8 +602,8 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 		} else {
 			protocol_entry = new(gateway.Protocol)
 		}
-
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Protocol.CopyToPango(ctx, ancestors, &protocol_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -463,8 +615,8 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 		} else {
 			protocolCommon_entry = new(gateway.ProtocolCommon)
 		}
-
-		diags.Append(o.ProtocolCommon.CopyToPango(ctx, &protocolCommon_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.ProtocolCommon.CopyToPango(ctx, ancestors, &protocolCommon_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -487,7 +639,7 @@ func (o *IkeGatewayDataSourceModel) CopyToPango(ctx context.Context, obj **gatew
 
 	return diags
 }
-func (o *IkeGatewayDataSourceAuthenticationObject) CopyToPango(ctx context.Context, obj **gateway.Authentication, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.Authentication, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificate_entry *gateway.AuthenticationCertificate
 	if o.Certificate != nil {
@@ -496,8 +648,8 @@ func (o *IkeGatewayDataSourceAuthenticationObject) CopyToPango(ctx context.Conte
 		} else {
 			certificate_entry = new(gateway.AuthenticationCertificate)
 		}
-
-		diags.Append(o.Certificate.CopyToPango(ctx, &certificate_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Certificate.CopyToPango(ctx, append(ancestors, o), &certificate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -509,8 +661,8 @@ func (o *IkeGatewayDataSourceAuthenticationObject) CopyToPango(ctx context.Conte
 		} else {
 			preSharedKey_entry = new(gateway.AuthenticationPreSharedKey)
 		}
-
-		diags.Append(o.PreSharedKey.CopyToPango(ctx, &preSharedKey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PreSharedKey.CopyToPango(ctx, append(ancestors, o), &preSharedKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -524,7 +676,7 @@ func (o *IkeGatewayDataSourceAuthenticationObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.AuthenticationCertificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	allowIdPayloadMismatch_value := o.AllowIdPayloadMismatch.ValueBoolPointer()
 	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
@@ -535,8 +687,8 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyToPango(ctx co
 		} else {
 			localCertificate_entry = new(gateway.AuthenticationCertificateLocalCertificate)
 		}
-
-		diags.Append(o.LocalCertificate.CopyToPango(ctx, &localCertificate_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalCertificate.CopyToPango(ctx, append(ancestors, o), &localCertificate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -555,7 +707,7 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationCertificateLocalCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.AuthenticationCertificateLocalCertificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var hashAndUrl_entry *gateway.AuthenticationCertificateLocalCertificateHashAndUrl
 	if o.HashAndUrl != nil {
@@ -564,8 +716,8 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) Co
 		} else {
 			hashAndUrl_entry = new(gateway.AuthenticationCertificateLocalCertificateHashAndUrl)
 		}
-
-		diags.Append(o.HashAndUrl.CopyToPango(ctx, &hashAndUrl_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HashAndUrl.CopyToPango(ctx, append(ancestors, o), &hashAndUrl_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -580,7 +732,7 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) Co
 
 	return diags
 }
-func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationCertificateLocalCertificateHashAndUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.AuthenticationCertificateLocalCertificateHashAndUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	baseUrl_value := o.BaseUrl.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
@@ -593,7 +745,7 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrl
 
 	return diags
 }
-func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationPreSharedKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.AuthenticationPreSharedKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -604,7 +756,7 @@ func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *IkeGatewayDataSourceLocalAddressObject) CopyToPango(ctx context.Context, obj **gateway.LocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.LocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	floatingIp_value := o.FloatingIp.ValueStringPointer()
@@ -619,7 +771,7 @@ func (o *IkeGatewayDataSourceLocalAddressObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *IkeGatewayDataSourceLocalIdObject) CopyToPango(ctx context.Context, obj **gateway.LocalId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceLocalIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.LocalId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	id_value := o.Id.ValueStringPointer()
 	type_value := o.Type.ValueStringPointer()
@@ -632,7 +784,7 @@ func (o *IkeGatewayDataSourceLocalIdObject) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *IkeGatewayDataSourcePeerAddressObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourcePeerAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.PeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamic_entry *gateway.PeerAddressDynamic
 	if o.Dynamic != nil {
@@ -641,8 +793,8 @@ func (o *IkeGatewayDataSourcePeerAddressObject) CopyToPango(ctx context.Context,
 		} else {
 			dynamic_entry = new(gateway.PeerAddressDynamic)
 		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Dynamic.CopyToPango(ctx, append(ancestors, o), &dynamic_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -659,7 +811,7 @@ func (o *IkeGatewayDataSourcePeerAddressObject) CopyToPango(ctx context.Context,
 
 	return diags
 }
-func (o *IkeGatewayDataSourcePeerAddressDynamicObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddressDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourcePeerAddressDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.PeerAddressDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -668,7 +820,7 @@ func (o *IkeGatewayDataSourcePeerAddressDynamicObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *IkeGatewayDataSourcePeerIdObject) CopyToPango(ctx context.Context, obj **gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourcePeerIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.PeerId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	id_value := o.Id.ValueStringPointer()
 	matching_value := o.Matching.ValueStringPointer()
@@ -683,7 +835,7 @@ func (o *IkeGatewayDataSourcePeerIdObject) CopyToPango(ctx context.Context, obj 
 
 	return diags
 }
-func (o *IkeGatewayDataSourceProtocolObject) CopyToPango(ctx context.Context, obj **gateway.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ikev1_entry *gateway.ProtocolIkev1
 	if o.Ikev1 != nil {
@@ -692,8 +844,8 @@ func (o *IkeGatewayDataSourceProtocolObject) CopyToPango(ctx context.Context, ob
 		} else {
 			ikev1_entry = new(gateway.ProtocolIkev1)
 		}
-
-		diags.Append(o.Ikev1.CopyToPango(ctx, &ikev1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ikev1.CopyToPango(ctx, append(ancestors, o), &ikev1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -705,8 +857,8 @@ func (o *IkeGatewayDataSourceProtocolObject) CopyToPango(ctx context.Context, ob
 		} else {
 			ikev2_entry = new(gateway.ProtocolIkev2)
 		}
-
-		diags.Append(o.Ikev2.CopyToPango(ctx, &ikev2_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ikev2.CopyToPango(ctx, append(ancestors, o), &ikev2_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -722,7 +874,7 @@ func (o *IkeGatewayDataSourceProtocolObject) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *IkeGatewayDataSourceProtocolIkev1Object) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolIkev1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolIkev1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dpd_entry *gateway.ProtocolIkev1Dpd
 	if o.Dpd != nil {
@@ -731,8 +883,8 @@ func (o *IkeGatewayDataSourceProtocolIkev1Object) CopyToPango(ctx context.Contex
 		} else {
 			dpd_entry = new(gateway.ProtocolIkev1Dpd)
 		}
-
-		diags.Append(o.Dpd.CopyToPango(ctx, &dpd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Dpd.CopyToPango(ctx, append(ancestors, o), &dpd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -749,7 +901,7 @@ func (o *IkeGatewayDataSourceProtocolIkev1Object) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev1Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolIkev1Dpd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	interval_value := o.Interval.ValueInt64Pointer()
@@ -764,7 +916,7 @@ func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev2, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolIkev2, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dpd_entry *gateway.ProtocolIkev2Dpd
 	if o.Dpd != nil {
@@ -773,8 +925,8 @@ func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyToPango(ctx context.Contex
 		} else {
 			dpd_entry = new(gateway.ProtocolIkev2Dpd)
 		}
-
-		diags.Append(o.Dpd.CopyToPango(ctx, &dpd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Dpd.CopyToPango(ctx, append(ancestors, o), &dpd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -791,7 +943,7 @@ func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev2Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolIkev2Dpd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	interval_value := o.Interval.ValueInt64Pointer()
@@ -804,7 +956,7 @@ func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IkeGatewayDataSourceProtocolCommonObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolCommonObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolCommon, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var fragmentation_entry *gateway.ProtocolCommonFragmentation
 	if o.Fragmentation != nil {
@@ -813,8 +965,8 @@ func (o *IkeGatewayDataSourceProtocolCommonObject) CopyToPango(ctx context.Conte
 		} else {
 			fragmentation_entry = new(gateway.ProtocolCommonFragmentation)
 		}
-
-		diags.Append(o.Fragmentation.CopyToPango(ctx, &fragmentation_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Fragmentation.CopyToPango(ctx, append(ancestors, o), &fragmentation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -826,8 +978,8 @@ func (o *IkeGatewayDataSourceProtocolCommonObject) CopyToPango(ctx context.Conte
 		} else {
 			natTraversal_entry = new(gateway.ProtocolCommonNatTraversal)
 		}
-
-		diags.Append(o.NatTraversal.CopyToPango(ctx, &natTraversal_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.NatTraversal.CopyToPango(ctx, append(ancestors, o), &natTraversal_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -843,7 +995,7 @@ func (o *IkeGatewayDataSourceProtocolCommonObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolCommonFragmentation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 
@@ -854,7 +1006,7 @@ func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolCommonNatTraversal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	keepAliveInterval_value := o.KeepAliveInterval.ValueInt64Pointer()
@@ -870,13 +1022,12 @@ func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyToPango(ctx c
 	return diags
 }
 
-func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_object *IkeGatewayDataSourceAuthenticationObject
 	if obj.Authentication != nil {
 		authentication_object = new(IkeGatewayDataSourceAuthenticationObject)
-
-		diags.Append(authentication_object.CopyFromPango(ctx, obj.Authentication, encrypted)...)
+		diags.Append(authentication_object.CopyFromPango(ctx, ancestors, obj.Authentication, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -884,8 +1035,7 @@ func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gate
 	var localAddress_object *IkeGatewayDataSourceLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(IkeGatewayDataSourceLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, ancestors, obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -893,8 +1043,7 @@ func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gate
 	var localId_object *IkeGatewayDataSourceLocalIdObject
 	if obj.LocalId != nil {
 		localId_object = new(IkeGatewayDataSourceLocalIdObject)
-
-		diags.Append(localId_object.CopyFromPango(ctx, obj.LocalId, encrypted)...)
+		diags.Append(localId_object.CopyFromPango(ctx, ancestors, obj.LocalId, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -902,8 +1051,7 @@ func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gate
 	var peerAddress_object *IkeGatewayDataSourcePeerAddressObject
 	if obj.PeerAddress != nil {
 		peerAddress_object = new(IkeGatewayDataSourcePeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		diags.Append(peerAddress_object.CopyFromPango(ctx, ancestors, obj.PeerAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -911,8 +1059,7 @@ func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gate
 	var peerId_object *IkeGatewayDataSourcePeerIdObject
 	if obj.PeerId != nil {
 		peerId_object = new(IkeGatewayDataSourcePeerIdObject)
-
-		diags.Append(peerId_object.CopyFromPango(ctx, obj.PeerId, encrypted)...)
+		diags.Append(peerId_object.CopyFromPango(ctx, ancestors, obj.PeerId, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -920,8 +1067,7 @@ func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gate
 	var protocol_object *IkeGatewayDataSourceProtocolObject
 	if obj.Protocol != nil {
 		protocol_object = new(IkeGatewayDataSourceProtocolObject)
-
-		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
+		diags.Append(protocol_object.CopyFromPango(ctx, ancestors, obj.Protocol, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -929,8 +1075,7 @@ func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gate
 	var protocolCommon_object *IkeGatewayDataSourceProtocolCommonObject
 	if obj.ProtocolCommon != nil {
 		protocolCommon_object = new(IkeGatewayDataSourceProtocolCommonObject)
-
-		diags.Append(protocolCommon_object.CopyFromPango(ctx, obj.ProtocolCommon, encrypted)...)
+		diags.Append(protocolCommon_object.CopyFromPango(ctx, ancestors, obj.ProtocolCommon, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -963,13 +1108,12 @@ func (o *IkeGatewayDataSourceModel) CopyFromPango(ctx context.Context, obj *gate
 	return diags
 }
 
-func (o *IkeGatewayDataSourceAuthenticationObject) CopyFromPango(ctx context.Context, obj *gateway.Authentication, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.Authentication, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificate_object *IkeGatewayDataSourceAuthenticationCertificateObject
 	if obj.Certificate != nil {
 		certificate_object = new(IkeGatewayDataSourceAuthenticationCertificateObject)
-
-		diags.Append(certificate_object.CopyFromPango(ctx, obj.Certificate, encrypted)...)
+		diags.Append(certificate_object.CopyFromPango(ctx, append(ancestors, o), obj.Certificate, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -977,8 +1121,7 @@ func (o *IkeGatewayDataSourceAuthenticationObject) CopyFromPango(ctx context.Con
 	var preSharedKey_object *IkeGatewayDataSourceAuthenticationPreSharedKeyObject
 	if obj.PreSharedKey != nil {
 		preSharedKey_object = new(IkeGatewayDataSourceAuthenticationPreSharedKeyObject)
-
-		diags.Append(preSharedKey_object.CopyFromPango(ctx, obj.PreSharedKey, encrypted)...)
+		diags.Append(preSharedKey_object.CopyFromPango(ctx, append(ancestors, o), obj.PreSharedKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -990,13 +1133,12 @@ func (o *IkeGatewayDataSourceAuthenticationObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.AuthenticationCertificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localCertificate_object *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject
 	if obj.LocalCertificate != nil {
 		localCertificate_object = new(IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject)
-
-		diags.Append(localCertificate_object.CopyFromPango(ctx, obj.LocalCertificate, encrypted)...)
+		diags.Append(localCertificate_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalCertificate, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1027,13 +1169,12 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificateLocalCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.AuthenticationCertificateLocalCertificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var hashAndUrl_object *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject
 	if obj.HashAndUrl != nil {
 		hashAndUrl_object = new(IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject)
-
-		diags.Append(hashAndUrl_object.CopyFromPango(ctx, obj.HashAndUrl, encrypted)...)
+		diags.Append(hashAndUrl_object.CopyFromPango(ctx, append(ancestors, o), obj.HashAndUrl, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1049,7 +1190,7 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) Co
 	return diags
 }
 
-func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificateLocalCertificateHashAndUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.AuthenticationCertificateLocalCertificateHashAndUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var baseUrl_value types.String
@@ -1066,7 +1207,7 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrl
 	return diags
 }
 
-func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationPreSharedKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.AuthenticationPreSharedKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -1078,7 +1219,7 @@ func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *IkeGatewayDataSourceLocalAddressObject) CopyFromPango(ctx context.Context, obj *gateway.LocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.LocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -1100,7 +1241,7 @@ func (o *IkeGatewayDataSourceLocalAddressObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *IkeGatewayDataSourceLocalIdObject) CopyFromPango(ctx context.Context, obj *gateway.LocalId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceLocalIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.LocalId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var id_value types.String
@@ -1117,13 +1258,12 @@ func (o *IkeGatewayDataSourceLocalIdObject) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *IkeGatewayDataSourcePeerAddressObject) CopyFromPango(ctx context.Context, obj *gateway.PeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourcePeerAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.PeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamic_object *IkeGatewayDataSourcePeerAddressDynamicObject
 	if obj.Dynamic != nil {
 		dynamic_object = new(IkeGatewayDataSourcePeerAddressDynamicObject)
-
-		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
+		diags.Append(dynamic_object.CopyFromPango(ctx, append(ancestors, o), obj.Dynamic, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1144,13 +1284,13 @@ func (o *IkeGatewayDataSourcePeerAddressObject) CopyFromPango(ctx context.Contex
 	return diags
 }
 
-func (o *IkeGatewayDataSourcePeerAddressDynamicObject) CopyFromPango(ctx context.Context, obj *gateway.PeerAddressDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourcePeerAddressDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.PeerAddressDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *IkeGatewayDataSourcePeerIdObject) CopyFromPango(ctx context.Context, obj *gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourcePeerIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.PeerId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var id_value types.String
@@ -1172,13 +1312,12 @@ func (o *IkeGatewayDataSourcePeerIdObject) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *IkeGatewayDataSourceProtocolObject) CopyFromPango(ctx context.Context, obj *gateway.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ikev1_object *IkeGatewayDataSourceProtocolIkev1Object
 	if obj.Ikev1 != nil {
 		ikev1_object = new(IkeGatewayDataSourceProtocolIkev1Object)
-
-		diags.Append(ikev1_object.CopyFromPango(ctx, obj.Ikev1, encrypted)...)
+		diags.Append(ikev1_object.CopyFromPango(ctx, append(ancestors, o), obj.Ikev1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1186,8 +1325,7 @@ func (o *IkeGatewayDataSourceProtocolObject) CopyFromPango(ctx context.Context, 
 	var ikev2_object *IkeGatewayDataSourceProtocolIkev2Object
 	if obj.Ikev2 != nil {
 		ikev2_object = new(IkeGatewayDataSourceProtocolIkev2Object)
-
-		diags.Append(ikev2_object.CopyFromPango(ctx, obj.Ikev2, encrypted)...)
+		diags.Append(ikev2_object.CopyFromPango(ctx, append(ancestors, o), obj.Ikev2, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1204,13 +1342,12 @@ func (o *IkeGatewayDataSourceProtocolObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *IkeGatewayDataSourceProtocolIkev1Object) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolIkev1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolIkev1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dpd_object *IkeGatewayDataSourceProtocolIkev1DpdObject
 	if obj.Dpd != nil {
 		dpd_object = new(IkeGatewayDataSourceProtocolIkev1DpdObject)
-
-		diags.Append(dpd_object.CopyFromPango(ctx, obj.Dpd, encrypted)...)
+		diags.Append(dpd_object.CopyFromPango(ctx, append(ancestors, o), obj.Dpd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1231,7 +1368,7 @@ func (o *IkeGatewayDataSourceProtocolIkev1Object) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev1Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolIkev1Dpd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -1253,13 +1390,12 @@ func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev2, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolIkev2, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dpd_object *IkeGatewayDataSourceProtocolIkev2DpdObject
 	if obj.Dpd != nil {
 		dpd_object = new(IkeGatewayDataSourceProtocolIkev2DpdObject)
-
-		diags.Append(dpd_object.CopyFromPango(ctx, obj.Dpd, encrypted)...)
+		diags.Append(dpd_object.CopyFromPango(ctx, append(ancestors, o), obj.Dpd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1280,7 +1416,7 @@ func (o *IkeGatewayDataSourceProtocolIkev2Object) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev2Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolIkev2Dpd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -1297,13 +1433,12 @@ func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *IkeGatewayDataSourceProtocolCommonObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolCommonObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolCommon, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var fragmentation_object *IkeGatewayDataSourceProtocolCommonFragmentationObject
 	if obj.Fragmentation != nil {
 		fragmentation_object = new(IkeGatewayDataSourceProtocolCommonFragmentationObject)
-
-		diags.Append(fragmentation_object.CopyFromPango(ctx, obj.Fragmentation, encrypted)...)
+		diags.Append(fragmentation_object.CopyFromPango(ctx, append(ancestors, o), obj.Fragmentation, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1311,8 +1446,7 @@ func (o *IkeGatewayDataSourceProtocolCommonObject) CopyFromPango(ctx context.Con
 	var natTraversal_object *IkeGatewayDataSourceProtocolCommonNatTraversalObject
 	if obj.NatTraversal != nil {
 		natTraversal_object = new(IkeGatewayDataSourceProtocolCommonNatTraversalObject)
-
-		diags.Append(natTraversal_object.CopyFromPango(ctx, obj.NatTraversal, encrypted)...)
+		diags.Append(natTraversal_object.CopyFromPango(ctx, append(ancestors, o), obj.NatTraversal, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1329,7 +1463,7 @@ func (o *IkeGatewayDataSourceProtocolCommonObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolCommonFragmentation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -1341,7 +1475,7 @@ func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolCommonNatTraversal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -1361,6 +1495,11 @@ func (o *IkeGatewayDataSourceProtocolCommonNatTraversalObject) CopyFromPango(ctx
 	o.UdpChecksumEnable = udpChecksumEnable_value
 
 	return diags
+}
+
+func (o *IkeGatewayDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func IkeGatewayDataSourceSchema() dsschema.Schema {
@@ -2311,13 +2450,20 @@ func (d *IkeGatewayDataSource) Configure(_ context.Context, req datasource.Confi
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, gateway.NewService(d.client), batchSize, specifier, gateway.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*gateway.Entry, gateway.Location, *gateway.Service](d.client, gateway.NewService(d.client), batchSize, specifier, gateway.SpecMatches)
 }
 func (o *IkeGatewayDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state IkeGatewayDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -2372,8 +2518,12 @@ func (o *IkeGatewayDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -2383,7 +2533,7 @@ func (o *IkeGatewayDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -3484,7 +3634,7 @@ func (r *IkeGatewayResource) Configure(ctx context.Context, req resource.Configu
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, gateway.NewService(r.client), batchSize, specifier, gateway.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*gateway.Entry, gateway.Location, *gateway.Service](r.client, gateway.NewService(r.client), batchSize, specifier, gateway.SpecMatches)
 }
 
 func (o *IkeGatewayResourceModel) AttributeTypes() map[string]attr.Type {
@@ -3535,6 +3685,14 @@ func (o *IkeGatewayResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o IkeGatewayResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o IkeGatewayResourceModel) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourceAuthenticationObject) AttributeTypes() map[string]attr.Type {
 
 	var certificateObj *IkeGatewayResourceAuthenticationCertificateObject
@@ -3548,6 +3706,14 @@ func (o *IkeGatewayResourceAuthenticationObject) AttributeTypes() map[string]att
 			AttrTypes: preSharedKeyObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o IkeGatewayResourceAuthenticationObject) AncestorName() string {
+	return "authentication"
+}
+
+func (o IkeGatewayResourceAuthenticationObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayResourceAuthenticationCertificateObject) AttributeTypes() map[string]attr.Type {
 
@@ -3563,6 +3729,14 @@ func (o *IkeGatewayResourceAuthenticationCertificateObject) AttributeTypes() map
 		"use_management_as_source":     types.BoolType,
 	}
 }
+
+func (o IkeGatewayResourceAuthenticationCertificateObject) AncestorName() string {
+	return "certificate"
+}
+
+func (o IkeGatewayResourceAuthenticationCertificateObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) AttributeTypes() map[string]attr.Type {
 
 	var hashAndUrlObj *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject
@@ -3574,6 +3748,14 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) Attr
 		"name": types.StringType,
 	}
 }
+
+func (o IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) AncestorName() string {
+	return "local-certificate"
+}
+
+func (o IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -3581,11 +3763,27 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlOb
 		"enable":   types.BoolType,
 	}
 }
+
+func (o IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) AncestorName() string {
+	return "hash-and-url"
+}
+
+func (o IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IkeGatewayResourceAuthenticationPreSharedKeyObject) AncestorName() string {
+	return "pre-shared-key"
+}
+
+func (o IkeGatewayResourceAuthenticationPreSharedKeyObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayResourceLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -3595,12 +3793,28 @@ func (o *IkeGatewayResourceLocalAddressObject) AttributeTypes() map[string]attr.
 		"ip":          types.StringType,
 	}
 }
+
+func (o IkeGatewayResourceLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o IkeGatewayResourceLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourceLocalIdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"id":   types.StringType,
 		"type": types.StringType,
 	}
+}
+
+func (o IkeGatewayResourceLocalIdObject) AncestorName() string {
+	return "local-id"
+}
+
+func (o IkeGatewayResourceLocalIdObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayResourcePeerAddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -3614,8 +3828,24 @@ func (o *IkeGatewayResourcePeerAddressObject) AttributeTypes() map[string]attr.T
 		"ip":   types.StringType,
 	}
 }
+
+func (o IkeGatewayResourcePeerAddressObject) AncestorName() string {
+	return "peer-address"
+}
+
+func (o IkeGatewayResourcePeerAddressObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourcePeerAddressDynamicObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o IkeGatewayResourcePeerAddressDynamicObject) AncestorName() string {
+	return "dynamic"
+}
+
+func (o IkeGatewayResourcePeerAddressDynamicObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayResourcePeerIdObject) AttributeTypes() map[string]attr.Type {
 
@@ -3624,6 +3854,14 @@ func (o *IkeGatewayResourcePeerIdObject) AttributeTypes() map[string]attr.Type {
 		"matching": types.StringType,
 		"type":     types.StringType,
 	}
+}
+
+func (o IkeGatewayResourcePeerIdObject) AncestorName() string {
+	return "peer-id"
+}
+
+func (o IkeGatewayResourcePeerIdObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayResourceProtocolObject) AttributeTypes() map[string]attr.Type {
 
@@ -3641,6 +3879,14 @@ func (o *IkeGatewayResourceProtocolObject) AttributeTypes() map[string]attr.Type
 		"version": types.StringType,
 	}
 }
+
+func (o IkeGatewayResourceProtocolObject) AncestorName() string {
+	return "protocol"
+}
+
+func (o IkeGatewayResourceProtocolObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourceProtocolIkev1Object) AttributeTypes() map[string]attr.Type {
 
 	var dpdObj *IkeGatewayResourceProtocolIkev1DpdObject
@@ -3653,6 +3899,14 @@ func (o *IkeGatewayResourceProtocolIkev1Object) AttributeTypes() map[string]attr
 		"ike_crypto_profile": types.StringType,
 	}
 }
+
+func (o IkeGatewayResourceProtocolIkev1Object) AncestorName() string {
+	return "ikev1"
+}
+
+func (o IkeGatewayResourceProtocolIkev1Object) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourceProtocolIkev1DpdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -3660,6 +3914,14 @@ func (o *IkeGatewayResourceProtocolIkev1DpdObject) AttributeTypes() map[string]a
 		"interval": types.Int64Type,
 		"retry":    types.Int64Type,
 	}
+}
+
+func (o IkeGatewayResourceProtocolIkev1DpdObject) AncestorName() string {
+	return "dpd"
+}
+
+func (o IkeGatewayResourceProtocolIkev1DpdObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayResourceProtocolIkev2Object) AttributeTypes() map[string]attr.Type {
 
@@ -3673,12 +3935,28 @@ func (o *IkeGatewayResourceProtocolIkev2Object) AttributeTypes() map[string]attr
 		"require_cookie":     types.BoolType,
 	}
 }
+
+func (o IkeGatewayResourceProtocolIkev2Object) AncestorName() string {
+	return "ikev2"
+}
+
+func (o IkeGatewayResourceProtocolIkev2Object) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourceProtocolIkev2DpdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enable":   types.BoolType,
 		"interval": types.Int64Type,
 	}
+}
+
+func (o IkeGatewayResourceProtocolIkev2DpdObject) AncestorName() string {
+	return "dpd"
+}
+
+func (o IkeGatewayResourceProtocolIkev2DpdObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayResourceProtocolCommonObject) AttributeTypes() map[string]attr.Type {
 
@@ -3696,11 +3974,27 @@ func (o *IkeGatewayResourceProtocolCommonObject) AttributeTypes() map[string]att
 		"passive_mode": types.BoolType,
 	}
 }
+
+func (o IkeGatewayResourceProtocolCommonObject) AncestorName() string {
+	return "protocol-common"
+}
+
+func (o IkeGatewayResourceProtocolCommonObject) EntryName() *string {
+	return nil
+}
 func (o *IkeGatewayResourceProtocolCommonFragmentationObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enable": types.BoolType,
 	}
+}
+
+func (o IkeGatewayResourceProtocolCommonFragmentationObject) AncestorName() string {
+	return "fragmentation"
+}
+
+func (o IkeGatewayResourceProtocolCommonFragmentationObject) EntryName() *string {
+	return nil
 }
 func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) AttributeTypes() map[string]attr.Type {
 
@@ -3711,7 +4005,15 @@ func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) AttributeTypes() ma
 	}
 }
 
-func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o IkeGatewayResourceProtocolCommonNatTraversalObject) AncestorName() string {
+	return "nat-traversal"
+}
+
+func (o IkeGatewayResourceProtocolCommonNatTraversalObject) EntryName() *string {
+	return nil
+}
+
+func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_entry *gateway.Authentication
 	if o.Authentication != nil {
@@ -3720,8 +4022,8 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 		} else {
 			authentication_entry = new(gateway.Authentication)
 		}
-
-		diags.Append(o.Authentication.CopyToPango(ctx, &authentication_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Authentication.CopyToPango(ctx, ancestors, &authentication_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3736,8 +4038,8 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 		} else {
 			localAddress_entry = new(gateway.LocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.LocalAddress.CopyToPango(ctx, ancestors, &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3749,8 +4051,8 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 		} else {
 			localId_entry = new(gateway.LocalId)
 		}
-
-		diags.Append(o.LocalId.CopyToPango(ctx, &localId_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.LocalId.CopyToPango(ctx, ancestors, &localId_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3762,8 +4064,8 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 		} else {
 			peerAddress_entry = new(gateway.PeerAddress)
 		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.PeerAddress.CopyToPango(ctx, ancestors, &peerAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3775,8 +4077,8 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 		} else {
 			peerId_entry = new(gateway.PeerId)
 		}
-
-		diags.Append(o.PeerId.CopyToPango(ctx, &peerId_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.PeerId.CopyToPango(ctx, ancestors, &peerId_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3788,8 +4090,8 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 		} else {
 			protocol_entry = new(gateway.Protocol)
 		}
-
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Protocol.CopyToPango(ctx, ancestors, &protocol_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3801,8 +4103,8 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 		} else {
 			protocolCommon_entry = new(gateway.ProtocolCommon)
 		}
-
-		diags.Append(o.ProtocolCommon.CopyToPango(ctx, &protocolCommon_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.ProtocolCommon.CopyToPango(ctx, ancestors, &protocolCommon_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3825,7 +4127,7 @@ func (o *IkeGatewayResourceModel) CopyToPango(ctx context.Context, obj **gateway
 
 	return diags
 }
-func (o *IkeGatewayResourceAuthenticationObject) CopyToPango(ctx context.Context, obj **gateway.Authentication, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.Authentication, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificate_entry *gateway.AuthenticationCertificate
 	if o.Certificate != nil {
@@ -3834,8 +4136,8 @@ func (o *IkeGatewayResourceAuthenticationObject) CopyToPango(ctx context.Context
 		} else {
 			certificate_entry = new(gateway.AuthenticationCertificate)
 		}
-
-		diags.Append(o.Certificate.CopyToPango(ctx, &certificate_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Certificate.CopyToPango(ctx, append(ancestors, o), &certificate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3847,8 +4149,8 @@ func (o *IkeGatewayResourceAuthenticationObject) CopyToPango(ctx context.Context
 		} else {
 			preSharedKey_entry = new(gateway.AuthenticationPreSharedKey)
 		}
-
-		diags.Append(o.PreSharedKey.CopyToPango(ctx, &preSharedKey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PreSharedKey.CopyToPango(ctx, append(ancestors, o), &preSharedKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3862,7 +4164,7 @@ func (o *IkeGatewayResourceAuthenticationObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.AuthenticationCertificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	allowIdPayloadMismatch_value := o.AllowIdPayloadMismatch.ValueBoolPointer()
 	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
@@ -3873,8 +4175,8 @@ func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyToPango(ctx cont
 		} else {
 			localCertificate_entry = new(gateway.AuthenticationCertificateLocalCertificate)
 		}
-
-		diags.Append(o.LocalCertificate.CopyToPango(ctx, &localCertificate_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalCertificate.CopyToPango(ctx, append(ancestors, o), &localCertificate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3893,7 +4195,7 @@ func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationCertificateLocalCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.AuthenticationCertificateLocalCertificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var hashAndUrl_entry *gateway.AuthenticationCertificateLocalCertificateHashAndUrl
 	if o.HashAndUrl != nil {
@@ -3902,8 +4204,8 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) Copy
 		} else {
 			hashAndUrl_entry = new(gateway.AuthenticationCertificateLocalCertificateHashAndUrl)
 		}
-
-		diags.Append(o.HashAndUrl.CopyToPango(ctx, &hashAndUrl_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HashAndUrl.CopyToPango(ctx, append(ancestors, o), &hashAndUrl_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3918,7 +4220,7 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) Copy
 
 	return diags
 }
-func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationCertificateLocalCertificateHashAndUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.AuthenticationCertificateLocalCertificateHashAndUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	baseUrl_value := o.BaseUrl.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
@@ -3931,7 +4233,7 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlOb
 
 	return diags
 }
-func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) CopyToPango(ctx context.Context, obj **gateway.AuthenticationPreSharedKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.AuthenticationPreSharedKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -3942,7 +4244,7 @@ func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *IkeGatewayResourceLocalAddressObject) CopyToPango(ctx context.Context, obj **gateway.LocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.LocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	floatingIp_value := o.FloatingIp.ValueStringPointer()
@@ -3957,7 +4259,7 @@ func (o *IkeGatewayResourceLocalAddressObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *IkeGatewayResourceLocalIdObject) CopyToPango(ctx context.Context, obj **gateway.LocalId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceLocalIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.LocalId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	id_value := o.Id.ValueStringPointer()
 	type_value := o.Type.ValueStringPointer()
@@ -3970,7 +4272,7 @@ func (o *IkeGatewayResourceLocalIdObject) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *IkeGatewayResourcePeerAddressObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourcePeerAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.PeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamic_entry *gateway.PeerAddressDynamic
 	if o.Dynamic != nil {
@@ -3979,8 +4281,8 @@ func (o *IkeGatewayResourcePeerAddressObject) CopyToPango(ctx context.Context, o
 		} else {
 			dynamic_entry = new(gateway.PeerAddressDynamic)
 		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Dynamic.CopyToPango(ctx, append(ancestors, o), &dynamic_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3997,7 +4299,7 @@ func (o *IkeGatewayResourcePeerAddressObject) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *IkeGatewayResourcePeerAddressDynamicObject) CopyToPango(ctx context.Context, obj **gateway.PeerAddressDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourcePeerAddressDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.PeerAddressDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -4006,7 +4308,7 @@ func (o *IkeGatewayResourcePeerAddressDynamicObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IkeGatewayResourcePeerIdObject) CopyToPango(ctx context.Context, obj **gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourcePeerIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.PeerId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	id_value := o.Id.ValueStringPointer()
 	matching_value := o.Matching.ValueStringPointer()
@@ -4021,7 +4323,7 @@ func (o *IkeGatewayResourcePeerIdObject) CopyToPango(ctx context.Context, obj **
 
 	return diags
 }
-func (o *IkeGatewayResourceProtocolObject) CopyToPango(ctx context.Context, obj **gateway.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ikev1_entry *gateway.ProtocolIkev1
 	if o.Ikev1 != nil {
@@ -4030,8 +4332,8 @@ func (o *IkeGatewayResourceProtocolObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			ikev1_entry = new(gateway.ProtocolIkev1)
 		}
-
-		diags.Append(o.Ikev1.CopyToPango(ctx, &ikev1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ikev1.CopyToPango(ctx, append(ancestors, o), &ikev1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4043,8 +4345,8 @@ func (o *IkeGatewayResourceProtocolObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			ikev2_entry = new(gateway.ProtocolIkev2)
 		}
-
-		diags.Append(o.Ikev2.CopyToPango(ctx, &ikev2_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ikev2.CopyToPango(ctx, append(ancestors, o), &ikev2_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4060,7 +4362,7 @@ func (o *IkeGatewayResourceProtocolObject) CopyToPango(ctx context.Context, obj 
 
 	return diags
 }
-func (o *IkeGatewayResourceProtocolIkev1Object) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolIkev1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolIkev1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dpd_entry *gateway.ProtocolIkev1Dpd
 	if o.Dpd != nil {
@@ -4069,8 +4371,8 @@ func (o *IkeGatewayResourceProtocolIkev1Object) CopyToPango(ctx context.Context,
 		} else {
 			dpd_entry = new(gateway.ProtocolIkev1Dpd)
 		}
-
-		diags.Append(o.Dpd.CopyToPango(ctx, &dpd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Dpd.CopyToPango(ctx, append(ancestors, o), &dpd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4087,7 +4389,7 @@ func (o *IkeGatewayResourceProtocolIkev1Object) CopyToPango(ctx context.Context,
 
 	return diags
 }
-func (o *IkeGatewayResourceProtocolIkev1DpdObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev1Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolIkev1DpdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolIkev1Dpd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	interval_value := o.Interval.ValueInt64Pointer()
@@ -4102,7 +4404,7 @@ func (o *IkeGatewayResourceProtocolIkev1DpdObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *IkeGatewayResourceProtocolIkev2Object) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev2, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolIkev2Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolIkev2, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dpd_entry *gateway.ProtocolIkev2Dpd
 	if o.Dpd != nil {
@@ -4111,8 +4413,8 @@ func (o *IkeGatewayResourceProtocolIkev2Object) CopyToPango(ctx context.Context,
 		} else {
 			dpd_entry = new(gateway.ProtocolIkev2Dpd)
 		}
-
-		diags.Append(o.Dpd.CopyToPango(ctx, &dpd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Dpd.CopyToPango(ctx, append(ancestors, o), &dpd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4129,7 +4431,7 @@ func (o *IkeGatewayResourceProtocolIkev2Object) CopyToPango(ctx context.Context,
 
 	return diags
 }
-func (o *IkeGatewayResourceProtocolIkev2DpdObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolIkev2Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolIkev2DpdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolIkev2Dpd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	interval_value := o.Interval.ValueInt64Pointer()
@@ -4142,7 +4444,7 @@ func (o *IkeGatewayResourceProtocolIkev2DpdObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *IkeGatewayResourceProtocolCommonObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolCommonObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolCommon, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var fragmentation_entry *gateway.ProtocolCommonFragmentation
 	if o.Fragmentation != nil {
@@ -4151,8 +4453,8 @@ func (o *IkeGatewayResourceProtocolCommonObject) CopyToPango(ctx context.Context
 		} else {
 			fragmentation_entry = new(gateway.ProtocolCommonFragmentation)
 		}
-
-		diags.Append(o.Fragmentation.CopyToPango(ctx, &fragmentation_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Fragmentation.CopyToPango(ctx, append(ancestors, o), &fragmentation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4164,8 +4466,8 @@ func (o *IkeGatewayResourceProtocolCommonObject) CopyToPango(ctx context.Context
 		} else {
 			natTraversal_entry = new(gateway.ProtocolCommonNatTraversal)
 		}
-
-		diags.Append(o.NatTraversal.CopyToPango(ctx, &natTraversal_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.NatTraversal.CopyToPango(ctx, append(ancestors, o), &natTraversal_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4181,7 +4483,7 @@ func (o *IkeGatewayResourceProtocolCommonObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolCommonFragmentation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 
@@ -4192,7 +4494,7 @@ func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyToPango(ctx context.Context, obj **gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **gateway.ProtocolCommonNatTraversal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	keepAliveInterval_value := o.KeepAliveInterval.ValueInt64Pointer()
@@ -4208,13 +4510,12 @@ func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyToPango(ctx con
 	return diags
 }
 
-func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gateway.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_object *IkeGatewayResourceAuthenticationObject
 	if obj.Authentication != nil {
 		authentication_object = new(IkeGatewayResourceAuthenticationObject)
-
-		diags.Append(authentication_object.CopyFromPango(ctx, obj.Authentication, encrypted)...)
+		diags.Append(authentication_object.CopyFromPango(ctx, ancestors, obj.Authentication, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4222,8 +4523,7 @@ func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gatewa
 	var localAddress_object *IkeGatewayResourceLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(IkeGatewayResourceLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, ancestors, obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4231,8 +4531,7 @@ func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gatewa
 	var localId_object *IkeGatewayResourceLocalIdObject
 	if obj.LocalId != nil {
 		localId_object = new(IkeGatewayResourceLocalIdObject)
-
-		diags.Append(localId_object.CopyFromPango(ctx, obj.LocalId, encrypted)...)
+		diags.Append(localId_object.CopyFromPango(ctx, ancestors, obj.LocalId, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4240,8 +4539,7 @@ func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gatewa
 	var peerAddress_object *IkeGatewayResourcePeerAddressObject
 	if obj.PeerAddress != nil {
 		peerAddress_object = new(IkeGatewayResourcePeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		diags.Append(peerAddress_object.CopyFromPango(ctx, ancestors, obj.PeerAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4249,8 +4547,7 @@ func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gatewa
 	var peerId_object *IkeGatewayResourcePeerIdObject
 	if obj.PeerId != nil {
 		peerId_object = new(IkeGatewayResourcePeerIdObject)
-
-		diags.Append(peerId_object.CopyFromPango(ctx, obj.PeerId, encrypted)...)
+		diags.Append(peerId_object.CopyFromPango(ctx, ancestors, obj.PeerId, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4258,8 +4555,7 @@ func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gatewa
 	var protocol_object *IkeGatewayResourceProtocolObject
 	if obj.Protocol != nil {
 		protocol_object = new(IkeGatewayResourceProtocolObject)
-
-		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
+		diags.Append(protocol_object.CopyFromPango(ctx, ancestors, obj.Protocol, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4267,8 +4563,7 @@ func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gatewa
 	var protocolCommon_object *IkeGatewayResourceProtocolCommonObject
 	if obj.ProtocolCommon != nil {
 		protocolCommon_object = new(IkeGatewayResourceProtocolCommonObject)
-
-		diags.Append(protocolCommon_object.CopyFromPango(ctx, obj.ProtocolCommon, encrypted)...)
+		diags.Append(protocolCommon_object.CopyFromPango(ctx, ancestors, obj.ProtocolCommon, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4301,13 +4596,12 @@ func (o *IkeGatewayResourceModel) CopyFromPango(ctx context.Context, obj *gatewa
 	return diags
 }
 
-func (o *IkeGatewayResourceAuthenticationObject) CopyFromPango(ctx context.Context, obj *gateway.Authentication, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.Authentication, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificate_object *IkeGatewayResourceAuthenticationCertificateObject
 	if obj.Certificate != nil {
 		certificate_object = new(IkeGatewayResourceAuthenticationCertificateObject)
-
-		diags.Append(certificate_object.CopyFromPango(ctx, obj.Certificate, encrypted)...)
+		diags.Append(certificate_object.CopyFromPango(ctx, append(ancestors, o), obj.Certificate, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4315,8 +4609,7 @@ func (o *IkeGatewayResourceAuthenticationObject) CopyFromPango(ctx context.Conte
 	var preSharedKey_object *IkeGatewayResourceAuthenticationPreSharedKeyObject
 	if obj.PreSharedKey != nil {
 		preSharedKey_object = new(IkeGatewayResourceAuthenticationPreSharedKeyObject)
-
-		diags.Append(preSharedKey_object.CopyFromPango(ctx, obj.PreSharedKey, encrypted)...)
+		diags.Append(preSharedKey_object.CopyFromPango(ctx, append(ancestors, o), obj.PreSharedKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4328,13 +4621,12 @@ func (o *IkeGatewayResourceAuthenticationObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.AuthenticationCertificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localCertificate_object *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject
 	if obj.LocalCertificate != nil {
 		localCertificate_object = new(IkeGatewayResourceAuthenticationCertificateLocalCertificateObject)
-
-		diags.Append(localCertificate_object.CopyFromPango(ctx, obj.LocalCertificate, encrypted)...)
+		diags.Append(localCertificate_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalCertificate, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4365,13 +4657,12 @@ func (o *IkeGatewayResourceAuthenticationCertificateObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificateLocalCertificate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.AuthenticationCertificateLocalCertificate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var hashAndUrl_object *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject
 	if obj.HashAndUrl != nil {
 		hashAndUrl_object = new(IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject)
-
-		diags.Append(hashAndUrl_object.CopyFromPango(ctx, obj.HashAndUrl, encrypted)...)
+		diags.Append(hashAndUrl_object.CopyFromPango(ctx, append(ancestors, o), obj.HashAndUrl, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4387,7 +4678,7 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) Copy
 	return diags
 }
 
-func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationCertificateLocalCertificateHashAndUrl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.AuthenticationCertificateLocalCertificateHashAndUrl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var baseUrl_value types.String
@@ -4404,7 +4695,7 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlOb
 	return diags
 }
 
-func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx context.Context, obj *gateway.AuthenticationPreSharedKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.AuthenticationPreSharedKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -4416,7 +4707,7 @@ func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *IkeGatewayResourceLocalAddressObject) CopyFromPango(ctx context.Context, obj *gateway.LocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.LocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -4438,7 +4729,7 @@ func (o *IkeGatewayResourceLocalAddressObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *IkeGatewayResourceLocalIdObject) CopyFromPango(ctx context.Context, obj *gateway.LocalId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceLocalIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.LocalId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var id_value types.String
@@ -4455,13 +4746,12 @@ func (o *IkeGatewayResourceLocalIdObject) CopyFromPango(ctx context.Context, obj
 	return diags
 }
 
-func (o *IkeGatewayResourcePeerAddressObject) CopyFromPango(ctx context.Context, obj *gateway.PeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourcePeerAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.PeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamic_object *IkeGatewayResourcePeerAddressDynamicObject
 	if obj.Dynamic != nil {
 		dynamic_object = new(IkeGatewayResourcePeerAddressDynamicObject)
-
-		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
+		diags.Append(dynamic_object.CopyFromPango(ctx, append(ancestors, o), obj.Dynamic, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4482,13 +4772,13 @@ func (o *IkeGatewayResourcePeerAddressObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *IkeGatewayResourcePeerAddressDynamicObject) CopyFromPango(ctx context.Context, obj *gateway.PeerAddressDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourcePeerAddressDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.PeerAddressDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *IkeGatewayResourcePeerIdObject) CopyFromPango(ctx context.Context, obj *gateway.PeerId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourcePeerIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.PeerId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var id_value types.String
@@ -4510,13 +4800,12 @@ func (o *IkeGatewayResourcePeerIdObject) CopyFromPango(ctx context.Context, obj 
 	return diags
 }
 
-func (o *IkeGatewayResourceProtocolObject) CopyFromPango(ctx context.Context, obj *gateway.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ikev1_object *IkeGatewayResourceProtocolIkev1Object
 	if obj.Ikev1 != nil {
 		ikev1_object = new(IkeGatewayResourceProtocolIkev1Object)
-
-		diags.Append(ikev1_object.CopyFromPango(ctx, obj.Ikev1, encrypted)...)
+		diags.Append(ikev1_object.CopyFromPango(ctx, append(ancestors, o), obj.Ikev1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4524,8 +4813,7 @@ func (o *IkeGatewayResourceProtocolObject) CopyFromPango(ctx context.Context, ob
 	var ikev2_object *IkeGatewayResourceProtocolIkev2Object
 	if obj.Ikev2 != nil {
 		ikev2_object = new(IkeGatewayResourceProtocolIkev2Object)
-
-		diags.Append(ikev2_object.CopyFromPango(ctx, obj.Ikev2, encrypted)...)
+		diags.Append(ikev2_object.CopyFromPango(ctx, append(ancestors, o), obj.Ikev2, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4542,13 +4830,12 @@ func (o *IkeGatewayResourceProtocolObject) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *IkeGatewayResourceProtocolIkev1Object) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolIkev1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolIkev1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dpd_object *IkeGatewayResourceProtocolIkev1DpdObject
 	if obj.Dpd != nil {
 		dpd_object = new(IkeGatewayResourceProtocolIkev1DpdObject)
-
-		diags.Append(dpd_object.CopyFromPango(ctx, obj.Dpd, encrypted)...)
+		diags.Append(dpd_object.CopyFromPango(ctx, append(ancestors, o), obj.Dpd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4569,7 +4856,7 @@ func (o *IkeGatewayResourceProtocolIkev1Object) CopyFromPango(ctx context.Contex
 	return diags
 }
 
-func (o *IkeGatewayResourceProtocolIkev1DpdObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev1Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolIkev1DpdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolIkev1Dpd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4591,13 +4878,12 @@ func (o *IkeGatewayResourceProtocolIkev1DpdObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *IkeGatewayResourceProtocolIkev2Object) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev2, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolIkev2Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolIkev2, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dpd_object *IkeGatewayResourceProtocolIkev2DpdObject
 	if obj.Dpd != nil {
 		dpd_object = new(IkeGatewayResourceProtocolIkev2DpdObject)
-
-		diags.Append(dpd_object.CopyFromPango(ctx, obj.Dpd, encrypted)...)
+		diags.Append(dpd_object.CopyFromPango(ctx, append(ancestors, o), obj.Dpd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4618,7 +4904,7 @@ func (o *IkeGatewayResourceProtocolIkev2Object) CopyFromPango(ctx context.Contex
 	return diags
 }
 
-func (o *IkeGatewayResourceProtocolIkev2DpdObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolIkev2Dpd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolIkev2DpdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolIkev2Dpd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4635,13 +4921,12 @@ func (o *IkeGatewayResourceProtocolIkev2DpdObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *IkeGatewayResourceProtocolCommonObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommon, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolCommonObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolCommon, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var fragmentation_object *IkeGatewayResourceProtocolCommonFragmentationObject
 	if obj.Fragmentation != nil {
 		fragmentation_object = new(IkeGatewayResourceProtocolCommonFragmentationObject)
-
-		diags.Append(fragmentation_object.CopyFromPango(ctx, obj.Fragmentation, encrypted)...)
+		diags.Append(fragmentation_object.CopyFromPango(ctx, append(ancestors, o), obj.Fragmentation, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4649,8 +4934,7 @@ func (o *IkeGatewayResourceProtocolCommonObject) CopyFromPango(ctx context.Conte
 	var natTraversal_object *IkeGatewayResourceProtocolCommonNatTraversalObject
 	if obj.NatTraversal != nil {
 		natTraversal_object = new(IkeGatewayResourceProtocolCommonNatTraversalObject)
-
-		diags.Append(natTraversal_object.CopyFromPango(ctx, obj.NatTraversal, encrypted)...)
+		diags.Append(natTraversal_object.CopyFromPango(ctx, append(ancestors, o), obj.NatTraversal, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4667,7 +4951,7 @@ func (o *IkeGatewayResourceProtocolCommonObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonFragmentation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolCommonFragmentation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4679,7 +4963,7 @@ func (o *IkeGatewayResourceProtocolCommonFragmentationObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyFromPango(ctx context.Context, obj *gateway.ProtocolCommonNatTraversal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *gateway.ProtocolCommonNatTraversal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4701,6 +4985,11 @@ func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) CopyFromPango(ctx c
 	return diags
 }
 
+func (o *IkeGatewayResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *IkeGatewayResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state IkeGatewayResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -4718,6 +5007,13 @@ func (r *IkeGatewayResource) Create(ctx context.Context, req resource.CreateRequ
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -4774,8 +5070,7 @@ func (r *IkeGatewayResource) Create(ctx context.Context, req resource.CreateRequ
 
 	// Load the desired config.
 	var obj *gateway.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -4787,17 +5082,29 @@ func (r *IkeGatewayResource) Create(ctx context.Context, req resource.CreateRequ
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -4807,6 +5114,17 @@ func (o *IkeGatewayResource) Read(ctx context.Context, req resource.ReadRequest,
 	var savestate, state IkeGatewayResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -4861,8 +5179,12 @@ func (o *IkeGatewayResource) Read(ctx context.Context, req resource.ReadRequest,
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -4872,7 +5194,7 @@ func (o *IkeGatewayResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -4882,6 +5204,13 @@ func (o *IkeGatewayResource) Read(ctx context.Context, req resource.ReadRequest,
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -4893,6 +5222,17 @@ func (r *IkeGatewayResource) Update(ctx context.Context, req resource.UpdateRequ
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -4951,19 +5291,31 @@ func (r *IkeGatewayResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -4977,11 +5329,18 @@ func (r *IkeGatewayResource) Update(ctx context.Context, req resource.UpdateRequ
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -5052,9 +5411,15 @@ func (r *IkeGatewayResource) Delete(ctx context.Context, req resource.DeleteRequ
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

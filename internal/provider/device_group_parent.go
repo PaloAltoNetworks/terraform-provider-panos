@@ -6,6 +6,7 @@ package provider
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/PaloAltoNetworks/pango"
@@ -21,13 +22,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 import (
 	"encoding/xml"
-
-	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 
 	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/util"
@@ -56,6 +56,11 @@ type DeviceGroupParentDataSourceModel struct {
 	Location    types.Object `tfsdk:"location"`
 	DeviceGroup types.String `tfsdk:"device_group"`
 	Parent      types.String `tfsdk:"parent"`
+}
+
+func (o *DeviceGroupParentDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func DeviceGroupParentDataSourceSchema() dsschema.Schema {
@@ -245,6 +250,11 @@ func (r *DeviceGroupParentResource) Configure(ctx context.Context, req resource.
 
 	providerData := req.ProviderData.(*ProviderData)
 	r.client = providerData.Client
+}
+
+func (o *DeviceGroupParentResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *DeviceGroupParentResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -464,6 +474,9 @@ func (o *DeviceGroupParentLocation) AttributeTypes() map[string]attr.Type {
 var _ = tflog.Warn
 
 type _ = diag.Diagnostics
+
+var _ = errors.ErrUnsupported
+
 type dgpReq struct {
 	XMLName xml.Name `xml:"show"`
 	Cmd     string   `xml:"dg-hierarchy"`

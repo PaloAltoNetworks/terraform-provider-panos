@@ -68,7 +68,7 @@ provider "panos" {
 
 ### Environment Variables
 
-You can provide your credentials using the `PANOS_USERNAME` and `PANOS_PASSWORD` environment variables for username-password based authentication, or use `PANOS_API_KEY` for API key based authentication, along with `PANOS_HOST`.
+You can provide your credentials using the `PANOS_USERNAME` and `PANOS_PASSWORD` environment variables for username-password based authentication, or use `PANOS_API_KEY` for API key based authentication, along with `PANOS_HOSTNAME`.
 
 ```terraform
 provider "panos" {}
@@ -77,7 +77,7 @@ provider "panos" {}
 Usage:
 
 ```sh
-$ export PANOS_HOST="1.2.3.4"
+$ export PANOS_HOSTNAME="1.2.3.4"
 $ export PANOS_USERNAME="username"
 $ export PANOS_PASSWORD="password"
 $ terraform plan

@@ -76,7 +76,15 @@ func (o *AdministrativeTagDataSourceModel) AttributeTypes() map[string]attr.Type
 	}
 }
 
-func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, obj **admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o AdministrativeTagDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o AdministrativeTagDataSourceModel) EntryName() *string {
+	return nil
+}
+
+func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
@@ -93,7 +101,7 @@ func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, obj 
 	return diags
 }
 
-func (o *AdministrativeTagDataSourceModel) CopyFromPango(ctx context.Context, obj *admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdministrativeTagDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var color_value types.String
@@ -114,6 +122,11 @@ func (o *AdministrativeTagDataSourceModel) CopyFromPango(ctx context.Context, ob
 	o.DisableOverride = disableOverride_value
 
 	return diags
+}
+
+func (o *AdministrativeTagDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func AdministrativeTagDataSourceSchema() dsschema.Schema {
@@ -203,13 +216,20 @@ func (d *AdministrativeTagDataSource) Configure(_ context.Context, req datasourc
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, admintag.NewService(d.client), batchSize, specifier, admintag.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*admintag.Entry, admintag.Location, *admintag.Service](d.client, admintag.NewService(d.client), batchSize, specifier, admintag.SpecMatches)
 }
 func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state AdministrativeTagDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -261,8 +281,12 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -272,7 +296,7 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -461,7 +485,7 @@ func (r *AdministrativeTagResource) Configure(ctx context.Context, req resource.
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, admintag.NewService(r.client), batchSize, specifier, admintag.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*admintag.Entry, admintag.Location, *admintag.Service](r.client, admintag.NewService(r.client), batchSize, specifier, admintag.SpecMatches)
 }
 
 func (o *AdministrativeTagResourceModel) AttributeTypes() map[string]attr.Type {
@@ -479,7 +503,15 @@ func (o *AdministrativeTagResourceModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, obj **admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o AdministrativeTagResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o AdministrativeTagResourceModel) EntryName() *string {
+	return nil
+}
+
+func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
@@ -496,7 +528,7 @@ func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, obj **
 	return diags
 }
 
-func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, obj *admintag.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var color_value types.String
@@ -519,6 +551,11 @@ func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, obj 
 	return diags
 }
 
+func (o *AdministrativeTagResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state AdministrativeTagResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -536,6 +573,13 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -589,8 +633,7 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 
 	// Load the desired config.
 	var obj *admintag.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -602,17 +645,29 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -622,6 +677,17 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	var savestate, state AdministrativeTagResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -673,8 +739,12 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -684,7 +754,7 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -694,6 +764,13 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -705,6 +782,17 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -760,19 +848,31 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -786,11 +886,18 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -858,9 +965,15 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

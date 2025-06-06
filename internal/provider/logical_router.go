@@ -812,6 +812,14 @@ func (o *LogicalRouterDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"vrf":  types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o LogicalRouterDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfObject) AttributeTypes() map[string]attr.Type {
 
 	var administrativeDistancesObj *LogicalRouterDataSourceVrfAdministrativeDistancesObject
@@ -863,6 +871,14 @@ func (o *LogicalRouterDataSourceVrfObject) AttributeTypes() map[string]attr.Type
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfObject) AncestorName() string {
+	return "vrf"
+}
+
+func (o LogicalRouterDataSourceVrfObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfAdministrativeDistancesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -880,6 +896,14 @@ func (o *LogicalRouterDataSourceVrfAdministrativeDistancesObject) AttributeTypes
 		"rip":          types.Int64Type,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfAdministrativeDistancesObject) AncestorName() string {
+	return "administrative-distances"
+}
+
+func (o LogicalRouterDataSourceVrfAdministrativeDistancesObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRibFilterObject) AttributeTypes() map[string]attr.Type {
 
 	var ipv4Obj *LogicalRouterDataSourceVrfRibFilterIpv4Object
@@ -893,6 +917,14 @@ func (o *LogicalRouterDataSourceVrfRibFilterObject) AttributeTypes() map[string]
 			AttrTypes: ipv6Obj.AttributeTypes(),
 		},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterObject) AncestorName() string {
+	return "rib-filter"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) AttributeTypes() map[string]attr.Type {
 
@@ -918,11 +950,27 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) AttributeTypes() map[str
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4Object) AncestorName() string {
+	return "ipv4"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) AncestorName() string {
+	return "static"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) AttributeTypes() map[string]attr.Type {
 
@@ -930,17 +978,41 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) AttributeTypes() map[
 		"route_map": types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) AncestorName() string {
+	return "bgp"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) AncestorName() string {
+	return "ospf"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRibFilterIpv4RipObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4RipObject) AncestorName() string {
+	return "rip"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv4RipObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) AttributeTypes() map[string]attr.Type {
 
@@ -961,11 +1033,27 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) AttributeTypes() map[str
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv6Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) AncestorName() string {
+	return "static"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) AttributeTypes() map[string]attr.Type {
 
@@ -973,11 +1061,27 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) AttributeTypes() map[
 		"route_map": types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) AncestorName() string {
+	return "bgp"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) AncestorName() string {
+	return "ospfv3"
+}
+
+func (o LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpObject) AttributeTypes() map[string]attr.Type {
 
@@ -1021,12 +1125,28 @@ func (o *LogicalRouterDataSourceVrfBgpObject) AttributeTypes() map[string]attr.T
 		"aggregate_routes": types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpObject) AncestorName() string {
+	return "bgp"
+}
+
+func (o LogicalRouterDataSourceVrfBgpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpMedObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"always_compare_med":           types.BoolType,
 		"deterministic_med_comparison": types.BoolType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpMedObject) AncestorName() string {
+	return "med"
+}
+
+func (o LogicalRouterDataSourceVrfBgpMedObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpGracefulRestartObject) AttributeTypes() map[string]attr.Type {
 
@@ -1037,11 +1157,27 @@ func (o *LogicalRouterDataSourceVrfBgpGracefulRestartObject) AttributeTypes() ma
 		"local_restart_time":    types.Int64Type,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpGracefulRestartObject) AncestorName() string {
+	return "graceful-restart"
+}
+
+func (o LogicalRouterDataSourceVrfBgpGracefulRestartObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpGlobalBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpGlobalBfdObject) AncestorName() string {
+	return "global-bfd"
+}
+
+func (o LogicalRouterDataSourceVrfBgpGlobalBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) AttributeTypes() map[string]attr.Type {
 
@@ -1057,17 +1193,41 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) AttributeType
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpRedistributionProfileObject) AncestorName() string {
+	return "redistribution-profile"
+}
+
+func (o LogicalRouterDataSourceVrfBgpRedistributionProfileObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"unicast": types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) AncestorName() string {
+	return "ipv4"
+}
+
+func (o LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"unicast": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -1083,11 +1243,27 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) AttributeTypes() m
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) AncestorName() string {
+	return "advertise-network"
+}
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"network": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) AncestorName() string {
+	return "ipv4"
+}
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -1098,11 +1274,27 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) Attribu
 		"backdoor":  types.BoolType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"network": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -1110,6 +1302,14 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) Attribu
 		"name":    types.StringType,
 		"unicast": types.BoolType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) AttributeTypes() map[string]attr.Type {
 
@@ -1139,6 +1339,14 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) AttributeTypes() map[stri
 		"peer": types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupObject) AncestorName() string {
+	return "peer-group"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var ibgpObj *LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject
@@ -1153,11 +1361,35 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) AttributeTypes() map[
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject) AncestorName() string {
+	return "ibgp"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject) AncestorName() string {
+	return "ebgp"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) AttributeTypes() map[string]attr.Type {
 
@@ -1166,12 +1398,28 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) AttributeTyp
 		"ipv6": types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) AncestorName() string {
+	return "address-family"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ipv4": types.StringType,
 		"ipv6": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) AncestorName() string {
+	return "filtering-profile"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1181,6 +1429,14 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) Attribut
 		"authentication": types.StringType,
 		"dampening":      types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) AncestorName() string {
+	return "connection-options"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) AttributeTypes() map[string]attr.Type {
 
@@ -1216,6 +1472,14 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) AttributeTypes() map[
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) AncestorName() string {
+	return "peer"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) AttributeTypes() map[string]attr.Type {
 
 	var yesObj *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject
@@ -1230,8 +1494,24 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) AttributeTypes
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) AncestorName() string {
+	return "inherit"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject) AncestorName() string {
+	return "yes"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) AttributeTypes() map[string]attr.Type {
 
@@ -1247,12 +1527,28 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) AttributeTyp
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) AncestorName() string {
+	return "no"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ipv4": types.StringType,
 		"ipv6": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) AncestorName() string {
+	return "address-family"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) AttributeTypes() map[string]attr.Type {
 
@@ -1261,6 +1557,14 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObje
 		"ipv6": types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) AncestorName() string {
+	return "filtering-profile"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1268,12 +1572,28 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) Attribute
 		"ip":        types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ip":   types.StringType,
 		"fqdn": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) AncestorName() string {
+	return "peer-address"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1284,11 +1604,27 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) Attr
 		"dampening":      types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) AncestorName() string {
+	return "connection-options"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) AttributeTypes() map[string]attr.Type {
 
@@ -1305,6 +1641,14 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpAggregateRoutesObject) AncestorName() string {
+	return "aggregate-routes"
+}
+
+func (o LogicalRouterDataSourceVrfBgpAggregateRoutesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var ipv4Obj *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object
@@ -1319,6 +1663,14 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) AttributeTypes(
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1327,6 +1679,14 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) AttributeTy
 		"attribute_map":  types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) AncestorName() string {
+	return "ipv4"
+}
+
+func (o LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1334,6 +1694,14 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) AttributeTy
 		"suppress_map":   types.StringType,
 		"attribute_map":  types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRoutingTableObject) AttributeTypes() map[string]attr.Type {
 
@@ -1349,11 +1717,27 @@ func (o *LogicalRouterDataSourceVrfRoutingTableObject) AttributeTypes() map[stri
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRoutingTableObject) AncestorName() string {
+	return "routing-table"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRoutingTableIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"static_route": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) AttributeTypes() map[string]attr.Type {
 
@@ -1379,6 +1763,14 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) AttributeTyp
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) AncestorName() string {
+	return "static-route"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
 
 	var discardObj *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject
@@ -1392,14 +1784,38 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) Attri
 		"fqdn":       types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) AncestorName() string {
+	return "nexthop"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) AncestorName() string {
+	return "discard"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) AttributeTypes() map[string]attr.Type {
 
@@ -1409,6 +1825,14 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) A
 		"hold_time":            types.Int64Type,
 		"monitor_destinations": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) AncestorName() string {
+	return "path-monitor"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1421,11 +1845,27 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDe
 		"count":       types.Int64Type,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) AncestorName() string {
+	return "monitor-destinations"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfRoutingTableIpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"static_route": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) AttributeTypes() map[string]attr.Type {
 
@@ -1451,6 +1891,14 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) AttributeT
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) AncestorName() string {
+	return "static-route"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
 
 	var discardObj *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject
@@ -1464,14 +1912,38 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) Att
 		"next_lr":      types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) AncestorName() string {
+	return "nexthop"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) AncestorName() string {
+	return "discard"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) AttributeTypes() map[string]attr.Type {
 
@@ -1481,6 +1953,14 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject)
 		"hold_time":            types.Int64Type,
 		"monitor_destinations": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) AncestorName() string {
+	return "path-monitor"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1492,6 +1972,14 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitor
 		"interval":    types.Int64Type,
 		"count":       types.Int64Type,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) AncestorName() string {
+	return "monitor-destinations"
+}
+
+func (o LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterDataSourceVrfOspfObject) AttributeTypes() map[string]attr.Type {
 
@@ -1515,11 +2003,27 @@ func (o *LogicalRouterDataSourceVrfOspfObject) AttributeTypes() map[string]attr.
 		"area": types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfObject) AncestorName() string {
+	return "ospf"
+}
+
+func (o LogicalRouterDataSourceVrfOspfObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfGlobalBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfGlobalBfdObject) AncestorName() string {
+	return "global-bfd"
+}
+
+func (o LogicalRouterDataSourceVrfOspfGlobalBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfGracefulRestartObject) AttributeTypes() map[string]attr.Type {
 
@@ -1530,6 +2034,14 @@ func (o *LogicalRouterDataSourceVrfOspfGracefulRestartObject) AttributeTypes() m
 		"strict_lsa_checking":       types.BoolType,
 		"max_neighbor_restart_time": types.Int64Type,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfGracefulRestartObject) AncestorName() string {
+	return "graceful-restart"
+}
+
+func (o LogicalRouterDataSourceVrfOspfGracefulRestartObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfAreaObject) AttributeTypes() map[string]attr.Type {
 
@@ -1545,6 +2057,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) AttributeTypes() map[string]a
 		"interface":    types.ListType{},
 		"virtual_link": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaObject) AncestorName() string {
+	return "area"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -1565,6 +2085,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) AttributeTypes() map[stri
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) AttributeTypes() map[string]attr.Type {
 
 	var abrObj *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject
@@ -1574,6 +2102,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) AncestorName() string {
+	return "normal"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1582,6 +2118,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) AttributeTypes()
 		"inbound_filter_list":  types.StringType,
 		"outbound_filter_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) AttributeTypes() map[string]attr.Type {
 
@@ -1595,6 +2139,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) AttributeTypes() map[
 		"default_route_metric": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeStubObject) AncestorName() string {
+	return "stub"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeStubObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1603,6 +2155,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) AttributeTypes() m
 		"inbound_filter_list":  types.StringType,
 		"outbound_filter_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) AttributeTypes() map[string]attr.Type {
 
@@ -1619,12 +2179,28 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) AttributeTypes() map[
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) AncestorName() string {
+	return "nssa"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"metric":      types.Int64Type,
 		"metric_type": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) AncestorName() string {
+	return "default-information-originate"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) AttributeTypes() map[string]attr.Type {
 
@@ -1636,6 +2212,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) AttributeTypes() m
 		"nssa_ext_range":       types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1643,12 +2227,28 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) Attrib
 		"advertise": types.BoolType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) AncestorName() string {
+	return "nssa-ext-range"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaRangeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":      types.StringType,
 		"advertise": types.BoolType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaRangeObject) AncestorName() string {
+	return "range"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaRangeObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -1672,6 +2272,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) AttributeTypes() map
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var broadcastObj *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject
@@ -1691,17 +2299,49 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) AttributeTyp
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) AncestorName() string {
+	return "link-type"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) AncestorName() string {
+	return "broadcast"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject) AncestorName() string {
+	return "p2p"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"neighbor": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) AncestorName() string {
+	return "p2mp"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) AttributeTypes() map[string]attr.Type {
 
@@ -1710,11 +2350,27 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) 
 		"priority": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) AttributeTypes() map[string]attr.Type {
 
@@ -1732,11 +2388,27 @@ func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) AttributeTypes() m
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) AncestorName() string {
+	return "virtual-link"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfv3Object) AttributeTypes() map[string]attr.Type {
 
@@ -1760,11 +2432,27 @@ func (o *LogicalRouterDataSourceVrfOspfv3Object) AttributeTypes() map[string]att
 		"area": types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3Object) AncestorName() string {
+	return "ospfv3"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) AncestorName() string {
+	return "global-bfd"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) AttributeTypes() map[string]attr.Type {
 
@@ -1775,6 +2463,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) AttributeTypes()
 		"strict_lsa_checking":       types.BoolType,
 		"max_neighbor_restart_time": types.Int64Type,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) AncestorName() string {
+	return "graceful-restart"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) AttributeTypes() map[string]attr.Type {
 
@@ -1790,6 +2486,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) AttributeTypes() map[string
 		"interface":    types.ListType{},
 		"virtual_link": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaObject) AncestorName() string {
+	return "area"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -1810,6 +2514,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) AttributeTypes() map[st
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) AttributeTypes() map[string]attr.Type {
 
 	var abrObj *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject
@@ -1819,6 +2531,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) AttributeTypes() 
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) AncestorName() string {
+	return "normal"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1827,6 +2547,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) AttributeTypes
 		"inbound_filter_list":  types.StringType,
 		"outbound_filter_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) AttributeTypes() map[string]attr.Type {
 
@@ -1840,6 +2568,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) AttributeTypes() ma
 		"default_route_metric": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) AncestorName() string {
+	return "stub"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1848,6 +2584,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) AttributeTypes()
 		"inbound_filter_list":  types.StringType,
 		"outbound_filter_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) AttributeTypes() map[string]attr.Type {
 
@@ -1864,12 +2608,28 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) AncestorName() string {
+	return "nssa"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"metric":      types.Int64Type,
 		"metric_type": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) AncestorName() string {
+	return "default-information-originate"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) AttributeTypes() map[string]attr.Type {
 
@@ -1881,6 +2641,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) AttributeTypes()
 		"nssa_ext_range":       types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1888,12 +2656,28 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) Attr
 		"advertise": types.BoolType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) AncestorName() string {
+	return "nssa-ext-range"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaRangeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":      types.StringType,
 		"advertise": types.BoolType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaRangeObject) AncestorName() string {
+	return "range"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaRangeObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -1918,6 +2702,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) AttributeTypes() m
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var broadcastObj *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject
@@ -1937,17 +2729,49 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) AttributeT
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) AncestorName() string {
+	return "link-type"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) AncestorName() string {
+	return "broadcast"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) AncestorName() string {
+	return "p2p"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"neighbor": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) AncestorName() string {
+	return "p2mp"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) AttributeTypes() map[string]attr.Type {
 
@@ -1956,11 +2780,27 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
 		"priority": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) AttributeTypes() map[string]attr.Type {
 
@@ -1974,6 +2814,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) AttributeTypes()
 		"authentication":  types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) AncestorName() string {
+	return "virtual-link"
+}
+
+func (o LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfEcmpObject) AttributeTypes() map[string]attr.Type {
 
 	var algorithmObj *LogicalRouterDataSourceVrfEcmpAlgorithmObject
@@ -1986,6 +2834,14 @@ func (o *LogicalRouterDataSourceVrfEcmpObject) AttributeTypes() map[string]attr.
 			AttrTypes: algorithmObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfEcmpObject) AncestorName() string {
+	return "ecmp"
+}
+
+func (o LogicalRouterDataSourceVrfEcmpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) AttributeTypes() map[string]attr.Type {
 
@@ -2011,8 +2867,24 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) AttributeTypes() map[str
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmObject) AncestorName() string {
+	return "algorithm"
+}
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject) AncestorName() string {
+	return "ip-modulo"
+}
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) AttributeTypes() map[string]attr.Type {
 
@@ -2022,11 +2894,27 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) AttributeTypes() m
 		"hash_seed": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) AncestorName() string {
+	return "ip-hash"
+}
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"interface": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) AncestorName() string {
+	return "weighted-round-robin"
+}
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -2035,8 +2923,24 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObjec
 		"weight": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject) AncestorName() string {
+	return "balanced-round-robin"
+}
+
+func (o LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfMulticastObject) AttributeTypes() map[string]attr.Type {
 
@@ -2059,6 +2963,14 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) AttributeTypes() map[string]
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastObject) AncestorName() string {
+	return "multicast"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) AttributeTypes() map[string]attr.Type {
 
 	var nexthopObj *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject
@@ -2072,11 +2984,27 @@ func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) AttributeTypes() 
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastStaticRouteObject) AncestorName() string {
+	return "static-route"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastStaticRouteObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ip_address": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) AncestorName() string {
+	return "nexthop"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfMulticastPimObject) AttributeTypes() map[string]attr.Type {
 
@@ -2100,11 +3028,27 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) AttributeTypes() map[stri
 		"interface":     types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastPimObject) AncestorName() string {
+	return "pim"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"group_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) AncestorName() string {
+	return "ssm-address-space"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) AttributeTypes() map[string]attr.Type {
 
@@ -2116,6 +3060,14 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) AttributeTypes() map[st
 		},
 		"external_rp": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpObject) AncestorName() string {
+	return "rp"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) AttributeTypes() map[string]attr.Type {
 
@@ -2131,6 +3083,14 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) AttributeTypes()
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) AncestorName() string {
+	return "local-rp"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2139,6 +3099,14 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) Attribut
 		"override":   types.BoolType,
 		"group_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) AncestorName() string {
+	return "static-rp"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) AttributeTypes() map[string]attr.Type {
 
@@ -2150,6 +3118,14 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) Attri
 		"group_list":             types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) AncestorName() string {
+	return "candidate-rp"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2158,12 +3134,28 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) AttributeType
 		"override":   types.BoolType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) AncestorName() string {
+	return "external-rp"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfMulticastPimSptThresholdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":      types.StringType,
 		"threshold": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimSptThresholdObject) AncestorName() string {
+	return "spt-threshold"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimSptThresholdObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterDataSourceVrfMulticastPimInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -2175,6 +3167,14 @@ func (o *LogicalRouterDataSourceVrfMulticastPimInterfaceObject) AttributeTypes()
 		"if_timer":        types.StringType,
 		"neighbor_filter": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastPimInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) AttributeTypes() map[string]attr.Type {
 
@@ -2188,11 +3188,27 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) AttributeTypes() map[str
 		"static": types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastIgmpObject) AncestorName() string {
+	return "igmp"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastIgmpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"interface": types.ListType{},
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) AncestorName() string {
+	return "dynamic"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -2207,6 +3223,14 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) Attribut
 		"router_alert_policing": types.BoolType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfMulticastIgmpStaticObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2215,6 +3239,14 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpStaticObject) AttributeTypes() m
 		"group_address":  types.StringType,
 		"source_address": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastIgmpStaticObject) AncestorName() string {
+	return "static"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastIgmpStaticObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) AttributeTypes() map[string]attr.Type {
 
@@ -2230,12 +3262,28 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) AttributeTypes() map[str
 		"peer": types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpObject) AncestorName() string {
+	return "msdp"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"interface": types.StringType,
 		"ip":        types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject) AncestorName() string {
+	return "originator-id"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) AttributeTypes() map[string]attr.Type {
 
@@ -2258,6 +3306,14 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) AttributeTypes() map
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpPeerObject) AncestorName() string {
+	return "peer"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpPeerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2265,12 +3321,28 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) Attribut
 		"ip":        types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ip":   types.StringType,
 		"fqdn": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) AncestorName() string {
+	return "peer-address"
+}
+
+func (o LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRipObject) AttributeTypes() map[string]attr.Type {
 
@@ -2298,11 +3370,27 @@ func (o *LogicalRouterDataSourceVrfRipObject) AttributeTypes() map[string]attr.T
 		"interfaces": types.ListType{},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRipObject) AncestorName() string {
+	return "rip"
+}
+
+func (o LogicalRouterDataSourceVrfRipObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRipGlobalBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRipGlobalBfdObject) AncestorName() string {
+	return "global-bfd"
+}
+
+func (o LogicalRouterDataSourceVrfRipGlobalBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) AttributeTypes() map[string]attr.Type {
 
@@ -2310,11 +3398,27 @@ func (o *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) Attribu
 		"access_list": types.StringType,
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) AncestorName() string {
+	return "global-inbound-distribute-list"
+}
+
+func (o LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"access_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject) AncestorName() string {
+	return "global-outbound-distribute-list"
+}
+
+func (o LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRipInterfacesObject) AttributeTypes() map[string]attr.Type {
 
@@ -2340,11 +3444,27 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesObject) AttributeTypes() map[str
 		},
 	}
 }
+
+func (o LogicalRouterDataSourceVrfRipInterfacesObject) AncestorName() string {
+	return "interfaces"
+}
+
+func (o LogicalRouterDataSourceVrfRipInterfacesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterDataSourceVrfRipInterfacesBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRipInterfacesBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterDataSourceVrfRipInterfacesBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListObject) AttributeTypes() map[string]attr.Type {
 
@@ -2352,6 +3472,14 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListOb
 		"access_list": types.StringType,
 		"metric":      types.Int64Type,
 	}
+}
+
+func (o LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListObject) AncestorName() string {
+	return "interface-inbound-distribute-list"
+}
+
+func (o LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListObject) AttributeTypes() map[string]attr.Type {
 
@@ -2361,7 +3489,15 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListO
 	}
 }
 
-func (o *LogicalRouterDataSourceModel) CopyToPango(ctx context.Context, obj **logical_router.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListObject) AncestorName() string {
+	return "interface-outbound-distribute-list"
+}
+
+func (o LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListObject) EntryName() *string {
+	return nil
+}
+
+func (o *LogicalRouterDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vrf_tf_entries []LogicalRouterDataSourceVrfObject
 	var vrf_pango_entries []logical_router.Vrf
@@ -2373,7 +3509,7 @@ func (o *LogicalRouterDataSourceModel) CopyToPango(ctx context.Context, obj **lo
 		}
 		for _, elt := range vrf_tf_entries {
 			var entry *logical_router.Vrf
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2389,7 +3525,7 @@ func (o *LogicalRouterDataSourceModel) CopyToPango(ctx context.Context, obj **lo
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj **logical_router.Vrf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.Vrf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_pango_entries := make([]string, 0)
 	diags.Append(o.Interface.ElementsAs(ctx, &interface_pango_entries, false)...)
@@ -2403,8 +3539,8 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			administrativeDistances_entry = new(logical_router.VrfAdminDists)
 		}
-
-		diags.Append(o.AdministrativeDistances.CopyToPango(ctx, &administrativeDistances_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AdministrativeDistances.CopyToPango(ctx, append(ancestors, o), &administrativeDistances_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2416,8 +3552,8 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			ribFilter_entry = new(logical_router.VrfRibFilter)
 		}
-
-		diags.Append(o.RibFilter.CopyToPango(ctx, &ribFilter_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RibFilter.CopyToPango(ctx, append(ancestors, o), &ribFilter_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2429,8 +3565,8 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			bgp_entry = new(logical_router.VrfBgp)
 		}
-
-		diags.Append(o.Bgp.CopyToPango(ctx, &bgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bgp.CopyToPango(ctx, append(ancestors, o), &bgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2442,8 +3578,8 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			routingTable_entry = new(logical_router.VrfRoutingTable)
 		}
-
-		diags.Append(o.RoutingTable.CopyToPango(ctx, &routingTable_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RoutingTable.CopyToPango(ctx, append(ancestors, o), &routingTable_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2455,8 +3591,8 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			ospf_entry = new(logical_router.VrfOspf)
 		}
-
-		diags.Append(o.Ospf.CopyToPango(ctx, &ospf_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ospf.CopyToPango(ctx, append(ancestors, o), &ospf_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2468,8 +3604,8 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			ospfv3_entry = new(logical_router.VrfOspfv3)
 		}
-
-		diags.Append(o.Ospfv3.CopyToPango(ctx, &ospfv3_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ospfv3.CopyToPango(ctx, append(ancestors, o), &ospfv3_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2481,8 +3617,8 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			ecmp_entry = new(logical_router.VrfEcmp)
 		}
-
-		diags.Append(o.Ecmp.CopyToPango(ctx, &ecmp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ecmp.CopyToPango(ctx, append(ancestors, o), &ecmp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2494,8 +3630,8 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			multicast_entry = new(logical_router.VrfMulticast)
 		}
-
-		diags.Append(o.Multicast.CopyToPango(ctx, &multicast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Multicast.CopyToPango(ctx, append(ancestors, o), &multicast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2507,8 +3643,8 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			rip_entry = new(logical_router.VrfRip)
 		}
-
-		diags.Append(o.Rip.CopyToPango(ctx, &rip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Rip.CopyToPango(ctx, append(ancestors, o), &rip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2531,7 +3667,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyToPango(ctx context.Context, obj 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfAdministrativeDistancesObject) CopyToPango(ctx context.Context, obj **logical_router.VrfAdminDists, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfAdministrativeDistancesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfAdminDists, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	static_value := o.Static.ValueInt64Pointer()
 	staticIpv6_value := o.StaticIpv6.ValueInt64Pointer()
@@ -2564,7 +3700,7 @@ func (o *LogicalRouterDataSourceVrfAdministrativeDistancesObject) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilter, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilter, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_entry *logical_router.VrfRibFilterIpv4
 	if o.Ipv4 != nil {
@@ -2573,8 +3709,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterObject) CopyToPango(ctx context.Cont
 		} else {
 			ipv4_entry = new(logical_router.VrfRibFilterIpv4)
 		}
-
-		diags.Append(o.Ipv4.CopyToPango(ctx, &ipv4_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv4.CopyToPango(ctx, append(ancestors, o), &ipv4_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2586,8 +3722,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterObject) CopyToPango(ctx context.Cont
 		} else {
 			ipv6_entry = new(logical_router.VrfRibFilterIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2601,7 +3737,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_entry *logical_router.VrfRibFilterIpv4Static
 	if o.Static != nil {
@@ -2610,8 +3746,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyToPango(ctx context.
 		} else {
 			static_entry = new(logical_router.VrfRibFilterIpv4Static)
 		}
-
-		diags.Append(o.Static.CopyToPango(ctx, &static_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Static.CopyToPango(ctx, append(ancestors, o), &static_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2623,8 +3759,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyToPango(ctx context.
 		} else {
 			bgp_entry = new(logical_router.VrfRibFilterIpv4Bgp)
 		}
-
-		diags.Append(o.Bgp.CopyToPango(ctx, &bgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bgp.CopyToPango(ctx, append(ancestors, o), &bgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2636,8 +3772,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyToPango(ctx context.
 		} else {
 			ospf_entry = new(logical_router.VrfRibFilterIpv4Ospf)
 		}
-
-		diags.Append(o.Ospf.CopyToPango(ctx, &ospf_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ospf.CopyToPango(ctx, append(ancestors, o), &ospf_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2649,8 +3785,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyToPango(ctx context.
 		} else {
 			rip_entry = new(logical_router.VrfRibFilterIpv4Rip)
 		}
-
-		diags.Append(o.Rip.CopyToPango(ctx, &rip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Rip.CopyToPango(ctx, append(ancestors, o), &rip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2666,7 +3802,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4Static, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4Static, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -2677,7 +3813,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4Bgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4Bgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -2688,7 +3824,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4Ospf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4Ospf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -2699,7 +3835,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4RipObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4Rip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4RipObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4Rip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -2710,7 +3846,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4RipObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_entry *logical_router.VrfRibFilterIpv6Static
 	if o.Static != nil {
@@ -2719,8 +3855,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyToPango(ctx context.
 		} else {
 			static_entry = new(logical_router.VrfRibFilterIpv6Static)
 		}
-
-		diags.Append(o.Static.CopyToPango(ctx, &static_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Static.CopyToPango(ctx, append(ancestors, o), &static_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2732,8 +3868,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyToPango(ctx context.
 		} else {
 			bgp_entry = new(logical_router.VrfRibFilterIpv6Bgp)
 		}
-
-		diags.Append(o.Bgp.CopyToPango(ctx, &bgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bgp.CopyToPango(ctx, append(ancestors, o), &bgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2745,8 +3881,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyToPango(ctx context.
 		} else {
 			ospfv3_entry = new(logical_router.VrfRibFilterIpv6Ospfv3)
 		}
-
-		diags.Append(o.Ospfv3.CopyToPango(ctx, &ospfv3_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ospfv3.CopyToPango(ctx, append(ancestors, o), &ospfv3_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2761,7 +3897,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv6Static, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv6Static, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -2772,7 +3908,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv6Bgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv6Bgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -2783,7 +3919,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv6Ospfv3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv6Ospfv3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -2794,7 +3930,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	routerId_value := o.RouterId.ValueStringPointer()
@@ -2813,8 +3949,8 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, o
 		} else {
 			med_entry = new(logical_router.VrfBgpMed)
 		}
-
-		diags.Append(o.Med.CopyToPango(ctx, &med_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Med.CopyToPango(ctx, append(ancestors, o), &med_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2826,8 +3962,8 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, o
 		} else {
 			gracefulRestart_entry = new(logical_router.VrfBgpGracefulRestart)
 		}
-
-		diags.Append(o.GracefulRestart.CopyToPango(ctx, &gracefulRestart_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GracefulRestart.CopyToPango(ctx, append(ancestors, o), &gracefulRestart_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2839,8 +3975,8 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, o
 		} else {
 			globalBfd_entry = new(logical_router.VrfBgpGlobalBfd)
 		}
-
-		diags.Append(o.GlobalBfd.CopyToPango(ctx, &globalBfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalBfd.CopyToPango(ctx, append(ancestors, o), &globalBfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2852,8 +3988,8 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, o
 		} else {
 			redistributionProfile_entry = new(logical_router.VrfBgpRedistributionProfile)
 		}
-
-		diags.Append(o.RedistributionProfile.CopyToPango(ctx, &redistributionProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RedistributionProfile.CopyToPango(ctx, append(ancestors, o), &redistributionProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2865,8 +4001,8 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, o
 		} else {
 			advertiseNetwork_entry = new(logical_router.VrfBgpAdvertiseNetwork)
 		}
-
-		diags.Append(o.AdvertiseNetwork.CopyToPango(ctx, &advertiseNetwork_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AdvertiseNetwork.CopyToPango(ctx, append(ancestors, o), &advertiseNetwork_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2881,7 +4017,7 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, o
 		}
 		for _, elt := range peerGroup_tf_entries {
 			var entry *logical_router.VrfBgpPeerGroup
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2898,7 +4034,7 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, o
 		}
 		for _, elt := range aggregateRoutes_tf_entries {
 			var entry *logical_router.VrfBgpAggregateRoutes
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2929,7 +4065,7 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpMedObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpMed, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpMedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpMed, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	alwaysCompareMed_value := o.AlwaysCompareMed.ValueBoolPointer()
 	deterministicMedComparison_value := o.DeterministicMedComparison.ValueBoolPointer()
@@ -2942,7 +4078,7 @@ func (o *LogicalRouterDataSourceVrfBgpMedObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpGracefulRestartObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpGracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpGracefulRestartObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpGracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	staleRouteTime_value := o.StaleRouteTime.ValueInt64Pointer()
@@ -2959,7 +4095,7 @@ func (o *LogicalRouterDataSourceVrfBgpGracefulRestartObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpGlobalBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpGlobalBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -2970,7 +4106,7 @@ func (o *LogicalRouterDataSourceVrfBgpGlobalBfdObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpRedistributionProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpRedistributionProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_entry *logical_router.VrfBgpRedistributionProfileIpv4
 	if o.Ipv4 != nil {
@@ -2979,8 +4115,8 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) CopyToPango(c
 		} else {
 			ipv4_entry = new(logical_router.VrfBgpRedistributionProfileIpv4)
 		}
-
-		diags.Append(o.Ipv4.CopyToPango(ctx, &ipv4_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv4.CopyToPango(ctx, append(ancestors, o), &ipv4_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2992,8 +4128,8 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) CopyToPango(c
 		} else {
 			ipv6_entry = new(logical_router.VrfBgpRedistributionProfileIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3007,7 +4143,7 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) CopyToPango(c
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpRedistributionProfileIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpRedistributionProfileIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	unicast_value := o.Unicast.ValueStringPointer()
 
@@ -3018,7 +4154,7 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpRedistributionProfileIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpRedistributionProfileIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	unicast_value := o.Unicast.ValueStringPointer()
 
@@ -3029,7 +4165,7 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_entry *logical_router.VrfBgpAdvertiseNetworkIpv4
 	if o.Ipv4 != nil {
@@ -3038,8 +4174,8 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx co
 		} else {
 			ipv4_entry = new(logical_router.VrfBgpAdvertiseNetworkIpv4)
 		}
-
-		diags.Append(o.Ipv4.CopyToPango(ctx, &ipv4_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv4.CopyToPango(ctx, append(ancestors, o), &ipv4_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3051,8 +4187,8 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx co
 		} else {
 			ipv6_entry = new(logical_router.VrfBgpAdvertiseNetworkIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3066,7 +4202,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetworkIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetworkIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var network_tf_entries []LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject
 	var network_pango_entries []logical_router.VrfBgpAdvertiseNetworkIpv4Network
@@ -3078,7 +4214,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) CopyToPango(ct
 		}
 		for _, elt := range network_tf_entries {
 			var entry *logical_router.VrfBgpAdvertiseNetworkIpv4Network
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3093,7 +4229,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetworkIpv4Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetworkIpv4Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	unicast_value := o.Unicast.ValueBoolPointer()
 	multicast_value := o.Multicast.ValueBoolPointer()
@@ -3109,7 +4245,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyToP
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetworkIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetworkIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var network_tf_entries []LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject
 	var network_pango_entries []logical_router.VrfBgpAdvertiseNetworkIpv6Network
@@ -3121,7 +4257,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) CopyToPango(ct
 		}
 		for _, elt := range network_tf_entries {
 			var entry *logical_router.VrfBgpAdvertiseNetworkIpv6Network
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3136,7 +4272,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetworkIpv6Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetworkIpv6Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	unicast_value := o.Unicast.ValueBoolPointer()
 
@@ -3148,7 +4284,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyToP
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var type_entry *logical_router.VrfBgpPeerGroupType
@@ -3158,8 +4294,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyToPango(ctx context.C
 		} else {
 			type_entry = new(logical_router.VrfBgpPeerGroupType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3171,8 +4307,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyToPango(ctx context.C
 		} else {
 			addressFamily_entry = new(logical_router.VrfBgpPeerGroupAddressFamily)
 		}
-
-		diags.Append(o.AddressFamily.CopyToPango(ctx, &addressFamily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AddressFamily.CopyToPango(ctx, append(ancestors, o), &addressFamily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3184,8 +4320,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyToPango(ctx context.C
 		} else {
 			filteringProfile_entry = new(logical_router.VrfBgpPeerGroupFilteringProfile)
 		}
-
-		diags.Append(o.FilteringProfile.CopyToPango(ctx, &filteringProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FilteringProfile.CopyToPango(ctx, append(ancestors, o), &filteringProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3197,8 +4333,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyToPango(ctx context.C
 		} else {
 			connectionOptions_entry = new(logical_router.VrfBgpPeerGroupConnectionOptions)
 		}
-
-		diags.Append(o.ConnectionOptions.CopyToPango(ctx, &connectionOptions_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ConnectionOptions.CopyToPango(ctx, append(ancestors, o), &connectionOptions_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3213,7 +4349,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyToPango(ctx context.C
 		}
 		for _, elt := range peer_tf_entries {
 			var entry *logical_router.VrfBgpPeerGroupPeer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3234,7 +4370,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ibgp_entry *logical_router.VrfBgpPeerGroupTypeIbgp
 	if o.Ibgp != nil {
@@ -3243,8 +4379,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx conte
 		} else {
 			ibgp_entry = new(logical_router.VrfBgpPeerGroupTypeIbgp)
 		}
-
-		diags.Append(o.Ibgp.CopyToPango(ctx, &ibgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ibgp.CopyToPango(ctx, append(ancestors, o), &ibgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3256,8 +4392,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx conte
 		} else {
 			ebgp_entry = new(logical_router.VrfBgpPeerGroupTypeEbgp)
 		}
-
-		diags.Append(o.Ebgp.CopyToPango(ctx, &ebgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ebgp.CopyToPango(ctx, append(ancestors, o), &ebgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3271,7 +4407,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupTypeIbgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupTypeIbgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3280,7 +4416,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupTypeEbgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupTypeEbgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3289,7 +4425,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupAddressFamily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupAddressFamily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -3302,7 +4438,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupFilteringProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupFilteringProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -3315,7 +4451,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupConnectionOptions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupConnectionOptions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	timers_value := o.Timers.ValueStringPointer()
 	multihop_value := o.Multihop.ValueInt64Pointer()
@@ -3332,7 +4468,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	passive_value := o.Passive.ValueBoolPointer()
@@ -3345,8 +4481,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx conte
 		} else {
 			inherit_entry = new(logical_router.VrfBgpPeerGroupPeerInherit)
 		}
-
-		diags.Append(o.Inherit.CopyToPango(ctx, &inherit_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Inherit.CopyToPango(ctx, append(ancestors, o), &inherit_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3358,8 +4494,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx conte
 		} else {
 			localAddress_entry = new(logical_router.VrfBgpPeerGroupPeerLocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalAddress.CopyToPango(ctx, append(ancestors, o), &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3371,8 +4507,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx conte
 		} else {
 			peerAddress_entry = new(logical_router.VrfBgpPeerGroupPeerPeerAddress)
 		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PeerAddress.CopyToPango(ctx, append(ancestors, o), &peerAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3384,8 +4520,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx conte
 		} else {
 			connectionOptions_entry = new(logical_router.VrfBgpPeerGroupPeerConnectionOptions)
 		}
-
-		diags.Append(o.ConnectionOptions.CopyToPango(ctx, &connectionOptions_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ConnectionOptions.CopyToPango(ctx, append(ancestors, o), &connectionOptions_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3397,8 +4533,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx conte
 		} else {
 			bfd_entry = new(logical_router.VrfBgpPeerGroupPeerBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3420,7 +4556,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInherit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInherit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var yes_entry *logical_router.VrfBgpPeerGroupPeerInheritYes
 	if o.Yes != nil {
@@ -3429,8 +4565,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ct
 		} else {
 			yes_entry = new(logical_router.VrfBgpPeerGroupPeerInheritYes)
 		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3442,8 +4578,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ct
 		} else {
 			no_entry = new(logical_router.VrfBgpPeerGroupPeerInheritNo)
 		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3457,7 +4593,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInheritYes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInheritYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3466,7 +4602,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInheritNo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInheritNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var addressFamily_entry *logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily
 	if o.AddressFamily != nil {
@@ -3475,8 +4611,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(
 		} else {
 			addressFamily_entry = new(logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily)
 		}
-
-		diags.Append(o.AddressFamily.CopyToPango(ctx, &addressFamily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AddressFamily.CopyToPango(ctx, append(ancestors, o), &addressFamily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3488,8 +4624,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(
 		} else {
 			filteringProfile_entry = new(logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile)
 		}
-
-		diags.Append(o.FilteringProfile.CopyToPango(ctx, &filteringProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FilteringProfile.CopyToPango(ctx, append(ancestors, o), &filteringProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3503,7 +4639,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -3516,7 +4652,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject)
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -3529,7 +4665,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObje
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	ip_value := o.Ip.ValueStringPointer()
@@ -3542,7 +4678,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ip_value := o.Ip.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
@@ -3555,7 +4691,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerConnectionOptions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerConnectionOptions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	timers_value := o.Timers.ValueStringPointer()
 	multihop_value := o.Multihop.ValueStringPointer()
@@ -3572,7 +4708,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) Copy
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -3583,7 +4719,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAggregateRoutes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAggregateRoutes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
@@ -3597,8 +4733,8 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) CopyToPango(ctx con
 		} else {
 			type_entry = new(logical_router.VrfBgpAggregateRoutesType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3617,7 +4753,7 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAggregateRoutesType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAggregateRoutesType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_entry *logical_router.VrfBgpAggregateRoutesTypeIpv4
 	if o.Ipv4 != nil {
@@ -3626,8 +4762,8 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx
 		} else {
 			ipv4_entry = new(logical_router.VrfBgpAggregateRoutesTypeIpv4)
 		}
-
-		diags.Append(o.Ipv4.CopyToPango(ctx, &ipv4_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv4.CopyToPango(ctx, append(ancestors, o), &ipv4_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3639,8 +4775,8 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx
 		} else {
 			ipv6_entry = new(logical_router.VrfBgpAggregateRoutesTypeIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3654,7 +4790,7 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAggregateRoutesTypeIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAggregateRoutesTypeIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	summaryPrefix_value := o.SummaryPrefix.ValueStringPointer()
 	suppressMap_value := o.SuppressMap.ValueStringPointer()
@@ -3669,7 +4805,7 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAggregateRoutesTypeIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAggregateRoutesTypeIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	summaryPrefix_value := o.SummaryPrefix.ValueStringPointer()
 	suppressMap_value := o.SuppressMap.ValueStringPointer()
@@ -3684,7 +4820,7 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTable, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_entry *logical_router.VrfRoutingTableIp
 	if o.Ip != nil {
@@ -3693,8 +4829,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableObject) CopyToPango(ctx context.C
 		} else {
 			ip_entry = new(logical_router.VrfRoutingTableIp)
 		}
-
-		diags.Append(o.Ip.CopyToPango(ctx, &ip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ip.CopyToPango(ctx, append(ancestors, o), &ip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3706,8 +4842,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableObject) CopyToPango(ctx context.C
 		} else {
 			ipv6_entry = new(logical_router.VrfRoutingTableIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3721,7 +4857,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_tf_entries []LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject
 	var staticRoute_pango_entries []logical_router.VrfRoutingTableIpStaticRoute
@@ -3733,7 +4869,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpObject) CopyToPango(ctx context
 		}
 		for _, elt := range staticRoute_tf_entries {
 			var entry *logical_router.VrfRoutingTableIpStaticRoute
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3748,7 +4884,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	destination_value := o.Destination.ValueStringPointer()
 	interface_value := o.Interface.ValueStringPointer()
@@ -3761,8 +4897,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyToPango(
 		} else {
 			nexthop_entry = new(logical_router.VrfRoutingTableIpStaticRouteNexthop)
 		}
-
-		diags.Append(o.Nexthop.CopyToPango(ctx, &nexthop_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nexthop.CopyToPango(ctx, append(ancestors, o), &nexthop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3774,8 +4910,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyToPango(
 		} else {
 			bfd_entry = new(logical_router.VrfRoutingTableIpStaticRouteBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3787,8 +4923,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyToPango(
 		} else {
 			pathMonitor_entry = new(logical_router.VrfRoutingTableIpStaticRoutePathMonitor)
 		}
-
-		diags.Append(o.PathMonitor.CopyToPango(ctx, &pathMonitor_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PathMonitor.CopyToPango(ctx, append(ancestors, o), &pathMonitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3808,7 +4944,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_entry *logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard
 	if o.Discard != nil {
@@ -3817,8 +4953,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) CopyT
 		} else {
 			discard_entry = new(logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard)
 		}
-
-		diags.Append(o.Discard.CopyToPango(ctx, &discard_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Discard.CopyToPango(ctx, append(ancestors, o), &discard_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3837,7 +4973,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) CopyT
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3846,7 +4982,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRouteBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRouteBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -3857,7 +4993,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRoutePathMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRoutePathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	failureCondition_value := o.FailureCondition.ValueStringPointer()
@@ -3872,7 +5008,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) C
 		}
 		for _, elt := range monitorDestinations_tf_entries {
 			var entry *logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3890,7 +5026,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) C
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	source_value := o.Source.ValueStringPointer()
@@ -3910,7 +5046,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDe
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_tf_entries []LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject
 	var staticRoute_pango_entries []logical_router.VrfRoutingTableIpv6StaticRoute
@@ -3922,7 +5058,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6Object) CopyToPango(ctx conte
 		}
 		for _, elt := range staticRoute_tf_entries {
 			var entry *logical_router.VrfRoutingTableIpv6StaticRoute
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3937,7 +5073,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6Object) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	destination_value := o.Destination.ValueStringPointer()
 	interface_value := o.Interface.ValueStringPointer()
@@ -3950,8 +5086,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyToPang
 		} else {
 			nexthop_entry = new(logical_router.VrfRoutingTableIpv6StaticRouteNexthop)
 		}
-
-		diags.Append(o.Nexthop.CopyToPango(ctx, &nexthop_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nexthop.CopyToPango(ctx, append(ancestors, o), &nexthop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3963,8 +5099,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyToPang
 		} else {
 			bfd_entry = new(logical_router.VrfRoutingTableIpv6StaticRouteBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3976,8 +5112,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyToPang
 		} else {
 			pathMonitor_entry = new(logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor)
 		}
-
-		diags.Append(o.PathMonitor.CopyToPango(ctx, &pathMonitor_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PathMonitor.CopyToPango(ctx, append(ancestors, o), &pathMonitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3997,7 +5133,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_entry *logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard
 	if o.Discard != nil {
@@ -4006,8 +5142,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) Cop
 		} else {
 			discard_entry = new(logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard)
 		}
-
-		diags.Append(o.Discard.CopyToPango(ctx, &discard_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Discard.CopyToPango(ctx, append(ancestors, o), &discard_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4026,7 +5162,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) Cop
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -4035,7 +5171,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObje
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRouteBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRouteBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -4046,7 +5182,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyToP
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	failureCondition_value := o.FailureCondition.ValueStringPointer()
@@ -4061,7 +5197,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject)
 		}
 		for _, elt := range monitorDestinations_tf_entries {
 			var entry *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4079,7 +5215,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject)
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	source_value := o.Source.ValueStringPointer()
@@ -4099,7 +5235,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitor
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routerId_value := o.RouterId.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
@@ -4114,8 +5250,8 @@ func (o *LogicalRouterDataSourceVrfOspfObject) CopyToPango(ctx context.Context, 
 		} else {
 			globalBfd_entry = new(logical_router.VrfOspfGlobalBfd)
 		}
-
-		diags.Append(o.GlobalBfd.CopyToPango(ctx, &globalBfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalBfd.CopyToPango(ctx, append(ancestors, o), &globalBfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4127,8 +5263,8 @@ func (o *LogicalRouterDataSourceVrfOspfObject) CopyToPango(ctx context.Context, 
 		} else {
 			gracefulRestart_entry = new(logical_router.VrfOspfGracefulRestart)
 		}
-
-		diags.Append(o.GracefulRestart.CopyToPango(ctx, &gracefulRestart_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GracefulRestart.CopyToPango(ctx, append(ancestors, o), &gracefulRestart_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4143,7 +5279,7 @@ func (o *LogicalRouterDataSourceVrfOspfObject) CopyToPango(ctx context.Context, 
 		}
 		for _, elt := range area_tf_entries {
 			var entry *logical_router.VrfOspfArea
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4166,7 +5302,7 @@ func (o *LogicalRouterDataSourceVrfOspfObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfGlobalBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfGlobalBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -4177,7 +5313,7 @@ func (o *LogicalRouterDataSourceVrfOspfGlobalBfdObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfGracefulRestartObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfGracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfGracefulRestartObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfGracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	gracePeriod_value := o.GracePeriod.ValueInt64Pointer()
@@ -4196,7 +5332,7 @@ func (o *LogicalRouterDataSourceVrfOspfGracefulRestartObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfArea, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfArea, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_value := o.Authentication.ValueStringPointer()
 	var type_entry *logical_router.VrfOspfAreaType
@@ -4206,8 +5342,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyToPango(ctx context.Conte
 		} else {
 			type_entry = new(logical_router.VrfOspfAreaType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4222,7 +5358,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyToPango(ctx context.Conte
 		}
 		for _, elt := range range_tf_entries {
 			var entry *logical_router.VrfOspfAreaRange
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4239,7 +5375,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyToPango(ctx context.Conte
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfOspfAreaInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4256,7 +5392,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyToPango(ctx context.Conte
 		}
 		for _, elt := range virtualLink_tf_entries {
 			var entry *logical_router.VrfOspfAreaVirtualLink
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4276,7 +5412,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var normal_entry *logical_router.VrfOspfAreaTypeNormal
 	if o.Normal != nil {
@@ -4285,8 +5421,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyToPango(ctx context.C
 		} else {
 			normal_entry = new(logical_router.VrfOspfAreaTypeNormal)
 		}
-
-		diags.Append(o.Normal.CopyToPango(ctx, &normal_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Normal.CopyToPango(ctx, append(ancestors, o), &normal_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4298,8 +5434,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyToPango(ctx context.C
 		} else {
 			stub_entry = new(logical_router.VrfOspfAreaTypeStub)
 		}
-
-		diags.Append(o.Stub.CopyToPango(ctx, &stub_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Stub.CopyToPango(ctx, append(ancestors, o), &stub_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4311,8 +5447,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyToPango(ctx context.C
 		} else {
 			nssa_entry = new(logical_router.VrfOspfAreaTypeNssa)
 		}
-
-		diags.Append(o.Nssa.CopyToPango(ctx, &nssa_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nssa.CopyToPango(ctx, append(ancestors, o), &nssa_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4327,7 +5463,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNormal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNormal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_entry *logical_router.VrfOspfAreaTypeNormalAbr
 	if o.Abr != nil {
@@ -4336,8 +5472,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) CopyToPango(ctx con
 		} else {
 			abr_entry = new(logical_router.VrfOspfAreaTypeNormalAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4350,7 +5486,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNormalAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNormalAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -4367,7 +5503,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeStub, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeStub, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	noSummary_value := o.NoSummary.ValueBoolPointer()
 	var abr_entry *logical_router.VrfOspfAreaTypeStubAbr
@@ -4377,8 +5513,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) CopyToPango(ctx conte
 		} else {
 			abr_entry = new(logical_router.VrfOspfAreaTypeStubAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4394,7 +5530,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeStubAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeStubAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -4411,7 +5547,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNssa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNssa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	noSummary_value := o.NoSummary.ValueBoolPointer()
 	var defaultInformationOriginate_entry *logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate
@@ -4421,8 +5557,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx conte
 		} else {
 			defaultInformationOriginate_entry = new(logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate)
 		}
-
-		diags.Append(o.DefaultInformationOriginate.CopyToPango(ctx, &defaultInformationOriginate_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DefaultInformationOriginate.CopyToPango(ctx, append(ancestors, o), &defaultInformationOriginate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4434,8 +5570,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx conte
 		} else {
 			abr_entry = new(logical_router.VrfOspfAreaTypeNssaAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4450,7 +5586,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	metric_value := o.Metric.ValueInt64Pointer()
 	metricType_value := o.MetricType.ValueStringPointer()
@@ -4463,7 +5599,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateOb
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNssaAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNssaAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -4479,7 +5615,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) CopyToPango(ctx co
 		}
 		for _, elt := range nssaExtRange_tf_entries {
 			var entry *logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4498,7 +5634,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	advertise_value := o.Advertise.ValueBoolPointer()
 
@@ -4510,7 +5646,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyTo
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaRangeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaRangeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	advertise_value := o.Advertise.ValueBoolPointer()
 
@@ -4522,7 +5658,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaRangeObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	mtuIgnore_value := o.MtuIgnore.ValueBoolPointer()
@@ -4538,8 +5674,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) CopyToPango(ctx cont
 		} else {
 			linkType_entry = new(logical_router.VrfOspfAreaInterfaceLinkType)
 		}
-
-		diags.Append(o.LinkType.CopyToPango(ctx, &linkType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LinkType.CopyToPango(ctx, append(ancestors, o), &linkType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4551,8 +5687,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) CopyToPango(ctx cont
 		} else {
 			bfd_entry = new(logical_router.VrfOspfAreaInterfaceBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4574,7 +5710,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var broadcast_entry *logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast
 	if o.Broadcast != nil {
@@ -4583,8 +5719,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(
 		} else {
 			broadcast_entry = new(logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast)
 		}
-
-		diags.Append(o.Broadcast.CopyToPango(ctx, &broadcast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Broadcast.CopyToPango(ctx, append(ancestors, o), &broadcast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4596,8 +5732,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(
 		} else {
 			p2p_entry = new(logical_router.VrfOspfAreaInterfaceLinkTypeP2p)
 		}
-
-		diags.Append(o.P2p.CopyToPango(ctx, &p2p_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.P2p.CopyToPango(ctx, append(ancestors, o), &p2p_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4609,8 +5745,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(
 		} else {
 			p2mp_entry = new(logical_router.VrfOspfAreaInterfaceLinkTypeP2mp)
 		}
-
-		diags.Append(o.P2mp.CopyToPango(ctx, &p2mp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.P2mp.CopyToPango(ctx, append(ancestors, o), &p2mp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4625,7 +5761,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -4634,7 +5770,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) Cop
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2p, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2p, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -4643,7 +5779,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2mp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2mp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_tf_entries []LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject
 	var neighbor_pango_entries []logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor
@@ -4655,7 +5791,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyToPa
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4670,7 +5806,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	priority_value := o.Priority.ValueInt64Pointer()
 
@@ -4682,7 +5818,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -4693,7 +5829,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaVirtualLink, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaVirtualLink, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	neighborId_value := o.NeighborId.ValueStringPointer()
 	transitAreaId_value := o.TransitAreaId.ValueStringPointer()
@@ -4708,8 +5844,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) CopyToPango(ctx co
 		} else {
 			bfd_entry = new(logical_router.VrfOspfAreaVirtualLinkBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4729,7 +5865,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaVirtualLinkBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaVirtualLinkBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -4740,7 +5876,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	routerId_value := o.RouterId.ValueStringPointer()
@@ -4755,8 +5891,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyToPango(ctx context.Context
 		} else {
 			globalBfd_entry = new(logical_router.VrfOspfv3GlobalBfd)
 		}
-
-		diags.Append(o.GlobalBfd.CopyToPango(ctx, &globalBfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalBfd.CopyToPango(ctx, append(ancestors, o), &globalBfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4768,8 +5904,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyToPango(ctx context.Context
 		} else {
 			gracefulRestart_entry = new(logical_router.VrfOspfv3GracefulRestart)
 		}
-
-		diags.Append(o.GracefulRestart.CopyToPango(ctx, &gracefulRestart_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GracefulRestart.CopyToPango(ctx, append(ancestors, o), &gracefulRestart_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4784,7 +5920,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyToPango(ctx context.Context
 		}
 		for _, elt := range area_tf_entries {
 			var entry *logical_router.VrfOspfv3Area
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4807,7 +5943,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3GlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3GlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -4818,7 +5954,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3GracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3GracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	gracePeriod_value := o.GracePeriod.ValueInt64Pointer()
@@ -4837,7 +5973,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3Area, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3Area, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_value := o.Authentication.ValueStringPointer()
 	var type_entry *logical_router.VrfOspfv3AreaType
@@ -4847,8 +5983,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyToPango(ctx context.Con
 		} else {
 			type_entry = new(logical_router.VrfOspfv3AreaType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4863,7 +5999,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyToPango(ctx context.Con
 		}
 		for _, elt := range range_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaRange
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4880,7 +6016,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyToPango(ctx context.Con
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4897,7 +6033,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyToPango(ctx context.Con
 		}
 		for _, elt := range virtualLink_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaVirtualLink
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4917,7 +6053,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var normal_entry *logical_router.VrfOspfv3AreaTypeNormal
 	if o.Normal != nil {
@@ -4926,8 +6062,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context
 		} else {
 			normal_entry = new(logical_router.VrfOspfv3AreaTypeNormal)
 		}
-
-		diags.Append(o.Normal.CopyToPango(ctx, &normal_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Normal.CopyToPango(ctx, append(ancestors, o), &normal_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4939,8 +6075,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context
 		} else {
 			stub_entry = new(logical_router.VrfOspfv3AreaTypeStub)
 		}
-
-		diags.Append(o.Stub.CopyToPango(ctx, &stub_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Stub.CopyToPango(ctx, append(ancestors, o), &stub_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4952,8 +6088,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context
 		} else {
 			nssa_entry = new(logical_router.VrfOspfv3AreaTypeNssa)
 		}
-
-		diags.Append(o.Nssa.CopyToPango(ctx, &nssa_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nssa.CopyToPango(ctx, append(ancestors, o), &nssa_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4968,7 +6104,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNormal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNormal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_entry *logical_router.VrfOspfv3AreaTypeNormalAbr
 	if o.Abr != nil {
@@ -4977,8 +6113,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) CopyToPango(ctx c
 		} else {
 			abr_entry = new(logical_router.VrfOspfv3AreaTypeNormalAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4991,7 +6127,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNormalAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNormalAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -5008,7 +6144,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeStub, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeStub, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	noSummary_value := o.NoSummary.ValueBoolPointer()
 	var abr_entry *logical_router.VrfOspfv3AreaTypeStubAbr
@@ -5018,8 +6154,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) CopyToPango(ctx con
 		} else {
 			abr_entry = new(logical_router.VrfOspfv3AreaTypeStubAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5035,7 +6171,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeStubAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeStubAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -5052,7 +6188,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNssa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNssa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	noSummary_value := o.NoSummary.ValueBoolPointer()
 	var defaultInformationOriginate_entry *logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate
@@ -5062,8 +6198,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx con
 		} else {
 			defaultInformationOriginate_entry = new(logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate)
 		}
-
-		diags.Append(o.DefaultInformationOriginate.CopyToPango(ctx, &defaultInformationOriginate_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DefaultInformationOriginate.CopyToPango(ctx, append(ancestors, o), &defaultInformationOriginate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5075,8 +6211,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx con
 		} else {
 			abr_entry = new(logical_router.VrfOspfv3AreaTypeNssaAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5091,7 +6227,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	metric_value := o.Metric.ValueInt64Pointer()
 	metricType_value := o.MetricType.ValueStringPointer()
@@ -5104,7 +6240,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginate
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNssaAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNssaAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -5120,7 +6256,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) CopyToPango(ctx 
 		}
 		for _, elt := range nssaExtRange_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -5139,7 +6275,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	advertise_value := o.Advertise.ValueBoolPointer()
 
@@ -5151,7 +6287,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) Copy
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaRangeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaRangeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	advertise_value := o.Advertise.ValueBoolPointer()
 
@@ -5163,7 +6299,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaRangeObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	mtuIgnore_value := o.MtuIgnore.ValueBoolPointer()
@@ -5180,8 +6316,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx co
 		} else {
 			linkType_entry = new(logical_router.VrfOspfv3AreaInterfaceLinkType)
 		}
-
-		diags.Append(o.LinkType.CopyToPango(ctx, &linkType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LinkType.CopyToPango(ctx, append(ancestors, o), &linkType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5193,8 +6329,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx co
 		} else {
 			bfd_entry = new(logical_router.VrfOspfv3AreaInterfaceBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5217,7 +6353,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var broadcast_entry *logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast
 	if o.Broadcast != nil {
@@ -5226,8 +6362,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPang
 		} else {
 			broadcast_entry = new(logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast)
 		}
-
-		diags.Append(o.Broadcast.CopyToPango(ctx, &broadcast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Broadcast.CopyToPango(ctx, append(ancestors, o), &broadcast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5239,8 +6375,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPang
 		} else {
 			p2p_entry = new(logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p)
 		}
-
-		diags.Append(o.P2p.CopyToPango(ctx, &p2p_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.P2p.CopyToPango(ctx, append(ancestors, o), &p2p_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5252,8 +6388,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPang
 		} else {
 			p2mp_entry = new(logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp)
 		}
-
-		diags.Append(o.P2mp.CopyToPango(ctx, &p2mp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.P2mp.CopyToPango(ctx, append(ancestors, o), &p2mp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5268,7 +6404,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -5277,7 +6413,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) C
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -5286,7 +6422,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyToP
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_tf_entries []LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
 	var neighbor_pango_entries []logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor
@@ -5298,7 +6434,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyTo
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -5313,7 +6449,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyTo
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	priority_value := o.Priority.ValueInt64Pointer()
 
@@ -5325,7 +6461,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -5336,7 +6472,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaVirtualLink, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaVirtualLink, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	neighborId_value := o.NeighborId.ValueStringPointer()
 	transitAreaId_value := o.TransitAreaId.ValueStringPointer()
@@ -5358,7 +6494,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfEcmpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	maxPaths_value := o.MaxPaths.ValueInt64Pointer()
@@ -5371,8 +6507,8 @@ func (o *LogicalRouterDataSourceVrfEcmpObject) CopyToPango(ctx context.Context, 
 		} else {
 			algorithm_entry = new(logical_router.VrfEcmpAlgorithm)
 		}
-
-		diags.Append(o.Algorithm.CopyToPango(ctx, &algorithm_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Algorithm.CopyToPango(ctx, append(ancestors, o), &algorithm_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5389,7 +6525,7 @@ func (o *LogicalRouterDataSourceVrfEcmpObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipModulo_entry *logical_router.VrfEcmpAlgorithmIpModulo
 	if o.IpModulo != nil {
@@ -5398,8 +6534,8 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.
 		} else {
 			ipModulo_entry = new(logical_router.VrfEcmpAlgorithmIpModulo)
 		}
-
-		diags.Append(o.IpModulo.CopyToPango(ctx, &ipModulo_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.IpModulo.CopyToPango(ctx, append(ancestors, o), &ipModulo_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5411,8 +6547,8 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.
 		} else {
 			ipHash_entry = new(logical_router.VrfEcmpAlgorithmIpHash)
 		}
-
-		diags.Append(o.IpHash.CopyToPango(ctx, &ipHash_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.IpHash.CopyToPango(ctx, append(ancestors, o), &ipHash_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5424,8 +6560,8 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.
 		} else {
 			weightedRoundRobin_entry = new(logical_router.VrfEcmpAlgorithmWeightedRoundRobin)
 		}
-
-		diags.Append(o.WeightedRoundRobin.CopyToPango(ctx, &weightedRoundRobin_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.WeightedRoundRobin.CopyToPango(ctx, append(ancestors, o), &weightedRoundRobin_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5437,8 +6573,8 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.
 		} else {
 			balancedRoundRobin_entry = new(logical_router.VrfEcmpAlgorithmBalancedRoundRobin)
 		}
-
-		diags.Append(o.BalancedRoundRobin.CopyToPango(ctx, &balancedRoundRobin_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.BalancedRoundRobin.CopyToPango(ctx, append(ancestors, o), &balancedRoundRobin_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5454,7 +6590,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmIpModulo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmIpModulo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -5463,7 +6599,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmIpHash, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmIpHash, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	srcOnly_value := o.SrcOnly.ValueBoolPointer()
 	usePort_value := o.UsePort.ValueBoolPointer()
@@ -5478,7 +6614,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmWeightedRoundRobin, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmWeightedRoundRobin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_tf_entries []LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject
 	var interface_pango_entries []logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface
@@ -5490,7 +6626,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyTo
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -5505,7 +6641,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyTo
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	weight_value := o.Weight.ValueInt64Pointer()
 
@@ -5517,7 +6653,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObjec
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmBalancedRoundRobin, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmBalancedRoundRobin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -5526,7 +6662,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyTo
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var staticRoute_tf_entries []LogicalRouterDataSourceVrfMulticastStaticRouteObject
@@ -5539,7 +6675,7 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) CopyToPango(ctx context.Cont
 		}
 		for _, elt := range staticRoute_tf_entries {
 			var entry *logical_router.VrfMulticastStaticRoute
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -5553,8 +6689,8 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) CopyToPango(ctx context.Cont
 		} else {
 			pim_entry = new(logical_router.VrfMulticastPim)
 		}
-
-		diags.Append(o.Pim.CopyToPango(ctx, &pim_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Pim.CopyToPango(ctx, append(ancestors, o), &pim_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5566,8 +6702,8 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) CopyToPango(ctx context.Cont
 		} else {
 			igmp_entry = new(logical_router.VrfMulticastIgmp)
 		}
-
-		diags.Append(o.Igmp.CopyToPango(ctx, &igmp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Igmp.CopyToPango(ctx, append(ancestors, o), &igmp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5579,8 +6715,8 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) CopyToPango(ctx context.Cont
 		} else {
 			msdp_entry = new(logical_router.VrfMulticastMsdp)
 		}
-
-		diags.Append(o.Msdp.CopyToPango(ctx, &msdp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Msdp.CopyToPango(ctx, append(ancestors, o), &msdp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5597,7 +6733,7 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastStaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastStaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	destination_value := o.Destination.ValueStringPointer()
 	interface_value := o.Interface.ValueStringPointer()
@@ -5609,8 +6745,8 @@ func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) CopyToPango(ctx c
 		} else {
 			nexthop_entry = new(logical_router.VrfMulticastStaticRouteNexthop)
 		}
-
-		diags.Append(o.Nexthop.CopyToPango(ctx, &nexthop_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nexthop.CopyToPango(ctx, append(ancestors, o), &nexthop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5627,7 +6763,7 @@ func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastStaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastStaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipAddress_value := o.IpAddress.ValueStringPointer()
 
@@ -5638,7 +6774,7 @@ func (o *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPim, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPim, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	rpfLookupMode_value := o.RpfLookupMode.ValueStringPointer()
@@ -5652,8 +6788,8 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyToPango(ctx context.C
 		} else {
 			ssmAddressSpace_entry = new(logical_router.VrfMulticastPimSsmAddressSpace)
 		}
-
-		diags.Append(o.SsmAddressSpace.CopyToPango(ctx, &ssmAddressSpace_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SsmAddressSpace.CopyToPango(ctx, append(ancestors, o), &ssmAddressSpace_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5665,8 +6801,8 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyToPango(ctx context.C
 		} else {
 			rp_entry = new(logical_router.VrfMulticastPimRp)
 		}
-
-		diags.Append(o.Rp.CopyToPango(ctx, &rp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Rp.CopyToPango(ctx, append(ancestors, o), &rp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5681,7 +6817,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyToPango(ctx context.C
 		}
 		for _, elt := range sptThreshold_tf_entries {
 			var entry *logical_router.VrfMulticastPimSptThreshold
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -5698,7 +6834,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyToPango(ctx context.C
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfMulticastPimInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -5721,7 +6857,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimSsmAddressSpace, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimSsmAddressSpace, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	groupList_value := o.GroupList.ValueStringPointer()
 
@@ -5732,7 +6868,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localRp_entry *logical_router.VrfMulticastPimRpLocalRp
 	if o.LocalRp != nil {
@@ -5741,8 +6877,8 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) CopyToPango(ctx context
 		} else {
 			localRp_entry = new(logical_router.VrfMulticastPimRpLocalRp)
 		}
-
-		diags.Append(o.LocalRp.CopyToPango(ctx, &localRp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalRp.CopyToPango(ctx, append(ancestors, o), &localRp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5757,7 +6893,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) CopyToPango(ctx context
 		}
 		for _, elt := range externalRp_tf_entries {
 			var entry *logical_router.VrfMulticastPimRpExternalRp
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -5773,7 +6909,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRpLocalRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRpLocalRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRp_entry *logical_router.VrfMulticastPimRpLocalRpStaticRp
 	if o.StaticRp != nil {
@@ -5782,8 +6918,8 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx 
 		} else {
 			staticRp_entry = new(logical_router.VrfMulticastPimRpLocalRpStaticRp)
 		}
-
-		diags.Append(o.StaticRp.CopyToPango(ctx, &staticRp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.StaticRp.CopyToPango(ctx, append(ancestors, o), &staticRp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5795,8 +6931,8 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx 
 		} else {
 			candidateRp_entry = new(logical_router.VrfMulticastPimRpLocalRpCandidateRp)
 		}
-
-		diags.Append(o.CandidateRp.CopyToPango(ctx, &candidateRp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CandidateRp.CopyToPango(ctx, append(ancestors, o), &candidateRp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5810,7 +6946,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRpLocalRpStaticRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRpLocalRpStaticRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	address_value := o.Address.ValueStringPointer()
@@ -5827,7 +6963,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRpLocalRpCandidateRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRpLocalRpCandidateRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	address_value := o.Address.ValueStringPointer()
@@ -5846,7 +6982,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyT
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRpExternalRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRpExternalRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	groupList_value := o.GroupList.ValueStringPointer()
 	override_value := o.Override.ValueBoolPointer()
@@ -5860,7 +6996,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) CopyToPango(c
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastPimSptThresholdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimSptThreshold, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimSptThresholdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimSptThreshold, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	threshold_value := o.Threshold.ValueStringPointer()
 
@@ -5872,7 +7008,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimSptThresholdObject) CopyToPango(c
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastPimInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	drPriority_value := o.DrPriority.ValueInt64Pointer()
@@ -5892,7 +7028,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimInterfaceObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastIgmp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastIgmp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var dynamic_entry *logical_router.VrfMulticastIgmpDynamic
@@ -5902,8 +7038,8 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) CopyToPango(ctx context.
 		} else {
 			dynamic_entry = new(logical_router.VrfMulticastIgmpDynamic)
 		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Dynamic.CopyToPango(ctx, append(ancestors, o), &dynamic_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5918,7 +7054,7 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) CopyToPango(ctx context.
 		}
 		for _, elt := range static_tf_entries {
 			var entry *logical_router.VrfMulticastIgmpStatic
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -5935,7 +7071,7 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastIgmpDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastIgmpDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_tf_entries []LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject
 	var interface_pango_entries []logical_router.VrfMulticastIgmpDynamicInterface
@@ -5947,7 +7083,7 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) CopyToPango(ctx c
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfMulticastIgmpDynamicInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -5962,7 +7098,7 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastIgmpDynamicInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastIgmpDynamicInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	version_value := o.Version.ValueStringPointer()
 	robustness_value := o.Robustness.ValueStringPointer()
@@ -5986,7 +7122,7 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastIgmpStaticObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastIgmpStatic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastIgmpStaticObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastIgmpStatic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	groupAddress_value := o.GroupAddress.ValueStringPointer()
@@ -6002,7 +7138,7 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpStaticObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	globalTimer_value := o.GlobalTimer.ValueStringPointer()
@@ -6014,8 +7150,8 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) CopyToPango(ctx context.
 		} else {
 			originatorId_entry = new(logical_router.VrfMulticastMsdpOriginatorId)
 		}
-
-		diags.Append(o.OriginatorId.CopyToPango(ctx, &originatorId_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.OriginatorId.CopyToPango(ctx, append(ancestors, o), &originatorId_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6030,7 +7166,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) CopyToPango(ctx context.
 		}
 		for _, elt := range peer_tf_entries {
 			var entry *logical_router.VrfMulticastMsdpPeer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -6049,7 +7185,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdpOriginatorId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdpOriginatorId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	ip_value := o.Ip.ValueStringPointer()
@@ -6062,7 +7198,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdpPeer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdpPeer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	peerAs_value := o.PeerAs.ValueStringPointer()
@@ -6077,8 +7213,8 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) CopyToPango(ctx cont
 		} else {
 			localAddress_entry = new(logical_router.VrfMulticastMsdpPeerLocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalAddress.CopyToPango(ctx, append(ancestors, o), &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6090,8 +7226,8 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) CopyToPango(ctx cont
 		} else {
 			peerAddress_entry = new(logical_router.VrfMulticastMsdpPeerPeerAddress)
 		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PeerAddress.CopyToPango(ctx, append(ancestors, o), &peerAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6112,7 +7248,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdpPeerLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdpPeerLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	ip_value := o.Ip.ValueStringPointer()
@@ -6125,7 +7261,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdpPeerPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdpPeerPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ip_value := o.Ip.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
@@ -6138,7 +7274,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRipObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	defaultInformationOriginate_value := o.DefaultInformationOriginate.ValueBoolPointer()
@@ -6152,8 +7288,8 @@ func (o *LogicalRouterDataSourceVrfRipObject) CopyToPango(ctx context.Context, o
 		} else {
 			globalBfd_entry = new(logical_router.VrfRipGlobalBfd)
 		}
-
-		diags.Append(o.GlobalBfd.CopyToPango(ctx, &globalBfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalBfd.CopyToPango(ctx, append(ancestors, o), &globalBfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6165,8 +7301,8 @@ func (o *LogicalRouterDataSourceVrfRipObject) CopyToPango(ctx context.Context, o
 		} else {
 			globalInboundDistributeList_entry = new(logical_router.VrfRipGlobalInboundDistributeList)
 		}
-
-		diags.Append(o.GlobalInboundDistributeList.CopyToPango(ctx, &globalInboundDistributeList_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalInboundDistributeList.CopyToPango(ctx, append(ancestors, o), &globalInboundDistributeList_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6178,8 +7314,8 @@ func (o *LogicalRouterDataSourceVrfRipObject) CopyToPango(ctx context.Context, o
 		} else {
 			globalOutboundDistributeList_entry = new(logical_router.VrfRipGlobalOutboundDistributeList)
 		}
-
-		diags.Append(o.GlobalOutboundDistributeList.CopyToPango(ctx, &globalOutboundDistributeList_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalOutboundDistributeList.CopyToPango(ctx, append(ancestors, o), &globalOutboundDistributeList_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6194,7 +7330,7 @@ func (o *LogicalRouterDataSourceVrfRipObject) CopyToPango(ctx context.Context, o
 		}
 		for _, elt := range interfaces_tf_entries {
 			var entry *logical_router.VrfRipInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -6217,7 +7353,7 @@ func (o *LogicalRouterDataSourceVrfRipObject) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRipGlobalBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipGlobalBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -6228,7 +7364,7 @@ func (o *LogicalRouterDataSourceVrfRipGlobalBfdObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipGlobalInboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipGlobalInboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessList_value := o.AccessList.ValueStringPointer()
 
@@ -6239,7 +7375,7 @@ func (o *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) CopyToP
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipGlobalOutboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipGlobalOutboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessList_value := o.AccessList.ValueStringPointer()
 
@@ -6250,7 +7386,7 @@ func (o *LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject) CopyTo
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	mode_value := o.Mode.ValueStringPointer()
@@ -6263,8 +7399,8 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyToPango(ctx context.
 		} else {
 			bfd_entry = new(logical_router.VrfRipInterfaceBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6276,8 +7412,8 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyToPango(ctx context.
 		} else {
 			interfaceInboundDistributeList_entry = new(logical_router.VrfRipInterfaceInterfaceInboundDistributeList)
 		}
-
-		diags.Append(o.InterfaceInboundDistributeList.CopyToPango(ctx, &interfaceInboundDistributeList_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.InterfaceInboundDistributeList.CopyToPango(ctx, append(ancestors, o), &interfaceInboundDistributeList_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6289,8 +7425,8 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyToPango(ctx context.
 		} else {
 			interfaceOutboundDistributeList_entry = new(logical_router.VrfRipInterfaceInterfaceOutboundDistributeList)
 		}
-
-		diags.Append(o.InterfaceOutboundDistributeList.CopyToPango(ctx, &interfaceOutboundDistributeList_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.InterfaceOutboundDistributeList.CopyToPango(ctx, append(ancestors, o), &interfaceOutboundDistributeList_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6310,7 +7446,7 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRipInterfacesBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipInterfacesBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -6321,7 +7457,7 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesBfdObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipInterfaceInterfaceInboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipInterfaceInterfaceInboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessList_value := o.AccessList.ValueStringPointer()
 	metric_value := o.Metric.ValueInt64Pointer()
@@ -6334,7 +7470,7 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListOb
 
 	return diags
 }
-func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipInterfaceInterfaceOutboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipInterfaceInterfaceOutboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessList_value := o.AccessList.ValueStringPointer()
 	metric_value := o.Metric.ValueInt64Pointer()
@@ -6348,15 +7484,19 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListO
 	return diags
 }
 
-func (o *LogicalRouterDataSourceModel) CopyFromPango(ctx context.Context, obj *logical_router.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vrf_list types.List
 	{
 		var vrf_tf_entries []LogicalRouterDataSourceVrfObject
 		for _, elt := range obj.Vrf {
-			var entry LogicalRouterDataSourceVrfObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			vrf_tf_entries = append(vrf_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -6371,19 +7511,21 @@ func (o *LogicalRouterDataSourceModel) CopyFromPango(ctx context.Context, obj *l
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, obj *logical_router.Vrf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.Vrf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_list types.List
 	{
 		var list_diags diag.Diagnostics
 		interface_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Interface)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var administrativeDistances_object *LogicalRouterDataSourceVrfAdministrativeDistancesObject
 	if obj.AdminDists != nil {
 		administrativeDistances_object = new(LogicalRouterDataSourceVrfAdministrativeDistancesObject)
-
-		diags.Append(administrativeDistances_object.CopyFromPango(ctx, obj.AdminDists, encrypted)...)
+		diags.Append(administrativeDistances_object.CopyFromPango(ctx, append(ancestors, o), obj.AdminDists, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6391,8 +7533,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ob
 	var ribFilter_object *LogicalRouterDataSourceVrfRibFilterObject
 	if obj.RibFilter != nil {
 		ribFilter_object = new(LogicalRouterDataSourceVrfRibFilterObject)
-
-		diags.Append(ribFilter_object.CopyFromPango(ctx, obj.RibFilter, encrypted)...)
+		diags.Append(ribFilter_object.CopyFromPango(ctx, append(ancestors, o), obj.RibFilter, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6400,8 +7541,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ob
 	var bgp_object *LogicalRouterDataSourceVrfBgpObject
 	if obj.Bgp != nil {
 		bgp_object = new(LogicalRouterDataSourceVrfBgpObject)
-
-		diags.Append(bgp_object.CopyFromPango(ctx, obj.Bgp, encrypted)...)
+		diags.Append(bgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Bgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6409,8 +7549,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ob
 	var routingTable_object *LogicalRouterDataSourceVrfRoutingTableObject
 	if obj.RoutingTable != nil {
 		routingTable_object = new(LogicalRouterDataSourceVrfRoutingTableObject)
-
-		diags.Append(routingTable_object.CopyFromPango(ctx, obj.RoutingTable, encrypted)...)
+		diags.Append(routingTable_object.CopyFromPango(ctx, append(ancestors, o), obj.RoutingTable, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6418,8 +7557,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ob
 	var ospf_object *LogicalRouterDataSourceVrfOspfObject
 	if obj.Ospf != nil {
 		ospf_object = new(LogicalRouterDataSourceVrfOspfObject)
-
-		diags.Append(ospf_object.CopyFromPango(ctx, obj.Ospf, encrypted)...)
+		diags.Append(ospf_object.CopyFromPango(ctx, append(ancestors, o), obj.Ospf, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6427,8 +7565,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ob
 	var ospfv3_object *LogicalRouterDataSourceVrfOspfv3Object
 	if obj.Ospfv3 != nil {
 		ospfv3_object = new(LogicalRouterDataSourceVrfOspfv3Object)
-
-		diags.Append(ospfv3_object.CopyFromPango(ctx, obj.Ospfv3, encrypted)...)
+		diags.Append(ospfv3_object.CopyFromPango(ctx, append(ancestors, o), obj.Ospfv3, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6436,8 +7573,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ob
 	var ecmp_object *LogicalRouterDataSourceVrfEcmpObject
 	if obj.Ecmp != nil {
 		ecmp_object = new(LogicalRouterDataSourceVrfEcmpObject)
-
-		diags.Append(ecmp_object.CopyFromPango(ctx, obj.Ecmp, encrypted)...)
+		diags.Append(ecmp_object.CopyFromPango(ctx, append(ancestors, o), obj.Ecmp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6445,8 +7581,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ob
 	var multicast_object *LogicalRouterDataSourceVrfMulticastObject
 	if obj.Multicast != nil {
 		multicast_object = new(LogicalRouterDataSourceVrfMulticastObject)
-
-		diags.Append(multicast_object.CopyFromPango(ctx, obj.Multicast, encrypted)...)
+		diags.Append(multicast_object.CopyFromPango(ctx, append(ancestors, o), obj.Multicast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6454,8 +7589,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ob
 	var rip_object *LogicalRouterDataSourceVrfRipObject
 	if obj.Rip != nil {
 		rip_object = new(LogicalRouterDataSourceVrfRipObject)
-
-		diags.Append(rip_object.CopyFromPango(ctx, obj.Rip, encrypted)...)
+		diags.Append(rip_object.CopyFromPango(ctx, append(ancestors, o), obj.Rip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6476,7 +7610,7 @@ func (o *LogicalRouterDataSourceVrfObject) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfAdministrativeDistancesObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfAdminDists, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfAdministrativeDistancesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfAdminDists, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var static_value types.Int64
@@ -6543,13 +7677,12 @@ func (o *LogicalRouterDataSourceVrfAdministrativeDistancesObject) CopyFromPango(
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilter, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilter, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_object *LogicalRouterDataSourceVrfRibFilterIpv4Object
 	if obj.Ipv4 != nil {
 		ipv4_object = new(LogicalRouterDataSourceVrfRibFilterIpv4Object)
-
-		diags.Append(ipv4_object.CopyFromPango(ctx, obj.Ipv4, encrypted)...)
+		diags.Append(ipv4_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv4, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6557,8 +7690,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterObject) CopyFromPango(ctx context.Co
 	var ipv6_object *LogicalRouterDataSourceVrfRibFilterIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterDataSourceVrfRibFilterIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6570,13 +7702,12 @@ func (o *LogicalRouterDataSourceVrfRibFilterObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_object *LogicalRouterDataSourceVrfRibFilterIpv4StaticObject
 	if obj.Static != nil {
 		static_object = new(LogicalRouterDataSourceVrfRibFilterIpv4StaticObject)
-
-		diags.Append(static_object.CopyFromPango(ctx, obj.Static, encrypted)...)
+		diags.Append(static_object.CopyFromPango(ctx, append(ancestors, o), obj.Static, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6584,8 +7715,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyFromPango(ctx contex
 	var bgp_object *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject
 	if obj.Bgp != nil {
 		bgp_object = new(LogicalRouterDataSourceVrfRibFilterIpv4BgpObject)
-
-		diags.Append(bgp_object.CopyFromPango(ctx, obj.Bgp, encrypted)...)
+		diags.Append(bgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Bgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6593,8 +7723,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyFromPango(ctx contex
 	var ospf_object *LogicalRouterDataSourceVrfRibFilterIpv4OspfObject
 	if obj.Ospf != nil {
 		ospf_object = new(LogicalRouterDataSourceVrfRibFilterIpv4OspfObject)
-
-		diags.Append(ospf_object.CopyFromPango(ctx, obj.Ospf, encrypted)...)
+		diags.Append(ospf_object.CopyFromPango(ctx, append(ancestors, o), obj.Ospf, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6602,8 +7731,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyFromPango(ctx contex
 	var rip_object *LogicalRouterDataSourceVrfRibFilterIpv4RipObject
 	if obj.Rip != nil {
 		rip_object = new(LogicalRouterDataSourceVrfRibFilterIpv4RipObject)
-
-		diags.Append(rip_object.CopyFromPango(ctx, obj.Rip, encrypted)...)
+		diags.Append(rip_object.CopyFromPango(ctx, append(ancestors, o), obj.Rip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6617,7 +7745,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4Static, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4Static, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -6629,7 +7757,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4Bgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4Bgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -6641,7 +7769,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4Ospf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4Ospf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -6653,7 +7781,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterIpv4RipObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4Rip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv4RipObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4Rip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -6665,13 +7793,12 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4RipObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_object *LogicalRouterDataSourceVrfRibFilterIpv6StaticObject
 	if obj.Static != nil {
 		static_object = new(LogicalRouterDataSourceVrfRibFilterIpv6StaticObject)
-
-		diags.Append(static_object.CopyFromPango(ctx, obj.Static, encrypted)...)
+		diags.Append(static_object.CopyFromPango(ctx, append(ancestors, o), obj.Static, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6679,8 +7806,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyFromPango(ctx contex
 	var bgp_object *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject
 	if obj.Bgp != nil {
 		bgp_object = new(LogicalRouterDataSourceVrfRibFilterIpv6BgpObject)
-
-		diags.Append(bgp_object.CopyFromPango(ctx, obj.Bgp, encrypted)...)
+		diags.Append(bgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Bgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6688,8 +7814,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyFromPango(ctx contex
 	var ospfv3_object *LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object
 	if obj.Ospfv3 != nil {
 		ospfv3_object = new(LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object)
-
-		diags.Append(ospfv3_object.CopyFromPango(ctx, obj.Ospfv3, encrypted)...)
+		diags.Append(ospfv3_object.CopyFromPango(ctx, append(ancestors, o), obj.Ospfv3, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6702,7 +7827,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv6Static, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv6Static, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -6714,7 +7839,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv6Bgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv6Bgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -6726,7 +7851,7 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv6Ospfv3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv6Ospfv3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -6738,15 +7863,19 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var peerGroup_list types.List
 	{
 		var peerGroup_tf_entries []LogicalRouterDataSourceVrfBgpPeerGroupObject
 		for _, elt := range obj.PeerGroup {
-			var entry LogicalRouterDataSourceVrfBgpPeerGroupObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfBgpPeerGroupObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			peerGroup_tf_entries = append(peerGroup_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -6758,9 +7887,13 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyFromPango(ctx context.Context,
 	{
 		var aggregateRoutes_tf_entries []LogicalRouterDataSourceVrfBgpAggregateRoutesObject
 		for _, elt := range obj.AggregateRoutes {
-			var entry LogicalRouterDataSourceVrfBgpAggregateRoutesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfBgpAggregateRoutesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			aggregateRoutes_tf_entries = append(aggregateRoutes_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -6771,8 +7904,7 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyFromPango(ctx context.Context,
 	var med_object *LogicalRouterDataSourceVrfBgpMedObject
 	if obj.Med != nil {
 		med_object = new(LogicalRouterDataSourceVrfBgpMedObject)
-
-		diags.Append(med_object.CopyFromPango(ctx, obj.Med, encrypted)...)
+		diags.Append(med_object.CopyFromPango(ctx, append(ancestors, o), obj.Med, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6780,8 +7912,7 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyFromPango(ctx context.Context,
 	var gracefulRestart_object *LogicalRouterDataSourceVrfBgpGracefulRestartObject
 	if obj.GracefulRestart != nil {
 		gracefulRestart_object = new(LogicalRouterDataSourceVrfBgpGracefulRestartObject)
-
-		diags.Append(gracefulRestart_object.CopyFromPango(ctx, obj.GracefulRestart, encrypted)...)
+		diags.Append(gracefulRestart_object.CopyFromPango(ctx, append(ancestors, o), obj.GracefulRestart, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6789,8 +7920,7 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyFromPango(ctx context.Context,
 	var globalBfd_object *LogicalRouterDataSourceVrfBgpGlobalBfdObject
 	if obj.GlobalBfd != nil {
 		globalBfd_object = new(LogicalRouterDataSourceVrfBgpGlobalBfdObject)
-
-		diags.Append(globalBfd_object.CopyFromPango(ctx, obj.GlobalBfd, encrypted)...)
+		diags.Append(globalBfd_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalBfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6798,8 +7928,7 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyFromPango(ctx context.Context,
 	var redistributionProfile_object *LogicalRouterDataSourceVrfBgpRedistributionProfileObject
 	if obj.RedistributionProfile != nil {
 		redistributionProfile_object = new(LogicalRouterDataSourceVrfBgpRedistributionProfileObject)
-
-		diags.Append(redistributionProfile_object.CopyFromPango(ctx, obj.RedistributionProfile, encrypted)...)
+		diags.Append(redistributionProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.RedistributionProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6807,8 +7936,7 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyFromPango(ctx context.Context,
 	var advertiseNetwork_object *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject
 	if obj.AdvertiseNetwork != nil {
 		advertiseNetwork_object = new(LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject)
-
-		diags.Append(advertiseNetwork_object.CopyFromPango(ctx, obj.AdvertiseNetwork, encrypted)...)
+		diags.Append(advertiseNetwork_object.CopyFromPango(ctx, append(ancestors, o), obj.AdvertiseNetwork, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6875,7 +8003,7 @@ func (o *LogicalRouterDataSourceVrfBgpObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpMedObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpMed, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpMedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpMed, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var alwaysCompareMed_value types.Bool
@@ -6892,7 +8020,7 @@ func (o *LogicalRouterDataSourceVrfBgpMedObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpGracefulRestartObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpGracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpGracefulRestartObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpGracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -6919,7 +8047,7 @@ func (o *LogicalRouterDataSourceVrfBgpGracefulRestartObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpGlobalBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpGlobalBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -6931,13 +8059,12 @@ func (o *LogicalRouterDataSourceVrfBgpGlobalBfdObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpRedistributionProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpRedistributionProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_object *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object
 	if obj.Ipv4 != nil {
 		ipv4_object = new(LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object)
-
-		diags.Append(ipv4_object.CopyFromPango(ctx, obj.Ipv4, encrypted)...)
+		diags.Append(ipv4_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv4, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6945,8 +8072,7 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) CopyFromPango
 	var ipv6_object *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6958,7 +8084,7 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) CopyFromPango
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpRedistributionProfileIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpRedistributionProfileIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var unicast_value types.String
@@ -6970,7 +8096,7 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpRedistributionProfileIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpRedistributionProfileIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var unicast_value types.String
@@ -6982,13 +8108,12 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_object *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object
 	if obj.Ipv4 != nil {
 		ipv4_object = new(LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object)
-
-		diags.Append(ipv4_object.CopyFromPango(ctx, obj.Ipv4, encrypted)...)
+		diags.Append(ipv4_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv4, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6996,8 +8121,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) CopyFromPango(ctx 
 	var ipv6_object *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7009,15 +8133,19 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetworkIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetworkIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var network_list types.List
 	{
 		var network_tf_entries []LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject
 		for _, elt := range obj.Network {
-			var entry LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			network_tf_entries = append(network_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -7031,7 +8159,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Object) CopyFromPango(
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetworkIpv4Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetworkIpv4Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var unicast_value types.Bool
@@ -7054,15 +8182,19 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyFro
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetworkIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetworkIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var network_list types.List
 	{
 		var network_tf_entries []LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject
 		for _, elt := range obj.Network {
-			var entry LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			network_tf_entries = append(network_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -7076,7 +8208,7 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Object) CopyFromPango(
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetworkIpv6Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetworkIpv6Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var unicast_value types.Bool
@@ -7089,15 +8221,19 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyFro
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var peer_list types.List
 	{
 		var peer_tf_entries []LogicalRouterDataSourceVrfBgpPeerGroupPeerObject
 		for _, elt := range obj.Peer {
-			var entry LogicalRouterDataSourceVrfBgpPeerGroupPeerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfBgpPeerGroupPeerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			peer_tf_entries = append(peer_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -7108,8 +8244,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyFromPango(ctx context
 	var type_object *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject
 	if obj.Type != nil {
 		type_object = new(LogicalRouterDataSourceVrfBgpPeerGroupTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7117,8 +8252,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyFromPango(ctx context
 	var addressFamily_object *LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject
 	if obj.AddressFamily != nil {
 		addressFamily_object = new(LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject)
-
-		diags.Append(addressFamily_object.CopyFromPango(ctx, obj.AddressFamily, encrypted)...)
+		diags.Append(addressFamily_object.CopyFromPango(ctx, append(ancestors, o), obj.AddressFamily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7126,8 +8260,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyFromPango(ctx context
 	var filteringProfile_object *LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject
 	if obj.FilteringProfile != nil {
 		filteringProfile_object = new(LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject)
-
-		diags.Append(filteringProfile_object.CopyFromPango(ctx, obj.FilteringProfile, encrypted)...)
+		diags.Append(filteringProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.FilteringProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7135,8 +8268,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyFromPango(ctx context
 	var connectionOptions_object *LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject
 	if obj.ConnectionOptions != nil {
 		connectionOptions_object = new(LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject)
-
-		diags.Append(connectionOptions_object.CopyFromPango(ctx, obj.ConnectionOptions, encrypted)...)
+		diags.Append(connectionOptions_object.CopyFromPango(ctx, append(ancestors, o), obj.ConnectionOptions, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7157,13 +8289,12 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ibgp_object *LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject
 	if obj.Ibgp != nil {
 		ibgp_object = new(LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject)
-
-		diags.Append(ibgp_object.CopyFromPango(ctx, obj.Ibgp, encrypted)...)
+		diags.Append(ibgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Ibgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7171,8 +8302,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) CopyFromPango(ctx con
 	var ebgp_object *LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject
 	if obj.Ebgp != nil {
 		ebgp_object = new(LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject)
-
-		diags.Append(ebgp_object.CopyFromPango(ctx, obj.Ebgp, encrypted)...)
+		diags.Append(ebgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Ebgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7184,36 +8314,19 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupTypeIbgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupTypeIbgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupTypeEbgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupTypeEbgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupAddressFamily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var ipv4_value types.String
-	if obj.Ipv4 != nil {
-		ipv4_value = types.StringValue(*obj.Ipv4)
-	}
-	var ipv6_value types.String
-	if obj.Ipv6 != nil {
-		ipv6_value = types.StringValue(*obj.Ipv6)
-	}
-	o.Ipv4 = ipv4_value
-	o.Ipv6 = ipv6_value
-
-	return diags
-}
-
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupFilteringProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupAddressFamily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -7230,7 +8343,24 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupConnectionOptions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupFilteringProfile, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var ipv4_value types.String
+	if obj.Ipv4 != nil {
+		ipv4_value = types.StringValue(*obj.Ipv4)
+	}
+	var ipv6_value types.String
+	if obj.Ipv6 != nil {
+		ipv6_value = types.StringValue(*obj.Ipv6)
+	}
+	o.Ipv4 = ipv4_value
+	o.Ipv6 = ipv6_value
+
+	return diags
+}
+
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupConnectionOptions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var timers_value types.String
@@ -7257,13 +8387,12 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsObject) CopyFrom
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var inherit_object *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject
 	if obj.Inherit != nil {
 		inherit_object = new(LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject)
-
-		diags.Append(inherit_object.CopyFromPango(ctx, obj.Inherit, encrypted)...)
+		diags.Append(inherit_object.CopyFromPango(ctx, append(ancestors, o), obj.Inherit, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7271,8 +8400,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx con
 	var localAddress_object *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7280,8 +8408,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx con
 	var peerAddress_object *LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject
 	if obj.PeerAddress != nil {
 		peerAddress_object = new(LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		diags.Append(peerAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.PeerAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7289,8 +8416,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx con
 	var connectionOptions_object *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject
 	if obj.ConnectionOptions != nil {
 		connectionOptions_object = new(LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject)
-
-		diags.Append(connectionOptions_object.CopyFromPango(ctx, obj.ConnectionOptions, encrypted)...)
+		diags.Append(connectionOptions_object.CopyFromPango(ctx, append(ancestors, o), obj.ConnectionOptions, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7298,8 +8424,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx con
 	var bfd_object *LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7335,13 +8460,12 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInherit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInherit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var yes_object *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject
 	if obj.Yes != nil {
 		yes_object = new(LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject)
-
-		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
+		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7349,8 +8473,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) CopyFromPango(
 	var no_object *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject
 	if obj.No != nil {
 		no_object = new(LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject)
-
-		diags.Append(no_object.CopyFromPango(ctx, obj.No, encrypted)...)
+		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7362,19 +8485,18 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) CopyFromPango(
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInheritYes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInheritYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInheritNo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInheritNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var addressFamily_object *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject
 	if obj.AddressFamily != nil {
 		addressFamily_object = new(LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject)
-
-		diags.Append(addressFamily_object.CopyFromPango(ctx, obj.AddressFamily, encrypted)...)
+		diags.Append(addressFamily_object.CopyFromPango(ctx, append(ancestors, o), obj.AddressFamily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7382,8 +8504,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) CopyFromPang
 	var filteringProfile_object *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject
 	if obj.FilteringProfile != nil {
 		filteringProfile_object = new(LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject)
-
-		diags.Append(filteringProfile_object.CopyFromPango(ctx, obj.FilteringProfile, encrypted)...)
+		diags.Append(filteringProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.FilteringProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7395,7 +8516,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) CopyFromPang
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -7412,7 +8533,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject)
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -7429,7 +8550,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObje
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -7446,7 +8567,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ip_value types.String
@@ -7463,7 +8584,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerConnectionOptions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerConnectionOptions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var timers_value types.String
@@ -7490,7 +8611,7 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) Copy
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -7502,13 +8623,12 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAggregateRoutes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAggregateRoutes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_object *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject
 	if obj.Type != nil {
 		type_object = new(LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7545,13 +8665,12 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAggregateRoutesType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAggregateRoutesType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_object *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object
 	if obj.Ipv4 != nil {
 		ipv4_object = new(LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object)
-
-		diags.Append(ipv4_object.CopyFromPango(ctx, obj.Ipv4, encrypted)...)
+		diags.Append(ipv4_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv4, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7559,8 +8678,7 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) CopyFromPango(c
 	var ipv6_object *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7572,7 +8690,7 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) CopyFromPango(c
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAggregateRoutesTypeIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAggregateRoutesTypeIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var summaryPrefix_value types.String
@@ -7594,7 +8712,7 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) CopyFromPan
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAggregateRoutesTypeIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAggregateRoutesTypeIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var summaryPrefix_value types.String
@@ -7616,13 +8734,12 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) CopyFromPan
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTable, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_object *LogicalRouterDataSourceVrfRoutingTableIpObject
 	if obj.Ip != nil {
 		ip_object = new(LogicalRouterDataSourceVrfRoutingTableIpObject)
-
-		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
+		diags.Append(ip_object.CopyFromPango(ctx, append(ancestors, o), obj.Ip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7630,8 +8747,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableObject) CopyFromPango(ctx context
 	var ipv6_object *LogicalRouterDataSourceVrfRoutingTableIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterDataSourceVrfRoutingTableIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7643,15 +8759,19 @@ func (o *LogicalRouterDataSourceVrfRoutingTableObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_list types.List
 	{
 		var staticRoute_tf_entries []LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject
 		for _, elt := range obj.StaticRoute {
-			var entry LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			staticRoute_tf_entries = append(staticRoute_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -7665,13 +8785,12 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nexthop_object *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject
 	if obj.Nexthop != nil {
 		nexthop_object = new(LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject)
-
-		diags.Append(nexthop_object.CopyFromPango(ctx, obj.Nexthop, encrypted)...)
+		diags.Append(nexthop_object.CopyFromPango(ctx, append(ancestors, o), obj.Nexthop, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7679,8 +8798,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyFromPang
 	var bfd_object *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7688,8 +8806,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyFromPang
 	var pathMonitor_object *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject
 	if obj.PathMonitor != nil {
 		pathMonitor_object = new(LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject)
-
-		diags.Append(pathMonitor_object.CopyFromPango(ctx, obj.PathMonitor, encrypted)...)
+		diags.Append(pathMonitor_object.CopyFromPango(ctx, append(ancestors, o), obj.PathMonitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7723,13 +8840,12 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) CopyFromPang
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_object *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject
 	if obj.Discard != nil {
 		discard_object = new(LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject)
-
-		diags.Append(discard_object.CopyFromPango(ctx, obj.Discard, encrypted)...)
+		diags.Append(discard_object.CopyFromPango(ctx, append(ancestors, o), obj.Discard, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7755,13 +8871,13 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) CopyF
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRouteBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRouteBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -7773,15 +8889,19 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRoutePathMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRoutePathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var monitorDestinations_list types.List
 	{
 		var monitorDestinations_tf_entries []LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject
 		for _, elt := range obj.MonitorDestinations {
-			var entry LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			monitorDestinations_tf_entries = append(monitorDestinations_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -7810,7 +8930,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorObject) C
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -7843,15 +8963,19 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDe
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_list types.List
 	{
 		var staticRoute_tf_entries []LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject
 		for _, elt := range obj.StaticRoute {
-			var entry LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			staticRoute_tf_entries = append(staticRoute_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -7865,13 +8989,12 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6Object) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nexthop_object *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject
 	if obj.Nexthop != nil {
 		nexthop_object = new(LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject)
-
-		diags.Append(nexthop_object.CopyFromPango(ctx, obj.Nexthop, encrypted)...)
+		diags.Append(nexthop_object.CopyFromPango(ctx, append(ancestors, o), obj.Nexthop, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7879,8 +9002,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPa
 	var bfd_object *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7888,8 +9010,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPa
 	var pathMonitor_object *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject
 	if obj.PathMonitor != nil {
 		pathMonitor_object = new(LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject)
-
-		diags.Append(pathMonitor_object.CopyFromPango(ctx, obj.PathMonitor, encrypted)...)
+		diags.Append(pathMonitor_object.CopyFromPango(ctx, append(ancestors, o), obj.PathMonitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7923,13 +9044,12 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_object *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject
 	if obj.Discard != nil {
 		discard_object = new(LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject)
-
-		diags.Append(discard_object.CopyFromPango(ctx, obj.Discard, encrypted)...)
+		diags.Append(discard_object.CopyFromPango(ctx, append(ancestors, o), obj.Discard, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7955,13 +9075,13 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) Cop
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRouteBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRouteBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -7973,15 +9093,19 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyFro
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var monitorDestinations_list types.List
 	{
 		var monitorDestinations_tf_entries []LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject
 		for _, elt := range obj.MonitorDestinations {
-			var entry LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			monitorDestinations_tf_entries = append(monitorDestinations_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8010,7 +9134,7 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorObject)
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -8043,15 +9167,19 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitor
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var area_list types.List
 	{
 		var area_tf_entries []LogicalRouterDataSourceVrfOspfAreaObject
 		for _, elt := range obj.Area {
-			var entry LogicalRouterDataSourceVrfOspfAreaObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfAreaObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			area_tf_entries = append(area_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8062,8 +9190,7 @@ func (o *LogicalRouterDataSourceVrfOspfObject) CopyFromPango(ctx context.Context
 	var globalBfd_object *LogicalRouterDataSourceVrfOspfGlobalBfdObject
 	if obj.GlobalBfd != nil {
 		globalBfd_object = new(LogicalRouterDataSourceVrfOspfGlobalBfdObject)
-
-		diags.Append(globalBfd_object.CopyFromPango(ctx, obj.GlobalBfd, encrypted)...)
+		diags.Append(globalBfd_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalBfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8071,8 +9198,7 @@ func (o *LogicalRouterDataSourceVrfOspfObject) CopyFromPango(ctx context.Context
 	var gracefulRestart_object *LogicalRouterDataSourceVrfOspfGracefulRestartObject
 	if obj.GracefulRestart != nil {
 		gracefulRestart_object = new(LogicalRouterDataSourceVrfOspfGracefulRestartObject)
-
-		diags.Append(gracefulRestart_object.CopyFromPango(ctx, obj.GracefulRestart, encrypted)...)
+		diags.Append(gracefulRestart_object.CopyFromPango(ctx, append(ancestors, o), obj.GracefulRestart, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8115,7 +9241,7 @@ func (o *LogicalRouterDataSourceVrfOspfObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfGlobalBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfGlobalBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -8127,7 +9253,7 @@ func (o *LogicalRouterDataSourceVrfOspfGlobalBfdObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfGracefulRestartObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfGracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfGracefulRestartObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfGracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -8159,15 +9285,19 @@ func (o *LogicalRouterDataSourceVrfOspfGracefulRestartObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfArea, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfArea, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var range_list types.List
 	{
 		var range_tf_entries []LogicalRouterDataSourceVrfOspfAreaRangeObject
 		for _, elt := range obj.Range {
-			var entry LogicalRouterDataSourceVrfOspfAreaRangeObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfAreaRangeObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			range_tf_entries = append(range_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8179,9 +9309,13 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyFromPango(ctx context.Con
 	{
 		var interface_tf_entries []LogicalRouterDataSourceVrfOspfAreaInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterDataSourceVrfOspfAreaInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfAreaInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8193,9 +9327,13 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyFromPango(ctx context.Con
 	{
 		var virtualLink_tf_entries []LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject
 		for _, elt := range obj.VirtualLink {
-			var entry LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			virtualLink_tf_entries = append(virtualLink_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8206,8 +9344,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyFromPango(ctx context.Con
 	var type_object *LogicalRouterDataSourceVrfOspfAreaTypeObject
 	if obj.Type != nil {
 		type_object = new(LogicalRouterDataSourceVrfOspfAreaTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8227,13 +9364,12 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var normal_object *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject
 	if obj.Normal != nil {
 		normal_object = new(LogicalRouterDataSourceVrfOspfAreaTypeNormalObject)
-
-		diags.Append(normal_object.CopyFromPango(ctx, obj.Normal, encrypted)...)
+		diags.Append(normal_object.CopyFromPango(ctx, append(ancestors, o), obj.Normal, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8241,8 +9377,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyFromPango(ctx context
 	var stub_object *LogicalRouterDataSourceVrfOspfAreaTypeStubObject
 	if obj.Stub != nil {
 		stub_object = new(LogicalRouterDataSourceVrfOspfAreaTypeStubObject)
-
-		diags.Append(stub_object.CopyFromPango(ctx, obj.Stub, encrypted)...)
+		diags.Append(stub_object.CopyFromPango(ctx, append(ancestors, o), obj.Stub, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8250,8 +9385,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyFromPango(ctx context
 	var nssa_object *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject
 	if obj.Nssa != nil {
 		nssa_object = new(LogicalRouterDataSourceVrfOspfAreaTypeNssaObject)
-
-		diags.Append(nssa_object.CopyFromPango(ctx, obj.Nssa, encrypted)...)
+		diags.Append(nssa_object.CopyFromPango(ctx, append(ancestors, o), obj.Nssa, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8264,13 +9398,12 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNormal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNormal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_object *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8281,7 +9414,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNormalAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNormalAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var importList_value types.String
@@ -8308,13 +9441,12 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeStub, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeStub, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_object *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8335,7 +9467,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeStubAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeStubAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var importList_value types.String
@@ -8362,13 +9494,12 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNssa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNssa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var defaultInformationOriginate_object *LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject
 	if obj.DefaultInformationOriginate != nil {
 		defaultInformationOriginate_object = new(LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject)
-
-		diags.Append(defaultInformationOriginate_object.CopyFromPango(ctx, obj.DefaultInformationOriginate, encrypted)...)
+		diags.Append(defaultInformationOriginate_object.CopyFromPango(ctx, append(ancestors, o), obj.DefaultInformationOriginate, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8376,8 +9507,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) CopyFromPango(ctx con
 	var abr_object *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8394,7 +9524,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var metric_value types.Int64
@@ -8411,15 +9541,19 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateOb
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNssaAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNssaAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nssaExtRange_list types.List
 	{
 		var nssaExtRange_tf_entries []LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject
 		for _, elt := range obj.NssaExtRange {
-			var entry LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			nssaExtRange_tf_entries = append(nssaExtRange_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8453,7 +9587,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var advertise_value types.Bool
@@ -8466,7 +9600,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyFr
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaRangeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaRangeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var advertise_value types.Bool
@@ -8479,13 +9613,12 @@ func (o *LogicalRouterDataSourceVrfOspfAreaRangeObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var linkType_object *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject
 	if obj.LinkType != nil {
 		linkType_object = new(LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject)
-
-		diags.Append(linkType_object.CopyFromPango(ctx, obj.LinkType, encrypted)...)
+		diags.Append(linkType_object.CopyFromPango(ctx, append(ancestors, o), obj.LinkType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8493,8 +9626,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) CopyFromPango(ctx co
 	var bfd_object *LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8542,13 +9674,12 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var broadcast_object *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject
 	if obj.Broadcast != nil {
 		broadcast_object = new(LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject)
-
-		diags.Append(broadcast_object.CopyFromPango(ctx, obj.Broadcast, encrypted)...)
+		diags.Append(broadcast_object.CopyFromPango(ctx, append(ancestors, o), obj.Broadcast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8556,8 +9687,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPang
 	var p2p_object *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject
 	if obj.P2p != nil {
 		p2p_object = new(LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject)
-
-		diags.Append(p2p_object.CopyFromPango(ctx, obj.P2p, encrypted)...)
+		diags.Append(p2p_object.CopyFromPango(ctx, append(ancestors, o), obj.P2p, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8565,8 +9695,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPang
 	var p2mp_object *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject
 	if obj.P2mp != nil {
 		p2mp_object = new(LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject)
-
-		diags.Append(p2mp_object.CopyFromPango(ctx, obj.P2mp, encrypted)...)
+		diags.Append(p2mp_object.CopyFromPango(ctx, append(ancestors, o), obj.P2mp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8579,27 +9708,31 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPang
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2p, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2p, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2mp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2mp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject
 		for _, elt := range obj.Neighbor {
-			var entry LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			neighbor_tf_entries = append(neighbor_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8613,7 +9746,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyFrom
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var priority_value types.Int64
@@ -8626,7 +9759,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -8638,13 +9771,12 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceBfdObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaVirtualLink, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaVirtualLink, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var bfd_object *LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8686,7 +9818,7 @@ func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaVirtualLinkBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaVirtualLinkBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -8698,15 +9830,19 @@ func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) CopyFromPango(c
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var area_list types.List
 	{
 		var area_tf_entries []LogicalRouterDataSourceVrfOspfv3AreaObject
 		for _, elt := range obj.Area {
-			var entry LogicalRouterDataSourceVrfOspfv3AreaObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfv3AreaObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			area_tf_entries = append(area_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8717,8 +9853,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyFromPango(ctx context.Conte
 	var globalBfd_object *LogicalRouterDataSourceVrfOspfv3GlobalBfdObject
 	if obj.GlobalBfd != nil {
 		globalBfd_object = new(LogicalRouterDataSourceVrfOspfv3GlobalBfdObject)
-
-		diags.Append(globalBfd_object.CopyFromPango(ctx, obj.GlobalBfd, encrypted)...)
+		diags.Append(globalBfd_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalBfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8726,8 +9861,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyFromPango(ctx context.Conte
 	var gracefulRestart_object *LogicalRouterDataSourceVrfOspfv3GracefulRestartObject
 	if obj.GracefulRestart != nil {
 		gracefulRestart_object = new(LogicalRouterDataSourceVrfOspfv3GracefulRestartObject)
-
-		diags.Append(gracefulRestart_object.CopyFromPango(ctx, obj.GracefulRestart, encrypted)...)
+		diags.Append(gracefulRestart_object.CopyFromPango(ctx, append(ancestors, o), obj.GracefulRestart, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8770,7 +9904,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3Object) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3GlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3GlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -8782,7 +9916,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3GracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3GracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -8814,15 +9948,19 @@ func (o *LogicalRouterDataSourceVrfOspfv3GracefulRestartObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3Area, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3Area, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var range_list types.List
 	{
 		var range_tf_entries []LogicalRouterDataSourceVrfOspfv3AreaRangeObject
 		for _, elt := range obj.Range {
-			var entry LogicalRouterDataSourceVrfOspfv3AreaRangeObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfv3AreaRangeObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			range_tf_entries = append(range_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8834,9 +9972,13 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyFromPango(ctx context.C
 	{
 		var interface_tf_entries []LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8848,9 +9990,13 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyFromPango(ctx context.C
 	{
 		var virtualLink_tf_entries []LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject
 		for _, elt := range obj.VirtualLink {
-			var entry LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			virtualLink_tf_entries = append(virtualLink_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8861,8 +10007,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyFromPango(ctx context.C
 	var type_object *LogicalRouterDataSourceVrfOspfv3AreaTypeObject
 	if obj.Type != nil {
 		type_object = new(LogicalRouterDataSourceVrfOspfv3AreaTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8882,13 +10027,12 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var normal_object *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject
 	if obj.Normal != nil {
 		normal_object = new(LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject)
-
-		diags.Append(normal_object.CopyFromPango(ctx, obj.Normal, encrypted)...)
+		diags.Append(normal_object.CopyFromPango(ctx, append(ancestors, o), obj.Normal, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8896,8 +10040,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx conte
 	var stub_object *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject
 	if obj.Stub != nil {
 		stub_object = new(LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject)
-
-		diags.Append(stub_object.CopyFromPango(ctx, obj.Stub, encrypted)...)
+		diags.Append(stub_object.CopyFromPango(ctx, append(ancestors, o), obj.Stub, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8905,8 +10048,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx conte
 	var nssa_object *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject
 	if obj.Nssa != nil {
 		nssa_object = new(LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject)
-
-		diags.Append(nssa_object.CopyFromPango(ctx, obj.Nssa, encrypted)...)
+		diags.Append(nssa_object.CopyFromPango(ctx, append(ancestors, o), obj.Nssa, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8919,13 +10061,12 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNormal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNormal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_object *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8936,7 +10077,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNormalAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNormalAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var importList_value types.String
@@ -8963,13 +10104,12 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) CopyFromPango(
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeStub, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeStub, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_object *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8990,7 +10130,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeStubAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeStubAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var importList_value types.String
@@ -9017,13 +10157,12 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNssa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNssa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var defaultInformationOriginate_object *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject
 	if obj.DefaultInformationOriginate != nil {
 		defaultInformationOriginate_object = new(LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject)
-
-		diags.Append(defaultInformationOriginate_object.CopyFromPango(ctx, obj.DefaultInformationOriginate, encrypted)...)
+		diags.Append(defaultInformationOriginate_object.CopyFromPango(ctx, append(ancestors, o), obj.DefaultInformationOriginate, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9031,8 +10170,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) CopyFromPango(ctx c
 	var abr_object *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9049,7 +10187,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var metric_value types.Int64
@@ -9066,15 +10204,19 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginate
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNssaAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNssaAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nssaExtRange_list types.List
 	{
 		var nssaExtRange_tf_entries []LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject
 		for _, elt := range obj.NssaExtRange {
-			var entry LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			nssaExtRange_tf_entries = append(nssaExtRange_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -9108,7 +10250,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var advertise_value types.Bool
@@ -9121,7 +10263,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) Copy
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaRangeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaRangeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var advertise_value types.Bool
@@ -9134,13 +10276,12 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaRangeObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var linkType_object *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject
 	if obj.LinkType != nil {
 		linkType_object = new(LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject)
-
-		diags.Append(linkType_object.CopyFromPango(ctx, obj.LinkType, encrypted)...)
+		diags.Append(linkType_object.CopyFromPango(ctx, append(ancestors, o), obj.LinkType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9148,8 +10289,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) CopyFromPango(ctx 
 	var bfd_object *LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9202,13 +10342,12 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var broadcast_object *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject
 	if obj.Broadcast != nil {
 		broadcast_object = new(LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject)
-
-		diags.Append(broadcast_object.CopyFromPango(ctx, obj.Broadcast, encrypted)...)
+		diags.Append(broadcast_object.CopyFromPango(ctx, append(ancestors, o), obj.Broadcast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9216,8 +10355,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPa
 	var p2p_object *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject
 	if obj.P2p != nil {
 		p2p_object = new(LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject)
-
-		diags.Append(p2p_object.CopyFromPango(ctx, obj.P2p, encrypted)...)
+		diags.Append(p2p_object.CopyFromPango(ctx, append(ancestors, o), obj.P2p, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9225,8 +10363,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPa
 	var p2mp_object *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject
 	if obj.P2mp != nil {
 		p2mp_object = new(LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject)
-
-		diags.Append(p2mp_object.CopyFromPango(ctx, obj.P2mp, encrypted)...)
+		diags.Append(p2mp_object.CopyFromPango(ctx, append(ancestors, o), obj.P2mp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9239,27 +10376,31 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
 		for _, elt := range obj.Neighbor {
-			var entry LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			neighbor_tf_entries = append(neighbor_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -9273,7 +10414,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyFr
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var priority_value types.Int64
@@ -9286,7 +10427,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -9298,7 +10439,7 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdObject) CopyFromPango(c
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaVirtualLink, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaVirtualLink, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var neighborId_value types.String
@@ -9336,13 +10477,12 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfEcmpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_object *LogicalRouterDataSourceVrfEcmpAlgorithmObject
 	if obj.Algorithm != nil {
 		algorithm_object = new(LogicalRouterDataSourceVrfEcmpAlgorithmObject)
-
-		diags.Append(algorithm_object.CopyFromPango(ctx, obj.Algorithm, encrypted)...)
+		diags.Append(algorithm_object.CopyFromPango(ctx, append(ancestors, o), obj.Algorithm, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9373,13 +10513,12 @@ func (o *LogicalRouterDataSourceVrfEcmpObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipModulo_object *LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject
 	if obj.IpModulo != nil {
 		ipModulo_object = new(LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject)
-
-		diags.Append(ipModulo_object.CopyFromPango(ctx, obj.IpModulo, encrypted)...)
+		diags.Append(ipModulo_object.CopyFromPango(ctx, append(ancestors, o), obj.IpModulo, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9387,8 +10526,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyFromPango(ctx contex
 	var ipHash_object *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject
 	if obj.IpHash != nil {
 		ipHash_object = new(LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject)
-
-		diags.Append(ipHash_object.CopyFromPango(ctx, obj.IpHash, encrypted)...)
+		diags.Append(ipHash_object.CopyFromPango(ctx, append(ancestors, o), obj.IpHash, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9396,8 +10534,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyFromPango(ctx contex
 	var weightedRoundRobin_object *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject
 	if obj.WeightedRoundRobin != nil {
 		weightedRoundRobin_object = new(LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject)
-
-		diags.Append(weightedRoundRobin_object.CopyFromPango(ctx, obj.WeightedRoundRobin, encrypted)...)
+		diags.Append(weightedRoundRobin_object.CopyFromPango(ctx, append(ancestors, o), obj.WeightedRoundRobin, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9405,8 +10542,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyFromPango(ctx contex
 	var balancedRoundRobin_object *LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject
 	if obj.BalancedRoundRobin != nil {
 		balancedRoundRobin_object = new(LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject)
-
-		diags.Append(balancedRoundRobin_object.CopyFromPango(ctx, obj.BalancedRoundRobin, encrypted)...)
+		diags.Append(balancedRoundRobin_object.CopyFromPango(ctx, append(ancestors, o), obj.BalancedRoundRobin, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9420,13 +10556,13 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmIpModulo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmIpModulo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmIpHash, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmIpHash, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var srcOnly_value types.Bool
@@ -9448,15 +10584,19 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmWeightedRoundRobin, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmWeightedRoundRobin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_list types.List
 	{
 		var interface_tf_entries []LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -9470,7 +10610,7 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyFr
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var weight_value types.Int64
@@ -9483,21 +10623,25 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObjec
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmBalancedRoundRobin, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmBalancedRoundRobin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_list types.List
 	{
 		var staticRoute_tf_entries []LogicalRouterDataSourceVrfMulticastStaticRouteObject
 		for _, elt := range obj.StaticRoute {
-			var entry LogicalRouterDataSourceVrfMulticastStaticRouteObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfMulticastStaticRouteObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			staticRoute_tf_entries = append(staticRoute_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -9508,8 +10652,7 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) CopyFromPango(ctx context.Co
 	var pim_object *LogicalRouterDataSourceVrfMulticastPimObject
 	if obj.Pim != nil {
 		pim_object = new(LogicalRouterDataSourceVrfMulticastPimObject)
-
-		diags.Append(pim_object.CopyFromPango(ctx, obj.Pim, encrypted)...)
+		diags.Append(pim_object.CopyFromPango(ctx, append(ancestors, o), obj.Pim, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9517,8 +10660,7 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) CopyFromPango(ctx context.Co
 	var igmp_object *LogicalRouterDataSourceVrfMulticastIgmpObject
 	if obj.Igmp != nil {
 		igmp_object = new(LogicalRouterDataSourceVrfMulticastIgmpObject)
-
-		diags.Append(igmp_object.CopyFromPango(ctx, obj.Igmp, encrypted)...)
+		diags.Append(igmp_object.CopyFromPango(ctx, append(ancestors, o), obj.Igmp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9526,8 +10668,7 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) CopyFromPango(ctx context.Co
 	var msdp_object *LogicalRouterDataSourceVrfMulticastMsdpObject
 	if obj.Msdp != nil {
 		msdp_object = new(LogicalRouterDataSourceVrfMulticastMsdpObject)
-
-		diags.Append(msdp_object.CopyFromPango(ctx, obj.Msdp, encrypted)...)
+		diags.Append(msdp_object.CopyFromPango(ctx, append(ancestors, o), obj.Msdp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9546,13 +10687,12 @@ func (o *LogicalRouterDataSourceVrfMulticastObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastStaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastStaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nexthop_object *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject
 	if obj.Nexthop != nil {
 		nexthop_object = new(LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject)
-
-		diags.Append(nexthop_object.CopyFromPango(ctx, obj.Nexthop, encrypted)...)
+		diags.Append(nexthop_object.CopyFromPango(ctx, append(ancestors, o), obj.Nexthop, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9579,7 +10719,7 @@ func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastStaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastStaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipAddress_value types.String
@@ -9591,15 +10731,19 @@ func (o *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPim, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPim, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var sptThreshold_list types.List
 	{
 		var sptThreshold_tf_entries []LogicalRouterDataSourceVrfMulticastPimSptThresholdObject
 		for _, elt := range obj.SptThreshold {
-			var entry LogicalRouterDataSourceVrfMulticastPimSptThresholdObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfMulticastPimSptThresholdObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			sptThreshold_tf_entries = append(sptThreshold_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -9611,9 +10755,13 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyFromPango(ctx context
 	{
 		var interface_tf_entries []LogicalRouterDataSourceVrfMulticastPimInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterDataSourceVrfMulticastPimInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfMulticastPimInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -9624,8 +10772,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyFromPango(ctx context
 	var ssmAddressSpace_object *LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject
 	if obj.SsmAddressSpace != nil {
 		ssmAddressSpace_object = new(LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject)
-
-		diags.Append(ssmAddressSpace_object.CopyFromPango(ctx, obj.SsmAddressSpace, encrypted)...)
+		diags.Append(ssmAddressSpace_object.CopyFromPango(ctx, append(ancestors, o), obj.SsmAddressSpace, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9633,8 +10780,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyFromPango(ctx context
 	var rp_object *LogicalRouterDataSourceVrfMulticastPimRpObject
 	if obj.Rp != nil {
 		rp_object = new(LogicalRouterDataSourceVrfMulticastPimRpObject)
-
-		diags.Append(rp_object.CopyFromPango(ctx, obj.Rp, encrypted)...)
+		diags.Append(rp_object.CopyFromPango(ctx, append(ancestors, o), obj.Rp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9673,7 +10819,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimSsmAddressSpace, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimSsmAddressSpace, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var groupList_value types.String
@@ -9685,15 +10831,19 @@ func (o *LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var externalRp_list types.List
 	{
 		var externalRp_tf_entries []LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject
 		for _, elt := range obj.ExternalRp {
-			var entry LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			externalRp_tf_entries = append(externalRp_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -9704,8 +10854,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) CopyFromPango(ctx conte
 	var localRp_object *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject
 	if obj.LocalRp != nil {
 		localRp_object = new(LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject)
-
-		diags.Append(localRp_object.CopyFromPango(ctx, obj.LocalRp, encrypted)...)
+		diags.Append(localRp_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalRp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9717,13 +10866,12 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRpLocalRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRpLocalRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRp_object *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject
 	if obj.StaticRp != nil {
 		staticRp_object = new(LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject)
-
-		diags.Append(staticRp_object.CopyFromPango(ctx, obj.StaticRp, encrypted)...)
+		diags.Append(staticRp_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticRp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9731,8 +10879,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) CopyFromPango(ct
 	var candidateRp_object *LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject
 	if obj.CandidateRp != nil {
 		candidateRp_object = new(LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject)
-
-		diags.Append(candidateRp_object.CopyFromPango(ctx, obj.CandidateRp, encrypted)...)
+		diags.Append(candidateRp_object.CopyFromPango(ctx, append(ancestors, o), obj.CandidateRp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9744,7 +10891,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRpLocalRpStaticRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRpLocalRpStaticRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -9771,7 +10918,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) CopyFrom
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRpLocalRpCandidateRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRpLocalRpCandidateRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -9803,7 +10950,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyF
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRpExternalRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRpExternalRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var groupList_value types.String
@@ -9821,7 +10968,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpExternalRpObject) CopyFromPango
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastPimSptThresholdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimSptThreshold, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimSptThresholdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimSptThreshold, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var threshold_value types.String
@@ -9834,7 +10981,7 @@ func (o *LogicalRouterDataSourceVrfMulticastPimSptThresholdObject) CopyFromPango
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastPimInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastPimInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var description_value types.String
@@ -9867,15 +11014,19 @@ func (o *LogicalRouterDataSourceVrfMulticastPimInterfaceObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastIgmp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastIgmp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_list types.List
 	{
 		var static_tf_entries []LogicalRouterDataSourceVrfMulticastIgmpStaticObject
 		for _, elt := range obj.Static {
-			var entry LogicalRouterDataSourceVrfMulticastIgmpStaticObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfMulticastIgmpStaticObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			static_tf_entries = append(static_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -9886,8 +11037,7 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) CopyFromPango(ctx contex
 	var dynamic_object *LogicalRouterDataSourceVrfMulticastIgmpDynamicObject
 	if obj.Dynamic != nil {
 		dynamic_object = new(LogicalRouterDataSourceVrfMulticastIgmpDynamicObject)
-
-		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
+		diags.Append(dynamic_object.CopyFromPango(ctx, append(ancestors, o), obj.Dynamic, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9904,15 +11054,19 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastIgmpDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastIgmpDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_list types.List
 	{
 		var interface_tf_entries []LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -9926,7 +11080,7 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastIgmpDynamicInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastIgmpDynamicInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var version_value types.String
@@ -9969,7 +11123,7 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceObject) CopyFrom
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastIgmpStaticObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastIgmpStatic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastIgmpStaticObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastIgmpStatic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -9992,15 +11146,19 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpStaticObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var peer_list types.List
 	{
 		var peer_tf_entries []LogicalRouterDataSourceVrfMulticastMsdpPeerObject
 		for _, elt := range obj.Peer {
-			var entry LogicalRouterDataSourceVrfMulticastMsdpPeerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfMulticastMsdpPeerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			peer_tf_entries = append(peer_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -10011,8 +11169,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) CopyFromPango(ctx contex
 	var originatorId_object *LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject
 	if obj.OriginatorId != nil {
 		originatorId_object = new(LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject)
-
-		diags.Append(originatorId_object.CopyFromPango(ctx, obj.OriginatorId, encrypted)...)
+		diags.Append(originatorId_object.CopyFromPango(ctx, append(ancestors, o), obj.OriginatorId, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10039,7 +11196,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdpOriginatorId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdpOriginatorId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -10056,13 +11213,12 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdObject) CopyFromPang
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdpPeer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdpPeer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localAddress_object *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10070,8 +11226,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) CopyFromPango(ctx co
 	var peerAddress_object *LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject
 	if obj.PeerAddress != nil {
 		peerAddress_object = new(LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		diags.Append(peerAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.PeerAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10114,7 +11269,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdpPeerLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdpPeerLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -10131,7 +11286,7 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) CopyFrom
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdpPeerPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdpPeerPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ip_value types.String
@@ -10148,15 +11303,19 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRipObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interfaces_list types.List
 	{
 		var interfaces_tf_entries []LogicalRouterDataSourceVrfRipInterfacesObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterDataSourceVrfRipInterfacesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterDataSourceVrfRipInterfacesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interfaces_tf_entries = append(interfaces_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -10167,8 +11326,7 @@ func (o *LogicalRouterDataSourceVrfRipObject) CopyFromPango(ctx context.Context,
 	var globalBfd_object *LogicalRouterDataSourceVrfRipGlobalBfdObject
 	if obj.GlobalBfd != nil {
 		globalBfd_object = new(LogicalRouterDataSourceVrfRipGlobalBfdObject)
-
-		diags.Append(globalBfd_object.CopyFromPango(ctx, obj.GlobalBfd, encrypted)...)
+		diags.Append(globalBfd_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalBfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10176,8 +11334,7 @@ func (o *LogicalRouterDataSourceVrfRipObject) CopyFromPango(ctx context.Context,
 	var globalInboundDistributeList_object *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject
 	if obj.GlobalInboundDistributeList != nil {
 		globalInboundDistributeList_object = new(LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject)
-
-		diags.Append(globalInboundDistributeList_object.CopyFromPango(ctx, obj.GlobalInboundDistributeList, encrypted)...)
+		diags.Append(globalInboundDistributeList_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalInboundDistributeList, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10185,8 +11342,7 @@ func (o *LogicalRouterDataSourceVrfRipObject) CopyFromPango(ctx context.Context,
 	var globalOutboundDistributeList_object *LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject
 	if obj.GlobalOutboundDistributeList != nil {
 		globalOutboundDistributeList_object = new(LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject)
-
-		diags.Append(globalOutboundDistributeList_object.CopyFromPango(ctx, obj.GlobalOutboundDistributeList, encrypted)...)
+		diags.Append(globalOutboundDistributeList_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalOutboundDistributeList, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10225,7 +11381,7 @@ func (o *LogicalRouterDataSourceVrfRipObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRipGlobalBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipGlobalBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -10237,7 +11393,7 @@ func (o *LogicalRouterDataSourceVrfRipGlobalBfdObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipGlobalInboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipGlobalInboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var accessList_value types.String
@@ -10249,7 +11405,7 @@ func (o *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) CopyFro
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipGlobalOutboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipGlobalOutboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var accessList_value types.String
@@ -10261,13 +11417,12 @@ func (o *LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListObject) CopyFr
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var bfd_object *LogicalRouterDataSourceVrfRipInterfacesBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterDataSourceVrfRipInterfacesBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10275,8 +11430,7 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyFromPango(ctx contex
 	var interfaceInboundDistributeList_object *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListObject
 	if obj.InterfaceInboundDistributeList != nil {
 		interfaceInboundDistributeList_object = new(LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListObject)
-
-		diags.Append(interfaceInboundDistributeList_object.CopyFromPango(ctx, obj.InterfaceInboundDistributeList, encrypted)...)
+		diags.Append(interfaceInboundDistributeList_object.CopyFromPango(ctx, append(ancestors, o), obj.InterfaceInboundDistributeList, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10284,8 +11438,7 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyFromPango(ctx contex
 	var interfaceOutboundDistributeList_object *LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListObject
 	if obj.InterfaceOutboundDistributeList != nil {
 		interfaceOutboundDistributeList_object = new(LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListObject)
-
-		diags.Append(interfaceOutboundDistributeList_object.CopyFromPango(ctx, obj.InterfaceOutboundDistributeList, encrypted)...)
+		diags.Append(interfaceOutboundDistributeList_object.CopyFromPango(ctx, append(ancestors, o), obj.InterfaceOutboundDistributeList, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10319,7 +11472,7 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRipInterfacesBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipInterfacesBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -10331,7 +11484,7 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesBfdObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipInterfaceInterfaceInboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipInterfaceInterfaceInboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var accessList_value types.String
@@ -10348,7 +11501,7 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListOb
 	return diags
 }
 
-func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipInterfaceInterfaceOutboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipInterfaceInterfaceOutboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var accessList_value types.String
@@ -10363,6 +11516,11 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListO
 	o.Metric = metric_value
 
 	return diags
+}
+
+func (o *LogicalRouterDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func LogicalRouterDataSourceSchema() dsschema.Schema {
@@ -17742,13 +18900,20 @@ func (d *LogicalRouterDataSource) Configure(_ context.Context, req datasource.Co
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, logical_router.NewService(d.client), batchSize, specifier, logical_router.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*logical_router.Entry, logical_router.Location, *logical_router.Service](d.client, logical_router.NewService(d.client), batchSize, specifier, logical_router.SpecMatches)
 }
 func (o *LogicalRouterDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state LogicalRouterDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -17804,8 +18969,12 @@ func (o *LogicalRouterDataSource) Read(ctx context.Context, req datasource.ReadR
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -17815,7 +18984,7 @@ func (o *LogicalRouterDataSource) Read(ctx context.Context, req datasource.ReadR
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -26082,7 +27251,7 @@ func (r *LogicalRouterResource) Configure(ctx context.Context, req resource.Conf
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, logical_router.NewService(r.client), batchSize, specifier, logical_router.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*logical_router.Entry, logical_router.Location, *logical_router.Service](r.client, logical_router.NewService(r.client), batchSize, specifier, logical_router.SpecMatches)
 }
 
 func (o *LogicalRouterResourceModel) AttributeTypes() map[string]attr.Type {
@@ -26096,6 +27265,14 @@ func (o *LogicalRouterResourceModel) AttributeTypes() map[string]attr.Type {
 		"name": types.StringType,
 		"vrf":  types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o LogicalRouterResourceModel) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfObject) AttributeTypes() map[string]attr.Type {
 
@@ -26148,6 +27325,14 @@ func (o *LogicalRouterResourceVrfObject) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfObject) AncestorName() string {
+	return "vrf"
+}
+
+func (o LogicalRouterResourceVrfObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -26165,6 +27350,14 @@ func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) AttributeTypes()
 		"rip":          types.Int64Type,
 	}
 }
+
+func (o LogicalRouterResourceVrfAdministrativeDistancesObject) AncestorName() string {
+	return "administrative-distances"
+}
+
+func (o LogicalRouterResourceVrfAdministrativeDistancesObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRibFilterObject) AttributeTypes() map[string]attr.Type {
 
 	var ipv4Obj *LogicalRouterResourceVrfRibFilterIpv4Object
@@ -26178,6 +27371,14 @@ func (o *LogicalRouterResourceVrfRibFilterObject) AttributeTypes() map[string]at
 			AttrTypes: ipv6Obj.AttributeTypes(),
 		},
 	}
+}
+
+func (o LogicalRouterResourceVrfRibFilterObject) AncestorName() string {
+	return "rib-filter"
+}
+
+func (o LogicalRouterResourceVrfRibFilterObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRibFilterIpv4Object) AttributeTypes() map[string]attr.Type {
 
@@ -26203,11 +27404,27 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) AttributeTypes() map[strin
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfRibFilterIpv4Object) AncestorName() string {
+	return "ipv4"
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv4Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRibFilterIpv4StaticObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv4StaticObject) AncestorName() string {
+	return "static"
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv4StaticObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) AttributeTypes() map[string]attr.Type {
 
@@ -26215,17 +27432,41 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) AttributeTypes() map[st
 		"route_map": types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfRibFilterIpv4BgpObject) AncestorName() string {
+	return "bgp"
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv4BgpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRibFilterIpv4OspfObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfRibFilterIpv4OspfObject) AncestorName() string {
+	return "ospf"
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv4OspfObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRibFilterIpv4RipObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv4RipObject) AncestorName() string {
+	return "rip"
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv4RipObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRibFilterIpv6Object) AttributeTypes() map[string]attr.Type {
 
@@ -26246,11 +27487,27 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Object) AttributeTypes() map[strin
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfRibFilterIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv6Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRibFilterIpv6StaticObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv6StaticObject) AncestorName() string {
+	return "static"
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv6StaticObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) AttributeTypes() map[string]attr.Type {
 
@@ -26258,11 +27515,27 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) AttributeTypes() map[st
 		"route_map": types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfRibFilterIpv6BgpObject) AncestorName() string {
+	return "bgp"
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv6BgpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"route_map": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) AncestorName() string {
+	return "ospfv3"
+}
+
+func (o LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpObject) AttributeTypes() map[string]attr.Type {
 
@@ -26306,12 +27579,28 @@ func (o *LogicalRouterResourceVrfBgpObject) AttributeTypes() map[string]attr.Typ
 		"aggregate_routes": types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpObject) AncestorName() string {
+	return "bgp"
+}
+
+func (o LogicalRouterResourceVrfBgpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpMedObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"always_compare_med":           types.BoolType,
 		"deterministic_med_comparison": types.BoolType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpMedObject) AncestorName() string {
+	return "med"
+}
+
+func (o LogicalRouterResourceVrfBgpMedObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) AttributeTypes() map[string]attr.Type {
 
@@ -26322,11 +27611,27 @@ func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) AttributeTypes() map[
 		"local_restart_time":    types.Int64Type,
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpGracefulRestartObject) AncestorName() string {
+	return "graceful-restart"
+}
+
+func (o LogicalRouterResourceVrfBgpGracefulRestartObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpGlobalBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpGlobalBfdObject) AncestorName() string {
+	return "global-bfd"
+}
+
+func (o LogicalRouterResourceVrfBgpGlobalBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) AttributeTypes() map[string]attr.Type {
 
@@ -26342,17 +27647,41 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) AttributeTypes(
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpRedistributionProfileObject) AncestorName() string {
+	return "redistribution-profile"
+}
+
+func (o LogicalRouterResourceVrfBgpRedistributionProfileObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"unicast": types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) AncestorName() string {
+	return "ipv4"
+}
+
+func (o LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"unicast": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -26368,11 +27697,27 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) AttributeTypes() map
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkObject) AncestorName() string {
+	return "advertise-network"
+}
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"network": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) AncestorName() string {
+	return "ipv4"
+}
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -26383,11 +27728,27 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) Attribute
 		"backdoor":  types.BoolType,
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"network": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -26395,6 +27756,14 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) Attribute
 		"name":    types.StringType,
 		"unicast": types.BoolType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterResourceVrfBgpPeerGroupObject) AttributeTypes() map[string]attr.Type {
 
@@ -26424,6 +27793,14 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) AttributeTypes() map[string
 		"peer": types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupObject) AncestorName() string {
+	return "peer-group"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var ibgpObj *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject
@@ -26438,11 +27815,35 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) AttributeTypes() map[st
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) AncestorName() string {
+	return "ibgp"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) AncestorName() string {
+	return "ebgp"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) AttributeTypes() map[string]attr.Type {
 
@@ -26451,12 +27852,28 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) AttributeTypes
 		"ipv6": types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) AncestorName() string {
+	return "address-family"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ipv4": types.StringType,
 		"ipv6": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) AncestorName() string {
+	return "filtering-profile"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) AttributeTypes() map[string]attr.Type {
 
@@ -26466,6 +27883,14 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) AttributeT
 		"authentication": types.StringType,
 		"dampening":      types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) AncestorName() string {
+	return "connection-options"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) AttributeTypes() map[string]attr.Type {
 
@@ -26501,6 +27926,14 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) AttributeTypes() map[st
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerObject) AncestorName() string {
+	return "peer"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) AttributeTypes() map[string]attr.Type {
 
 	var yesObj *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject
@@ -26515,8 +27948,24 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) AttributeTypes()
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) AncestorName() string {
+	return "inherit"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) AncestorName() string {
+	return "yes"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) AttributeTypes() map[string]attr.Type {
 
@@ -26532,12 +27981,28 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) AttributeTypes
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) AncestorName() string {
+	return "no"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ipv4": types.StringType,
 		"ipv6": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) AncestorName() string {
+	return "address-family"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) AttributeTypes() map[string]attr.Type {
 
@@ -26546,6 +28011,14 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject
 		"ipv6": types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) AncestorName() string {
+	return "filtering-profile"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -26553,12 +28026,28 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) AttributeTy
 		"ip":        types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ip":   types.StringType,
 		"fqdn": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) AncestorName() string {
+	return "peer-address"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) AttributeTypes() map[string]attr.Type {
 
@@ -26569,11 +28058,27 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) Attrib
 		"dampening":      types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) AncestorName() string {
+	return "connection-options"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) AttributeTypes() map[string]attr.Type {
 
@@ -26590,6 +28095,14 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) AttributeTypes() map[
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpAggregateRoutesObject) AncestorName() string {
+	return "aggregate-routes"
+}
+
+func (o LogicalRouterResourceVrfBgpAggregateRoutesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var ipv4Obj *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object
@@ -26604,6 +28117,14 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) AttributeTypes() 
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -26612,6 +28133,14 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) AttributeType
 		"attribute_map":  types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) AncestorName() string {
+	return "ipv4"
+}
+
+func (o LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -26619,6 +28148,14 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) AttributeType
 		"suppress_map":   types.StringType,
 		"attribute_map":  types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRoutingTableObject) AttributeTypes() map[string]attr.Type {
 
@@ -26634,11 +28171,27 @@ func (o *LogicalRouterResourceVrfRoutingTableObject) AttributeTypes() map[string
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfRoutingTableObject) AncestorName() string {
+	return "routing-table"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRoutingTableIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"static_route": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) AttributeTypes() map[string]attr.Type {
 
@@ -26664,6 +28217,14 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) AttributeTypes
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) AncestorName() string {
+	return "static-route"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
 
 	var discardObj *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject
@@ -26677,14 +28238,38 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) Attribu
 		"fqdn":       types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) AncestorName() string {
+	return "nexthop"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) AncestorName() string {
+	return "discard"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) AttributeTypes() map[string]attr.Type {
 
@@ -26694,6 +28279,14 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) Att
 		"hold_time":            types.Int64Type,
 		"monitor_destinations": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) AncestorName() string {
+	return "path-monitor"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) AttributeTypes() map[string]attr.Type {
 
@@ -26706,11 +28299,27 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDest
 		"count":       types.Int64Type,
 	}
 }
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) AncestorName() string {
+	return "monitor-destinations"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfRoutingTableIpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"static_route": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) AttributeTypes() map[string]attr.Type {
 
@@ -26736,6 +28345,14 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) AttributeTyp
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) AncestorName() string {
+	return "static-route"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
 
 	var discardObj *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject
@@ -26749,14 +28366,38 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) Attri
 		"next_lr":      types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) AncestorName() string {
+	return "nexthop"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) AncestorName() string {
+	return "discard"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) AttributeTypes() map[string]attr.Type {
 
@@ -26766,6 +28407,14 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) A
 		"hold_time":            types.Int64Type,
 		"monitor_destinations": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) AncestorName() string {
+	return "path-monitor"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) AttributeTypes() map[string]attr.Type {
 
@@ -26777,6 +28426,14 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDe
 		"interval":    types.Int64Type,
 		"count":       types.Int64Type,
 	}
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) AncestorName() string {
+	return "monitor-destinations"
+}
+
+func (o LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterResourceVrfOspfObject) AttributeTypes() map[string]attr.Type {
 
@@ -26800,11 +28457,27 @@ func (o *LogicalRouterResourceVrfOspfObject) AttributeTypes() map[string]attr.Ty
 		"area": types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfObject) AncestorName() string {
+	return "ospf"
+}
+
+func (o LogicalRouterResourceVrfOspfObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfGlobalBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfGlobalBfdObject) AncestorName() string {
+	return "global-bfd"
+}
+
+func (o LogicalRouterResourceVrfOspfGlobalBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfGracefulRestartObject) AttributeTypes() map[string]attr.Type {
 
@@ -26815,6 +28488,14 @@ func (o *LogicalRouterResourceVrfOspfGracefulRestartObject) AttributeTypes() map
 		"strict_lsa_checking":       types.BoolType,
 		"max_neighbor_restart_time": types.Int64Type,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfGracefulRestartObject) AncestorName() string {
+	return "graceful-restart"
+}
+
+func (o LogicalRouterResourceVrfOspfGracefulRestartObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfAreaObject) AttributeTypes() map[string]attr.Type {
 
@@ -26830,6 +28511,14 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) AttributeTypes() map[string]att
 		"interface":    types.ListType{},
 		"virtual_link": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfAreaObject) AncestorName() string {
+	return "area"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterResourceVrfOspfAreaTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -26850,6 +28539,14 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeObject) AttributeTypes() map[string
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) AttributeTypes() map[string]attr.Type {
 
 	var abrObj *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject
@@ -26859,6 +28556,14 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) AttributeTypes() map[
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNormalObject) AncestorName() string {
+	return "normal"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNormalObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -26867,6 +28572,14 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) AttributeTypes() m
 		"inbound_filter_list":  types.StringType,
 		"outbound_filter_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) AttributeTypes() map[string]attr.Type {
 
@@ -26880,6 +28593,14 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) AttributeTypes() map[st
 		"default_route_metric": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaTypeStubObject) AncestorName() string {
+	return "stub"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeStubObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -26888,6 +28609,14 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) AttributeTypes() map
 		"inbound_filter_list":  types.StringType,
 		"outbound_filter_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) AttributeTypes() map[string]attr.Type {
 
@@ -26904,12 +28633,28 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) AttributeTypes() map[st
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNssaObject) AncestorName() string {
+	return "nssa"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNssaObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"metric":      types.Int64Type,
 		"metric_type": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) AncestorName() string {
+	return "default-information-originate"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) AttributeTypes() map[string]attr.Type {
 
@@ -26921,6 +28666,14 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) AttributeTypes() map
 		"nssa_ext_range":       types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -26928,12 +28681,28 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) Attribut
 		"advertise": types.BoolType,
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) AncestorName() string {
+	return "nssa-ext-range"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfOspfAreaRangeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":      types.StringType,
 		"advertise": types.BoolType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfAreaRangeObject) AncestorName() string {
+	return "range"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaRangeObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -26957,6 +28726,14 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) AttributeTypes() map[s
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var broadcastObj *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject
@@ -26976,17 +28753,49 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) AttributeTypes
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) AncestorName() string {
+	return "link-type"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) AncestorName() string {
+	return "broadcast"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) AncestorName() string {
+	return "p2p"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"neighbor": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) AncestorName() string {
+	return "p2mp"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) AttributeTypes() map[string]attr.Type {
 
@@ -26995,11 +28804,27 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) At
 		"priority": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) AttributeTypes() map[string]attr.Type {
 
@@ -27017,11 +28842,27 @@ func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) AttributeTypes() map
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfAreaVirtualLinkObject) AncestorName() string {
+	return "virtual-link"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaVirtualLinkObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfv3Object) AttributeTypes() map[string]attr.Type {
 
@@ -27045,11 +28886,27 @@ func (o *LogicalRouterResourceVrfOspfv3Object) AttributeTypes() map[string]attr.
 		"area": types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3Object) AncestorName() string {
+	return "ospfv3"
+}
+
+func (o LogicalRouterResourceVrfOspfv3Object) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfv3GlobalBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfv3GlobalBfdObject) AncestorName() string {
+	return "global-bfd"
+}
+
+func (o LogicalRouterResourceVrfOspfv3GlobalBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfv3GracefulRestartObject) AttributeTypes() map[string]attr.Type {
 
@@ -27060,6 +28917,14 @@ func (o *LogicalRouterResourceVrfOspfv3GracefulRestartObject) AttributeTypes() m
 		"strict_lsa_checking":       types.BoolType,
 		"max_neighbor_restart_time": types.Int64Type,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfv3GracefulRestartObject) AncestorName() string {
+	return "graceful-restart"
+}
+
+func (o LogicalRouterResourceVrfOspfv3GracefulRestartObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfv3AreaObject) AttributeTypes() map[string]attr.Type {
 
@@ -27075,6 +28940,14 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) AttributeTypes() map[string]a
 		"interface":    types.ListType{},
 		"virtual_link": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaObject) AncestorName() string {
+	return "area"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -27095,6 +28968,14 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) AttributeTypes() map[stri
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) AttributeTypes() map[string]attr.Type {
 
 	var abrObj *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject
@@ -27104,6 +28985,14 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) AncestorName() string {
+	return "normal"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -27112,6 +29001,14 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) AttributeTypes()
 		"inbound_filter_list":  types.StringType,
 		"outbound_filter_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) AttributeTypes() map[string]attr.Type {
 
@@ -27125,6 +29022,14 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) AttributeTypes() map[
 		"default_route_metric": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeStubObject) AncestorName() string {
+	return "stub"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeStubObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -27133,6 +29038,14 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) AttributeTypes() m
 		"inbound_filter_list":  types.StringType,
 		"outbound_filter_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) AttributeTypes() map[string]attr.Type {
 
@@ -27149,12 +29062,28 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) AttributeTypes() map[
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) AncestorName() string {
+	return "nssa"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"metric":      types.Int64Type,
 		"metric_type": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) AncestorName() string {
+	return "default-information-originate"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) AttributeTypes() map[string]attr.Type {
 
@@ -27166,6 +29095,14 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) AttributeTypes() m
 		"nssa_ext_range":       types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) AncestorName() string {
+	return "abr"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -27173,12 +29110,28 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) Attrib
 		"advertise": types.BoolType,
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) AncestorName() string {
+	return "nssa-ext-range"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaRangeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":      types.StringType,
 		"advertise": types.BoolType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaRangeObject) AncestorName() string {
+	return "range"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaRangeObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -27203,6 +29156,14 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) AttributeTypes() map
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var broadcastObj *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject
@@ -27222,17 +29183,49 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) AttributeTyp
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) AncestorName() string {
+	return "link-type"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) AncestorName() string {
+	return "broadcast"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) AncestorName() string {
+	return "p2p"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"neighbor": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) AncestorName() string {
+	return "p2mp"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) AttributeTypes() map[string]attr.Type {
 
@@ -27241,11 +29234,27 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) 
 		"priority": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) AttributeTypes() map[string]attr.Type {
 
@@ -27259,6 +29268,14 @@ func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) AttributeTypes() m
 		"authentication":  types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) AncestorName() string {
+	return "virtual-link"
+}
+
+func (o LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfEcmpObject) AttributeTypes() map[string]attr.Type {
 
 	var algorithmObj *LogicalRouterResourceVrfEcmpAlgorithmObject
@@ -27271,6 +29288,14 @@ func (o *LogicalRouterResourceVrfEcmpObject) AttributeTypes() map[string]attr.Ty
 			AttrTypes: algorithmObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o LogicalRouterResourceVrfEcmpObject) AncestorName() string {
+	return "ecmp"
+}
+
+func (o LogicalRouterResourceVrfEcmpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) AttributeTypes() map[string]attr.Type {
 
@@ -27296,8 +29321,24 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) AttributeTypes() map[strin
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmObject) AncestorName() string {
+	return "algorithm"
+}
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) AncestorName() string {
+	return "ip-modulo"
+}
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) AttributeTypes() map[string]attr.Type {
 
@@ -27307,11 +29348,27 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) AttributeTypes() map
 		"hash_seed": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) AncestorName() string {
+	return "ip-hash"
+}
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"interface": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) AncestorName() string {
+	return "weighted-round-robin"
+}
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -27320,8 +29377,24 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject)
 		"weight": types.Int64Type,
 	}
 }
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) AncestorName() string {
+	return "balanced-round-robin"
+}
+
+func (o LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfMulticastObject) AttributeTypes() map[string]attr.Type {
 
@@ -27344,6 +29417,14 @@ func (o *LogicalRouterResourceVrfMulticastObject) AttributeTypes() map[string]at
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastObject) AncestorName() string {
+	return "multicast"
+}
+
+func (o LogicalRouterResourceVrfMulticastObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) AttributeTypes() map[string]attr.Type {
 
 	var nexthopObj *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject
@@ -27357,11 +29438,27 @@ func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastStaticRouteObject) AncestorName() string {
+	return "static-route"
+}
+
+func (o LogicalRouterResourceVrfMulticastStaticRouteObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ip_address": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) AncestorName() string {
+	return "nexthop"
+}
+
+func (o LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfMulticastPimObject) AttributeTypes() map[string]attr.Type {
 
@@ -27385,11 +29482,27 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) AttributeTypes() map[string
 		"interface":     types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastPimObject) AncestorName() string {
+	return "pim"
+}
+
+func (o LogicalRouterResourceVrfMulticastPimObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"group_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) AncestorName() string {
+	return "ssm-address-space"
+}
+
+func (o LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfMulticastPimRpObject) AttributeTypes() map[string]attr.Type {
 
@@ -27401,6 +29514,14 @@ func (o *LogicalRouterResourceVrfMulticastPimRpObject) AttributeTypes() map[stri
 		},
 		"external_rp": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastPimRpObject) AncestorName() string {
+	return "rp"
+}
+
+func (o LogicalRouterResourceVrfMulticastPimRpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) AttributeTypes() map[string]attr.Type {
 
@@ -27416,6 +29537,14 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) AttributeTypes() m
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastPimRpLocalRpObject) AncestorName() string {
+	return "local-rp"
+}
+
+func (o LogicalRouterResourceVrfMulticastPimRpLocalRpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -27424,6 +29553,14 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) AttributeT
 		"override":   types.BoolType,
 		"group_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) AncestorName() string {
+	return "static-rp"
+}
+
+func (o LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) AttributeTypes() map[string]attr.Type {
 
@@ -27435,6 +29572,14 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) Attribu
 		"group_list":             types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) AncestorName() string {
+	return "candidate-rp"
+}
+
+func (o LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfMulticastPimRpExternalRpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -27443,12 +29588,28 @@ func (o *LogicalRouterResourceVrfMulticastPimRpExternalRpObject) AttributeTypes(
 		"override":   types.BoolType,
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastPimRpExternalRpObject) AncestorName() string {
+	return "external-rp"
+}
+
+func (o LogicalRouterResourceVrfMulticastPimRpExternalRpObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfMulticastPimSptThresholdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":      types.StringType,
 		"threshold": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastPimSptThresholdObject) AncestorName() string {
+	return "spt-threshold"
+}
+
+func (o LogicalRouterResourceVrfMulticastPimSptThresholdObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -27460,6 +29621,14 @@ func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) AttributeTypes() m
 		"if_timer":        types.StringType,
 		"neighbor_filter": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastPimInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterResourceVrfMulticastPimInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterResourceVrfMulticastIgmpObject) AttributeTypes() map[string]attr.Type {
 
@@ -27473,11 +29642,27 @@ func (o *LogicalRouterResourceVrfMulticastIgmpObject) AttributeTypes() map[strin
 		"static": types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastIgmpObject) AncestorName() string {
+	return "igmp"
+}
+
+func (o LogicalRouterResourceVrfMulticastIgmpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfMulticastIgmpDynamicObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"interface": types.ListType{},
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastIgmpDynamicObject) AncestorName() string {
+	return "dynamic"
+}
+
+func (o LogicalRouterResourceVrfMulticastIgmpDynamicObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) AttributeTypes() map[string]attr.Type {
 
@@ -27492,6 +29677,14 @@ func (o *LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) AttributeT
 		"router_alert_policing": types.BoolType,
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) AncestorName() string {
+	return "interface"
+}
+
+func (o LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -27500,6 +29693,14 @@ func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) AttributeTypes() map
 		"group_address":  types.StringType,
 		"source_address": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastIgmpStaticObject) AncestorName() string {
+	return "static"
+}
+
+func (o LogicalRouterResourceVrfMulticastIgmpStaticObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogicalRouterResourceVrfMulticastMsdpObject) AttributeTypes() map[string]attr.Type {
 
@@ -27515,12 +29716,28 @@ func (o *LogicalRouterResourceVrfMulticastMsdpObject) AttributeTypes() map[strin
 		"peer": types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastMsdpObject) AncestorName() string {
+	return "msdp"
+}
+
+func (o LogicalRouterResourceVrfMulticastMsdpObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"interface": types.StringType,
 		"ip":        types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) AncestorName() string {
+	return "originator-id"
+}
+
+func (o LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) AttributeTypes() map[string]attr.Type {
 
@@ -27543,6 +29760,14 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) AttributeTypes() map[s
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastMsdpPeerObject) AncestorName() string {
+	return "peer"
+}
+
+func (o LogicalRouterResourceVrfMulticastMsdpPeerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -27550,12 +29775,28 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) AttributeT
 		"ip":        types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ip":   types.StringType,
 		"fqdn": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) AncestorName() string {
+	return "peer-address"
+}
+
+func (o LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRipObject) AttributeTypes() map[string]attr.Type {
 
@@ -27583,11 +29824,27 @@ func (o *LogicalRouterResourceVrfRipObject) AttributeTypes() map[string]attr.Typ
 		"interfaces": types.ListType{},
 	}
 }
+
+func (o LogicalRouterResourceVrfRipObject) AncestorName() string {
+	return "rip"
+}
+
+func (o LogicalRouterResourceVrfRipObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRipGlobalBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfRipGlobalBfdObject) AncestorName() string {
+	return "global-bfd"
+}
+
+func (o LogicalRouterResourceVrfRipGlobalBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) AttributeTypes() map[string]attr.Type {
 
@@ -27595,11 +29852,27 @@ func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) Attribute
 		"access_list": types.StringType,
 	}
 }
+
+func (o LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) AncestorName() string {
+	return "global-inbound-distribute-list"
+}
+
+func (o LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) EntryName() *string {
+	return nil
+}
 func (o *LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"access_list": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) AncestorName() string {
+	return "global-outbound-distribute-list"
+}
+
+func (o LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRipInterfacesObject) AttributeTypes() map[string]attr.Type {
 
@@ -27625,11 +29898,27 @@ func (o *LogicalRouterResourceVrfRipInterfacesObject) AttributeTypes() map[strin
 		},
 	}
 }
+
+func (o LogicalRouterResourceVrfRipInterfacesObject) AncestorName() string {
+	return "interfaces"
+}
+
+func (o LogicalRouterResourceVrfRipInterfacesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogicalRouterResourceVrfRipInterfacesBfdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"profile": types.StringType,
 	}
+}
+
+func (o LogicalRouterResourceVrfRipInterfacesBfdObject) AncestorName() string {
+	return "bfd"
+}
+
+func (o LogicalRouterResourceVrfRipInterfacesBfdObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject) AttributeTypes() map[string]attr.Type {
 
@@ -27637,6 +29926,14 @@ func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObje
 		"access_list": types.StringType,
 		"metric":      types.Int64Type,
 	}
+}
+
+func (o LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject) AncestorName() string {
+	return "interface-inbound-distribute-list"
+}
+
+func (o LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject) EntryName() *string {
+	return nil
 }
 func (o *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject) AttributeTypes() map[string]attr.Type {
 
@@ -27646,7 +29943,15 @@ func (o *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObj
 	}
 }
 
-func (o *LogicalRouterResourceModel) CopyToPango(ctx context.Context, obj **logical_router.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject) AncestorName() string {
+	return "interface-outbound-distribute-list"
+}
+
+func (o LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject) EntryName() *string {
+	return nil
+}
+
+func (o *LogicalRouterResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vrf_tf_entries []LogicalRouterResourceVrfObject
 	var vrf_pango_entries []logical_router.Vrf
@@ -27658,7 +29963,7 @@ func (o *LogicalRouterResourceModel) CopyToPango(ctx context.Context, obj **logi
 		}
 		for _, elt := range vrf_tf_entries {
 			var entry *logical_router.Vrf
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -27674,7 +29979,7 @@ func (o *LogicalRouterResourceModel) CopyToPango(ctx context.Context, obj **logi
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **logical_router.Vrf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.Vrf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_pango_entries := make([]string, 0)
 	diags.Append(o.Interface.ElementsAs(ctx, &interface_pango_entries, false)...)
@@ -27688,8 +29993,8 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 		} else {
 			administrativeDistances_entry = new(logical_router.VrfAdminDists)
 		}
-
-		diags.Append(o.AdministrativeDistances.CopyToPango(ctx, &administrativeDistances_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AdministrativeDistances.CopyToPango(ctx, append(ancestors, o), &administrativeDistances_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27701,8 +30006,8 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 		} else {
 			ribFilter_entry = new(logical_router.VrfRibFilter)
 		}
-
-		diags.Append(o.RibFilter.CopyToPango(ctx, &ribFilter_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RibFilter.CopyToPango(ctx, append(ancestors, o), &ribFilter_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27714,8 +30019,8 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 		} else {
 			bgp_entry = new(logical_router.VrfBgp)
 		}
-
-		diags.Append(o.Bgp.CopyToPango(ctx, &bgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bgp.CopyToPango(ctx, append(ancestors, o), &bgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27727,8 +30032,8 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 		} else {
 			routingTable_entry = new(logical_router.VrfRoutingTable)
 		}
-
-		diags.Append(o.RoutingTable.CopyToPango(ctx, &routingTable_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RoutingTable.CopyToPango(ctx, append(ancestors, o), &routingTable_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27740,8 +30045,8 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 		} else {
 			ospf_entry = new(logical_router.VrfOspf)
 		}
-
-		diags.Append(o.Ospf.CopyToPango(ctx, &ospf_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ospf.CopyToPango(ctx, append(ancestors, o), &ospf_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27753,8 +30058,8 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 		} else {
 			ospfv3_entry = new(logical_router.VrfOspfv3)
 		}
-
-		diags.Append(o.Ospfv3.CopyToPango(ctx, &ospfv3_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ospfv3.CopyToPango(ctx, append(ancestors, o), &ospfv3_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27766,8 +30071,8 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 		} else {
 			ecmp_entry = new(logical_router.VrfEcmp)
 		}
-
-		diags.Append(o.Ecmp.CopyToPango(ctx, &ecmp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ecmp.CopyToPango(ctx, append(ancestors, o), &ecmp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27779,8 +30084,8 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 		} else {
 			multicast_entry = new(logical_router.VrfMulticast)
 		}
-
-		diags.Append(o.Multicast.CopyToPango(ctx, &multicast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Multicast.CopyToPango(ctx, append(ancestors, o), &multicast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27792,8 +30097,8 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 		} else {
 			rip_entry = new(logical_router.VrfRip)
 		}
-
-		diags.Append(o.Rip.CopyToPango(ctx, &rip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Rip.CopyToPango(ctx, append(ancestors, o), &rip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27816,7 +30121,7 @@ func (o *LogicalRouterResourceVrfObject) CopyToPango(ctx context.Context, obj **
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) CopyToPango(ctx context.Context, obj **logical_router.VrfAdminDists, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfAdminDists, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	static_value := o.Static.ValueInt64Pointer()
 	staticIpv6_value := o.StaticIpv6.ValueInt64Pointer()
@@ -27849,7 +30154,7 @@ func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilter, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilter, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_entry *logical_router.VrfRibFilterIpv4
 	if o.Ipv4 != nil {
@@ -27858,8 +30163,8 @@ func (o *LogicalRouterResourceVrfRibFilterObject) CopyToPango(ctx context.Contex
 		} else {
 			ipv4_entry = new(logical_router.VrfRibFilterIpv4)
 		}
-
-		diags.Append(o.Ipv4.CopyToPango(ctx, &ipv4_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv4.CopyToPango(ctx, append(ancestors, o), &ipv4_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27871,8 +30176,8 @@ func (o *LogicalRouterResourceVrfRibFilterObject) CopyToPango(ctx context.Contex
 		} else {
 			ipv6_entry = new(logical_router.VrfRibFilterIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27886,7 +30191,7 @@ func (o *LogicalRouterResourceVrfRibFilterObject) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_entry *logical_router.VrfRibFilterIpv4Static
 	if o.Static != nil {
@@ -27895,8 +30200,8 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyToPango(ctx context.Co
 		} else {
 			static_entry = new(logical_router.VrfRibFilterIpv4Static)
 		}
-
-		diags.Append(o.Static.CopyToPango(ctx, &static_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Static.CopyToPango(ctx, append(ancestors, o), &static_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27908,8 +30213,8 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyToPango(ctx context.Co
 		} else {
 			bgp_entry = new(logical_router.VrfRibFilterIpv4Bgp)
 		}
-
-		diags.Append(o.Bgp.CopyToPango(ctx, &bgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bgp.CopyToPango(ctx, append(ancestors, o), &bgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27921,8 +30226,8 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyToPango(ctx context.Co
 		} else {
 			ospf_entry = new(logical_router.VrfRibFilterIpv4Ospf)
 		}
-
-		diags.Append(o.Ospf.CopyToPango(ctx, &ospf_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ospf.CopyToPango(ctx, append(ancestors, o), &ospf_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27934,8 +30239,8 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyToPango(ctx context.Co
 		} else {
 			rip_entry = new(logical_router.VrfRibFilterIpv4Rip)
 		}
-
-		diags.Append(o.Rip.CopyToPango(ctx, &rip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Rip.CopyToPango(ctx, append(ancestors, o), &rip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27951,7 +30256,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterIpv4StaticObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4Static, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4StaticObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4Static, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -27962,7 +30267,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4StaticObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4Bgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4Bgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -27973,7 +30278,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterIpv4OspfObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4Ospf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4OspfObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4Ospf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -27984,7 +30289,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4OspfObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterIpv4RipObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv4Rip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4RipObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv4Rip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -27995,7 +30300,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4RipObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_entry *logical_router.VrfRibFilterIpv6Static
 	if o.Static != nil {
@@ -28004,8 +30309,8 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyToPango(ctx context.Co
 		} else {
 			static_entry = new(logical_router.VrfRibFilterIpv6Static)
 		}
-
-		diags.Append(o.Static.CopyToPango(ctx, &static_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Static.CopyToPango(ctx, append(ancestors, o), &static_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28017,8 +30322,8 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyToPango(ctx context.Co
 		} else {
 			bgp_entry = new(logical_router.VrfRibFilterIpv6Bgp)
 		}
-
-		diags.Append(o.Bgp.CopyToPango(ctx, &bgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bgp.CopyToPango(ctx, append(ancestors, o), &bgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28030,8 +30335,8 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyToPango(ctx context.Co
 		} else {
 			ospfv3_entry = new(logical_router.VrfRibFilterIpv6Ospfv3)
 		}
-
-		diags.Append(o.Ospfv3.CopyToPango(ctx, &ospfv3_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ospfv3.CopyToPango(ctx, append(ancestors, o), &ospfv3_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28046,7 +30351,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterIpv6StaticObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv6Static, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv6StaticObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv6Static, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -28057,7 +30362,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6StaticObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv6Bgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv6Bgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -28068,7 +30373,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) CopyToPango(ctx context.Context, obj **logical_router.VrfRibFilterIpv6Ospfv3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRibFilterIpv6Ospfv3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routeMap_value := o.RouteMap.ValueStringPointer()
 
@@ -28079,7 +30384,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	routerId_value := o.RouterId.ValueStringPointer()
@@ -28098,8 +30403,8 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, obj
 		} else {
 			med_entry = new(logical_router.VrfBgpMed)
 		}
-
-		diags.Append(o.Med.CopyToPango(ctx, &med_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Med.CopyToPango(ctx, append(ancestors, o), &med_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28111,8 +30416,8 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, obj
 		} else {
 			gracefulRestart_entry = new(logical_router.VrfBgpGracefulRestart)
 		}
-
-		diags.Append(o.GracefulRestart.CopyToPango(ctx, &gracefulRestart_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GracefulRestart.CopyToPango(ctx, append(ancestors, o), &gracefulRestart_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28124,8 +30429,8 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, obj
 		} else {
 			globalBfd_entry = new(logical_router.VrfBgpGlobalBfd)
 		}
-
-		diags.Append(o.GlobalBfd.CopyToPango(ctx, &globalBfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalBfd.CopyToPango(ctx, append(ancestors, o), &globalBfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28137,8 +30442,8 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, obj
 		} else {
 			redistributionProfile_entry = new(logical_router.VrfBgpRedistributionProfile)
 		}
-
-		diags.Append(o.RedistributionProfile.CopyToPango(ctx, &redistributionProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RedistributionProfile.CopyToPango(ctx, append(ancestors, o), &redistributionProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28150,8 +30455,8 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, obj
 		} else {
 			advertiseNetwork_entry = new(logical_router.VrfBgpAdvertiseNetwork)
 		}
-
-		diags.Append(o.AdvertiseNetwork.CopyToPango(ctx, &advertiseNetwork_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AdvertiseNetwork.CopyToPango(ctx, append(ancestors, o), &advertiseNetwork_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28166,7 +30471,7 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, obj
 		}
 		for _, elt := range peerGroup_tf_entries {
 			var entry *logical_router.VrfBgpPeerGroup
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -28183,7 +30488,7 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, obj
 		}
 		for _, elt := range aggregateRoutes_tf_entries {
 			var entry *logical_router.VrfBgpAggregateRoutes
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -28214,7 +30519,7 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpMedObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpMed, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpMedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpMed, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	alwaysCompareMed_value := o.AlwaysCompareMed.ValueBoolPointer()
 	deterministicMedComparison_value := o.DeterministicMedComparison.ValueBoolPointer()
@@ -28227,7 +30532,7 @@ func (o *LogicalRouterResourceVrfBgpMedObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpGracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpGracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	staleRouteTime_value := o.StaleRouteTime.ValueInt64Pointer()
@@ -28244,7 +30549,7 @@ func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpGlobalBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpGlobalBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -28255,7 +30560,7 @@ func (o *LogicalRouterResourceVrfBgpGlobalBfdObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpRedistributionProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpRedistributionProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_entry *logical_router.VrfBgpRedistributionProfileIpv4
 	if o.Ipv4 != nil {
@@ -28264,8 +30569,8 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) CopyToPango(ctx
 		} else {
 			ipv4_entry = new(logical_router.VrfBgpRedistributionProfileIpv4)
 		}
-
-		diags.Append(o.Ipv4.CopyToPango(ctx, &ipv4_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv4.CopyToPango(ctx, append(ancestors, o), &ipv4_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28277,8 +30582,8 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) CopyToPango(ctx
 		} else {
 			ipv6_entry = new(logical_router.VrfBgpRedistributionProfileIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28292,7 +30597,7 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpRedistributionProfileIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpRedistributionProfileIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	unicast_value := o.Unicast.ValueStringPointer()
 
@@ -28303,7 +30608,7 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpRedistributionProfileIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpRedistributionProfileIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	unicast_value := o.Unicast.ValueStringPointer()
 
@@ -28314,7 +30619,7 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_entry *logical_router.VrfBgpAdvertiseNetworkIpv4
 	if o.Ipv4 != nil {
@@ -28323,8 +30628,8 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx cont
 		} else {
 			ipv4_entry = new(logical_router.VrfBgpAdvertiseNetworkIpv4)
 		}
-
-		diags.Append(o.Ipv4.CopyToPango(ctx, &ipv4_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv4.CopyToPango(ctx, append(ancestors, o), &ipv4_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28336,8 +30641,8 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx cont
 		} else {
 			ipv6_entry = new(logical_router.VrfBgpAdvertiseNetworkIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28351,7 +30656,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetworkIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetworkIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var network_tf_entries []LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject
 	var network_pango_entries []logical_router.VrfBgpAdvertiseNetworkIpv4Network
@@ -28363,7 +30668,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) CopyToPango(ctx 
 		}
 		for _, elt := range network_tf_entries {
 			var entry *logical_router.VrfBgpAdvertiseNetworkIpv4Network
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -28378,7 +30683,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetworkIpv4Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetworkIpv4Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	unicast_value := o.Unicast.ValueBoolPointer()
 	multicast_value := o.Multicast.ValueBoolPointer()
@@ -28394,7 +30699,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetworkIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetworkIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var network_tf_entries []LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject
 	var network_pango_entries []logical_router.VrfBgpAdvertiseNetworkIpv6Network
@@ -28406,7 +30711,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) CopyToPango(ctx 
 		}
 		for _, elt := range network_tf_entries {
 			var entry *logical_router.VrfBgpAdvertiseNetworkIpv6Network
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -28421,7 +30726,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAdvertiseNetworkIpv6Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAdvertiseNetworkIpv6Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	unicast_value := o.Unicast.ValueBoolPointer()
 
@@ -28433,7 +30738,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var type_entry *logical_router.VrfBgpPeerGroupType
@@ -28443,8 +30748,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Con
 		} else {
 			type_entry = new(logical_router.VrfBgpPeerGroupType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28456,8 +30761,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Con
 		} else {
 			addressFamily_entry = new(logical_router.VrfBgpPeerGroupAddressFamily)
 		}
-
-		diags.Append(o.AddressFamily.CopyToPango(ctx, &addressFamily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AddressFamily.CopyToPango(ctx, append(ancestors, o), &addressFamily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28469,8 +30774,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Con
 		} else {
 			filteringProfile_entry = new(logical_router.VrfBgpPeerGroupFilteringProfile)
 		}
-
-		diags.Append(o.FilteringProfile.CopyToPango(ctx, &filteringProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FilteringProfile.CopyToPango(ctx, append(ancestors, o), &filteringProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28482,8 +30787,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Con
 		} else {
 			connectionOptions_entry = new(logical_router.VrfBgpPeerGroupConnectionOptions)
 		}
-
-		diags.Append(o.ConnectionOptions.CopyToPango(ctx, &connectionOptions_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ConnectionOptions.CopyToPango(ctx, append(ancestors, o), &connectionOptions_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28498,7 +30803,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Con
 		}
 		for _, elt := range peer_tf_entries {
 			var entry *logical_router.VrfBgpPeerGroupPeer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -28519,7 +30824,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ibgp_entry *logical_router.VrfBgpPeerGroupTypeIbgp
 	if o.Ibgp != nil {
@@ -28528,8 +30833,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx context
 		} else {
 			ibgp_entry = new(logical_router.VrfBgpPeerGroupTypeIbgp)
 		}
-
-		diags.Append(o.Ibgp.CopyToPango(ctx, &ibgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ibgp.CopyToPango(ctx, append(ancestors, o), &ibgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28541,8 +30846,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx context
 		} else {
 			ebgp_entry = new(logical_router.VrfBgpPeerGroupTypeEbgp)
 		}
-
-		diags.Append(o.Ebgp.CopyToPango(ctx, &ebgp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ebgp.CopyToPango(ctx, append(ancestors, o), &ebgp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28556,7 +30861,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupTypeIbgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupTypeIbgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -28565,7 +30870,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupTypeEbgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupTypeEbgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -28574,7 +30879,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupAddressFamily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupAddressFamily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -28587,7 +30892,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupFilteringProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupFilteringProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -28600,7 +30905,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupConnectionOptions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupConnectionOptions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	timers_value := o.Timers.ValueStringPointer()
 	multihop_value := o.Multihop.ValueInt64Pointer()
@@ -28617,7 +30922,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	passive_value := o.Passive.ValueBoolPointer()
@@ -28630,8 +30935,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context
 		} else {
 			inherit_entry = new(logical_router.VrfBgpPeerGroupPeerInherit)
 		}
-
-		diags.Append(o.Inherit.CopyToPango(ctx, &inherit_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Inherit.CopyToPango(ctx, append(ancestors, o), &inherit_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28643,8 +30948,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context
 		} else {
 			localAddress_entry = new(logical_router.VrfBgpPeerGroupPeerLocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalAddress.CopyToPango(ctx, append(ancestors, o), &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28656,8 +30961,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context
 		} else {
 			peerAddress_entry = new(logical_router.VrfBgpPeerGroupPeerPeerAddress)
 		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PeerAddress.CopyToPango(ctx, append(ancestors, o), &peerAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28669,8 +30974,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context
 		} else {
 			connectionOptions_entry = new(logical_router.VrfBgpPeerGroupPeerConnectionOptions)
 		}
-
-		diags.Append(o.ConnectionOptions.CopyToPango(ctx, &connectionOptions_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ConnectionOptions.CopyToPango(ctx, append(ancestors, o), &connectionOptions_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28682,8 +30987,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context
 		} else {
 			bfd_entry = new(logical_router.VrfBgpPeerGroupPeerBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28705,7 +31010,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInherit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInherit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var yes_entry *logical_router.VrfBgpPeerGroupPeerInheritYes
 	if o.Yes != nil {
@@ -28714,8 +31019,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ctx 
 		} else {
 			yes_entry = new(logical_router.VrfBgpPeerGroupPeerInheritYes)
 		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28727,8 +31032,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ctx 
 		} else {
 			no_entry = new(logical_router.VrfBgpPeerGroupPeerInheritNo)
 		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28742,7 +31047,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInheritYes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInheritYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -28751,7 +31056,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) CopyToPango(c
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInheritNo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInheritNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var addressFamily_entry *logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily
 	if o.AddressFamily != nil {
@@ -28760,8 +31065,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(ct
 		} else {
 			addressFamily_entry = new(logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily)
 		}
-
-		diags.Append(o.AddressFamily.CopyToPango(ctx, &addressFamily_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AddressFamily.CopyToPango(ctx, append(ancestors, o), &addressFamily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28773,8 +31078,8 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(ct
 		} else {
 			filteringProfile_entry = new(logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile)
 		}
-
-		diags.Append(o.FilteringProfile.CopyToPango(ctx, &filteringProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FilteringProfile.CopyToPango(ctx, append(ancestors, o), &filteringProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28788,7 +31093,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -28801,7 +31106,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) C
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -28814,7 +31119,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	ip_value := o.Ip.ValueStringPointer()
@@ -28827,7 +31132,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ip_value := o.Ip.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
@@ -28840,7 +31145,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerConnectionOptions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerConnectionOptions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	timers_value := o.Timers.ValueStringPointer()
 	multihop_value := o.Multihop.ValueStringPointer()
@@ -28857,7 +31162,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyTo
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpPeerGroupPeerBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpPeerGroupPeerBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -28868,7 +31173,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAggregateRoutes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAggregateRoutes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
@@ -28882,8 +31187,8 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) CopyToPango(ctx conte
 		} else {
 			type_entry = new(logical_router.VrfBgpAggregateRoutesType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28902,7 +31207,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAggregateRoutesType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAggregateRoutesType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_entry *logical_router.VrfBgpAggregateRoutesTypeIpv4
 	if o.Ipv4 != nil {
@@ -28911,8 +31216,8 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx c
 		} else {
 			ipv4_entry = new(logical_router.VrfBgpAggregateRoutesTypeIpv4)
 		}
-
-		diags.Append(o.Ipv4.CopyToPango(ctx, &ipv4_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv4.CopyToPango(ctx, append(ancestors, o), &ipv4_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28924,8 +31229,8 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx c
 		} else {
 			ipv6_entry = new(logical_router.VrfBgpAggregateRoutesTypeIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28939,7 +31244,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAggregateRoutesTypeIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAggregateRoutesTypeIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	summaryPrefix_value := o.SummaryPrefix.ValueStringPointer()
 	suppressMap_value := o.SuppressMap.ValueStringPointer()
@@ -28954,7 +31259,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) CopyToPango(c
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfBgpAggregateRoutesTypeIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfBgpAggregateRoutesTypeIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	summaryPrefix_value := o.SummaryPrefix.ValueStringPointer()
 	suppressMap_value := o.SuppressMap.ValueStringPointer()
@@ -28969,7 +31274,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) CopyToPango(c
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTable, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_entry *logical_router.VrfRoutingTableIp
 	if o.Ip != nil {
@@ -28978,8 +31283,8 @@ func (o *LogicalRouterResourceVrfRoutingTableObject) CopyToPango(ctx context.Con
 		} else {
 			ip_entry = new(logical_router.VrfRoutingTableIp)
 		}
-
-		diags.Append(o.Ip.CopyToPango(ctx, &ip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ip.CopyToPango(ctx, append(ancestors, o), &ip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28991,8 +31296,8 @@ func (o *LogicalRouterResourceVrfRoutingTableObject) CopyToPango(ctx context.Con
 		} else {
 			ipv6_entry = new(logical_router.VrfRoutingTableIpv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29006,7 +31311,7 @@ func (o *LogicalRouterResourceVrfRoutingTableObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_tf_entries []LogicalRouterResourceVrfRoutingTableIpStaticRouteObject
 	var staticRoute_pango_entries []logical_router.VrfRoutingTableIpStaticRoute
@@ -29018,7 +31323,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpObject) CopyToPango(ctx context.C
 		}
 		for _, elt := range staticRoute_tf_entries {
 			var entry *logical_router.VrfRoutingTableIpStaticRoute
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29033,7 +31338,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	destination_value := o.Destination.ValueStringPointer()
 	interface_value := o.Interface.ValueStringPointer()
@@ -29046,8 +31351,8 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyToPango(ct
 		} else {
 			nexthop_entry = new(logical_router.VrfRoutingTableIpStaticRouteNexthop)
 		}
-
-		diags.Append(o.Nexthop.CopyToPango(ctx, &nexthop_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nexthop.CopyToPango(ctx, append(ancestors, o), &nexthop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29059,8 +31364,8 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyToPango(ct
 		} else {
 			bfd_entry = new(logical_router.VrfRoutingTableIpStaticRouteBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29072,8 +31377,8 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyToPango(ct
 		} else {
 			pathMonitor_entry = new(logical_router.VrfRoutingTableIpStaticRoutePathMonitor)
 		}
-
-		diags.Append(o.PathMonitor.CopyToPango(ctx, &pathMonitor_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PathMonitor.CopyToPango(ctx, append(ancestors, o), &pathMonitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29093,7 +31398,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_entry *logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard
 	if o.Discard != nil {
@@ -29102,8 +31407,8 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) CopyToP
 		} else {
 			discard_entry = new(logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard)
 		}
-
-		diags.Append(o.Discard.CopyToPango(ctx, &discard_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Discard.CopyToPango(ctx, append(ancestors, o), &discard_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29122,7 +31427,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) CopyToP
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -29131,7 +31436,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) 
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRouteBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRouteBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -29142,7 +31447,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRoutePathMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRoutePathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	failureCondition_value := o.FailureCondition.ValueStringPointer()
@@ -29157,7 +31462,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) Cop
 		}
 		for _, elt := range monitorDestinations_tf_entries {
 			var entry *logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29175,7 +31480,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) Cop
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	source_value := o.Source.ValueStringPointer()
@@ -29195,7 +31500,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDest
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpv6Object) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_tf_entries []LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject
 	var staticRoute_pango_entries []logical_router.VrfRoutingTableIpv6StaticRoute
@@ -29207,7 +31512,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6Object) CopyToPango(ctx context
 		}
 		for _, elt := range staticRoute_tf_entries {
 			var entry *logical_router.VrfRoutingTableIpv6StaticRoute
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29222,7 +31527,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6Object) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	destination_value := o.Destination.ValueStringPointer()
 	interface_value := o.Interface.ValueStringPointer()
@@ -29235,8 +31540,8 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyToPango(
 		} else {
 			nexthop_entry = new(logical_router.VrfRoutingTableIpv6StaticRouteNexthop)
 		}
-
-		diags.Append(o.Nexthop.CopyToPango(ctx, &nexthop_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nexthop.CopyToPango(ctx, append(ancestors, o), &nexthop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29248,8 +31553,8 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyToPango(
 		} else {
 			bfd_entry = new(logical_router.VrfRoutingTableIpv6StaticRouteBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29261,8 +31566,8 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyToPango(
 		} else {
 			pathMonitor_entry = new(logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor)
 		}
-
-		diags.Append(o.PathMonitor.CopyToPango(ctx, &pathMonitor_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PathMonitor.CopyToPango(ctx, append(ancestors, o), &pathMonitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29282,7 +31587,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_entry *logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard
 	if o.Discard != nil {
@@ -29291,8 +31596,8 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyT
 		} else {
 			discard_entry = new(logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard)
 		}
-
-		diags.Append(o.Discard.CopyToPango(ctx, &discard_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Discard.CopyToPango(ctx, append(ancestors, o), &discard_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29311,7 +31616,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyT
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -29320,7 +31625,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRouteBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRouteBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -29331,7 +31636,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	failureCondition_value := o.FailureCondition.ValueStringPointer()
@@ -29346,7 +31651,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) C
 		}
 		for _, elt := range monitorDestinations_tf_entries {
 			var entry *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29364,7 +31669,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) C
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	source_value := o.Source.ValueStringPointer()
@@ -29384,7 +31689,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDe
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	routerId_value := o.RouterId.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
@@ -29399,8 +31704,8 @@ func (o *LogicalRouterResourceVrfOspfObject) CopyToPango(ctx context.Context, ob
 		} else {
 			globalBfd_entry = new(logical_router.VrfOspfGlobalBfd)
 		}
-
-		diags.Append(o.GlobalBfd.CopyToPango(ctx, &globalBfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalBfd.CopyToPango(ctx, append(ancestors, o), &globalBfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29412,8 +31717,8 @@ func (o *LogicalRouterResourceVrfOspfObject) CopyToPango(ctx context.Context, ob
 		} else {
 			gracefulRestart_entry = new(logical_router.VrfOspfGracefulRestart)
 		}
-
-		diags.Append(o.GracefulRestart.CopyToPango(ctx, &gracefulRestart_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GracefulRestart.CopyToPango(ctx, append(ancestors, o), &gracefulRestart_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29428,7 +31733,7 @@ func (o *LogicalRouterResourceVrfOspfObject) CopyToPango(ctx context.Context, ob
 		}
 		for _, elt := range area_tf_entries {
 			var entry *logical_router.VrfOspfArea
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29451,7 +31756,7 @@ func (o *LogicalRouterResourceVrfOspfObject) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfGlobalBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfGlobalBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -29462,7 +31767,7 @@ func (o *LogicalRouterResourceVrfOspfGlobalBfdObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfGracefulRestartObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfGracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfGracefulRestartObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfGracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	gracePeriod_value := o.GracePeriod.ValueInt64Pointer()
@@ -29481,7 +31786,7 @@ func (o *LogicalRouterResourceVrfOspfGracefulRestartObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfArea, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfArea, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_value := o.Authentication.ValueStringPointer()
 	var type_entry *logical_router.VrfOspfAreaType
@@ -29491,8 +31796,8 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) CopyToPango(ctx context.Context
 		} else {
 			type_entry = new(logical_router.VrfOspfAreaType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29507,7 +31812,7 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) CopyToPango(ctx context.Context
 		}
 		for _, elt := range range_tf_entries {
 			var entry *logical_router.VrfOspfAreaRange
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29524,7 +31829,7 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) CopyToPango(ctx context.Context
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfOspfAreaInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29541,7 +31846,7 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) CopyToPango(ctx context.Context
 		}
 		for _, elt := range virtualLink_tf_entries {
 			var entry *logical_router.VrfOspfAreaVirtualLink
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29561,7 +31866,7 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var normal_entry *logical_router.VrfOspfAreaTypeNormal
 	if o.Normal != nil {
@@ -29570,8 +31875,8 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyToPango(ctx context.Con
 		} else {
 			normal_entry = new(logical_router.VrfOspfAreaTypeNormal)
 		}
-
-		diags.Append(o.Normal.CopyToPango(ctx, &normal_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Normal.CopyToPango(ctx, append(ancestors, o), &normal_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29583,8 +31888,8 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyToPango(ctx context.Con
 		} else {
 			stub_entry = new(logical_router.VrfOspfAreaTypeStub)
 		}
-
-		diags.Append(o.Stub.CopyToPango(ctx, &stub_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Stub.CopyToPango(ctx, append(ancestors, o), &stub_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29596,8 +31901,8 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyToPango(ctx context.Con
 		} else {
 			nssa_entry = new(logical_router.VrfOspfAreaTypeNssa)
 		}
-
-		diags.Append(o.Nssa.CopyToPango(ctx, &nssa_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nssa.CopyToPango(ctx, append(ancestors, o), &nssa_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29612,7 +31917,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNormal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNormal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_entry *logical_router.VrfOspfAreaTypeNormalAbr
 	if o.Abr != nil {
@@ -29621,8 +31926,8 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) CopyToPango(ctx conte
 		} else {
 			abr_entry = new(logical_router.VrfOspfAreaTypeNormalAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29635,7 +31940,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNormalAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNormalAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -29652,7 +31957,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeStub, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeStub, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	noSummary_value := o.NoSummary.ValueBoolPointer()
 	var abr_entry *logical_router.VrfOspfAreaTypeStubAbr
@@ -29662,8 +31967,8 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) CopyToPango(ctx context
 		} else {
 			abr_entry = new(logical_router.VrfOspfAreaTypeStubAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29679,7 +31984,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeStubAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeStubAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -29696,7 +32001,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNssa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNssa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	noSummary_value := o.NoSummary.ValueBoolPointer()
 	var defaultInformationOriginate_entry *logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate
@@ -29706,8 +32011,8 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx context
 		} else {
 			defaultInformationOriginate_entry = new(logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate)
 		}
-
-		diags.Append(o.DefaultInformationOriginate.CopyToPango(ctx, &defaultInformationOriginate_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DefaultInformationOriginate.CopyToPango(ctx, append(ancestors, o), &defaultInformationOriginate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29719,8 +32024,8 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx context
 		} else {
 			abr_entry = new(logical_router.VrfOspfAreaTypeNssaAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29735,7 +32040,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	metric_value := o.Metric.ValueInt64Pointer()
 	metricType_value := o.MetricType.ValueStringPointer()
@@ -29748,7 +32053,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObje
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNssaAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNssaAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -29764,7 +32069,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) CopyToPango(ctx cont
 		}
 		for _, elt := range nssaExtRange_tf_entries {
 			var entry *logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29783,7 +32088,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	advertise_value := o.Advertise.ValueBoolPointer()
 
@@ -29795,7 +32100,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaRangeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaRangeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	advertise_value := o.Advertise.ValueBoolPointer()
 
@@ -29807,7 +32112,7 @@ func (o *LogicalRouterResourceVrfOspfAreaRangeObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	mtuIgnore_value := o.MtuIgnore.ValueBoolPointer()
@@ -29823,8 +32128,8 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) CopyToPango(ctx contex
 		} else {
 			linkType_entry = new(logical_router.VrfOspfAreaInterfaceLinkType)
 		}
-
-		diags.Append(o.LinkType.CopyToPango(ctx, &linkType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LinkType.CopyToPango(ctx, append(ancestors, o), &linkType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29836,8 +32141,8 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) CopyToPango(ctx contex
 		} else {
 			bfd_entry = new(logical_router.VrfOspfAreaInterfaceBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29859,7 +32164,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var broadcast_entry *logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast
 	if o.Broadcast != nil {
@@ -29868,8 +32173,8 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(ct
 		} else {
 			broadcast_entry = new(logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast)
 		}
-
-		diags.Append(o.Broadcast.CopyToPango(ctx, &broadcast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Broadcast.CopyToPango(ctx, append(ancestors, o), &broadcast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29881,8 +32186,8 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(ct
 		} else {
 			p2p_entry = new(logical_router.VrfOspfAreaInterfaceLinkTypeP2p)
 		}
-
-		diags.Append(o.P2p.CopyToPango(ctx, &p2p_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.P2p.CopyToPango(ctx, append(ancestors, o), &p2p_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29894,8 +32199,8 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(ct
 		} else {
 			p2mp_entry = new(logical_router.VrfOspfAreaInterfaceLinkTypeP2mp)
 		}
-
-		diags.Append(o.P2mp.CopyToPango(ctx, &p2mp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.P2mp.CopyToPango(ctx, append(ancestors, o), &p2mp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29910,7 +32215,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -29919,7 +32224,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) CopyT
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2p, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2p, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -29928,7 +32233,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2mp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2mp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_tf_entries []LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject
 	var neighbor_pango_entries []logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor
@@ -29940,7 +32245,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyToPang
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -29955,7 +32260,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	priority_value := o.Priority.ValueInt64Pointer()
 
@@ -29967,7 +32272,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) Co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -29978,7 +32283,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaVirtualLink, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaVirtualLink, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	neighborId_value := o.NeighborId.ValueStringPointer()
 	transitAreaId_value := o.TransitAreaId.ValueStringPointer()
@@ -29993,8 +32298,8 @@ func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) CopyToPango(ctx cont
 		} else {
 			bfd_entry = new(logical_router.VrfOspfAreaVirtualLinkBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30014,7 +32319,7 @@ func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfAreaVirtualLinkBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfAreaVirtualLinkBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -30025,7 +32330,7 @@ func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3Object) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	routerId_value := o.RouterId.ValueStringPointer()
@@ -30040,8 +32345,8 @@ func (o *LogicalRouterResourceVrfOspfv3Object) CopyToPango(ctx context.Context, 
 		} else {
 			globalBfd_entry = new(logical_router.VrfOspfv3GlobalBfd)
 		}
-
-		diags.Append(o.GlobalBfd.CopyToPango(ctx, &globalBfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalBfd.CopyToPango(ctx, append(ancestors, o), &globalBfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30053,8 +32358,8 @@ func (o *LogicalRouterResourceVrfOspfv3Object) CopyToPango(ctx context.Context, 
 		} else {
 			gracefulRestart_entry = new(logical_router.VrfOspfv3GracefulRestart)
 		}
-
-		diags.Append(o.GracefulRestart.CopyToPango(ctx, &gracefulRestart_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GracefulRestart.CopyToPango(ctx, append(ancestors, o), &gracefulRestart_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30069,7 +32374,7 @@ func (o *LogicalRouterResourceVrfOspfv3Object) CopyToPango(ctx context.Context, 
 		}
 		for _, elt := range area_tf_entries {
 			var entry *logical_router.VrfOspfv3Area
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -30092,7 +32397,7 @@ func (o *LogicalRouterResourceVrfOspfv3Object) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3GlobalBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3GlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3GlobalBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3GlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -30103,7 +32408,7 @@ func (o *LogicalRouterResourceVrfOspfv3GlobalBfdObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3GracefulRestartObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3GracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3GracefulRestartObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3GracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	gracePeriod_value := o.GracePeriod.ValueInt64Pointer()
@@ -30122,7 +32427,7 @@ func (o *LogicalRouterResourceVrfOspfv3GracefulRestartObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3Area, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3Area, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_value := o.Authentication.ValueStringPointer()
 	var type_entry *logical_router.VrfOspfv3AreaType
@@ -30132,8 +32437,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyToPango(ctx context.Conte
 		} else {
 			type_entry = new(logical_router.VrfOspfv3AreaType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30148,7 +32453,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyToPango(ctx context.Conte
 		}
 		for _, elt := range range_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaRange
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -30165,7 +32470,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyToPango(ctx context.Conte
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -30182,7 +32487,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyToPango(ctx context.Conte
 		}
 		for _, elt := range virtualLink_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaVirtualLink
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -30202,7 +32507,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var normal_entry *logical_router.VrfOspfv3AreaTypeNormal
 	if o.Normal != nil {
@@ -30211,8 +32516,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context.C
 		} else {
 			normal_entry = new(logical_router.VrfOspfv3AreaTypeNormal)
 		}
-
-		diags.Append(o.Normal.CopyToPango(ctx, &normal_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Normal.CopyToPango(ctx, append(ancestors, o), &normal_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30224,8 +32529,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context.C
 		} else {
 			stub_entry = new(logical_router.VrfOspfv3AreaTypeStub)
 		}
-
-		diags.Append(o.Stub.CopyToPango(ctx, &stub_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Stub.CopyToPango(ctx, append(ancestors, o), &stub_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30237,8 +32542,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context.C
 		} else {
 			nssa_entry = new(logical_router.VrfOspfv3AreaTypeNssa)
 		}
-
-		diags.Append(o.Nssa.CopyToPango(ctx, &nssa_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nssa.CopyToPango(ctx, append(ancestors, o), &nssa_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30253,7 +32558,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNormal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNormal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_entry *logical_router.VrfOspfv3AreaTypeNormalAbr
 	if o.Abr != nil {
@@ -30262,8 +32567,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) CopyToPango(ctx con
 		} else {
 			abr_entry = new(logical_router.VrfOspfv3AreaTypeNormalAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30276,7 +32581,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNormalAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNormalAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -30293,7 +32598,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeStub, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeStub, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	noSummary_value := o.NoSummary.ValueBoolPointer()
 	var abr_entry *logical_router.VrfOspfv3AreaTypeStubAbr
@@ -30303,8 +32608,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) CopyToPango(ctx conte
 		} else {
 			abr_entry = new(logical_router.VrfOspfv3AreaTypeStubAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30320,7 +32625,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeStubAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeStubAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -30337,7 +32642,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNssa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNssa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	noSummary_value := o.NoSummary.ValueBoolPointer()
 	var defaultInformationOriginate_entry *logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate
@@ -30347,8 +32652,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx conte
 		} else {
 			defaultInformationOriginate_entry = new(logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate)
 		}
-
-		diags.Append(o.DefaultInformationOriginate.CopyToPango(ctx, &defaultInformationOriginate_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DefaultInformationOriginate.CopyToPango(ctx, append(ancestors, o), &defaultInformationOriginate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30360,8 +32665,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx conte
 		} else {
 			abr_entry = new(logical_router.VrfOspfv3AreaTypeNssaAbr)
 		}
-
-		diags.Append(o.Abr.CopyToPango(ctx, &abr_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Abr.CopyToPango(ctx, append(ancestors, o), &abr_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30376,7 +32681,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	metric_value := o.Metric.ValueInt64Pointer()
 	metricType_value := o.MetricType.ValueStringPointer()
@@ -30389,7 +32694,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateOb
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNssaAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNssaAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	importList_value := o.ImportList.ValueStringPointer()
 	exportList_value := o.ExportList.ValueStringPointer()
@@ -30405,7 +32710,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) CopyToPango(ctx co
 		}
 		for _, elt := range nssaExtRange_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -30424,7 +32729,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	advertise_value := o.Advertise.ValueBoolPointer()
 
@@ -30436,7 +32741,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyTo
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaRangeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaRangeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	advertise_value := o.Advertise.ValueBoolPointer()
 
@@ -30448,7 +32753,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaRangeObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	mtuIgnore_value := o.MtuIgnore.ValueBoolPointer()
@@ -30465,8 +32770,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx cont
 		} else {
 			linkType_entry = new(logical_router.VrfOspfv3AreaInterfaceLinkType)
 		}
-
-		diags.Append(o.LinkType.CopyToPango(ctx, &linkType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LinkType.CopyToPango(ctx, append(ancestors, o), &linkType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30478,8 +32783,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx cont
 		} else {
 			bfd_entry = new(logical_router.VrfOspfv3AreaInterfaceBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30502,7 +32807,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var broadcast_entry *logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast
 	if o.Broadcast != nil {
@@ -30511,8 +32816,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPango(
 		} else {
 			broadcast_entry = new(logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast)
 		}
-
-		diags.Append(o.Broadcast.CopyToPango(ctx, &broadcast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Broadcast.CopyToPango(ctx, append(ancestors, o), &broadcast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30524,8 +32829,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPango(
 		} else {
 			p2p_entry = new(logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p)
 		}
-
-		diags.Append(o.P2p.CopyToPango(ctx, &p2p_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.P2p.CopyToPango(ctx, append(ancestors, o), &p2p_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30537,8 +32842,8 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPango(
 		} else {
 			p2mp_entry = new(logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp)
 		}
-
-		diags.Append(o.P2mp.CopyToPango(ctx, &p2mp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.P2mp.CopyToPango(ctx, append(ancestors, o), &p2mp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30553,7 +32858,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -30562,7 +32867,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) Cop
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -30571,7 +32876,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_tf_entries []LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
 	var neighbor_pango_entries []logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor
@@ -30583,7 +32888,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyToPa
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -30598,7 +32903,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	priority_value := o.Priority.ValueInt64Pointer()
 
@@ -30610,7 +32915,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) 
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -30621,7 +32926,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) CopyToPango(ctx context.Context, obj **logical_router.VrfOspfv3AreaVirtualLink, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfOspfv3AreaVirtualLink, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	neighborId_value := o.NeighborId.ValueStringPointer()
 	transitAreaId_value := o.TransitAreaId.ValueStringPointer()
@@ -30643,7 +32948,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfEcmpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	maxPaths_value := o.MaxPaths.ValueInt64Pointer()
@@ -30656,8 +32961,8 @@ func (o *LogicalRouterResourceVrfEcmpObject) CopyToPango(ctx context.Context, ob
 		} else {
 			algorithm_entry = new(logical_router.VrfEcmpAlgorithm)
 		}
-
-		diags.Append(o.Algorithm.CopyToPango(ctx, &algorithm_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Algorithm.CopyToPango(ctx, append(ancestors, o), &algorithm_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30674,7 +32979,7 @@ func (o *LogicalRouterResourceVrfEcmpObject) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipModulo_entry *logical_router.VrfEcmpAlgorithmIpModulo
 	if o.IpModulo != nil {
@@ -30683,8 +32988,8 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.Co
 		} else {
 			ipModulo_entry = new(logical_router.VrfEcmpAlgorithmIpModulo)
 		}
-
-		diags.Append(o.IpModulo.CopyToPango(ctx, &ipModulo_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.IpModulo.CopyToPango(ctx, append(ancestors, o), &ipModulo_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30696,8 +33001,8 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.Co
 		} else {
 			ipHash_entry = new(logical_router.VrfEcmpAlgorithmIpHash)
 		}
-
-		diags.Append(o.IpHash.CopyToPango(ctx, &ipHash_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.IpHash.CopyToPango(ctx, append(ancestors, o), &ipHash_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30709,8 +33014,8 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.Co
 		} else {
 			weightedRoundRobin_entry = new(logical_router.VrfEcmpAlgorithmWeightedRoundRobin)
 		}
-
-		diags.Append(o.WeightedRoundRobin.CopyToPango(ctx, &weightedRoundRobin_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.WeightedRoundRobin.CopyToPango(ctx, append(ancestors, o), &weightedRoundRobin_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30722,8 +33027,8 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.Co
 		} else {
 			balancedRoundRobin_entry = new(logical_router.VrfEcmpAlgorithmBalancedRoundRobin)
 		}
-
-		diags.Append(o.BalancedRoundRobin.CopyToPango(ctx, &balancedRoundRobin_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.BalancedRoundRobin.CopyToPango(ctx, append(ancestors, o), &balancedRoundRobin_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30739,7 +33044,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmIpModulo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmIpModulo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -30748,7 +33053,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmIpHash, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmIpHash, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	srcOnly_value := o.SrcOnly.ValueBoolPointer()
 	usePort_value := o.UsePort.ValueBoolPointer()
@@ -30763,7 +33068,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmWeightedRoundRobin, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmWeightedRoundRobin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_tf_entries []LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject
 	var interface_pango_entries []logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface
@@ -30775,7 +33080,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyToPa
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -30790,7 +33095,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	weight_value := o.Weight.ValueInt64Pointer()
 
@@ -30802,7 +33107,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject)
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyToPango(ctx context.Context, obj **logical_router.VrfEcmpAlgorithmBalancedRoundRobin, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfEcmpAlgorithmBalancedRoundRobin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -30811,7 +33116,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var staticRoute_tf_entries []LogicalRouterResourceVrfMulticastStaticRouteObject
@@ -30824,7 +33129,7 @@ func (o *LogicalRouterResourceVrfMulticastObject) CopyToPango(ctx context.Contex
 		}
 		for _, elt := range staticRoute_tf_entries {
 			var entry *logical_router.VrfMulticastStaticRoute
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -30838,8 +33143,8 @@ func (o *LogicalRouterResourceVrfMulticastObject) CopyToPango(ctx context.Contex
 		} else {
 			pim_entry = new(logical_router.VrfMulticastPim)
 		}
-
-		diags.Append(o.Pim.CopyToPango(ctx, &pim_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Pim.CopyToPango(ctx, append(ancestors, o), &pim_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30851,8 +33156,8 @@ func (o *LogicalRouterResourceVrfMulticastObject) CopyToPango(ctx context.Contex
 		} else {
 			igmp_entry = new(logical_router.VrfMulticastIgmp)
 		}
-
-		diags.Append(o.Igmp.CopyToPango(ctx, &igmp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Igmp.CopyToPango(ctx, append(ancestors, o), &igmp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30864,8 +33169,8 @@ func (o *LogicalRouterResourceVrfMulticastObject) CopyToPango(ctx context.Contex
 		} else {
 			msdp_entry = new(logical_router.VrfMulticastMsdp)
 		}
-
-		diags.Append(o.Msdp.CopyToPango(ctx, &msdp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Msdp.CopyToPango(ctx, append(ancestors, o), &msdp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30882,7 +33187,7 @@ func (o *LogicalRouterResourceVrfMulticastObject) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastStaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastStaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	destination_value := o.Destination.ValueStringPointer()
 	interface_value := o.Interface.ValueStringPointer()
@@ -30894,8 +33199,8 @@ func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) CopyToPango(ctx con
 		} else {
 			nexthop_entry = new(logical_router.VrfMulticastStaticRouteNexthop)
 		}
-
-		diags.Append(o.Nexthop.CopyToPango(ctx, &nexthop_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Nexthop.CopyToPango(ctx, append(ancestors, o), &nexthop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30912,7 +33217,7 @@ func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastStaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastStaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipAddress_value := o.IpAddress.ValueStringPointer()
 
@@ -30923,7 +33228,7 @@ func (o *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastPimObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPim, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPim, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	rpfLookupMode_value := o.RpfLookupMode.ValueStringPointer()
@@ -30937,8 +33242,8 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) CopyToPango(ctx context.Con
 		} else {
 			ssmAddressSpace_entry = new(logical_router.VrfMulticastPimSsmAddressSpace)
 		}
-
-		diags.Append(o.SsmAddressSpace.CopyToPango(ctx, &ssmAddressSpace_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SsmAddressSpace.CopyToPango(ctx, append(ancestors, o), &ssmAddressSpace_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30950,8 +33255,8 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) CopyToPango(ctx context.Con
 		} else {
 			rp_entry = new(logical_router.VrfMulticastPimRp)
 		}
-
-		diags.Append(o.Rp.CopyToPango(ctx, &rp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Rp.CopyToPango(ctx, append(ancestors, o), &rp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30966,7 +33271,7 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) CopyToPango(ctx context.Con
 		}
 		for _, elt := range sptThreshold_tf_entries {
 			var entry *logical_router.VrfMulticastPimSptThreshold
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -30983,7 +33288,7 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) CopyToPango(ctx context.Con
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfMulticastPimInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -31006,7 +33311,7 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimSsmAddressSpace, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimSsmAddressSpace, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	groupList_value := o.GroupList.ValueStringPointer()
 
@@ -31017,7 +33322,7 @@ func (o *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) CopyToPango(
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastPimRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localRp_entry *logical_router.VrfMulticastPimRpLocalRp
 	if o.LocalRp != nil {
@@ -31026,8 +33331,8 @@ func (o *LogicalRouterResourceVrfMulticastPimRpObject) CopyToPango(ctx context.C
 		} else {
 			localRp_entry = new(logical_router.VrfMulticastPimRpLocalRp)
 		}
-
-		diags.Append(o.LocalRp.CopyToPango(ctx, &localRp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalRp.CopyToPango(ctx, append(ancestors, o), &localRp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31042,7 +33347,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpObject) CopyToPango(ctx context.C
 		}
 		for _, elt := range externalRp_tf_entries {
 			var entry *logical_router.VrfMulticastPimRpExternalRp
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -31058,7 +33363,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRpLocalRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRpLocalRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRp_entry *logical_router.VrfMulticastPimRpLocalRpStaticRp
 	if o.StaticRp != nil {
@@ -31067,8 +33372,8 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx co
 		} else {
 			staticRp_entry = new(logical_router.VrfMulticastPimRpLocalRpStaticRp)
 		}
-
-		diags.Append(o.StaticRp.CopyToPango(ctx, &staticRp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.StaticRp.CopyToPango(ctx, append(ancestors, o), &staticRp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31080,8 +33385,8 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx co
 		} else {
 			candidateRp_entry = new(logical_router.VrfMulticastPimRpLocalRpCandidateRp)
 		}
-
-		diags.Append(o.CandidateRp.CopyToPango(ctx, &candidateRp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CandidateRp.CopyToPango(ctx, append(ancestors, o), &candidateRp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31095,7 +33400,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRpLocalRpStaticRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRpLocalRpStaticRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	address_value := o.Address.ValueStringPointer()
@@ -31112,7 +33417,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRpLocalRpCandidateRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRpLocalRpCandidateRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	address_value := o.Address.ValueStringPointer()
@@ -31131,7 +33436,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyToP
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastPimRpExternalRpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimRpExternalRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpExternalRpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimRpExternalRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	groupList_value := o.GroupList.ValueStringPointer()
 	override_value := o.Override.ValueBoolPointer()
@@ -31145,7 +33450,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpExternalRpObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastPimSptThresholdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimSptThreshold, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimSptThresholdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimSptThreshold, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	threshold_value := o.Threshold.ValueStringPointer()
 
@@ -31157,7 +33462,7 @@ func (o *LogicalRouterResourceVrfMulticastPimSptThresholdObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastPimInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastPimInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	drPriority_value := o.DrPriority.ValueInt64Pointer()
@@ -31177,7 +33482,7 @@ func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastIgmpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastIgmp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastIgmpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastIgmp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var dynamic_entry *logical_router.VrfMulticastIgmpDynamic
@@ -31187,8 +33492,8 @@ func (o *LogicalRouterResourceVrfMulticastIgmpObject) CopyToPango(ctx context.Co
 		} else {
 			dynamic_entry = new(logical_router.VrfMulticastIgmpDynamic)
 		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Dynamic.CopyToPango(ctx, append(ancestors, o), &dynamic_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31203,7 +33508,7 @@ func (o *LogicalRouterResourceVrfMulticastIgmpObject) CopyToPango(ctx context.Co
 		}
 		for _, elt := range static_tf_entries {
 			var entry *logical_router.VrfMulticastIgmpStatic
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -31220,7 +33525,7 @@ func (o *LogicalRouterResourceVrfMulticastIgmpObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastIgmpDynamicObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastIgmpDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastIgmpDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastIgmpDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_tf_entries []LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject
 	var interface_pango_entries []logical_router.VrfMulticastIgmpDynamicInterface
@@ -31232,7 +33537,7 @@ func (o *LogicalRouterResourceVrfMulticastIgmpDynamicObject) CopyToPango(ctx con
 		}
 		for _, elt := range interface_tf_entries {
 			var entry *logical_router.VrfMulticastIgmpDynamicInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -31247,7 +33552,7 @@ func (o *LogicalRouterResourceVrfMulticastIgmpDynamicObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastIgmpDynamicInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastIgmpDynamicInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	version_value := o.Version.ValueStringPointer()
 	robustness_value := o.Robustness.ValueStringPointer()
@@ -31271,7 +33576,7 @@ func (o *LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastIgmpStatic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastIgmpStatic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	groupAddress_value := o.GroupAddress.ValueStringPointer()
@@ -31287,7 +33592,7 @@ func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastMsdpObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	globalTimer_value := o.GlobalTimer.ValueStringPointer()
@@ -31299,8 +33604,8 @@ func (o *LogicalRouterResourceVrfMulticastMsdpObject) CopyToPango(ctx context.Co
 		} else {
 			originatorId_entry = new(logical_router.VrfMulticastMsdpOriginatorId)
 		}
-
-		diags.Append(o.OriginatorId.CopyToPango(ctx, &originatorId_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.OriginatorId.CopyToPango(ctx, append(ancestors, o), &originatorId_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31315,7 +33620,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpObject) CopyToPango(ctx context.Co
 		}
 		for _, elt := range peer_tf_entries {
 			var entry *logical_router.VrfMulticastMsdpPeer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -31334,7 +33639,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdpOriginatorId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdpOriginatorId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	ip_value := o.Ip.ValueStringPointer()
@@ -31347,7 +33652,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) CopyToPango(ct
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdpPeer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdpPeer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	peerAs_value := o.PeerAs.ValueStringPointer()
@@ -31362,8 +33667,8 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) CopyToPango(ctx contex
 		} else {
 			localAddress_entry = new(logical_router.VrfMulticastMsdpPeerLocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalAddress.CopyToPango(ctx, append(ancestors, o), &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31375,8 +33680,8 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) CopyToPango(ctx contex
 		} else {
 			peerAddress_entry = new(logical_router.VrfMulticastMsdpPeerPeerAddress)
 		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PeerAddress.CopyToPango(ctx, append(ancestors, o), &peerAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31397,7 +33702,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdpPeerLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdpPeerLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	ip_value := o.Ip.ValueStringPointer()
@@ -31410,7 +33715,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) CopyToPang
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) CopyToPango(ctx context.Context, obj **logical_router.VrfMulticastMsdpPeerPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfMulticastMsdpPeerPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ip_value := o.Ip.ValueStringPointer()
 	fqdn_value := o.Fqdn.ValueStringPointer()
@@ -31423,7 +33728,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) CopyToPango
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRipObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	defaultInformationOriginate_value := o.DefaultInformationOriginate.ValueBoolPointer()
@@ -31437,8 +33742,8 @@ func (o *LogicalRouterResourceVrfRipObject) CopyToPango(ctx context.Context, obj
 		} else {
 			globalBfd_entry = new(logical_router.VrfRipGlobalBfd)
 		}
-
-		diags.Append(o.GlobalBfd.CopyToPango(ctx, &globalBfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalBfd.CopyToPango(ctx, append(ancestors, o), &globalBfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31450,8 +33755,8 @@ func (o *LogicalRouterResourceVrfRipObject) CopyToPango(ctx context.Context, obj
 		} else {
 			globalInboundDistributeList_entry = new(logical_router.VrfRipGlobalInboundDistributeList)
 		}
-
-		diags.Append(o.GlobalInboundDistributeList.CopyToPango(ctx, &globalInboundDistributeList_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalInboundDistributeList.CopyToPango(ctx, append(ancestors, o), &globalInboundDistributeList_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31463,8 +33768,8 @@ func (o *LogicalRouterResourceVrfRipObject) CopyToPango(ctx context.Context, obj
 		} else {
 			globalOutboundDistributeList_entry = new(logical_router.VrfRipGlobalOutboundDistributeList)
 		}
-
-		diags.Append(o.GlobalOutboundDistributeList.CopyToPango(ctx, &globalOutboundDistributeList_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalOutboundDistributeList.CopyToPango(ctx, append(ancestors, o), &globalOutboundDistributeList_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31479,7 +33784,7 @@ func (o *LogicalRouterResourceVrfRipObject) CopyToPango(ctx context.Context, obj
 		}
 		for _, elt := range interfaces_tf_entries {
 			var entry *logical_router.VrfRipInterface
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -31502,7 +33807,7 @@ func (o *LogicalRouterResourceVrfRipObject) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRipGlobalBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipGlobalBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -31513,7 +33818,7 @@ func (o *LogicalRouterResourceVrfRipGlobalBfdObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipGlobalInboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipGlobalInboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessList_value := o.AccessList.ValueStringPointer()
 
@@ -31524,7 +33829,7 @@ func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) CopyToPan
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipGlobalOutboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipGlobalOutboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessList_value := o.AccessList.ValueStringPointer()
 
@@ -31535,7 +33840,7 @@ func (o *LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) CopyToPa
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	mode_value := o.Mode.ValueStringPointer()
@@ -31548,8 +33853,8 @@ func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyToPango(ctx context.Co
 		} else {
 			bfd_entry = new(logical_router.VrfRipInterfaceBfd)
 		}
-
-		diags.Append(o.Bfd.CopyToPango(ctx, &bfd_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31561,8 +33866,8 @@ func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyToPango(ctx context.Co
 		} else {
 			interfaceInboundDistributeList_entry = new(logical_router.VrfRipInterfaceInterfaceInboundDistributeList)
 		}
-
-		diags.Append(o.InterfaceInboundDistributeList.CopyToPango(ctx, &interfaceInboundDistributeList_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.InterfaceInboundDistributeList.CopyToPango(ctx, append(ancestors, o), &interfaceInboundDistributeList_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31574,8 +33879,8 @@ func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyToPango(ctx context.Co
 		} else {
 			interfaceOutboundDistributeList_entry = new(logical_router.VrfRipInterfaceInterfaceOutboundDistributeList)
 		}
-
-		diags.Append(o.InterfaceOutboundDistributeList.CopyToPango(ctx, &interfaceOutboundDistributeList_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.InterfaceOutboundDistributeList.CopyToPango(ctx, append(ancestors, o), &interfaceOutboundDistributeList_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31595,7 +33900,7 @@ func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRipInterfacesBfdObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipInterfacesBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -31606,7 +33911,7 @@ func (o *LogicalRouterResourceVrfRipInterfacesBfdObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipInterfaceInterfaceInboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipInterfaceInterfaceInboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessList_value := o.AccessList.ValueStringPointer()
 	metric_value := o.Metric.ValueInt64Pointer()
@@ -31619,7 +33924,7 @@ func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObje
 
 	return diags
 }
-func (o *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject) CopyToPango(ctx context.Context, obj **logical_router.VrfRipInterfaceInterfaceOutboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logical_router.VrfRipInterfaceInterfaceOutboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessList_value := o.AccessList.ValueStringPointer()
 	metric_value := o.Metric.ValueInt64Pointer()
@@ -31633,15 +33938,19 @@ func (o *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObj
 	return diags
 }
 
-func (o *LogicalRouterResourceModel) CopyFromPango(ctx context.Context, obj *logical_router.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vrf_list types.List
 	{
 		var vrf_tf_entries []LogicalRouterResourceVrfObject
 		for _, elt := range obj.Vrf {
-			var entry LogicalRouterResourceVrfObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			vrf_tf_entries = append(vrf_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -31656,19 +33965,21 @@ func (o *LogicalRouterResourceModel) CopyFromPango(ctx context.Context, obj *log
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj *logical_router.Vrf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.Vrf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_list types.List
 	{
 		var list_diags diag.Diagnostics
 		interface_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Interface)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var administrativeDistances_object *LogicalRouterResourceVrfAdministrativeDistancesObject
 	if obj.AdminDists != nil {
 		administrativeDistances_object = new(LogicalRouterResourceVrfAdministrativeDistancesObject)
-
-		diags.Append(administrativeDistances_object.CopyFromPango(ctx, obj.AdminDists, encrypted)...)
+		diags.Append(administrativeDistances_object.CopyFromPango(ctx, append(ancestors, o), obj.AdminDists, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31676,8 +33987,7 @@ func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj 
 	var ribFilter_object *LogicalRouterResourceVrfRibFilterObject
 	if obj.RibFilter != nil {
 		ribFilter_object = new(LogicalRouterResourceVrfRibFilterObject)
-
-		diags.Append(ribFilter_object.CopyFromPango(ctx, obj.RibFilter, encrypted)...)
+		diags.Append(ribFilter_object.CopyFromPango(ctx, append(ancestors, o), obj.RibFilter, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31685,8 +33995,7 @@ func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj 
 	var bgp_object *LogicalRouterResourceVrfBgpObject
 	if obj.Bgp != nil {
 		bgp_object = new(LogicalRouterResourceVrfBgpObject)
-
-		diags.Append(bgp_object.CopyFromPango(ctx, obj.Bgp, encrypted)...)
+		diags.Append(bgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Bgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31694,8 +34003,7 @@ func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj 
 	var routingTable_object *LogicalRouterResourceVrfRoutingTableObject
 	if obj.RoutingTable != nil {
 		routingTable_object = new(LogicalRouterResourceVrfRoutingTableObject)
-
-		diags.Append(routingTable_object.CopyFromPango(ctx, obj.RoutingTable, encrypted)...)
+		diags.Append(routingTable_object.CopyFromPango(ctx, append(ancestors, o), obj.RoutingTable, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31703,8 +34011,7 @@ func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj 
 	var ospf_object *LogicalRouterResourceVrfOspfObject
 	if obj.Ospf != nil {
 		ospf_object = new(LogicalRouterResourceVrfOspfObject)
-
-		diags.Append(ospf_object.CopyFromPango(ctx, obj.Ospf, encrypted)...)
+		diags.Append(ospf_object.CopyFromPango(ctx, append(ancestors, o), obj.Ospf, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31712,8 +34019,7 @@ func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj 
 	var ospfv3_object *LogicalRouterResourceVrfOspfv3Object
 	if obj.Ospfv3 != nil {
 		ospfv3_object = new(LogicalRouterResourceVrfOspfv3Object)
-
-		diags.Append(ospfv3_object.CopyFromPango(ctx, obj.Ospfv3, encrypted)...)
+		diags.Append(ospfv3_object.CopyFromPango(ctx, append(ancestors, o), obj.Ospfv3, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31721,8 +34027,7 @@ func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj 
 	var ecmp_object *LogicalRouterResourceVrfEcmpObject
 	if obj.Ecmp != nil {
 		ecmp_object = new(LogicalRouterResourceVrfEcmpObject)
-
-		diags.Append(ecmp_object.CopyFromPango(ctx, obj.Ecmp, encrypted)...)
+		diags.Append(ecmp_object.CopyFromPango(ctx, append(ancestors, o), obj.Ecmp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31730,8 +34035,7 @@ func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj 
 	var multicast_object *LogicalRouterResourceVrfMulticastObject
 	if obj.Multicast != nil {
 		multicast_object = new(LogicalRouterResourceVrfMulticastObject)
-
-		diags.Append(multicast_object.CopyFromPango(ctx, obj.Multicast, encrypted)...)
+		diags.Append(multicast_object.CopyFromPango(ctx, append(ancestors, o), obj.Multicast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31739,8 +34043,7 @@ func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj 
 	var rip_object *LogicalRouterResourceVrfRipObject
 	if obj.Rip != nil {
 		rip_object = new(LogicalRouterResourceVrfRipObject)
-
-		diags.Append(rip_object.CopyFromPango(ctx, obj.Rip, encrypted)...)
+		diags.Append(rip_object.CopyFromPango(ctx, append(ancestors, o), obj.Rip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31761,7 +34064,7 @@ func (o *LogicalRouterResourceVrfObject) CopyFromPango(ctx context.Context, obj 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfAdminDists, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfAdminDists, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var static_value types.Int64
@@ -31828,13 +34131,12 @@ func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilter, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilter, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_object *LogicalRouterResourceVrfRibFilterIpv4Object
 	if obj.Ipv4 != nil {
 		ipv4_object = new(LogicalRouterResourceVrfRibFilterIpv4Object)
-
-		diags.Append(ipv4_object.CopyFromPango(ctx, obj.Ipv4, encrypted)...)
+		diags.Append(ipv4_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv4, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31842,8 +34144,7 @@ func (o *LogicalRouterResourceVrfRibFilterObject) CopyFromPango(ctx context.Cont
 	var ipv6_object *LogicalRouterResourceVrfRibFilterIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterResourceVrfRibFilterIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31855,13 +34156,12 @@ func (o *LogicalRouterResourceVrfRibFilterObject) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_object *LogicalRouterResourceVrfRibFilterIpv4StaticObject
 	if obj.Static != nil {
 		static_object = new(LogicalRouterResourceVrfRibFilterIpv4StaticObject)
-
-		diags.Append(static_object.CopyFromPango(ctx, obj.Static, encrypted)...)
+		diags.Append(static_object.CopyFromPango(ctx, append(ancestors, o), obj.Static, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31869,8 +34169,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyFromPango(ctx context.
 	var bgp_object *LogicalRouterResourceVrfRibFilterIpv4BgpObject
 	if obj.Bgp != nil {
 		bgp_object = new(LogicalRouterResourceVrfRibFilterIpv4BgpObject)
-
-		diags.Append(bgp_object.CopyFromPango(ctx, obj.Bgp, encrypted)...)
+		diags.Append(bgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Bgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31878,8 +34177,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyFromPango(ctx context.
 	var ospf_object *LogicalRouterResourceVrfRibFilterIpv4OspfObject
 	if obj.Ospf != nil {
 		ospf_object = new(LogicalRouterResourceVrfRibFilterIpv4OspfObject)
-
-		diags.Append(ospf_object.CopyFromPango(ctx, obj.Ospf, encrypted)...)
+		diags.Append(ospf_object.CopyFromPango(ctx, append(ancestors, o), obj.Ospf, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31887,8 +34185,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyFromPango(ctx context.
 	var rip_object *LogicalRouterResourceVrfRibFilterIpv4RipObject
 	if obj.Rip != nil {
 		rip_object = new(LogicalRouterResourceVrfRibFilterIpv4RipObject)
-
-		diags.Append(rip_object.CopyFromPango(ctx, obj.Rip, encrypted)...)
+		diags.Append(rip_object.CopyFromPango(ctx, append(ancestors, o), obj.Rip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31902,7 +34199,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterIpv4StaticObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4Static, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4StaticObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4Static, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -31914,7 +34211,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4StaticObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4Bgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4Bgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -31926,7 +34223,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterIpv4OspfObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4Ospf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4OspfObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4Ospf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -31938,7 +34235,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4OspfObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterIpv4RipObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv4Rip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv4RipObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv4Rip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -31950,13 +34247,12 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4RipObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_object *LogicalRouterResourceVrfRibFilterIpv6StaticObject
 	if obj.Static != nil {
 		static_object = new(LogicalRouterResourceVrfRibFilterIpv6StaticObject)
-
-		diags.Append(static_object.CopyFromPango(ctx, obj.Static, encrypted)...)
+		diags.Append(static_object.CopyFromPango(ctx, append(ancestors, o), obj.Static, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31964,8 +34260,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyFromPango(ctx context.
 	var bgp_object *LogicalRouterResourceVrfRibFilterIpv6BgpObject
 	if obj.Bgp != nil {
 		bgp_object = new(LogicalRouterResourceVrfRibFilterIpv6BgpObject)
-
-		diags.Append(bgp_object.CopyFromPango(ctx, obj.Bgp, encrypted)...)
+		diags.Append(bgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Bgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31973,8 +34268,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyFromPango(ctx context.
 	var ospfv3_object *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object
 	if obj.Ospfv3 != nil {
 		ospfv3_object = new(LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object)
-
-		diags.Append(ospfv3_object.CopyFromPango(ctx, obj.Ospfv3, encrypted)...)
+		diags.Append(ospfv3_object.CopyFromPango(ctx, append(ancestors, o), obj.Ospfv3, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31987,7 +34281,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Object) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterIpv6StaticObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv6Static, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv6StaticObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv6Static, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -31999,7 +34293,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6StaticObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv6Bgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv6Bgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -32011,7 +34305,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfRibFilterIpv6Ospfv3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRibFilterIpv6Ospfv3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var routeMap_value types.String
@@ -32023,15 +34317,19 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var peerGroup_list types.List
 	{
 		var peerGroup_tf_entries []LogicalRouterResourceVrfBgpPeerGroupObject
 		for _, elt := range obj.PeerGroup {
-			var entry LogicalRouterResourceVrfBgpPeerGroupObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfBgpPeerGroupObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			peerGroup_tf_entries = append(peerGroup_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -32043,9 +34341,13 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyFromPango(ctx context.Context, o
 	{
 		var aggregateRoutes_tf_entries []LogicalRouterResourceVrfBgpAggregateRoutesObject
 		for _, elt := range obj.AggregateRoutes {
-			var entry LogicalRouterResourceVrfBgpAggregateRoutesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfBgpAggregateRoutesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			aggregateRoutes_tf_entries = append(aggregateRoutes_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -32056,8 +34358,7 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyFromPango(ctx context.Context, o
 	var med_object *LogicalRouterResourceVrfBgpMedObject
 	if obj.Med != nil {
 		med_object = new(LogicalRouterResourceVrfBgpMedObject)
-
-		diags.Append(med_object.CopyFromPango(ctx, obj.Med, encrypted)...)
+		diags.Append(med_object.CopyFromPango(ctx, append(ancestors, o), obj.Med, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32065,8 +34366,7 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyFromPango(ctx context.Context, o
 	var gracefulRestart_object *LogicalRouterResourceVrfBgpGracefulRestartObject
 	if obj.GracefulRestart != nil {
 		gracefulRestart_object = new(LogicalRouterResourceVrfBgpGracefulRestartObject)
-
-		diags.Append(gracefulRestart_object.CopyFromPango(ctx, obj.GracefulRestart, encrypted)...)
+		diags.Append(gracefulRestart_object.CopyFromPango(ctx, append(ancestors, o), obj.GracefulRestart, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32074,8 +34374,7 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyFromPango(ctx context.Context, o
 	var globalBfd_object *LogicalRouterResourceVrfBgpGlobalBfdObject
 	if obj.GlobalBfd != nil {
 		globalBfd_object = new(LogicalRouterResourceVrfBgpGlobalBfdObject)
-
-		diags.Append(globalBfd_object.CopyFromPango(ctx, obj.GlobalBfd, encrypted)...)
+		diags.Append(globalBfd_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalBfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32083,8 +34382,7 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyFromPango(ctx context.Context, o
 	var redistributionProfile_object *LogicalRouterResourceVrfBgpRedistributionProfileObject
 	if obj.RedistributionProfile != nil {
 		redistributionProfile_object = new(LogicalRouterResourceVrfBgpRedistributionProfileObject)
-
-		diags.Append(redistributionProfile_object.CopyFromPango(ctx, obj.RedistributionProfile, encrypted)...)
+		diags.Append(redistributionProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.RedistributionProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32092,8 +34390,7 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyFromPango(ctx context.Context, o
 	var advertiseNetwork_object *LogicalRouterResourceVrfBgpAdvertiseNetworkObject
 	if obj.AdvertiseNetwork != nil {
 		advertiseNetwork_object = new(LogicalRouterResourceVrfBgpAdvertiseNetworkObject)
-
-		diags.Append(advertiseNetwork_object.CopyFromPango(ctx, obj.AdvertiseNetwork, encrypted)...)
+		diags.Append(advertiseNetwork_object.CopyFromPango(ctx, append(ancestors, o), obj.AdvertiseNetwork, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32160,7 +34457,7 @@ func (o *LogicalRouterResourceVrfBgpObject) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpMedObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpMed, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpMedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpMed, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var alwaysCompareMed_value types.Bool
@@ -32177,7 +34474,7 @@ func (o *LogicalRouterResourceVrfBgpMedObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpGracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpGracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -32204,7 +34501,7 @@ func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpGlobalBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpGlobalBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -32216,13 +34513,12 @@ func (o *LogicalRouterResourceVrfBgpGlobalBfdObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpRedistributionProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpRedistributionProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_object *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object
 	if obj.Ipv4 != nil {
 		ipv4_object = new(LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object)
-
-		diags.Append(ipv4_object.CopyFromPango(ctx, obj.Ipv4, encrypted)...)
+		diags.Append(ipv4_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv4, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32230,8 +34526,7 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) CopyFromPango(c
 	var ipv6_object *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32243,7 +34538,7 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) CopyFromPango(c
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpRedistributionProfileIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpRedistributionProfileIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var unicast_value types.String
@@ -32255,7 +34550,7 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) CopyFromPan
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpRedistributionProfileIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpRedistributionProfileIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var unicast_value types.String
@@ -32267,13 +34562,12 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) CopyFromPan
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_object *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object
 	if obj.Ipv4 != nil {
 		ipv4_object = new(LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object)
-
-		diags.Append(ipv4_object.CopyFromPango(ctx, obj.Ipv4, encrypted)...)
+		diags.Append(ipv4_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv4, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32281,8 +34575,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) CopyFromPango(ctx co
 	var ipv6_object *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32294,15 +34587,19 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetworkIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetworkIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var network_list types.List
 	{
 		var network_tf_entries []LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject
 		for _, elt := range obj.Network {
-			var entry LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			network_tf_entries = append(network_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -32316,7 +34613,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetworkIpv4Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetworkIpv4Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var unicast_value types.Bool
@@ -32339,15 +34636,19 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetworkIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetworkIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var network_list types.List
 	{
 		var network_tf_entries []LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject
 		for _, elt := range obj.Network {
-			var entry LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			network_tf_entries = append(network_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -32361,7 +34662,7 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAdvertiseNetworkIpv6Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAdvertiseNetworkIpv6Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var unicast_value types.Bool
@@ -32374,15 +34675,19 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var peer_list types.List
 	{
 		var peer_tf_entries []LogicalRouterResourceVrfBgpPeerGroupPeerObject
 		for _, elt := range obj.Peer {
-			var entry LogicalRouterResourceVrfBgpPeerGroupPeerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfBgpPeerGroupPeerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			peer_tf_entries = append(peer_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -32393,8 +34698,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyFromPango(ctx context.C
 	var type_object *LogicalRouterResourceVrfBgpPeerGroupTypeObject
 	if obj.Type != nil {
 		type_object = new(LogicalRouterResourceVrfBgpPeerGroupTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32402,8 +34706,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyFromPango(ctx context.C
 	var addressFamily_object *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject
 	if obj.AddressFamily != nil {
 		addressFamily_object = new(LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject)
-
-		diags.Append(addressFamily_object.CopyFromPango(ctx, obj.AddressFamily, encrypted)...)
+		diags.Append(addressFamily_object.CopyFromPango(ctx, append(ancestors, o), obj.AddressFamily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32411,8 +34714,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyFromPango(ctx context.C
 	var filteringProfile_object *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject
 	if obj.FilteringProfile != nil {
 		filteringProfile_object = new(LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject)
-
-		diags.Append(filteringProfile_object.CopyFromPango(ctx, obj.FilteringProfile, encrypted)...)
+		diags.Append(filteringProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.FilteringProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32420,8 +34722,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyFromPango(ctx context.C
 	var connectionOptions_object *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject
 	if obj.ConnectionOptions != nil {
 		connectionOptions_object = new(LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject)
-
-		diags.Append(connectionOptions_object.CopyFromPango(ctx, obj.ConnectionOptions, encrypted)...)
+		diags.Append(connectionOptions_object.CopyFromPango(ctx, append(ancestors, o), obj.ConnectionOptions, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32442,13 +34743,12 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ibgp_object *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject
 	if obj.Ibgp != nil {
 		ibgp_object = new(LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject)
-
-		diags.Append(ibgp_object.CopyFromPango(ctx, obj.Ibgp, encrypted)...)
+		diags.Append(ibgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Ibgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32456,8 +34756,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) CopyFromPango(ctx conte
 	var ebgp_object *LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject
 	if obj.Ebgp != nil {
 		ebgp_object = new(LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject)
-
-		diags.Append(ebgp_object.CopyFromPango(ctx, obj.Ebgp, encrypted)...)
+		diags.Append(ebgp_object.CopyFromPango(ctx, append(ancestors, o), obj.Ebgp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32469,36 +34768,19 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupTypeIbgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupTypeIbgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupTypeEbgp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupTypeEbgp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupAddressFamily, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var ipv4_value types.String
-	if obj.Ipv4 != nil {
-		ipv4_value = types.StringValue(*obj.Ipv4)
-	}
-	var ipv6_value types.String
-	if obj.Ipv6 != nil {
-		ipv6_value = types.StringValue(*obj.Ipv6)
-	}
-	o.Ipv4 = ipv4_value
-	o.Ipv6 = ipv6_value
-
-	return diags
-}
-
-func (o *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupFilteringProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupAddressFamily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -32515,7 +34797,24 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) CopyFromPan
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupConnectionOptions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupFilteringProfile, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var ipv4_value types.String
+	if obj.Ipv4 != nil {
+		ipv4_value = types.StringValue(*obj.Ipv4)
+	}
+	var ipv6_value types.String
+	if obj.Ipv6 != nil {
+		ipv6_value = types.StringValue(*obj.Ipv6)
+	}
+	o.Ipv4 = ipv4_value
+	o.Ipv6 = ipv6_value
+
+	return diags
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupConnectionOptions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var timers_value types.String
@@ -32542,13 +34841,12 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var inherit_object *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject
 	if obj.Inherit != nil {
 		inherit_object = new(LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject)
-
-		diags.Append(inherit_object.CopyFromPango(ctx, obj.Inherit, encrypted)...)
+		diags.Append(inherit_object.CopyFromPango(ctx, append(ancestors, o), obj.Inherit, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32556,8 +34854,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx conte
 	var localAddress_object *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32565,8 +34862,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx conte
 	var peerAddress_object *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject
 	if obj.PeerAddress != nil {
 		peerAddress_object = new(LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		diags.Append(peerAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.PeerAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32574,8 +34870,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx conte
 	var connectionOptions_object *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject
 	if obj.ConnectionOptions != nil {
 		connectionOptions_object = new(LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject)
-
-		diags.Append(connectionOptions_object.CopyFromPango(ctx, obj.ConnectionOptions, encrypted)...)
+		diags.Append(connectionOptions_object.CopyFromPango(ctx, append(ancestors, o), obj.ConnectionOptions, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32583,8 +34878,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx conte
 	var bfd_object *LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32620,13 +34914,12 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInherit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInherit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var yes_object *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject
 	if obj.Yes != nil {
 		yes_object = new(LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject)
-
-		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
+		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32634,8 +34927,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) CopyFromPango(ct
 	var no_object *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject
 	if obj.No != nil {
 		no_object = new(LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject)
-
-		diags.Append(no_object.CopyFromPango(ctx, obj.No, encrypted)...)
+		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32647,19 +34939,18 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInheritYes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInheritYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInheritNo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInheritNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var addressFamily_object *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject
 	if obj.AddressFamily != nil {
 		addressFamily_object = new(LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject)
-
-		diags.Append(addressFamily_object.CopyFromPango(ctx, obj.AddressFamily, encrypted)...)
+		diags.Append(addressFamily_object.CopyFromPango(ctx, append(ancestors, o), obj.AddressFamily, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32667,8 +34958,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) CopyFromPango(
 	var filteringProfile_object *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject
 	if obj.FilteringProfile != nil {
 		filteringProfile_object = new(LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject)
-
-		diags.Append(filteringProfile_object.CopyFromPango(ctx, obj.FilteringProfile, encrypted)...)
+		diags.Append(filteringProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.FilteringProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32680,7 +34970,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) CopyFromPango(
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInheritNoAddressFamily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -32697,7 +34987,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) C
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerInheritNoFilteringProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -32714,7 +35004,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -32731,7 +35021,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) CopyFromPan
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ip_value types.String
@@ -32748,7 +35038,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) CopyFromPang
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerConnectionOptions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerConnectionOptions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var timers_value types.String
@@ -32775,7 +35065,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) CopyFr
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpPeerGroupPeerBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpPeerGroupPeerBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -32787,13 +35077,12 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAggregateRoutes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAggregateRoutes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_object *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject
 	if obj.Type != nil {
 		type_object = new(LogicalRouterResourceVrfBgpAggregateRoutesTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32830,13 +35119,12 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAggregateRoutesType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAggregateRoutesType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipv4_object *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object
 	if obj.Ipv4 != nil {
 		ipv4_object = new(LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object)
-
-		diags.Append(ipv4_object.CopyFromPango(ctx, obj.Ipv4, encrypted)...)
+		diags.Append(ipv4_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv4, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32844,8 +35132,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) CopyFromPango(ctx
 	var ipv6_object *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32857,7 +35144,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAggregateRoutesTypeIpv4, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAggregateRoutesTypeIpv4, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var summaryPrefix_value types.String
@@ -32879,7 +35166,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) CopyFromPango
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfBgpAggregateRoutesTypeIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfBgpAggregateRoutesTypeIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var summaryPrefix_value types.String
@@ -32901,13 +35188,12 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) CopyFromPango
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTable, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_object *LogicalRouterResourceVrfRoutingTableIpObject
 	if obj.Ip != nil {
 		ip_object = new(LogicalRouterResourceVrfRoutingTableIpObject)
-
-		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
+		diags.Append(ip_object.CopyFromPango(ctx, append(ancestors, o), obj.Ip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32915,8 +35201,7 @@ func (o *LogicalRouterResourceVrfRoutingTableObject) CopyFromPango(ctx context.C
 	var ipv6_object *LogicalRouterResourceVrfRoutingTableIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LogicalRouterResourceVrfRoutingTableIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32928,15 +35213,19 @@ func (o *LogicalRouterResourceVrfRoutingTableObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_list types.List
 	{
 		var staticRoute_tf_entries []LogicalRouterResourceVrfRoutingTableIpStaticRouteObject
 		for _, elt := range obj.StaticRoute {
-			var entry LogicalRouterResourceVrfRoutingTableIpStaticRouteObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfRoutingTableIpStaticRouteObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			staticRoute_tf_entries = append(staticRoute_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -32950,13 +35239,12 @@ func (o *LogicalRouterResourceVrfRoutingTableIpObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nexthop_object *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject
 	if obj.Nexthop != nil {
 		nexthop_object = new(LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject)
-
-		diags.Append(nexthop_object.CopyFromPango(ctx, obj.Nexthop, encrypted)...)
+		diags.Append(nexthop_object.CopyFromPango(ctx, append(ancestors, o), obj.Nexthop, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32964,8 +35252,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyFromPango(
 	var bfd_object *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32973,8 +35260,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyFromPango(
 	var pathMonitor_object *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject
 	if obj.PathMonitor != nil {
 		pathMonitor_object = new(LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject)
-
-		diags.Append(pathMonitor_object.CopyFromPango(ctx, obj.PathMonitor, encrypted)...)
+		diags.Append(pathMonitor_object.CopyFromPango(ctx, append(ancestors, o), obj.PathMonitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33008,13 +35294,12 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) CopyFromPango(
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_object *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject
 	if obj.Discard != nil {
 		discard_object = new(LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject)
-
-		diags.Append(discard_object.CopyFromPango(ctx, obj.Discard, encrypted)...)
+		diags.Append(discard_object.CopyFromPango(ctx, append(ancestors, o), obj.Discard, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33040,13 +35325,13 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) CopyFro
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRouteNexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRouteBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRouteBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -33058,15 +35343,19 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) CopyFromPan
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRoutePathMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRoutePathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var monitorDestinations_list types.List
 	{
 		var monitorDestinations_tf_entries []LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject
 		for _, elt := range obj.MonitorDestinations {
-			var entry LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			monitorDestinations_tf_entries = append(monitorDestinations_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -33095,7 +35384,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) Cop
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpStaticRoutePathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -33128,15 +35417,19 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDest
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpv6Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_list types.List
 	{
 		var staticRoute_tf_entries []LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject
 		for _, elt := range obj.StaticRoute {
-			var entry LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			staticRoute_tf_entries = append(staticRoute_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -33150,13 +35443,12 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6Object) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nexthop_object *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject
 	if obj.Nexthop != nil {
 		nexthop_object = new(LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject)
-
-		diags.Append(nexthop_object.CopyFromPango(ctx, obj.Nexthop, encrypted)...)
+		diags.Append(nexthop_object.CopyFromPango(ctx, append(ancestors, o), obj.Nexthop, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33164,8 +35456,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPang
 	var bfd_object *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33173,8 +35464,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPang
 	var pathMonitor_object *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject
 	if obj.PathMonitor != nil {
 		pathMonitor_object = new(LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject)
-
-		diags.Append(pathMonitor_object.CopyFromPango(ctx, obj.PathMonitor, encrypted)...)
+		diags.Append(pathMonitor_object.CopyFromPango(ctx, append(ancestors, o), obj.PathMonitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33208,13 +35498,12 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) CopyFromPang
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_object *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject
 	if obj.Discard != nil {
 		discard_object = new(LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject)
-
-		diags.Append(discard_object.CopyFromPango(ctx, obj.Discard, encrypted)...)
+		diags.Append(discard_object.CopyFromPango(ctx, append(ancestors, o), obj.Discard, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33240,13 +35529,13 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) CopyF
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRouteNexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRouteBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRouteBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -33258,15 +35547,19 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var monitorDestinations_list types.List
 	{
 		var monitorDestinations_tf_entries []LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject
 		for _, elt := range obj.MonitorDestinations {
-			var entry LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			monitorDestinations_tf_entries = append(monitorDestinations_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -33295,7 +35588,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) C
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -33328,15 +35621,19 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDe
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspf, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspf, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var area_list types.List
 	{
 		var area_tf_entries []LogicalRouterResourceVrfOspfAreaObject
 		for _, elt := range obj.Area {
-			var entry LogicalRouterResourceVrfOspfAreaObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfAreaObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			area_tf_entries = append(area_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -33347,8 +35644,7 @@ func (o *LogicalRouterResourceVrfOspfObject) CopyFromPango(ctx context.Context, 
 	var globalBfd_object *LogicalRouterResourceVrfOspfGlobalBfdObject
 	if obj.GlobalBfd != nil {
 		globalBfd_object = new(LogicalRouterResourceVrfOspfGlobalBfdObject)
-
-		diags.Append(globalBfd_object.CopyFromPango(ctx, obj.GlobalBfd, encrypted)...)
+		diags.Append(globalBfd_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalBfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33356,8 +35652,7 @@ func (o *LogicalRouterResourceVrfOspfObject) CopyFromPango(ctx context.Context, 
 	var gracefulRestart_object *LogicalRouterResourceVrfOspfGracefulRestartObject
 	if obj.GracefulRestart != nil {
 		gracefulRestart_object = new(LogicalRouterResourceVrfOspfGracefulRestartObject)
-
-		diags.Append(gracefulRestart_object.CopyFromPango(ctx, obj.GracefulRestart, encrypted)...)
+		diags.Append(gracefulRestart_object.CopyFromPango(ctx, append(ancestors, o), obj.GracefulRestart, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33400,7 +35695,7 @@ func (o *LogicalRouterResourceVrfOspfObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfGlobalBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfGlobalBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -33412,7 +35707,7 @@ func (o *LogicalRouterResourceVrfOspfGlobalBfdObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfGracefulRestartObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfGracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfGracefulRestartObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfGracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -33444,15 +35739,19 @@ func (o *LogicalRouterResourceVrfOspfGracefulRestartObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfArea, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfArea, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var range_list types.List
 	{
 		var range_tf_entries []LogicalRouterResourceVrfOspfAreaRangeObject
 		for _, elt := range obj.Range {
-			var entry LogicalRouterResourceVrfOspfAreaRangeObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfAreaRangeObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			range_tf_entries = append(range_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -33464,9 +35763,13 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) CopyFromPango(ctx context.Conte
 	{
 		var interface_tf_entries []LogicalRouterResourceVrfOspfAreaInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterResourceVrfOspfAreaInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfAreaInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -33478,9 +35781,13 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) CopyFromPango(ctx context.Conte
 	{
 		var virtualLink_tf_entries []LogicalRouterResourceVrfOspfAreaVirtualLinkObject
 		for _, elt := range obj.VirtualLink {
-			var entry LogicalRouterResourceVrfOspfAreaVirtualLinkObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfAreaVirtualLinkObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			virtualLink_tf_entries = append(virtualLink_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -33491,8 +35798,7 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) CopyFromPango(ctx context.Conte
 	var type_object *LogicalRouterResourceVrfOspfAreaTypeObject
 	if obj.Type != nil {
 		type_object = new(LogicalRouterResourceVrfOspfAreaTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33512,13 +35818,12 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var normal_object *LogicalRouterResourceVrfOspfAreaTypeNormalObject
 	if obj.Normal != nil {
 		normal_object = new(LogicalRouterResourceVrfOspfAreaTypeNormalObject)
-
-		diags.Append(normal_object.CopyFromPango(ctx, obj.Normal, encrypted)...)
+		diags.Append(normal_object.CopyFromPango(ctx, append(ancestors, o), obj.Normal, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33526,8 +35831,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyFromPango(ctx context.C
 	var stub_object *LogicalRouterResourceVrfOspfAreaTypeStubObject
 	if obj.Stub != nil {
 		stub_object = new(LogicalRouterResourceVrfOspfAreaTypeStubObject)
-
-		diags.Append(stub_object.CopyFromPango(ctx, obj.Stub, encrypted)...)
+		diags.Append(stub_object.CopyFromPango(ctx, append(ancestors, o), obj.Stub, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33535,8 +35839,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyFromPango(ctx context.C
 	var nssa_object *LogicalRouterResourceVrfOspfAreaTypeNssaObject
 	if obj.Nssa != nil {
 		nssa_object = new(LogicalRouterResourceVrfOspfAreaTypeNssaObject)
-
-		diags.Append(nssa_object.CopyFromPango(ctx, obj.Nssa, encrypted)...)
+		diags.Append(nssa_object.CopyFromPango(ctx, append(ancestors, o), obj.Nssa, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33549,13 +35852,12 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNormal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNormal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_object *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33566,7 +35868,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNormalAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNormalAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var importList_value types.String
@@ -33593,13 +35895,12 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeStub, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeStub, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_object *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterResourceVrfOspfAreaTypeStubAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33620,7 +35921,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeStubAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeStubAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var importList_value types.String
@@ -33647,13 +35948,12 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNssa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNssa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var defaultInformationOriginate_object *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject
 	if obj.DefaultInformationOriginate != nil {
 		defaultInformationOriginate_object = new(LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject)
-
-		diags.Append(defaultInformationOriginate_object.CopyFromPango(ctx, obj.DefaultInformationOriginate, encrypted)...)
+		diags.Append(defaultInformationOriginate_object.CopyFromPango(ctx, append(ancestors, o), obj.DefaultInformationOriginate, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33661,8 +35961,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) CopyFromPango(ctx conte
 	var abr_object *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33679,7 +35978,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNssaDefaultInformationOriginate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var metric_value types.Int64
@@ -33696,15 +35995,19 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObje
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNssaAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNssaAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nssaExtRange_list types.List
 	{
 		var nssaExtRange_tf_entries []LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject
 		for _, elt := range obj.NssaExtRange {
-			var entry LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			nssaExtRange_tf_entries = append(nssaExtRange_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -33738,7 +36041,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaTypeNssaAbrNssaExtRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var advertise_value types.Bool
@@ -33751,7 +36054,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) CopyFrom
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaRangeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaRangeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var advertise_value types.Bool
@@ -33764,13 +36067,12 @@ func (o *LogicalRouterResourceVrfOspfAreaRangeObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var linkType_object *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject
 	if obj.LinkType != nil {
 		linkType_object = new(LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject)
-
-		diags.Append(linkType_object.CopyFromPango(ctx, obj.LinkType, encrypted)...)
+		diags.Append(linkType_object.CopyFromPango(ctx, append(ancestors, o), obj.LinkType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33778,8 +36080,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) CopyFromPango(ctx cont
 	var bfd_object *LogicalRouterResourceVrfOspfAreaInterfaceBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterResourceVrfOspfAreaInterfaceBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33827,13 +36128,12 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var broadcast_object *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject
 	if obj.Broadcast != nil {
 		broadcast_object = new(LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject)
-
-		diags.Append(broadcast_object.CopyFromPango(ctx, obj.Broadcast, encrypted)...)
+		diags.Append(broadcast_object.CopyFromPango(ctx, append(ancestors, o), obj.Broadcast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33841,8 +36141,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPango(
 	var p2p_object *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject
 	if obj.P2p != nil {
 		p2p_object = new(LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject)
-
-		diags.Append(p2p_object.CopyFromPango(ctx, obj.P2p, encrypted)...)
+		diags.Append(p2p_object.CopyFromPango(ctx, append(ancestors, o), obj.P2p, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33850,8 +36149,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPango(
 	var p2mp_object *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject
 	if obj.P2mp != nil {
 		p2mp_object = new(LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject)
-
-		diags.Append(p2mp_object.CopyFromPango(ctx, obj.P2mp, encrypted)...)
+		diags.Append(p2mp_object.CopyFromPango(ctx, append(ancestors, o), obj.P2mp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33864,27 +36162,31 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) CopyFromPango(
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkTypeBroadcast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2p, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2p, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2mp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2mp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject
 		for _, elt := range obj.Neighbor {
-			var entry LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			neighbor_tf_entries = append(neighbor_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -33898,7 +36200,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceLinkTypeP2mpNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var priority_value types.Int64
@@ -33911,7 +36213,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) Co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -33923,13 +36225,12 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaVirtualLink, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaVirtualLink, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var bfd_object *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -33971,7 +36272,7 @@ func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfAreaVirtualLinkBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfAreaVirtualLinkBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -33983,15 +36284,19 @@ func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3Object) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var area_list types.List
 	{
 		var area_tf_entries []LogicalRouterResourceVrfOspfv3AreaObject
 		for _, elt := range obj.Area {
-			var entry LogicalRouterResourceVrfOspfv3AreaObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfv3AreaObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			area_tf_entries = append(area_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34002,8 +36307,7 @@ func (o *LogicalRouterResourceVrfOspfv3Object) CopyFromPango(ctx context.Context
 	var globalBfd_object *LogicalRouterResourceVrfOspfv3GlobalBfdObject
 	if obj.GlobalBfd != nil {
 		globalBfd_object = new(LogicalRouterResourceVrfOspfv3GlobalBfdObject)
-
-		diags.Append(globalBfd_object.CopyFromPango(ctx, obj.GlobalBfd, encrypted)...)
+		diags.Append(globalBfd_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalBfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34011,8 +36315,7 @@ func (o *LogicalRouterResourceVrfOspfv3Object) CopyFromPango(ctx context.Context
 	var gracefulRestart_object *LogicalRouterResourceVrfOspfv3GracefulRestartObject
 	if obj.GracefulRestart != nil {
 		gracefulRestart_object = new(LogicalRouterResourceVrfOspfv3GracefulRestartObject)
-
-		diags.Append(gracefulRestart_object.CopyFromPango(ctx, obj.GracefulRestart, encrypted)...)
+		diags.Append(gracefulRestart_object.CopyFromPango(ctx, append(ancestors, o), obj.GracefulRestart, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34055,7 +36358,7 @@ func (o *LogicalRouterResourceVrfOspfv3Object) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3GlobalBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3GlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3GlobalBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3GlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -34067,7 +36370,7 @@ func (o *LogicalRouterResourceVrfOspfv3GlobalBfdObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3GracefulRestartObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3GracefulRestart, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3GracefulRestartObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3GracefulRestart, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -34099,15 +36402,19 @@ func (o *LogicalRouterResourceVrfOspfv3GracefulRestartObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3Area, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3Area, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var range_list types.List
 	{
 		var range_tf_entries []LogicalRouterResourceVrfOspfv3AreaRangeObject
 		for _, elt := range obj.Range {
-			var entry LogicalRouterResourceVrfOspfv3AreaRangeObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfv3AreaRangeObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			range_tf_entries = append(range_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34119,9 +36426,13 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyFromPango(ctx context.Con
 	{
 		var interface_tf_entries []LogicalRouterResourceVrfOspfv3AreaInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterResourceVrfOspfv3AreaInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfv3AreaInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34133,9 +36444,13 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyFromPango(ctx context.Con
 	{
 		var virtualLink_tf_entries []LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject
 		for _, elt := range obj.VirtualLink {
-			var entry LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			virtualLink_tf_entries = append(virtualLink_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34146,8 +36461,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyFromPango(ctx context.Con
 	var type_object *LogicalRouterResourceVrfOspfv3AreaTypeObject
 	if obj.Type != nil {
 		type_object = new(LogicalRouterResourceVrfOspfv3AreaTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34167,13 +36481,12 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var normal_object *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject
 	if obj.Normal != nil {
 		normal_object = new(LogicalRouterResourceVrfOspfv3AreaTypeNormalObject)
-
-		diags.Append(normal_object.CopyFromPango(ctx, obj.Normal, encrypted)...)
+		diags.Append(normal_object.CopyFromPango(ctx, append(ancestors, o), obj.Normal, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34181,8 +36494,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx context
 	var stub_object *LogicalRouterResourceVrfOspfv3AreaTypeStubObject
 	if obj.Stub != nil {
 		stub_object = new(LogicalRouterResourceVrfOspfv3AreaTypeStubObject)
-
-		diags.Append(stub_object.CopyFromPango(ctx, obj.Stub, encrypted)...)
+		diags.Append(stub_object.CopyFromPango(ctx, append(ancestors, o), obj.Stub, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34190,8 +36502,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx context
 	var nssa_object *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject
 	if obj.Nssa != nil {
 		nssa_object = new(LogicalRouterResourceVrfOspfv3AreaTypeNssaObject)
-
-		diags.Append(nssa_object.CopyFromPango(ctx, obj.Nssa, encrypted)...)
+		diags.Append(nssa_object.CopyFromPango(ctx, append(ancestors, o), obj.Nssa, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34204,13 +36515,12 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNormal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNormal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_object *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34221,7 +36531,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNormalAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNormalAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var importList_value types.String
@@ -34248,13 +36558,12 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeStub, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeStub, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var abr_object *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34275,7 +36584,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeStubAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeStubAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var importList_value types.String
@@ -34302,13 +36611,12 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNssa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNssa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var defaultInformationOriginate_object *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject
 	if obj.DefaultInformationOriginate != nil {
 		defaultInformationOriginate_object = new(LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject)
-
-		diags.Append(defaultInformationOriginate_object.CopyFromPango(ctx, obj.DefaultInformationOriginate, encrypted)...)
+		diags.Append(defaultInformationOriginate_object.CopyFromPango(ctx, append(ancestors, o), obj.DefaultInformationOriginate, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34316,8 +36624,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) CopyFromPango(ctx con
 	var abr_object *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject
 	if obj.Abr != nil {
 		abr_object = new(LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject)
-
-		diags.Append(abr_object.CopyFromPango(ctx, obj.Abr, encrypted)...)
+		diags.Append(abr_object.CopyFromPango(ctx, append(ancestors, o), obj.Abr, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34334,7 +36641,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNssaDefaultInformationOriginate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var metric_value types.Int64
@@ -34351,15 +36658,19 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateOb
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNssaAbr, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNssaAbr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nssaExtRange_list types.List
 	{
 		var nssaExtRange_tf_entries []LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject
 		for _, elt := range obj.NssaExtRange {
-			var entry LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			nssaExtRange_tf_entries = append(nssaExtRange_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34393,7 +36704,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaTypeNssaAbrNssaExtRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var advertise_value types.Bool
@@ -34406,7 +36717,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) CopyFr
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaRangeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaRange, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaRangeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaRange, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var advertise_value types.Bool
@@ -34419,13 +36730,12 @@ func (o *LogicalRouterResourceVrfOspfv3AreaRangeObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var linkType_object *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject
 	if obj.LinkType != nil {
 		linkType_object = new(LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject)
-
-		diags.Append(linkType_object.CopyFromPango(ctx, obj.LinkType, encrypted)...)
+		diags.Append(linkType_object.CopyFromPango(ctx, append(ancestors, o), obj.LinkType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34433,8 +36743,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) CopyFromPango(ctx co
 	var bfd_object *LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34487,13 +36796,12 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var broadcast_object *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject
 	if obj.Broadcast != nil {
 		broadcast_object = new(LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject)
-
-		diags.Append(broadcast_object.CopyFromPango(ctx, obj.Broadcast, encrypted)...)
+		diags.Append(broadcast_object.CopyFromPango(ctx, append(ancestors, o), obj.Broadcast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34501,8 +36809,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPang
 	var p2p_object *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject
 	if obj.P2p != nil {
 		p2p_object = new(LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject)
-
-		diags.Append(p2p_object.CopyFromPango(ctx, obj.P2p, encrypted)...)
+		diags.Append(p2p_object.CopyFromPango(ctx, append(ancestors, o), obj.P2p, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34510,8 +36817,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPang
 	var p2mp_object *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject
 	if obj.P2mp != nil {
 		p2mp_object = new(LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject)
-
-		diags.Append(p2mp_object.CopyFromPango(ctx, obj.P2mp, encrypted)...)
+		diags.Append(p2mp_object.CopyFromPango(ctx, append(ancestors, o), obj.P2mp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34524,27 +36830,31 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) CopyFromPang
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeBroadcast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2p, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
 		for _, elt := range obj.Neighbor {
-			var entry LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			neighbor_tf_entries = append(neighbor_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34558,7 +36868,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) CopyFrom
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceLinkTypeP2mpNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var priority_value types.Int64
@@ -34571,7 +36881,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -34583,7 +36893,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfOspfv3AreaVirtualLink, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfOspfv3AreaVirtualLink, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var neighborId_value types.String
@@ -34621,13 +36931,12 @@ func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfEcmpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_object *LogicalRouterResourceVrfEcmpAlgorithmObject
 	if obj.Algorithm != nil {
 		algorithm_object = new(LogicalRouterResourceVrfEcmpAlgorithmObject)
-
-		diags.Append(algorithm_object.CopyFromPango(ctx, obj.Algorithm, encrypted)...)
+		diags.Append(algorithm_object.CopyFromPango(ctx, append(ancestors, o), obj.Algorithm, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34658,13 +36967,12 @@ func (o *LogicalRouterResourceVrfEcmpObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipModulo_object *LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject
 	if obj.IpModulo != nil {
 		ipModulo_object = new(LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject)
-
-		diags.Append(ipModulo_object.CopyFromPango(ctx, obj.IpModulo, encrypted)...)
+		diags.Append(ipModulo_object.CopyFromPango(ctx, append(ancestors, o), obj.IpModulo, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34672,8 +36980,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyFromPango(ctx context.
 	var ipHash_object *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject
 	if obj.IpHash != nil {
 		ipHash_object = new(LogicalRouterResourceVrfEcmpAlgorithmIpHashObject)
-
-		diags.Append(ipHash_object.CopyFromPango(ctx, obj.IpHash, encrypted)...)
+		diags.Append(ipHash_object.CopyFromPango(ctx, append(ancestors, o), obj.IpHash, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34681,8 +36988,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyFromPango(ctx context.
 	var weightedRoundRobin_object *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject
 	if obj.WeightedRoundRobin != nil {
 		weightedRoundRobin_object = new(LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject)
-
-		diags.Append(weightedRoundRobin_object.CopyFromPango(ctx, obj.WeightedRoundRobin, encrypted)...)
+		diags.Append(weightedRoundRobin_object.CopyFromPango(ctx, append(ancestors, o), obj.WeightedRoundRobin, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34690,8 +36996,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyFromPango(ctx context.
 	var balancedRoundRobin_object *LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject
 	if obj.BalancedRoundRobin != nil {
 		balancedRoundRobin_object = new(LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject)
-
-		diags.Append(balancedRoundRobin_object.CopyFromPango(ctx, obj.BalancedRoundRobin, encrypted)...)
+		diags.Append(balancedRoundRobin_object.CopyFromPango(ctx, append(ancestors, o), obj.BalancedRoundRobin, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34705,13 +37010,13 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmIpModulo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmIpModulo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmIpHash, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmIpHash, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var srcOnly_value types.Bool
@@ -34733,15 +37038,19 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmWeightedRoundRobin, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmWeightedRoundRobin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_list types.List
 	{
 		var interface_tf_entries []LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34755,7 +37064,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) CopyFrom
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmWeightedRoundRobinInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var weight_value types.Int64
@@ -34768,21 +37077,25 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject)
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfEcmpAlgorithmBalancedRoundRobin, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfEcmpAlgorithmBalancedRoundRobin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRoute_list types.List
 	{
 		var staticRoute_tf_entries []LogicalRouterResourceVrfMulticastStaticRouteObject
 		for _, elt := range obj.StaticRoute {
-			var entry LogicalRouterResourceVrfMulticastStaticRouteObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfMulticastStaticRouteObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			staticRoute_tf_entries = append(staticRoute_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34793,8 +37106,7 @@ func (o *LogicalRouterResourceVrfMulticastObject) CopyFromPango(ctx context.Cont
 	var pim_object *LogicalRouterResourceVrfMulticastPimObject
 	if obj.Pim != nil {
 		pim_object = new(LogicalRouterResourceVrfMulticastPimObject)
-
-		diags.Append(pim_object.CopyFromPango(ctx, obj.Pim, encrypted)...)
+		diags.Append(pim_object.CopyFromPango(ctx, append(ancestors, o), obj.Pim, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34802,8 +37114,7 @@ func (o *LogicalRouterResourceVrfMulticastObject) CopyFromPango(ctx context.Cont
 	var igmp_object *LogicalRouterResourceVrfMulticastIgmpObject
 	if obj.Igmp != nil {
 		igmp_object = new(LogicalRouterResourceVrfMulticastIgmpObject)
-
-		diags.Append(igmp_object.CopyFromPango(ctx, obj.Igmp, encrypted)...)
+		diags.Append(igmp_object.CopyFromPango(ctx, append(ancestors, o), obj.Igmp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34811,8 +37122,7 @@ func (o *LogicalRouterResourceVrfMulticastObject) CopyFromPango(ctx context.Cont
 	var msdp_object *LogicalRouterResourceVrfMulticastMsdpObject
 	if obj.Msdp != nil {
 		msdp_object = new(LogicalRouterResourceVrfMulticastMsdpObject)
-
-		diags.Append(msdp_object.CopyFromPango(ctx, obj.Msdp, encrypted)...)
+		diags.Append(msdp_object.CopyFromPango(ctx, append(ancestors, o), obj.Msdp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34831,13 +37141,12 @@ func (o *LogicalRouterResourceVrfMulticastObject) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastStaticRoute, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastStaticRoute, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var nexthop_object *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject
 	if obj.Nexthop != nil {
 		nexthop_object = new(LogicalRouterResourceVrfMulticastStaticRouteNexthopObject)
-
-		diags.Append(nexthop_object.CopyFromPango(ctx, obj.Nexthop, encrypted)...)
+		diags.Append(nexthop_object.CopyFromPango(ctx, append(ancestors, o), obj.Nexthop, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34864,7 +37173,7 @@ func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastStaticRouteNexthop, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastStaticRouteNexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipAddress_value types.String
@@ -34876,15 +37185,19 @@ func (o *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) CopyFromPang
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastPimObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPim, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPim, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var sptThreshold_list types.List
 	{
 		var sptThreshold_tf_entries []LogicalRouterResourceVrfMulticastPimSptThresholdObject
 		for _, elt := range obj.SptThreshold {
-			var entry LogicalRouterResourceVrfMulticastPimSptThresholdObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfMulticastPimSptThresholdObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			sptThreshold_tf_entries = append(sptThreshold_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34896,9 +37209,13 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) CopyFromPango(ctx context.C
 	{
 		var interface_tf_entries []LogicalRouterResourceVrfMulticastPimInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterResourceVrfMulticastPimInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfMulticastPimInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34909,8 +37226,7 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) CopyFromPango(ctx context.C
 	var ssmAddressSpace_object *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject
 	if obj.SsmAddressSpace != nil {
 		ssmAddressSpace_object = new(LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject)
-
-		diags.Append(ssmAddressSpace_object.CopyFromPango(ctx, obj.SsmAddressSpace, encrypted)...)
+		diags.Append(ssmAddressSpace_object.CopyFromPango(ctx, append(ancestors, o), obj.SsmAddressSpace, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34918,8 +37234,7 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) CopyFromPango(ctx context.C
 	var rp_object *LogicalRouterResourceVrfMulticastPimRpObject
 	if obj.Rp != nil {
 		rp_object = new(LogicalRouterResourceVrfMulticastPimRpObject)
-
-		diags.Append(rp_object.CopyFromPango(ctx, obj.Rp, encrypted)...)
+		diags.Append(rp_object.CopyFromPango(ctx, append(ancestors, o), obj.Rp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -34958,7 +37273,7 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimSsmAddressSpace, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimSsmAddressSpace, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var groupList_value types.String
@@ -34970,15 +37285,19 @@ func (o *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) CopyFromPang
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastPimRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var externalRp_list types.List
 	{
 		var externalRp_tf_entries []LogicalRouterResourceVrfMulticastPimRpExternalRpObject
 		for _, elt := range obj.ExternalRp {
-			var entry LogicalRouterResourceVrfMulticastPimRpExternalRpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfMulticastPimRpExternalRpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			externalRp_tf_entries = append(externalRp_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -34989,8 +37308,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpObject) CopyFromPango(ctx context
 	var localRp_object *LogicalRouterResourceVrfMulticastPimRpLocalRpObject
 	if obj.LocalRp != nil {
 		localRp_object = new(LogicalRouterResourceVrfMulticastPimRpLocalRpObject)
-
-		diags.Append(localRp_object.CopyFromPango(ctx, obj.LocalRp, encrypted)...)
+		diags.Append(localRp_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalRp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35002,13 +37320,12 @@ func (o *LogicalRouterResourceVrfMulticastPimRpObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRpLocalRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRpLocalRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var staticRp_object *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject
 	if obj.StaticRp != nil {
 		staticRp_object = new(LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject)
-
-		diags.Append(staticRp_object.CopyFromPango(ctx, obj.StaticRp, encrypted)...)
+		diags.Append(staticRp_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticRp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35016,8 +37333,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) CopyFromPango(ctx 
 	var candidateRp_object *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject
 	if obj.CandidateRp != nil {
 		candidateRp_object = new(LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject)
-
-		diags.Append(candidateRp_object.CopyFromPango(ctx, obj.CandidateRp, encrypted)...)
+		diags.Append(candidateRp_object.CopyFromPango(ctx, append(ancestors, o), obj.CandidateRp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35029,7 +37345,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRpLocalRpStaticRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRpLocalRpStaticRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -35056,7 +37372,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRpLocalRpCandidateRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRpLocalRpCandidateRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -35088,7 +37404,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) CopyFro
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastPimRpExternalRpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimRpExternalRp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimRpExternalRpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimRpExternalRp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var groupList_value types.String
@@ -35106,7 +37422,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpExternalRpObject) CopyFromPango(c
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastPimSptThresholdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimSptThreshold, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimSptThresholdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimSptThreshold, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var threshold_value types.String
@@ -35119,7 +37435,7 @@ func (o *LogicalRouterResourceVrfMulticastPimSptThresholdObject) CopyFromPango(c
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastPimInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastPimInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var description_value types.String
@@ -35152,15 +37468,19 @@ func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastIgmpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastIgmp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastIgmpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastIgmp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var static_list types.List
 	{
 		var static_tf_entries []LogicalRouterResourceVrfMulticastIgmpStaticObject
 		for _, elt := range obj.Static {
-			var entry LogicalRouterResourceVrfMulticastIgmpStaticObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfMulticastIgmpStaticObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			static_tf_entries = append(static_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -35171,8 +37491,7 @@ func (o *LogicalRouterResourceVrfMulticastIgmpObject) CopyFromPango(ctx context.
 	var dynamic_object *LogicalRouterResourceVrfMulticastIgmpDynamicObject
 	if obj.Dynamic != nil {
 		dynamic_object = new(LogicalRouterResourceVrfMulticastIgmpDynamicObject)
-
-		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
+		diags.Append(dynamic_object.CopyFromPango(ctx, append(ancestors, o), obj.Dynamic, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35189,15 +37508,19 @@ func (o *LogicalRouterResourceVrfMulticastIgmpObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastIgmpDynamicObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastIgmpDynamic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastIgmpDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastIgmpDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interface_list types.List
 	{
 		var interface_tf_entries []LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interface_tf_entries = append(interface_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -35211,7 +37534,7 @@ func (o *LogicalRouterResourceVrfMulticastIgmpDynamicObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastIgmpDynamicInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastIgmpDynamicInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var version_value types.String
@@ -35254,7 +37577,7 @@ func (o *LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastIgmpStatic, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastIgmpStatic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -35277,15 +37600,19 @@ func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastMsdpObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var peer_list types.List
 	{
 		var peer_tf_entries []LogicalRouterResourceVrfMulticastMsdpPeerObject
 		for _, elt := range obj.Peer {
-			var entry LogicalRouterResourceVrfMulticastMsdpPeerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfMulticastMsdpPeerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			peer_tf_entries = append(peer_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -35296,8 +37623,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpObject) CopyFromPango(ctx context.
 	var originatorId_object *LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject
 	if obj.OriginatorId != nil {
 		originatorId_object = new(LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject)
-
-		diags.Append(originatorId_object.CopyFromPango(ctx, obj.OriginatorId, encrypted)...)
+		diags.Append(originatorId_object.CopyFromPango(ctx, append(ancestors, o), obj.OriginatorId, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35324,7 +37650,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdpOriginatorId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdpOriginatorId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -35341,13 +37667,12 @@ func (o *LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) CopyFromPango(
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdpPeer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdpPeer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localAddress_object *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35355,8 +37680,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) CopyFromPango(ctx cont
 	var peerAddress_object *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject
 	if obj.PeerAddress != nil {
 		peerAddress_object = new(LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		diags.Append(peerAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.PeerAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35399,7 +37723,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdpPeerLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdpPeerLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -35416,7 +37740,7 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) CopyFromPa
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfMulticastMsdpPeerPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfMulticastMsdpPeerPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ip_value types.String
@@ -35433,15 +37757,19 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) CopyFromPan
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRipObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interfaces_list types.List
 	{
 		var interfaces_tf_entries []LogicalRouterResourceVrfRipInterfacesObject
 		for _, elt := range obj.Interface {
-			var entry LogicalRouterResourceVrfRipInterfacesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogicalRouterResourceVrfRipInterfacesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			interfaces_tf_entries = append(interfaces_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -35452,8 +37780,7 @@ func (o *LogicalRouterResourceVrfRipObject) CopyFromPango(ctx context.Context, o
 	var globalBfd_object *LogicalRouterResourceVrfRipGlobalBfdObject
 	if obj.GlobalBfd != nil {
 		globalBfd_object = new(LogicalRouterResourceVrfRipGlobalBfdObject)
-
-		diags.Append(globalBfd_object.CopyFromPango(ctx, obj.GlobalBfd, encrypted)...)
+		diags.Append(globalBfd_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalBfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35461,8 +37788,7 @@ func (o *LogicalRouterResourceVrfRipObject) CopyFromPango(ctx context.Context, o
 	var globalInboundDistributeList_object *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject
 	if obj.GlobalInboundDistributeList != nil {
 		globalInboundDistributeList_object = new(LogicalRouterResourceVrfRipGlobalInboundDistributeListObject)
-
-		diags.Append(globalInboundDistributeList_object.CopyFromPango(ctx, obj.GlobalInboundDistributeList, encrypted)...)
+		diags.Append(globalInboundDistributeList_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalInboundDistributeList, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35470,8 +37796,7 @@ func (o *LogicalRouterResourceVrfRipObject) CopyFromPango(ctx context.Context, o
 	var globalOutboundDistributeList_object *LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject
 	if obj.GlobalOutboundDistributeList != nil {
 		globalOutboundDistributeList_object = new(LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject)
-
-		diags.Append(globalOutboundDistributeList_object.CopyFromPango(ctx, obj.GlobalOutboundDistributeList, encrypted)...)
+		diags.Append(globalOutboundDistributeList_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalOutboundDistributeList, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35510,7 +37835,7 @@ func (o *LogicalRouterResourceVrfRipObject) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRipGlobalBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipGlobalBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipGlobalBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipGlobalBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -35522,7 +37847,7 @@ func (o *LogicalRouterResourceVrfRipGlobalBfdObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipGlobalInboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipGlobalInboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var accessList_value types.String
@@ -35534,7 +37859,7 @@ func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) CopyFromP
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipGlobalOutboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipGlobalOutboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var accessList_value types.String
@@ -35546,13 +37871,12 @@ func (o *LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) CopyFrom
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipInterface, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipInterface, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var bfd_object *LogicalRouterResourceVrfRipInterfacesBfdObject
 	if obj.Bfd != nil {
 		bfd_object = new(LogicalRouterResourceVrfRipInterfacesBfdObject)
-
-		diags.Append(bfd_object.CopyFromPango(ctx, obj.Bfd, encrypted)...)
+		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35560,8 +37884,7 @@ func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyFromPango(ctx context.
 	var interfaceInboundDistributeList_object *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject
 	if obj.InterfaceInboundDistributeList != nil {
 		interfaceInboundDistributeList_object = new(LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject)
-
-		diags.Append(interfaceInboundDistributeList_object.CopyFromPango(ctx, obj.InterfaceInboundDistributeList, encrypted)...)
+		diags.Append(interfaceInboundDistributeList_object.CopyFromPango(ctx, append(ancestors, o), obj.InterfaceInboundDistributeList, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35569,8 +37892,7 @@ func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyFromPango(ctx context.
 	var interfaceOutboundDistributeList_object *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject
 	if obj.InterfaceOutboundDistributeList != nil {
 		interfaceOutboundDistributeList_object = new(LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject)
-
-		diags.Append(interfaceOutboundDistributeList_object.CopyFromPango(ctx, obj.InterfaceOutboundDistributeList, encrypted)...)
+		diags.Append(interfaceOutboundDistributeList_object.CopyFromPango(ctx, append(ancestors, o), obj.InterfaceOutboundDistributeList, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -35604,7 +37926,7 @@ func (o *LogicalRouterResourceVrfRipInterfacesObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRipInterfacesBfdObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipInterfaceBfd, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipInterfacesBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipInterfaceBfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -35616,7 +37938,7 @@ func (o *LogicalRouterResourceVrfRipInterfacesBfdObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipInterfaceInterfaceInboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipInterfaceInterfaceInboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var accessList_value types.String
@@ -35633,7 +37955,7 @@ func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObje
 	return diags
 }
 
-func (o *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject) CopyFromPango(ctx context.Context, obj *logical_router.VrfRipInterfaceInterfaceOutboundDistributeList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logical_router.VrfRipInterfaceInterfaceOutboundDistributeList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var accessList_value types.String
@@ -35648,6 +37970,11 @@ func (o *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObj
 	o.Metric = metric_value
 
 	return diags
+}
+
+func (o *LogicalRouterResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *LogicalRouterResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -35667,6 +37994,13 @@ func (r *LogicalRouterResource) Create(ctx context.Context, req resource.CreateR
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -35724,8 +38058,7 @@ func (r *LogicalRouterResource) Create(ctx context.Context, req resource.CreateR
 
 	// Load the desired config.
 	var obj *logical_router.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -35737,17 +38070,29 @@ func (r *LogicalRouterResource) Create(ctx context.Context, req resource.CreateR
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -35757,6 +38102,17 @@ func (o *LogicalRouterResource) Read(ctx context.Context, req resource.ReadReque
 	var savestate, state LogicalRouterResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -35812,8 +38168,12 @@ func (o *LogicalRouterResource) Read(ctx context.Context, req resource.ReadReque
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -35823,7 +38183,7 @@ func (o *LogicalRouterResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -35833,6 +38193,13 @@ func (o *LogicalRouterResource) Read(ctx context.Context, req resource.ReadReque
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -35844,6 +38211,17 @@ func (r *LogicalRouterResource) Update(ctx context.Context, req resource.UpdateR
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -35903,19 +38281,31 @@ func (r *LogicalRouterResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -35929,11 +38319,18 @@ func (r *LogicalRouterResource) Update(ctx context.Context, req resource.UpdateR
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -36005,9 +38402,15 @@ func (r *LogicalRouterResource) Delete(ctx context.Context, req resource.DeleteR
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

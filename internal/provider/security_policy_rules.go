@@ -69,6 +69,7 @@ type SecurityPolicyRulesDataSourceRulesObject struct {
 	DestinationAddresses            types.Set                                               `tfsdk:"destination_addresses"`
 	DestinationHip                  types.List                                              `tfsdk:"destination_hip"`
 	DisableInspect                  types.Bool                                              `tfsdk:"disable_inspect"`
+	DisableServerResponseInspection types.Bool                                              `tfsdk:"disable_server_response_inspection"`
 	Disabled                        types.Bool                                              `tfsdk:"disabled"`
 	SourceZones                     types.Set                                               `tfsdk:"source_zones"`
 	GroupTag                        types.String                                            `tfsdk:"group_tag"`
@@ -92,7 +93,6 @@ type SecurityPolicyRulesDataSourceRulesObject struct {
 	Tag                             types.List                                              `tfsdk:"tag"`
 	Target                          *SecurityPolicyRulesDataSourceRulesTargetObject         `tfsdk:"target"`
 	DestinationZones                types.Set                                               `tfsdk:"destination_zones"`
-	DisableServerResponseInspection types.Bool                                              `tfsdk:"disable_server_response_inspection"`
 }
 type SecurityPolicyRulesDataSourceRulesProfileSettingObject struct {
 	Group    types.List                                                      `tfsdk:"group"`
@@ -148,6 +148,14 @@ func (o *SecurityPolicyRulesDataSourceModel) AttributeTypes() map[string]attr.Ty
 		"rules": types.ListType{},
 	}
 }
+
+func (o SecurityPolicyRulesDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o SecurityPolicyRulesDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *SecurityPolicyRulesDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
 
 	var profileSettingObj *SecurityPolicyRulesDataSourceRulesProfileSettingObject
@@ -157,23 +165,24 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) AttributeTypes() map[string]a
 	var targetObj *SecurityPolicyRulesDataSourceRulesTargetObject
 
 	return map[string]attr.Type{
-		"name":                  types.StringType,
-		"action":                types.StringType,
-		"applications":          types.SetType{},
-		"category":              types.ListType{},
-		"description":           types.StringType,
-		"destination_addresses": types.SetType{},
-		"destination_hip":       types.ListType{},
-		"disable_inspect":       types.BoolType,
-		"disabled":              types.BoolType,
-		"source_zones":          types.SetType{},
-		"group_tag":             types.StringType,
-		"icmp_unreachable":      types.BoolType,
-		"log_end":               types.BoolType,
-		"log_setting":           types.StringType,
-		"log_start":             types.BoolType,
-		"negate_destination":    types.BoolType,
-		"negate_source":         types.BoolType,
+		"name":                               types.StringType,
+		"action":                             types.StringType,
+		"applications":                       types.SetType{},
+		"category":                           types.ListType{},
+		"description":                        types.StringType,
+		"destination_addresses":              types.SetType{},
+		"destination_hip":                    types.ListType{},
+		"disable_inspect":                    types.BoolType,
+		"disable_server_response_inspection": types.BoolType,
+		"disabled":                           types.BoolType,
+		"source_zones":                       types.SetType{},
+		"group_tag":                          types.StringType,
+		"icmp_unreachable":                   types.BoolType,
+		"log_end":                            types.BoolType,
+		"log_setting":                        types.StringType,
+		"log_start":                          types.BoolType,
+		"negate_destination":                 types.BoolType,
+		"negate_source":                      types.BoolType,
 		"profile_setting": types.ObjectType{
 			AttrTypes: profileSettingObj.AttributeTypes(),
 		},
@@ -193,9 +202,16 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) AttributeTypes() map[string]a
 		"target": types.ObjectType{
 			AttrTypes: targetObj.AttributeTypes(),
 		},
-		"destination_zones":                  types.SetType{},
-		"disable_server_response_inspection": types.BoolType,
+		"destination_zones": types.SetType{},
 	}
+}
+
+func (o SecurityPolicyRulesDataSourceRulesObject) AncestorName() string {
+	return "rules"
+}
+
+func (o SecurityPolicyRulesDataSourceRulesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) AttributeTypes() map[string]attr.Type {
 
@@ -206,6 +222,14 @@ func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) AttributeTypes(
 			AttrTypes: profilesObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o SecurityPolicyRulesDataSourceRulesProfileSettingObject) AncestorName() string {
+	return "profile-setting"
+}
+
+func (o SecurityPolicyRulesDataSourceRulesProfileSettingObject) EntryName() *string {
+	return nil
 }
 func (o *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -221,6 +245,14 @@ func (o *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) Attribu
 		"wildfire_analysis": types.ListType{},
 	}
 }
+
+func (o SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) AncestorName() string {
+	return "profiles"
+}
+
+func (o SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) EntryName() *string {
+	return nil
+}
 func (o *SecurityPolicyRulesDataSourceRulesQosObject) AttributeTypes() map[string]attr.Type {
 
 	var markingObj *SecurityPolicyRulesDataSourceRulesQosMarkingObject
@@ -229,6 +261,14 @@ func (o *SecurityPolicyRulesDataSourceRulesQosObject) AttributeTypes() map[strin
 			AttrTypes: markingObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o SecurityPolicyRulesDataSourceRulesQosObject) AncestorName() string {
+	return "qos"
+}
+
+func (o SecurityPolicyRulesDataSourceRulesQosObject) EntryName() *string {
+	return nil
 }
 func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) AttributeTypes() map[string]attr.Type {
 
@@ -242,8 +282,24 @@ func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) AttributeTypes() ma
 		"ip_precedence": types.StringType,
 	}
 }
+
+func (o SecurityPolicyRulesDataSourceRulesQosMarkingObject) AncestorName() string {
+	return "marking"
+}
+
+func (o SecurityPolicyRulesDataSourceRulesQosMarkingObject) EntryName() *string {
+	return nil
+}
 func (o *SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject) AncestorName() string {
+	return "follow-c2s-flow"
+}
+
+func (o SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject) EntryName() *string {
+	return nil
 }
 func (o *SecurityPolicyRulesDataSourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
 
@@ -253,12 +309,28 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetObject) AttributeTypes() map[st
 		"tags":    types.ListType{},
 	}
 }
+
+func (o SecurityPolicyRulesDataSourceRulesTargetObject) AncestorName() string {
+	return "target"
+}
+
+func (o SecurityPolicyRulesDataSourceRulesTargetObject) EntryName() *string {
+	return nil
+}
 func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name": types.StringType,
 		"vsys": types.ListType{},
 	}
+}
+
+func (o SecurityPolicyRulesDataSourceRulesTargetDevicesObject) AncestorName() string {
+	return "devices"
+}
+
+func (o SecurityPolicyRulesDataSourceRulesTargetDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
 
@@ -267,7 +339,15 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) AttributeTyp
 	}
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, obj **security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) AncestorName() string {
+	return "vsys"
+}
+
+func (o SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	applications_pango_entries := make([]string, 0)
@@ -292,6 +372,7 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Conte
 		return diags
 	}
 	disableInspect_value := o.DisableInspect.ValueBoolPointer()
+	disableServerResponseInspection_value := o.DisableServerResponseInspection.ValueBoolPointer()
 	disabled_value := o.Disabled.ValueBoolPointer()
 	sourceZones_pango_entries := make([]string, 0)
 	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
@@ -312,8 +393,8 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Conte
 		} else {
 			profileSetting_entry = new(security.ProfileSetting)
 		}
-
-		diags.Append(o.ProfileSetting.CopyToPango(ctx, &profileSetting_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ProfileSetting.CopyToPango(ctx, append(ancestors, o), &profileSetting_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -325,8 +406,8 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Conte
 		} else {
 			qos_entry = new(security.Qos)
 		}
-
-		diags.Append(o.Qos.CopyToPango(ctx, &qos_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Qos.CopyToPango(ctx, append(ancestors, o), &qos_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -380,8 +461,8 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Conte
 		} else {
 			target_entry = new(security.Target)
 		}
-
-		diags.Append(o.Target.CopyToPango(ctx, &target_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Target.CopyToPango(ctx, append(ancestors, o), &target_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -391,7 +472,6 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Conte
 	if diags.HasError() {
 		return diags
 	}
-	disableServerResponseInspection_value := o.DisableServerResponseInspection.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(security.Entry)
@@ -404,6 +484,7 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Conte
 	(*obj).Destination = destinationAddresses_pango_entries
 	(*obj).DestinationHip = destinationHip_pango_entries
 	(*obj).DisableInspect = disableInspect_value
+	(*obj).DisableServerResponseInspection = disableServerResponseInspection_value
 	(*obj).Disabled = disabled_value
 	(*obj).From = sourceZones_pango_entries
 	(*obj).GroupTag = groupTag_value
@@ -427,11 +508,10 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Conte
 	(*obj).Tag = tag_pango_entries
 	(*obj).Target = target_entry
 	(*obj).To = destinationZones_pango_entries
-	(*obj).DisableServerResponseInspection = disableServerResponseInspection_value
 
 	return diags
 }
-func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) CopyToPango(ctx context.Context, obj **security.ProfileSetting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.ProfileSetting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	group_pango_entries := make([]string, 0)
 	diags.Append(o.Group.ElementsAs(ctx, &group_pango_entries, false)...)
@@ -445,8 +525,8 @@ func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) CopyToPango(ctx
 		} else {
 			profiles_entry = new(security.ProfileSettingProfiles)
 		}
-
-		diags.Append(o.Profiles.CopyToPango(ctx, &profiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Profiles.CopyToPango(ctx, append(ancestors, o), &profiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -460,7 +540,7 @@ func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) CopyToPango(ctx context.Context, obj **security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.ProfileSettingProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dataFiltering_pango_entries := make([]string, 0)
 	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
@@ -523,7 +603,7 @@ func (o *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) CopyToP
 
 	return diags
 }
-func (o *SecurityPolicyRulesDataSourceRulesQosObject) CopyToPango(ctx context.Context, obj **security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesQosObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.Qos, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var marking_entry *security.QosMarking
 	if o.Marking != nil {
@@ -532,8 +612,8 @@ func (o *SecurityPolicyRulesDataSourceRulesQosObject) CopyToPango(ctx context.Co
 		} else {
 			marking_entry = new(security.QosMarking)
 		}
-
-		diags.Append(o.Marking.CopyToPango(ctx, &marking_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Marking.CopyToPango(ctx, append(ancestors, o), &marking_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -546,7 +626,7 @@ func (o *SecurityPolicyRulesDataSourceRulesQosObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) CopyToPango(ctx context.Context, obj **security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.QosMarking, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var followC2sFlow_entry *security.QosMarkingFollowC2sFlow
 	if o.FollowC2sFlow != nil {
@@ -555,8 +635,8 @@ func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) CopyToPango(ctx con
 		} else {
 			followC2sFlow_entry = new(security.QosMarkingFollowC2sFlow)
 		}
-
-		diags.Append(o.FollowC2sFlow.CopyToPango(ctx, &followC2sFlow_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FollowC2sFlow.CopyToPango(ctx, append(ancestors, o), &followC2sFlow_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -573,7 +653,7 @@ func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject) CopyToPango(ctx context.Context, obj **security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.QosMarkingFollowC2sFlow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -582,7 +662,7 @@ func (o *SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject) CopyTo
 
 	return diags
 }
-func (o *SecurityPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context.Context, obj **security.Target, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.Target, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var devices_tf_entries []SecurityPolicyRulesDataSourceRulesTargetDevicesObject
 	var devices_pango_entries []security.TargetDevices
@@ -594,7 +674,7 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context
 		}
 		for _, elt := range devices_tf_entries {
 			var entry *security.TargetDevices
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -617,7 +697,7 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, obj **security.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.TargetDevices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_tf_entries []SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject
 	var vsys_pango_entries []security.TargetDevicesVsys
@@ -629,7 +709,7 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx 
 		}
 		for _, elt := range vsys_tf_entries {
 			var entry *security.TargetDevicesVsys
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -645,7 +725,7 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, obj **security.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.TargetDevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -656,97 +736,138 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyToPango(
 	return diags
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var applications_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		applications_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.Application)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var destinationAddresses_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		destinationAddresses_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.Destination)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceZones_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		sourceZones_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.From)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var services_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		services_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.Service)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceAddresses_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		sourceAddresses_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.Source)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceUsers_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		sourceUsers_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.SourceUser)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var destinationZones_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		destinationZones_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.To)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var category_list types.List
 	{
 		var list_diags diag.Diagnostics
 		category_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Category)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var destinationHip_list types.List
 	{
 		var list_diags diag.Diagnostics
 		destinationHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DestinationHip)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceHip_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceHip)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceImei_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceImei_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceImei)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceImsi_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceImsi_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceImsi)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceNwSlice_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceNwSlice_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceNwSlice)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var tag_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var profileSetting_object *SecurityPolicyRulesDataSourceRulesProfileSettingObject
 	if obj.ProfileSetting != nil {
 		profileSetting_object = new(SecurityPolicyRulesDataSourceRulesProfileSettingObject)
-
-		diags.Append(profileSetting_object.CopyFromPango(ctx, obj.ProfileSetting, encrypted)...)
+		diags.Append(profileSetting_object.CopyFromPango(ctx, append(ancestors, o), obj.ProfileSetting, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -754,8 +875,7 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Con
 	var qos_object *SecurityPolicyRulesDataSourceRulesQosObject
 	if obj.Qos != nil {
 		qos_object = new(SecurityPolicyRulesDataSourceRulesQosObject)
-
-		diags.Append(qos_object.CopyFromPango(ctx, obj.Qos, encrypted)...)
+		diags.Append(qos_object.CopyFromPango(ctx, append(ancestors, o), obj.Qos, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -763,8 +883,7 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Con
 	var target_object *SecurityPolicyRulesDataSourceRulesTargetObject
 	if obj.Target != nil {
 		target_object = new(SecurityPolicyRulesDataSourceRulesTargetObject)
-
-		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
+		diags.Append(target_object.CopyFromPango(ctx, append(ancestors, o), obj.Target, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -781,6 +900,10 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Con
 	var disableInspect_value types.Bool
 	if obj.DisableInspect != nil {
 		disableInspect_value = types.BoolValue(*obj.DisableInspect)
+	}
+	var disableServerResponseInspection_value types.Bool
+	if obj.DisableServerResponseInspection != nil {
+		disableServerResponseInspection_value = types.BoolValue(*obj.DisableServerResponseInspection)
 	}
 	var disabled_value types.Bool
 	if obj.Disabled != nil {
@@ -822,10 +945,6 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Con
 	if obj.Schedule != nil {
 		schedule_value = types.StringValue(*obj.Schedule)
 	}
-	var disableServerResponseInspection_value types.Bool
-	if obj.DisableServerResponseInspection != nil {
-		disableServerResponseInspection_value = types.BoolValue(*obj.DisableServerResponseInspection)
-	}
 	o.Name = types.StringValue(obj.Name)
 	o.Action = action_value
 	o.Applications = applications_list
@@ -834,6 +953,7 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Con
 	o.DestinationAddresses = destinationAddresses_list
 	o.DestinationHip = destinationHip_list
 	o.DisableInspect = disableInspect_value
+	o.DisableServerResponseInspection = disableServerResponseInspection_value
 	o.Disabled = disabled_value
 	o.SourceZones = sourceZones_list
 	o.GroupTag = groupTag_value
@@ -857,24 +977,25 @@ func (o *SecurityPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Con
 	o.Tag = tag_list
 	o.Target = target_object
 	o.DestinationZones = destinationZones_list
-	o.DisableServerResponseInspection = disableServerResponseInspection_value
 
 	return diags
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) CopyFromPango(ctx context.Context, obj *security.ProfileSetting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.ProfileSetting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var group_list types.List
 	{
 		var list_diags diag.Diagnostics
 		group_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Group)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var profiles_object *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject
 	if obj.Profiles != nil {
 		profiles_object = new(SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject)
-
-		diags.Append(profiles_object.CopyFromPango(ctx, obj.Profiles, encrypted)...)
+		diags.Append(profiles_object.CopyFromPango(ctx, append(ancestors, o), obj.Profiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -886,61 +1007,88 @@ func (o *SecurityPolicyRulesDataSourceRulesProfileSettingObject) CopyFromPango(c
 	return diags
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) CopyFromPango(ctx context.Context, obj *security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.ProfileSettingProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dataFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
 		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var fileBlocking_list types.List
 	{
 		var list_diags diag.Diagnostics
 		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var gtp_list types.List
 	{
 		var list_diags diag.Diagnostics
 		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sctp_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var spyware_list types.List
 	{
 		var list_diags diag.Diagnostics
 		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var urlFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
 		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var virus_list types.List
 	{
 		var list_diags diag.Diagnostics
 		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var vulnerability_list types.List
 	{
 		var list_diags diag.Diagnostics
 		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var wildfireAnalysis_list types.List
 	{
 		var list_diags diag.Diagnostics
 		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.DataFiltering = dataFiltering_list
@@ -956,13 +1104,12 @@ func (o *SecurityPolicyRulesDataSourceRulesProfileSettingProfilesObject) CopyFro
 	return diags
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesQosObject) CopyFromPango(ctx context.Context, obj *security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesQosObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.Qos, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var marking_object *SecurityPolicyRulesDataSourceRulesQosMarkingObject
 	if obj.Marking != nil {
 		marking_object = new(SecurityPolicyRulesDataSourceRulesQosMarkingObject)
-
-		diags.Append(marking_object.CopyFromPango(ctx, obj.Marking, encrypted)...)
+		diags.Append(marking_object.CopyFromPango(ctx, append(ancestors, o), obj.Marking, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -973,13 +1120,12 @@ func (o *SecurityPolicyRulesDataSourceRulesQosObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) CopyFromPango(ctx context.Context, obj *security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.QosMarking, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var followC2sFlow_object *SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject
 	if obj.FollowC2sFlow != nil {
 		followC2sFlow_object = new(SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject)
-
-		diags.Append(followC2sFlow_object.CopyFromPango(ctx, obj.FollowC2sFlow, encrypted)...)
+		diags.Append(followC2sFlow_object.CopyFromPango(ctx, append(ancestors, o), obj.FollowC2sFlow, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1000,21 +1146,25 @@ func (o *SecurityPolicyRulesDataSourceRulesQosMarkingObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject) CopyFromPango(ctx context.Context, obj *security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesQosMarkingFollowC2sFlowObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.QosMarkingFollowC2sFlow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesTargetObject) CopyFromPango(ctx context.Context, obj *security.Target, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesTargetObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.Target, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var devices_list types.List
 	{
 		var devices_tf_entries []SecurityPolicyRulesDataSourceRulesTargetDevicesObject
 		for _, elt := range obj.Devices {
-			var entry SecurityPolicyRulesDataSourceRulesTargetDevicesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := SecurityPolicyRulesDataSourceRulesTargetDevicesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			devices_tf_entries = append(devices_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1027,6 +1177,9 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetObject) CopyFromPango(ctx conte
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var negate_value types.Bool
@@ -1040,15 +1193,19 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, obj *security.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.TargetDevices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
 		var vsys_tf_entries []SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject
 		for _, elt := range obj.Vsys {
-			var entry SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			vsys_tf_entries = append(vsys_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1063,11 +1220,16 @@ func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, obj *security.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.TargetDevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
+}
+
+func (o *SecurityPolicyRulesDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func SecurityPolicyRulesDataSourceSchema() dsschema.Schema {
@@ -1174,6 +1336,14 @@ func SecurityPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject {
 
 			"disable_inspect": dsschema.BoolAttribute{
 				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"disable_server_response_inspection": dsschema.BoolAttribute{
+				Description: "Disable inspection of server side traffic",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -1354,14 +1524,6 @@ func SecurityPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Computed:    true,
 				Sensitive:   false,
 				ElementType: types.StringType,
-			},
-
-			"disable_server_response_inspection": dsschema.BoolAttribute{
-				Description: "Disable inspection of server side traffic",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1820,7 +1982,7 @@ func (d *SecurityPolicyRulesDataSource) Configure(_ context.Context, req datasou
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewUuidObjectManager(d.client, security.NewService(d.client), batchSize, specifier, security.SpecMatches)
+	d.manager = sdkmanager.NewUuidObjectManager[*security.Entry, security.Location, *security.Service](d.client, security.NewService(d.client), batchSize, specifier, security.SpecMatches)
 }
 func (o *SecurityPolicyRulesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -1836,6 +1998,13 @@ func (o *SecurityPolicyRulesDataSource) Read(ctx context.Context, req datasource
 		"resource_name": "panos_security_policy_rules",
 		"function":      "Create",
 	})
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location security.Location
 
@@ -1889,7 +2058,7 @@ func (o *SecurityPolicyRulesDataSource) Read(ctx context.Context, req datasource
 	entries := make([]*security.Entry, 0, len(elements))
 	for _, elt := range elements {
 		var entry *security.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1916,7 +2085,7 @@ func (o *SecurityPolicyRulesDataSource) Read(ctx context.Context, req datasource
 	var objects []SecurityPolicyRulesDataSourceRulesObject
 	for _, elt := range readEntries {
 		var object SecurityPolicyRulesDataSourceRulesObject
-		err := object.CopyFromPango(ctx, elt, nil)
+		err := object.CopyFromPango(ctx, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -1977,6 +2146,7 @@ type SecurityPolicyRulesResourceRulesObject struct {
 	DestinationAddresses            types.Set                                             `tfsdk:"destination_addresses"`
 	DestinationHip                  types.List                                            `tfsdk:"destination_hip"`
 	DisableInspect                  types.Bool                                            `tfsdk:"disable_inspect"`
+	DisableServerResponseInspection types.Bool                                            `tfsdk:"disable_server_response_inspection"`
 	Disabled                        types.Bool                                            `tfsdk:"disabled"`
 	SourceZones                     types.Set                                             `tfsdk:"source_zones"`
 	GroupTag                        types.String                                          `tfsdk:"group_tag"`
@@ -2000,7 +2170,6 @@ type SecurityPolicyRulesResourceRulesObject struct {
 	Tag                             types.List                                            `tfsdk:"tag"`
 	Target                          *SecurityPolicyRulesResourceRulesTargetObject         `tfsdk:"target"`
 	DestinationZones                types.Set                                             `tfsdk:"destination_zones"`
-	DisableServerResponseInspection types.Bool                                            `tfsdk:"disable_server_response_inspection"`
 }
 type SecurityPolicyRulesResourceRulesProfileSettingObject struct {
 	Group    types.List                                                    `tfsdk:"group"`
@@ -2231,6 +2400,14 @@ func SecurityPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 				Sensitive:   false,
 			},
 
+			"disable_server_response_inspection": rsschema.BoolAttribute{
+				Description: "Disable inspection of server side traffic",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"disabled": rsschema.BoolAttribute{
 				Description: "Disable the rule",
 				Computed:    false,
@@ -2414,14 +2591,6 @@ func SecurityPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 				Computed:    false,
 				Sensitive:   false,
 				ElementType: types.StringType,
-			},
-
-			"disable_server_response_inspection": rsschema.BoolAttribute{
-				Description: "Disable inspection of server side traffic",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2883,7 +3052,7 @@ func (r *SecurityPolicyRulesResource) Configure(ctx context.Context, req resourc
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewUuidObjectManager(r.client, security.NewService(r.client), batchSize, specifier, security.SpecMatches)
+	r.manager = sdkmanager.NewUuidObjectManager[*security.Entry, security.Location, *security.Service](r.client, security.NewService(r.client), batchSize, specifier, security.SpecMatches)
 }
 
 func (o *SecurityPolicyRulesResourceModel) AttributeTypes() map[string]attr.Type {
@@ -2902,6 +3071,14 @@ func (o *SecurityPolicyRulesResourceModel) AttributeTypes() map[string]attr.Type
 		"rules": types.ListType{},
 	}
 }
+
+func (o SecurityPolicyRulesResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o SecurityPolicyRulesResourceModel) EntryName() *string {
+	return nil
+}
 func (o *SecurityPolicyRulesResourceRulesObject) AttributeTypes() map[string]attr.Type {
 
 	var profileSettingObj *SecurityPolicyRulesResourceRulesProfileSettingObject
@@ -2911,23 +3088,24 @@ func (o *SecurityPolicyRulesResourceRulesObject) AttributeTypes() map[string]att
 	var targetObj *SecurityPolicyRulesResourceRulesTargetObject
 
 	return map[string]attr.Type{
-		"name":                  types.StringType,
-		"action":                types.StringType,
-		"applications":          types.SetType{},
-		"category":              types.ListType{},
-		"description":           types.StringType,
-		"destination_addresses": types.SetType{},
-		"destination_hip":       types.ListType{},
-		"disable_inspect":       types.BoolType,
-		"disabled":              types.BoolType,
-		"source_zones":          types.SetType{},
-		"group_tag":             types.StringType,
-		"icmp_unreachable":      types.BoolType,
-		"log_end":               types.BoolType,
-		"log_setting":           types.StringType,
-		"log_start":             types.BoolType,
-		"negate_destination":    types.BoolType,
-		"negate_source":         types.BoolType,
+		"name":                               types.StringType,
+		"action":                             types.StringType,
+		"applications":                       types.SetType{},
+		"category":                           types.ListType{},
+		"description":                        types.StringType,
+		"destination_addresses":              types.SetType{},
+		"destination_hip":                    types.ListType{},
+		"disable_inspect":                    types.BoolType,
+		"disable_server_response_inspection": types.BoolType,
+		"disabled":                           types.BoolType,
+		"source_zones":                       types.SetType{},
+		"group_tag":                          types.StringType,
+		"icmp_unreachable":                   types.BoolType,
+		"log_end":                            types.BoolType,
+		"log_setting":                        types.StringType,
+		"log_start":                          types.BoolType,
+		"negate_destination":                 types.BoolType,
+		"negate_source":                      types.BoolType,
 		"profile_setting": types.ObjectType{
 			AttrTypes: profileSettingObj.AttributeTypes(),
 		},
@@ -2947,9 +3125,16 @@ func (o *SecurityPolicyRulesResourceRulesObject) AttributeTypes() map[string]att
 		"target": types.ObjectType{
 			AttrTypes: targetObj.AttributeTypes(),
 		},
-		"destination_zones":                  types.SetType{},
-		"disable_server_response_inspection": types.BoolType,
+		"destination_zones": types.SetType{},
 	}
+}
+
+func (o SecurityPolicyRulesResourceRulesObject) AncestorName() string {
+	return "rules"
+}
+
+func (o SecurityPolicyRulesResourceRulesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) AttributeTypes() map[string]attr.Type {
 
@@ -2960,6 +3145,14 @@ func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) AttributeTypes() 
 			AttrTypes: profilesObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o SecurityPolicyRulesResourceRulesProfileSettingObject) AncestorName() string {
+	return "profile-setting"
+}
+
+func (o SecurityPolicyRulesResourceRulesProfileSettingObject) EntryName() *string {
+	return nil
 }
 func (o *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -2975,6 +3168,14 @@ func (o *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) Attribute
 		"wildfire_analysis": types.ListType{},
 	}
 }
+
+func (o SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) AncestorName() string {
+	return "profiles"
+}
+
+func (o SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) EntryName() *string {
+	return nil
+}
 func (o *SecurityPolicyRulesResourceRulesQosObject) AttributeTypes() map[string]attr.Type {
 
 	var markingObj *SecurityPolicyRulesResourceRulesQosMarkingObject
@@ -2983,6 +3184,14 @@ func (o *SecurityPolicyRulesResourceRulesQosObject) AttributeTypes() map[string]
 			AttrTypes: markingObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o SecurityPolicyRulesResourceRulesQosObject) AncestorName() string {
+	return "qos"
+}
+
+func (o SecurityPolicyRulesResourceRulesQosObject) EntryName() *string {
+	return nil
 }
 func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) AttributeTypes() map[string]attr.Type {
 
@@ -2996,8 +3205,24 @@ func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) AttributeTypes() map[
 		"ip_precedence": types.StringType,
 	}
 }
+
+func (o SecurityPolicyRulesResourceRulesQosMarkingObject) AncestorName() string {
+	return "marking"
+}
+
+func (o SecurityPolicyRulesResourceRulesQosMarkingObject) EntryName() *string {
+	return nil
+}
 func (o *SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject) AncestorName() string {
+	return "follow-c2s-flow"
+}
+
+func (o SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject) EntryName() *string {
+	return nil
 }
 func (o *SecurityPolicyRulesResourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
 
@@ -3007,12 +3232,28 @@ func (o *SecurityPolicyRulesResourceRulesTargetObject) AttributeTypes() map[stri
 		"tags":    types.ListType{},
 	}
 }
+
+func (o SecurityPolicyRulesResourceRulesTargetObject) AncestorName() string {
+	return "target"
+}
+
+func (o SecurityPolicyRulesResourceRulesTargetObject) EntryName() *string {
+	return nil
+}
 func (o *SecurityPolicyRulesResourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name": types.StringType,
 		"vsys": types.ListType{},
 	}
+}
+
+func (o SecurityPolicyRulesResourceRulesTargetDevicesObject) AncestorName() string {
+	return "devices"
+}
+
+func (o SecurityPolicyRulesResourceRulesTargetDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
 
@@ -3021,7 +3262,15 @@ func (o *SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) AttributeTypes
 	}
 }
 
-func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj **security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) AncestorName() string {
+	return "vsys"
+}
+
+func (o SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	applications_pango_entries := make([]string, 0)
@@ -3046,6 +3295,7 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context
 		return diags
 	}
 	disableInspect_value := o.DisableInspect.ValueBoolPointer()
+	disableServerResponseInspection_value := o.DisableServerResponseInspection.ValueBoolPointer()
 	disabled_value := o.Disabled.ValueBoolPointer()
 	sourceZones_pango_entries := make([]string, 0)
 	diags.Append(o.SourceZones.ElementsAs(ctx, &sourceZones_pango_entries, false)...)
@@ -3066,8 +3316,8 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context
 		} else {
 			profileSetting_entry = new(security.ProfileSetting)
 		}
-
-		diags.Append(o.ProfileSetting.CopyToPango(ctx, &profileSetting_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ProfileSetting.CopyToPango(ctx, append(ancestors, o), &profileSetting_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3079,8 +3329,8 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context
 		} else {
 			qos_entry = new(security.Qos)
 		}
-
-		diags.Append(o.Qos.CopyToPango(ctx, &qos_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Qos.CopyToPango(ctx, append(ancestors, o), &qos_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3134,8 +3384,8 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context
 		} else {
 			target_entry = new(security.Target)
 		}
-
-		diags.Append(o.Target.CopyToPango(ctx, &target_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Target.CopyToPango(ctx, append(ancestors, o), &target_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3145,7 +3395,6 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context
 	if diags.HasError() {
 		return diags
 	}
-	disableServerResponseInspection_value := o.DisableServerResponseInspection.ValueBoolPointer()
 
 	if (*obj) == nil {
 		*obj = new(security.Entry)
@@ -3158,6 +3407,7 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context
 	(*obj).Destination = destinationAddresses_pango_entries
 	(*obj).DestinationHip = destinationHip_pango_entries
 	(*obj).DisableInspect = disableInspect_value
+	(*obj).DisableServerResponseInspection = disableServerResponseInspection_value
 	(*obj).Disabled = disabled_value
 	(*obj).From = sourceZones_pango_entries
 	(*obj).GroupTag = groupTag_value
@@ -3181,11 +3431,10 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context
 	(*obj).Tag = tag_pango_entries
 	(*obj).Target = target_entry
 	(*obj).To = destinationZones_pango_entries
-	(*obj).DisableServerResponseInspection = disableServerResponseInspection_value
 
 	return diags
 }
-func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) CopyToPango(ctx context.Context, obj **security.ProfileSetting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.ProfileSetting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	group_pango_entries := make([]string, 0)
 	diags.Append(o.Group.ElementsAs(ctx, &group_pango_entries, false)...)
@@ -3199,8 +3448,8 @@ func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) CopyToPango(ctx c
 		} else {
 			profiles_entry = new(security.ProfileSettingProfiles)
 		}
-
-		diags.Append(o.Profiles.CopyToPango(ctx, &profiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Profiles.CopyToPango(ctx, append(ancestors, o), &profiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3214,7 +3463,7 @@ func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) CopyToPango(ctx context.Context, obj **security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.ProfileSettingProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dataFiltering_pango_entries := make([]string, 0)
 	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
@@ -3277,7 +3526,7 @@ func (o *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) CopyToPan
 
 	return diags
 }
-func (o *SecurityPolicyRulesResourceRulesQosObject) CopyToPango(ctx context.Context, obj **security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesQosObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.Qos, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var marking_entry *security.QosMarking
 	if o.Marking != nil {
@@ -3286,8 +3535,8 @@ func (o *SecurityPolicyRulesResourceRulesQosObject) CopyToPango(ctx context.Cont
 		} else {
 			marking_entry = new(security.QosMarking)
 		}
-
-		diags.Append(o.Marking.CopyToPango(ctx, &marking_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Marking.CopyToPango(ctx, append(ancestors, o), &marking_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3300,7 +3549,7 @@ func (o *SecurityPolicyRulesResourceRulesQosObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) CopyToPango(ctx context.Context, obj **security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.QosMarking, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var followC2sFlow_entry *security.QosMarkingFollowC2sFlow
 	if o.FollowC2sFlow != nil {
@@ -3309,8 +3558,8 @@ func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) CopyToPango(ctx conte
 		} else {
 			followC2sFlow_entry = new(security.QosMarkingFollowC2sFlow)
 		}
-
-		diags.Append(o.FollowC2sFlow.CopyToPango(ctx, &followC2sFlow_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FollowC2sFlow.CopyToPango(ctx, append(ancestors, o), &followC2sFlow_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3327,7 +3576,7 @@ func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject) CopyToPango(ctx context.Context, obj **security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.QosMarkingFollowC2sFlow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3336,7 +3585,7 @@ func (o *SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject) CopyToPa
 
 	return diags
 }
-func (o *SecurityPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context.Context, obj **security.Target, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.Target, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var devices_tf_entries []SecurityPolicyRulesResourceRulesTargetDevicesObject
 	var devices_pango_entries []security.TargetDevices
@@ -3348,7 +3597,7 @@ func (o *SecurityPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context.C
 		}
 		for _, elt := range devices_tf_entries {
 			var entry *security.TargetDevices
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3371,7 +3620,7 @@ func (o *SecurityPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *SecurityPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, obj **security.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.TargetDevices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_tf_entries []SecurityPolicyRulesResourceRulesTargetDevicesVsysObject
 	var vsys_pango_entries []security.TargetDevicesVsys
@@ -3383,7 +3632,7 @@ func (o *SecurityPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx co
 		}
 		for _, elt := range vsys_tf_entries {
 			var entry *security.TargetDevicesVsys
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3399,7 +3648,7 @@ func (o *SecurityPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, obj **security.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **security.TargetDevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3410,97 +3659,138 @@ func (o *SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) CopyToPango(ct
 	return diags
 }
 
-func (o *SecurityPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Context, obj *security.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var applications_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		applications_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.Application)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var destinationAddresses_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		destinationAddresses_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.Destination)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceZones_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		sourceZones_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.From)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var services_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		services_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.Service)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceAddresses_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		sourceAddresses_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.Source)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceUsers_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		sourceUsers_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.SourceUser)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var destinationZones_list types.Set
 	{
 		var list_diags diag.Diagnostics
 		destinationZones_list, list_diags = types.SetValueFrom(ctx, types.StringType, obj.To)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var category_list types.List
 	{
 		var list_diags diag.Diagnostics
 		category_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Category)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var destinationHip_list types.List
 	{
 		var list_diags diag.Diagnostics
 		destinationHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DestinationHip)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceHip_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceHip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceHip)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceImei_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceImei_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceImei)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceImsi_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceImsi_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceImsi)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceNwSlice_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceNwSlice_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SourceNwSlice)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var tag_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var profileSetting_object *SecurityPolicyRulesResourceRulesProfileSettingObject
 	if obj.ProfileSetting != nil {
 		profileSetting_object = new(SecurityPolicyRulesResourceRulesProfileSettingObject)
-
-		diags.Append(profileSetting_object.CopyFromPango(ctx, obj.ProfileSetting, encrypted)...)
+		diags.Append(profileSetting_object.CopyFromPango(ctx, append(ancestors, o), obj.ProfileSetting, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3508,8 +3798,7 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Conte
 	var qos_object *SecurityPolicyRulesResourceRulesQosObject
 	if obj.Qos != nil {
 		qos_object = new(SecurityPolicyRulesResourceRulesQosObject)
-
-		diags.Append(qos_object.CopyFromPango(ctx, obj.Qos, encrypted)...)
+		diags.Append(qos_object.CopyFromPango(ctx, append(ancestors, o), obj.Qos, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3517,8 +3806,7 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Conte
 	var target_object *SecurityPolicyRulesResourceRulesTargetObject
 	if obj.Target != nil {
 		target_object = new(SecurityPolicyRulesResourceRulesTargetObject)
-
-		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
+		diags.Append(target_object.CopyFromPango(ctx, append(ancestors, o), obj.Target, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3535,6 +3823,10 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Conte
 	var disableInspect_value types.Bool
 	if obj.DisableInspect != nil {
 		disableInspect_value = types.BoolValue(*obj.DisableInspect)
+	}
+	var disableServerResponseInspection_value types.Bool
+	if obj.DisableServerResponseInspection != nil {
+		disableServerResponseInspection_value = types.BoolValue(*obj.DisableServerResponseInspection)
 	}
 	var disabled_value types.Bool
 	if obj.Disabled != nil {
@@ -3576,10 +3868,6 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Conte
 	if obj.Schedule != nil {
 		schedule_value = types.StringValue(*obj.Schedule)
 	}
-	var disableServerResponseInspection_value types.Bool
-	if obj.DisableServerResponseInspection != nil {
-		disableServerResponseInspection_value = types.BoolValue(*obj.DisableServerResponseInspection)
-	}
 	o.Name = types.StringValue(obj.Name)
 	o.Action = action_value
 	o.Applications = applications_list
@@ -3588,6 +3876,7 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Conte
 	o.DestinationAddresses = destinationAddresses_list
 	o.DestinationHip = destinationHip_list
 	o.DisableInspect = disableInspect_value
+	o.DisableServerResponseInspection = disableServerResponseInspection_value
 	o.Disabled = disabled_value
 	o.SourceZones = sourceZones_list
 	o.GroupTag = groupTag_value
@@ -3611,24 +3900,25 @@ func (o *SecurityPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Conte
 	o.Tag = tag_list
 	o.Target = target_object
 	o.DestinationZones = destinationZones_list
-	o.DisableServerResponseInspection = disableServerResponseInspection_value
 
 	return diags
 }
 
-func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) CopyFromPango(ctx context.Context, obj *security.ProfileSetting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.ProfileSetting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var group_list types.List
 	{
 		var list_diags diag.Diagnostics
 		group_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Group)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var profiles_object *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject
 	if obj.Profiles != nil {
 		profiles_object = new(SecurityPolicyRulesResourceRulesProfileSettingProfilesObject)
-
-		diags.Append(profiles_object.CopyFromPango(ctx, obj.Profiles, encrypted)...)
+		diags.Append(profiles_object.CopyFromPango(ctx, append(ancestors, o), obj.Profiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3640,61 +3930,88 @@ func (o *SecurityPolicyRulesResourceRulesProfileSettingObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) CopyFromPango(ctx context.Context, obj *security.ProfileSettingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.ProfileSettingProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dataFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
 		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var fileBlocking_list types.List
 	{
 		var list_diags diag.Diagnostics
 		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var gtp_list types.List
 	{
 		var list_diags diag.Diagnostics
 		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sctp_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var spyware_list types.List
 	{
 		var list_diags diag.Diagnostics
 		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var urlFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
 		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var virus_list types.List
 	{
 		var list_diags diag.Diagnostics
 		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var vulnerability_list types.List
 	{
 		var list_diags diag.Diagnostics
 		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var wildfireAnalysis_list types.List
 	{
 		var list_diags diag.Diagnostics
 		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.DataFiltering = dataFiltering_list
@@ -3710,13 +4027,12 @@ func (o *SecurityPolicyRulesResourceRulesProfileSettingProfilesObject) CopyFromP
 	return diags
 }
 
-func (o *SecurityPolicyRulesResourceRulesQosObject) CopyFromPango(ctx context.Context, obj *security.Qos, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesQosObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.Qos, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var marking_object *SecurityPolicyRulesResourceRulesQosMarkingObject
 	if obj.Marking != nil {
 		marking_object = new(SecurityPolicyRulesResourceRulesQosMarkingObject)
-
-		diags.Append(marking_object.CopyFromPango(ctx, obj.Marking, encrypted)...)
+		diags.Append(marking_object.CopyFromPango(ctx, append(ancestors, o), obj.Marking, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3727,13 +4043,12 @@ func (o *SecurityPolicyRulesResourceRulesQosObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) CopyFromPango(ctx context.Context, obj *security.QosMarking, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.QosMarking, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var followC2sFlow_object *SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject
 	if obj.FollowC2sFlow != nil {
 		followC2sFlow_object = new(SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject)
-
-		diags.Append(followC2sFlow_object.CopyFromPango(ctx, obj.FollowC2sFlow, encrypted)...)
+		diags.Append(followC2sFlow_object.CopyFromPango(ctx, append(ancestors, o), obj.FollowC2sFlow, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3754,21 +4069,25 @@ func (o *SecurityPolicyRulesResourceRulesQosMarkingObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject) CopyFromPango(ctx context.Context, obj *security.QosMarkingFollowC2sFlow, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesQosMarkingFollowC2sFlowObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.QosMarkingFollowC2sFlow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *SecurityPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context.Context, obj *security.Target, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.Target, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var devices_list types.List
 	{
 		var devices_tf_entries []SecurityPolicyRulesResourceRulesTargetDevicesObject
 		for _, elt := range obj.Devices {
-			var entry SecurityPolicyRulesResourceRulesTargetDevicesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := SecurityPolicyRulesResourceRulesTargetDevicesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			devices_tf_entries = append(devices_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -3781,6 +4100,9 @@ func (o *SecurityPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var negate_value types.Bool
@@ -3794,15 +4116,19 @@ func (o *SecurityPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *SecurityPolicyRulesResourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, obj *security.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.TargetDevices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
 		var vsys_tf_entries []SecurityPolicyRulesResourceRulesTargetDevicesVsysObject
 		for _, elt := range obj.Vsys {
-			var entry SecurityPolicyRulesResourceRulesTargetDevicesVsysObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := SecurityPolicyRulesResourceRulesTargetDevicesVsysObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			vsys_tf_entries = append(vsys_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -3817,11 +4143,16 @@ func (o *SecurityPolicyRulesResourceRulesTargetDevicesObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, obj *security.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SecurityPolicyRulesResourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *security.TargetDevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
+}
+
+func (o *SecurityPolicyRulesResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *SecurityPolicyRulesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -3837,6 +4168,13 @@ func (r *SecurityPolicyRulesResource) Create(ctx context.Context, req resource.C
 		"resource_name": "panos_security_policy_rules_resource",
 		"function":      "Create",
 	})
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location security.Location
 
@@ -3890,11 +4228,17 @@ func (r *SecurityPolicyRulesResource) Create(ctx context.Context, req resource.C
 	entries := make([]*security.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *security.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 		entries[idx] = entry
+	}
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
 	}
 	var positionAttribute TerraformPositionObject
 	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
@@ -3902,7 +4246,7 @@ func (r *SecurityPolicyRulesResource) Create(ctx context.Context, req resource.C
 		return
 	}
 	position := positionAttribute.CopyToPango()
-	processed, err := r.manager.CreateMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
+	processed, err := r.manager.CreateMany(ctx, location, components, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
 		return
@@ -3910,7 +4254,7 @@ func (r *SecurityPolicyRulesResource) Create(ctx context.Context, req resource.C
 	objects := make([]SecurityPolicyRulesResourceRulesObject, len(processed))
 	for idx, elt := range processed {
 		var object SecurityPolicyRulesResourceRulesObject
-		copy_diags := object.CopyFromPango(ctx, elt, nil)
+		copy_diags := object.CopyFromPango(ctx, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -3924,6 +4268,13 @@ func (r *SecurityPolicyRulesResource) Create(ctx context.Context, req resource.C
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
@@ -3942,6 +4293,17 @@ func (o *SecurityPolicyRulesResource) Read(ctx context.Context, req resource.Rea
 		"resource_name": "panos_security_policy_rules",
 		"function":      "Create",
 	})
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location security.Location
 
@@ -3995,7 +4357,7 @@ func (o *SecurityPolicyRulesResource) Read(ctx context.Context, req resource.Rea
 	entries := make([]*security.Entry, 0, len(elements))
 	for _, elt := range elements {
 		var entry *security.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -4022,7 +4384,7 @@ func (o *SecurityPolicyRulesResource) Read(ctx context.Context, req resource.Rea
 	var objects []SecurityPolicyRulesResourceRulesObject
 	for _, elt := range readEntries {
 		var object SecurityPolicyRulesResourceRulesObject
-		err := object.CopyFromPango(ctx, elt, nil)
+		err := object.CopyFromPango(ctx, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -4039,6 +4401,13 @@ func (o *SecurityPolicyRulesResource) Read(ctx context.Context, req resource.Rea
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
@@ -4057,6 +4426,17 @@ func (r *SecurityPolicyRulesResource) Update(ctx context.Context, req resource.U
 		"resource_name": "panos_security_policy_rules_resource",
 		"function":      "Create",
 	})
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location security.Location
 
@@ -4109,7 +4489,7 @@ func (r *SecurityPolicyRulesResource) Update(ctx context.Context, req resource.U
 	stateEntries := make([]*security.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *security.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -4142,14 +4522,20 @@ func (r *SecurityPolicyRulesResource) Update(ctx context.Context, req resource.U
 	planEntries := make([]*security.Entry, len(elements))
 	for idx, elt := range elements {
 		entry, _ := existingEntriesByName[elt.Name.ValueString()]
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 		planEntries[idx] = entry
 	}
 
-	processed, err := r.manager.UpdateMany(ctx, location, stateEntries, planEntries, sdkmanager.NonExhaustive, position)
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	processed, err := r.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to udpate entries", err.Error())
 	}
@@ -4157,7 +4543,7 @@ func (r *SecurityPolicyRulesResource) Update(ctx context.Context, req resource.U
 	objects := make([]*SecurityPolicyRulesResourceRulesObject, len(processed))
 	for idx, elt := range processed {
 		var object SecurityPolicyRulesResourceRulesObject
-		copy_diags := object.CopyFromPango(ctx, elt, nil)
+		copy_diags := object.CopyFromPango(ctx, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -4171,6 +4557,13 @@ func (r *SecurityPolicyRulesResource) Update(ctx context.Context, req resource.U
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
@@ -4241,7 +4634,13 @@ func (r *SecurityPolicyRulesResource) Delete(ctx context.Context, req resource.D
 	for _, elt := range elements {
 		names = append(names, elt.Name.ValueString())
 	}
-	err := r.manager.Delete(ctx, location, names, sdkmanager.NonExhaustive)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, names, sdkmanager.NonExhaustive)
 	if err != nil {
 		resp.Diagnostics.AddError("error while deleting entries", err.Error())
 		return
@@ -4410,6 +4809,13 @@ func (r *SecurityPolicyRulesResource) ImportState(ctx context.Context, req resou
 		return
 	}
 
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
+
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
 		var diagsErr *DiagnosticsError
@@ -4438,7 +4844,7 @@ func (r *SecurityPolicyRulesResource) ImportState(ctx context.Context, req resou
 	}
 	for _, elt := range objectNames {
 		object := &SecurityPolicyRulesResourceRulesObject{}
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, &security.Entry{}, nil)...)
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, &security.Entry{}, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}

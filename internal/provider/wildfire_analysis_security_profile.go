@@ -82,6 +82,14 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) AttributeTypes() map[st
 		"rules":            types.ListType{},
 	}
 }
+
+func (o WildfireAnalysisSecurityProfileDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o WildfireAnalysisSecurityProfileDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -93,7 +101,15 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) AttributeTypes() 
 	}
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o WildfireAnalysisSecurityProfileDataSourceRulesObject) AncestorName() string {
+	return "rules"
+}
+
+func (o WildfireAnalysisSecurityProfileDataSourceRulesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -107,7 +123,7 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 		}
 		for _, elt := range rules_tf_entries {
 			var entry *wildfireanalysis.Rules
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -125,7 +141,7 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 
 	return diags
 }
-func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	application_pango_entries := make([]string, 0)
 	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
@@ -152,15 +168,19 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx c
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var rules_list types.List
 	{
 		var rules_tf_entries []WildfireAnalysisSecurityProfileDataSourceRulesObject
 		for _, elt := range obj.Rules {
-			var entry WildfireAnalysisSecurityProfileDataSourceRulesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := WildfireAnalysisSecurityProfileDataSourceRulesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			rules_tf_entries = append(rules_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -185,19 +205,25 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var application_list types.List
 	{
 		var list_diags diag.Diagnostics
 		application_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var fileType_list types.List
 	{
 		var list_diags diag.Diagnostics
 		fileType_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var direction_value types.String
@@ -215,6 +241,11 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx
 	o.Analysis = analysis_value
 
 	return diags
+}
+
+func (o *WildfireAnalysisSecurityProfileDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func WildfireAnalysisSecurityProfileDataSourceSchema() dsschema.Schema {
@@ -372,13 +403,20 @@ func (d *WildfireAnalysisSecurityProfileDataSource) Configure(_ context.Context,
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, wildfireanalysis.NewService(d.client), batchSize, specifier, wildfireanalysis.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*wildfireanalysis.Entry, wildfireanalysis.Location, *wildfireanalysis.Service](d.client, wildfireanalysis.NewService(d.client), batchSize, specifier, wildfireanalysis.SpecMatches)
 }
 func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state WildfireAnalysisSecurityProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -419,8 +457,12 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -430,7 +472,7 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -650,7 +692,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Configure(ctx context.Context,
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, wildfireanalysis.NewService(r.client), batchSize, specifier, wildfireanalysis.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*wildfireanalysis.Entry, wildfireanalysis.Location, *wildfireanalysis.Service](r.client, wildfireanalysis.NewService(r.client), batchSize, specifier, wildfireanalysis.SpecMatches)
 }
 
 func (o *WildfireAnalysisSecurityProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -667,6 +709,14 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) AttributeTypes() map[stri
 		"rules":            types.ListType{},
 	}
 }
+
+func (o WildfireAnalysisSecurityProfileResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o WildfireAnalysisSecurityProfileResourceModel) EntryName() *string {
+	return nil
+}
 func (o *WildfireAnalysisSecurityProfileResourceRulesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -678,7 +728,15 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) AttributeTypes() ma
 	}
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o WildfireAnalysisSecurityProfileResourceRulesObject) AncestorName() string {
+	return "rules"
+}
+
+func (o WildfireAnalysisSecurityProfileResourceRulesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -692,7 +750,7 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 		}
 		for _, elt := range rules_tf_entries {
 			var entry *wildfireanalysis.Rules
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -710,7 +768,7 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	application_pango_entries := make([]string, 0)
 	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
@@ -737,15 +795,19 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx con
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceModel) CopyFromPango(ctx context.Context, obj *wildfireanalysis.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var rules_list types.List
 	{
 		var rules_tf_entries []WildfireAnalysisSecurityProfileResourceRulesObject
 		for _, elt := range obj.Rules {
-			var entry WildfireAnalysisSecurityProfileResourceRulesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := WildfireAnalysisSecurityProfileResourceRulesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			rules_tf_entries = append(rules_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -770,19 +832,25 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, obj *wildfireanalysis.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var application_list types.List
 	{
 		var list_diags diag.Diagnostics
 		application_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var fileType_list types.List
 	{
 		var list_diags diag.Diagnostics
 		fileType_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var direction_value types.String
@@ -802,6 +870,11 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyFromPango(ctx c
 	return diags
 }
 
+func (o *WildfireAnalysisSecurityProfileResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state WildfireAnalysisSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -819,6 +892,13 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -861,8 +941,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 
 	// Load the desired config.
 	var obj *wildfireanalysis.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -874,17 +953,29 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -894,6 +985,17 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 	var savestate, state WildfireAnalysisSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -934,8 +1036,12 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -945,7 +1051,7 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -955,6 +1061,13 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -966,6 +1079,17 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1010,19 +1134,31 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1036,11 +1172,18 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1097,9 +1240,15 @@ func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, re
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

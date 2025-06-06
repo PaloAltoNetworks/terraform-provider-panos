@@ -2,14 +2,9 @@ package provider_test
 
 import (
 	"bytes"
-	"context"
 	"fmt"
-	"strings"
 	"testing"
 	"text/template"
-
-	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
-	tag "github.com/PaloAltoNetworks/pango/objects/admintag"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
@@ -17,7 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -111,24 +105,4 @@ func makeAdministrativeTagConfig(resourceName string) string {
 	}
 
 	return buf.String()
-}
-
-func administrativeTagCheckDestroy(prefix string, location tag.Location) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		service := tag.NewService(sdkClient)
-		ctx := context.TODO()
-
-		tags, err := service.List(ctx, location, "get", "", "")
-		if err != nil && !sdkerrors.IsObjectNotFound(err) {
-			return err
-		}
-
-		for _, elt := range tags {
-			if strings.HasPrefix(elt.Name, prefix) {
-				return DanglingObjectsError
-			}
-		}
-
-		return nil
-	}
 }

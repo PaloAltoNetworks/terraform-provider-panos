@@ -1,20 +1,14 @@
 package provider_test
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"testing"
-
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/network/interface/aggregate"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -28,9 +22,6 @@ func TestAccAggregateInterface_DecryptMirror(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosEthernetInterfaceDestroy(
-			prefix, interfaceName,
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: aggregateInterfaceDecryptMirror1,
@@ -99,9 +90,6 @@ func TestAccAggregateInterface_HA(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosEthernetInterfaceDestroy(
-			prefix, interfaceName,
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: aggregateInterfaceHa1,
@@ -220,9 +208,6 @@ func TestAccAggregateInterface_Layer2(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosEthernetInterfaceDestroy(
-			prefix, interfaceName,
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: aggregateInterfaceLayer21,
@@ -330,9 +315,6 @@ func TestAccAggregateInterface_Layer3_1(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosEthernetInterfaceDestroy(
-			prefix, interfaceName,
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: aggregateInterfaceLayer31,
@@ -513,9 +495,6 @@ func TestAccAggregateInterface_Layer3_2(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosEthernetInterfaceDestroy(
-			prefix, interfaceName,
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: aggregateInterfaceLayer32,
@@ -662,9 +641,6 @@ func TestAccAggregateInterface_Layer3_3(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosEthernetInterfaceDestroy(
-			prefix, interfaceName,
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: aggregateInterfaceLayer33,
@@ -1179,9 +1155,6 @@ func TestAccAggregateInterface_VirtualWire(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosEthernetInterfaceDestroy(
-			prefix, interfaceName,
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: aggregateInterfaceVirtualWire1,
@@ -1248,29 +1221,3 @@ resource "panos_aggregate_interface" "iface" {
   }
 }
 `
-
-func testAccCheckPanosAggregateInterfaceDestroy(prefix string, entry string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := aggregate.NewService(sdkClient)
-		ctx := context.TODO()
-
-		location := aggregate.NewTemplateLocation()
-		location.Template.Template = fmt.Sprintf("%s-tmpl", prefix)
-
-		reply, err := api.Read(ctx, *location, entry, "show")
-		if err != nil && !sdkErrors.IsObjectNotFound(err) {
-			return fmt.Errorf("reading ethernet entry via sdk: %v", err)
-		}
-
-		if reply != nil {
-			err := fmt.Errorf("terraform didn't delete the server entry properly")
-			delErr := api.Delete(ctx, *location, entry)
-			if delErr != nil {
-				return errors.Join(err, delErr)
-			}
-			return err
-		}
-
-		return nil
-	}
-}

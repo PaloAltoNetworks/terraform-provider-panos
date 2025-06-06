@@ -122,9 +122,9 @@ type NatPolicyRulesDataSourceRulesTargetDevicesVsysObject struct {
 	Name types.String `tfsdk:"name"`
 }
 type NatPolicyRulesDataSourceRulesDestinationTranslationObject struct {
+	DnsRewrite        *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject `tfsdk:"dns_rewrite"`
 	TranslatedAddress types.String                                                         `tfsdk:"translated_address"`
 	TranslatedPort    types.Int64                                                          `tfsdk:"translated_port"`
-	DnsRewrite        *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject `tfsdk:"dns_rewrite"`
 }
 type NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject struct {
 	Direction types.String `tfsdk:"direction"`
@@ -150,6 +150,14 @@ func (o *NatPolicyRulesDataSourceModel) AttributeTypes() map[string]attr.Type {
 		},
 		"rules": types.ListType{},
 	}
+}
+
+func (o NatPolicyRulesDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o NatPolicyRulesDataSourceModel) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
 
@@ -188,6 +196,14 @@ func (o *NatPolicyRulesDataSourceRulesObject) AttributeTypes() map[string]attr.T
 		},
 	}
 }
+
+func (o NatPolicyRulesDataSourceRulesObject) AncestorName() string {
+	return "rules"
+}
+
+func (o NatPolicyRulesDataSourceRulesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) AttributeTypes() map[string]attr.Type {
 
 	var dynamicIpObj *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject
@@ -207,6 +223,14 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) AttributeTypes() 
 		},
 	}
 }
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationObject) AncestorName() string {
+	return "source-translation"
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) AttributeTypes() map[string]attr.Type {
 
 	var fallbackObj *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject
@@ -217,6 +241,14 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) Attribut
 		},
 		"translated_address": types.ListType{},
 	}
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) AncestorName() string {
+	return "dynamic-ip"
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) AttributeTypes() map[string]attr.Type {
 
@@ -229,6 +261,14 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) 
 		"translated_address": types.ListType{},
 	}
 }
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) AncestorName() string {
+	return "fallback"
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -236,6 +276,14 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfac
 		"floating_ip": types.StringType,
 		"ip":          types.StringType,
 	}
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) AncestorName() string {
+	return "interface-address"
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) AttributeTypes() map[string]attr.Type {
 
@@ -248,6 +296,14 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) A
 		"translated_address": types.ListType{},
 	}
 }
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) AncestorName() string {
+	return "dynamic-ip-and-port"
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -256,12 +312,28 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterface
 		"ip":          types.StringType,
 	}
 }
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) AncestorName() string {
+	return "interface-address"
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"bi_directional":     types.StringType,
 		"translated_address": types.StringType,
 	}
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) AncestorName() string {
+	return "static-ip"
+}
+
+func (o NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesDataSourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
 
@@ -271,6 +343,14 @@ func (o *NatPolicyRulesDataSourceRulesTargetObject) AttributeTypes() map[string]
 		"tags":    types.ListType{},
 	}
 }
+
+func (o NatPolicyRulesDataSourceRulesTargetObject) AncestorName() string {
+	return "target"
+}
+
+func (o NatPolicyRulesDataSourceRulesTargetObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -278,28 +358,61 @@ func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) AttributeTypes() map[
 		"vsys": types.ListType{},
 	}
 }
+
+func (o NatPolicyRulesDataSourceRulesTargetDevicesObject) AncestorName() string {
+	return "devices"
+}
+
+func (o NatPolicyRulesDataSourceRulesTargetDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name": types.StringType,
 	}
 }
+
+func (o NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) AncestorName() string {
+	return "vsys"
+}
+
+func (o NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *NatPolicyRulesDataSourceRulesDestinationTranslationObject) AttributeTypes() map[string]attr.Type {
 
 	var dnsRewriteObj *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject
+
 	return map[string]attr.Type{
-		"translated_address": types.StringType,
-		"translated_port":    types.Int64Type,
 		"dns_rewrite": types.ObjectType{
 			AttrTypes: dnsRewriteObj.AttributeTypes(),
 		},
+		"translated_address": types.StringType,
+		"translated_port":    types.Int64Type,
 	}
+}
+
+func (o NatPolicyRulesDataSourceRulesDestinationTranslationObject) AncestorName() string {
+	return "destination-translation"
+}
+
+func (o NatPolicyRulesDataSourceRulesDestinationTranslationObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"direction": types.StringType,
 	}
+}
+
+func (o NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) AncestorName() string {
+	return "dns-rewrite"
+}
+
+func (o NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) AttributeTypes() map[string]attr.Type {
 
@@ -310,7 +423,15 @@ func (o *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) Attri
 	}
 }
 
-func (o *NatPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, obj **nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) AncestorName() string {
+	return "dynamic-destination-translation"
+}
+
+func (o NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) EntryName() *string {
+	return nil
+}
+
+func (o *NatPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	activeActiveDeviceBinding_value := o.ActiveActiveDeviceBinding.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
@@ -340,8 +461,8 @@ func (o *NatPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, o
 		} else {
 			sourceTranslation_entry = new(nat.SourceTranslation)
 		}
-
-		diags.Append(o.SourceTranslation.CopyToPango(ctx, &sourceTranslation_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SourceTranslation.CopyToPango(ctx, append(ancestors, o), &sourceTranslation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -358,8 +479,8 @@ func (o *NatPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, o
 		} else {
 			target_entry = new(nat.Target)
 		}
-
-		diags.Append(o.Target.CopyToPango(ctx, &target_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Target.CopyToPango(ctx, append(ancestors, o), &target_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -377,8 +498,8 @@ func (o *NatPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, o
 		} else {
 			destinationTranslation_entry = new(nat.DestinationTranslation)
 		}
-
-		diags.Append(o.DestinationTranslation.CopyToPango(ctx, &destinationTranslation_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DestinationTranslation.CopyToPango(ctx, append(ancestors, o), &destinationTranslation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -390,8 +511,8 @@ func (o *NatPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, o
 		} else {
 			dynamicDestinationTranslation_entry = new(nat.DynamicDestinationTranslation)
 		}
-
-		diags.Append(o.DynamicDestinationTranslation.CopyToPango(ctx, &dynamicDestinationTranslation_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DynamicDestinationTranslation.CopyToPango(ctx, append(ancestors, o), &dynamicDestinationTranslation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -420,7 +541,7 @@ func (o *NatPolicyRulesDataSourceRulesObject) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamicIp_entry *nat.SourceTranslationDynamicIp
 	if o.DynamicIp != nil {
@@ -429,8 +550,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyToPango(ctx c
 		} else {
 			dynamicIp_entry = new(nat.SourceTranslationDynamicIp)
 		}
-
-		diags.Append(o.DynamicIp.CopyToPango(ctx, &dynamicIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DynamicIp.CopyToPango(ctx, append(ancestors, o), &dynamicIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -442,8 +563,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyToPango(ctx c
 		} else {
 			dynamicIpAndPort_entry = new(nat.SourceTranslationDynamicIpAndPort)
 		}
-
-		diags.Append(o.DynamicIpAndPort.CopyToPango(ctx, &dynamicIpAndPort_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DynamicIpAndPort.CopyToPango(ctx, append(ancestors, o), &dynamicIpAndPort_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -455,8 +576,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyToPango(ctx c
 		} else {
 			staticIp_entry = new(nat.SourceTranslationStaticIp)
 		}
-
-		diags.Append(o.StaticIp.CopyToPango(ctx, &staticIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.StaticIp.CopyToPango(ctx, append(ancestors, o), &staticIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -471,7 +592,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var fallback_entry *nat.SourceTranslationDynamicIpFallback
 	if o.Fallback != nil {
@@ -480,8 +601,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) CopyToPa
 		} else {
 			fallback_entry = new(nat.SourceTranslationDynamicIpFallback)
 		}
-
-		diags.Append(o.Fallback.CopyToPango(ctx, &fallback_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Fallback.CopyToPango(ctx, append(ancestors, o), &fallback_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -500,7 +621,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) CopyToPa
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpFallback, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIpFallback, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interfaceAddress_entry *nat.SourceTranslationDynamicIpFallbackInterfaceAddress
 	if o.InterfaceAddress != nil {
@@ -509,8 +630,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) 
 		} else {
 			interfaceAddress_entry = new(nat.SourceTranslationDynamicIpFallbackInterfaceAddress)
 		}
-
-		diags.Append(o.InterfaceAddress.CopyToPango(ctx, &interfaceAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.InterfaceAddress.CopyToPango(ctx, append(ancestors, o), &interfaceAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -529,7 +650,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) 
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpFallbackInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIpFallbackInterfaceAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	floatingIp_value := o.FloatingIp.ValueStringPointer()
@@ -544,7 +665,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfac
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpAndPort, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIpAndPort, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interfaceAddress_entry *nat.SourceTranslationDynamicIpAndPortInterfaceAddress
 	if o.InterfaceAddress != nil {
@@ -553,8 +674,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) C
 		} else {
 			interfaceAddress_entry = new(nat.SourceTranslationDynamicIpAndPortInterfaceAddress)
 		}
-
-		diags.Append(o.InterfaceAddress.CopyToPango(ctx, &interfaceAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.InterfaceAddress.CopyToPango(ctx, append(ancestors, o), &interfaceAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -573,7 +694,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) C
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpAndPortInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIpAndPortInterfaceAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	floatingIp_value := o.FloatingIp.ValueStringPointer()
@@ -588,7 +709,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterface
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	biDirectional_value := o.BiDirectional.ValueStringPointer()
 	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
@@ -601,7 +722,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) CopyToPan
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context.Context, obj **nat.Target, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.Target, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var devices_tf_entries []NatPolicyRulesDataSourceRulesTargetDevicesObject
 	var devices_pango_entries []nat.TargetDevices
@@ -613,7 +734,7 @@ func (o *NatPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context.Cont
 		}
 		for _, elt := range devices_tf_entries {
 			var entry *nat.TargetDevices
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -636,7 +757,7 @@ func (o *NatPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, obj **nat.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.TargetDevices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_tf_entries []NatPolicyRulesDataSourceRulesTargetDevicesVsysObject
 	var vsys_pango_entries []nat.TargetDevicesVsys
@@ -648,7 +769,7 @@ func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx conte
 		}
 		for _, elt := range vsys_tf_entries {
 			var entry *nat.TargetDevicesVsys
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -664,7 +785,7 @@ func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, obj **nat.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.TargetDevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -674,10 +795,8 @@ func (o *NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesDestinationTranslationObject) CopyToPango(ctx context.Context, obj **nat.DestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesDestinationTranslationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.DestinationTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
-	translatedPort_value := o.TranslatedPort.ValueInt64Pointer()
 	var dnsRewrite_entry *nat.DestinationTranslationDnsRewrite
 	if o.DnsRewrite != nil {
 		if *obj != nil && (*obj).DnsRewrite != nil {
@@ -685,23 +804,25 @@ func (o *NatPolicyRulesDataSourceRulesDestinationTranslationObject) CopyToPango(
 		} else {
 			dnsRewrite_entry = new(nat.DestinationTranslationDnsRewrite)
 		}
-
-		diags.Append(o.DnsRewrite.CopyToPango(ctx, &dnsRewrite_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DnsRewrite.CopyToPango(ctx, append(ancestors, o), &dnsRewrite_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
+	translatedPort_value := o.TranslatedPort.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(nat.DestinationTranslation)
 	}
+	(*obj).DnsRewrite = dnsRewrite_entry
 	(*obj).TranslatedAddress = translatedAddress_value
 	(*obj).TranslatedPort = translatedPort_value
-	(*obj).DnsRewrite = dnsRewrite_entry
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) CopyToPango(ctx context.Context, obj **nat.DestinationTranslationDnsRewrite, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.DestinationTranslationDnsRewrite, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	direction_value := o.Direction.ValueStringPointer()
 
@@ -712,7 +833,7 @@ func (o *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) Co
 
 	return diags
 }
-func (o *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) CopyToPango(ctx context.Context, obj **nat.DynamicDestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.DynamicDestinationTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	distribution_value := o.Distribution.ValueStringPointer()
 	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
@@ -728,43 +849,57 @@ func (o *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) CopyT
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var destinationAddresses_list types.List
 	{
 		var list_diags diag.Diagnostics
 		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceZones_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.From)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceAddresses_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Source)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var tag_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var destinationZone_list types.List
 	{
 		var list_diags diag.Diagnostics
 		destinationZone_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.To)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceTranslation_object *NatPolicyRulesDataSourceRulesSourceTranslationObject
 	if obj.SourceTranslation != nil {
 		sourceTranslation_object = new(NatPolicyRulesDataSourceRulesSourceTranslationObject)
-
-		diags.Append(sourceTranslation_object.CopyFromPango(ctx, obj.SourceTranslation, encrypted)...)
+		diags.Append(sourceTranslation_object.CopyFromPango(ctx, append(ancestors, o), obj.SourceTranslation, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -772,8 +907,7 @@ func (o *NatPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Context,
 	var target_object *NatPolicyRulesDataSourceRulesTargetObject
 	if obj.Target != nil {
 		target_object = new(NatPolicyRulesDataSourceRulesTargetObject)
-
-		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
+		diags.Append(target_object.CopyFromPango(ctx, append(ancestors, o), obj.Target, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -781,8 +915,7 @@ func (o *NatPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Context,
 	var destinationTranslation_object *NatPolicyRulesDataSourceRulesDestinationTranslationObject
 	if obj.DestinationTranslation != nil {
 		destinationTranslation_object = new(NatPolicyRulesDataSourceRulesDestinationTranslationObject)
-
-		diags.Append(destinationTranslation_object.CopyFromPango(ctx, obj.DestinationTranslation, encrypted)...)
+		diags.Append(destinationTranslation_object.CopyFromPango(ctx, append(ancestors, o), obj.DestinationTranslation, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -790,8 +923,7 @@ func (o *NatPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Context,
 	var dynamicDestinationTranslation_object *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject
 	if obj.DynamicDestinationTranslation != nil {
 		dynamicDestinationTranslation_object = new(NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject)
-
-		diags.Append(dynamicDestinationTranslation_object.CopyFromPango(ctx, obj.DynamicDestinationTranslation, encrypted)...)
+		diags.Append(dynamicDestinationTranslation_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicDestinationTranslation, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -846,13 +978,12 @@ func (o *NatPolicyRulesDataSourceRulesObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamicIp_object *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject
 	if obj.DynamicIp != nil {
 		dynamicIp_object = new(NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject)
-
-		diags.Append(dynamicIp_object.CopyFromPango(ctx, obj.DynamicIp, encrypted)...)
+		diags.Append(dynamicIp_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -860,8 +991,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyFromPango(ctx
 	var dynamicIpAndPort_object *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject
 	if obj.DynamicIpAndPort != nil {
 		dynamicIpAndPort_object = new(NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject)
-
-		diags.Append(dynamicIpAndPort_object.CopyFromPango(ctx, obj.DynamicIpAndPort, encrypted)...)
+		diags.Append(dynamicIpAndPort_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicIpAndPort, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -869,8 +999,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyFromPango(ctx
 	var staticIp_object *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject
 	if obj.StaticIp != nil {
 		staticIp_object = new(NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject)
-
-		diags.Append(staticIp_object.CopyFromPango(ctx, obj.StaticIp, encrypted)...)
+		diags.Append(staticIp_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -883,19 +1012,21 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var translatedAddress_list types.List
 	{
 		var list_diags diag.Diagnostics
 		translatedAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TranslatedAddress)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var fallback_object *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject
 	if obj.Fallback != nil {
 		fallback_object = new(NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject)
-
-		diags.Append(fallback_object.CopyFromPango(ctx, obj.Fallback, encrypted)...)
+		diags.Append(fallback_object.CopyFromPango(ctx, append(ancestors, o), obj.Fallback, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -907,19 +1038,21 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) CopyFrom
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpFallback, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIpFallback, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var translatedAddress_list types.List
 	{
 		var list_diags diag.Diagnostics
 		translatedAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TranslatedAddress)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var interfaceAddress_object *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject
 	if obj.InterfaceAddress != nil {
 		interfaceAddress_object = new(NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject)
-
-		diags.Append(interfaceAddress_object.CopyFromPango(ctx, obj.InterfaceAddress, encrypted)...)
+		diags.Append(interfaceAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.InterfaceAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -931,7 +1064,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) 
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpFallbackInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIpFallbackInterfaceAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -953,19 +1086,21 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfac
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpAndPort, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIpAndPort, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var translatedAddress_list types.List
 	{
 		var list_diags diag.Diagnostics
 		translatedAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TranslatedAddress)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var interfaceAddress_object *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject
 	if obj.InterfaceAddress != nil {
 		interfaceAddress_object = new(NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject)
-
-		diags.Append(interfaceAddress_object.CopyFromPango(ctx, obj.InterfaceAddress, encrypted)...)
+		diags.Append(interfaceAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.InterfaceAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -977,7 +1112,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) C
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpAndPortInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIpAndPortInterfaceAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -999,7 +1134,7 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterface
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var biDirectional_value types.String
@@ -1016,15 +1151,19 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) CopyFromP
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesTargetObject) CopyFromPango(ctx context.Context, obj *nat.Target, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesTargetObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.Target, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var devices_list types.List
 	{
 		var devices_tf_entries []NatPolicyRulesDataSourceRulesTargetDevicesObject
 		for _, elt := range obj.Devices {
-			var entry NatPolicyRulesDataSourceRulesTargetDevicesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := NatPolicyRulesDataSourceRulesTargetDevicesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			devices_tf_entries = append(devices_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1037,6 +1176,9 @@ func (o *NatPolicyRulesDataSourceRulesTargetObject) CopyFromPango(ctx context.Co
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var negate_value types.Bool
@@ -1050,15 +1192,19 @@ func (o *NatPolicyRulesDataSourceRulesTargetObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, obj *nat.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.TargetDevices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
 		var vsys_tf_entries []NatPolicyRulesDataSourceRulesTargetDevicesVsysObject
 		for _, elt := range obj.Vsys {
-			var entry NatPolicyRulesDataSourceRulesTargetDevicesVsysObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := NatPolicyRulesDataSourceRulesTargetDevicesVsysObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			vsys_tf_entries = append(vsys_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1073,20 +1219,19 @@ func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, obj *nat.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.TargetDevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesDestinationTranslationObject) CopyFromPango(ctx context.Context, obj *nat.DestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesDestinationTranslationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.DestinationTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsRewrite_object *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject
 	if obj.DnsRewrite != nil {
 		dnsRewrite_object = new(NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject)
-
-		diags.Append(dnsRewrite_object.CopyFromPango(ctx, obj.DnsRewrite, encrypted)...)
+		diags.Append(dnsRewrite_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsRewrite, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1100,14 +1245,14 @@ func (o *NatPolicyRulesDataSourceRulesDestinationTranslationObject) CopyFromPang
 	if obj.TranslatedPort != nil {
 		translatedPort_value = types.Int64Value(*obj.TranslatedPort)
 	}
+	o.DnsRewrite = dnsRewrite_object
 	o.TranslatedAddress = translatedAddress_value
 	o.TranslatedPort = translatedPort_value
-	o.DnsRewrite = dnsRewrite_object
 
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) CopyFromPango(ctx context.Context, obj *nat.DestinationTranslationDnsRewrite, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.DestinationTranslationDnsRewrite, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var direction_value types.String
@@ -1119,7 +1264,7 @@ func (o *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) Co
 	return diags
 }
 
-func (o *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) CopyFromPango(ctx context.Context, obj *nat.DynamicDestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.DynamicDestinationTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var distribution_value types.String
@@ -1139,6 +1284,11 @@ func (o *NatPolicyRulesDataSourceRulesDynamicDestinationTranslationObject) CopyF
 	o.TranslatedPort = translatedPort_value
 
 	return diags
+}
+
+func (o *NatPolicyRulesDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func NatPolicyRulesDataSourceSchema() dsschema.Schema {
@@ -1812,6 +1962,8 @@ func NatPolicyRulesDataSourceRulesDestinationTranslationSchema() dsschema.Single
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"dns_rewrite": NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteSchema(),
+
 			"translated_address": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -1827,8 +1979,6 @@ func NatPolicyRulesDataSourceRulesDestinationTranslationSchema() dsschema.Single
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"dns_rewrite": NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteSchema(),
 		},
 	}
 }
@@ -1971,7 +2121,7 @@ func (d *NatPolicyRulesDataSource) Configure(_ context.Context, req datasource.C
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewUuidObjectManager(d.client, nat.NewService(d.client), batchSize, specifier, nat.SpecMatches)
+	d.manager = sdkmanager.NewUuidObjectManager[*nat.Entry, nat.Location, *nat.Service](d.client, nat.NewService(d.client), batchSize, specifier, nat.SpecMatches)
 }
 func (o *NatPolicyRulesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -1987,6 +2137,13 @@ func (o *NatPolicyRulesDataSource) Read(ctx context.Context, req datasource.Read
 		"resource_name": "panos_nat_policy_rules",
 		"function":      "Create",
 	})
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location nat.Location
 
@@ -2040,7 +2197,7 @@ func (o *NatPolicyRulesDataSource) Read(ctx context.Context, req datasource.Read
 	entries := make([]*nat.Entry, 0, len(elements))
 	for _, elt := range elements {
 		var entry *nat.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -2067,7 +2224,7 @@ func (o *NatPolicyRulesDataSource) Read(ctx context.Context, req datasource.Read
 	var objects []NatPolicyRulesDataSourceRulesObject
 	for _, elt := range readEntries {
 		var object NatPolicyRulesDataSourceRulesObject
-		err := object.CopyFromPango(ctx, elt, nil)
+		err := object.CopyFromPango(ctx, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -2182,9 +2339,9 @@ type NatPolicyRulesResourceRulesTargetDevicesVsysObject struct {
 	Name types.String `tfsdk:"name"`
 }
 type NatPolicyRulesResourceRulesDestinationTranslationObject struct {
+	DnsRewrite        *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject `tfsdk:"dns_rewrite"`
 	TranslatedAddress types.String                                                       `tfsdk:"translated_address"`
 	TranslatedPort    types.Int64                                                        `tfsdk:"translated_port"`
-	DnsRewrite        *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject `tfsdk:"dns_rewrite"`
 }
 type NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject struct {
 	Direction types.String `tfsdk:"direction"`
@@ -2977,6 +3134,8 @@ func NatPolicyRulesResourceRulesDestinationTranslationSchema() rsschema.SingleNe
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"dns_rewrite": NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteSchema(),
+
 			"translated_address": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -2992,8 +3151,6 @@ func NatPolicyRulesResourceRulesDestinationTranslationSchema() rsschema.SingleNe
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"dns_rewrite": NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteSchema(),
 		},
 	}
 }
@@ -3134,7 +3291,7 @@ func (r *NatPolicyRulesResource) Configure(ctx context.Context, req resource.Con
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewUuidObjectManager(r.client, nat.NewService(r.client), batchSize, specifier, nat.SpecMatches)
+	r.manager = sdkmanager.NewUuidObjectManager[*nat.Entry, nat.Location, *nat.Service](r.client, nat.NewService(r.client), batchSize, specifier, nat.SpecMatches)
 }
 
 func (o *NatPolicyRulesResourceModel) AttributeTypes() map[string]attr.Type {
@@ -3152,6 +3309,14 @@ func (o *NatPolicyRulesResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 		"rules": types.ListType{},
 	}
+}
+
+func (o NatPolicyRulesResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o NatPolicyRulesResourceModel) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesResourceRulesObject) AttributeTypes() map[string]attr.Type {
 
@@ -3190,6 +3355,14 @@ func (o *NatPolicyRulesResourceRulesObject) AttributeTypes() map[string]attr.Typ
 		},
 	}
 }
+
+func (o NatPolicyRulesResourceRulesObject) AncestorName() string {
+	return "rules"
+}
+
+func (o NatPolicyRulesResourceRulesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *NatPolicyRulesResourceRulesSourceTranslationObject) AttributeTypes() map[string]attr.Type {
 
 	var dynamicIpObj *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject
@@ -3209,6 +3382,14 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o NatPolicyRulesResourceRulesSourceTranslationObject) AncestorName() string {
+	return "source-translation"
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) AttributeTypes() map[string]attr.Type {
 
 	var fallbackObj *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject
@@ -3219,6 +3400,14 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) AttributeT
 		},
 		"translated_address": types.ListType{},
 	}
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) AncestorName() string {
+	return "dynamic-ip"
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) AttributeTypes() map[string]attr.Type {
 
@@ -3231,6 +3420,14 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) At
 		"translated_address": types.ListType{},
 	}
 }
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) AncestorName() string {
+	return "fallback"
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -3238,6 +3435,14 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceA
 		"floating_ip": types.StringType,
 		"ip":          types.StringType,
 	}
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) AncestorName() string {
+	return "interface-address"
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) AttributeTypes() map[string]attr.Type {
 
@@ -3250,6 +3455,14 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) Att
 		"translated_address": types.ListType{},
 	}
 }
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) AncestorName() string {
+	return "dynamic-ip-and-port"
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -3258,12 +3471,28 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAd
 		"ip":          types.StringType,
 	}
 }
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) AncestorName() string {
+	return "interface-address"
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"bi_directional":     types.StringType,
 		"translated_address": types.StringType,
 	}
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) AncestorName() string {
+	return "static-ip"
+}
+
+func (o NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesResourceRulesTargetObject) AttributeTypes() map[string]attr.Type {
 
@@ -3273,6 +3502,14 @@ func (o *NatPolicyRulesResourceRulesTargetObject) AttributeTypes() map[string]at
 		"tags":    types.ListType{},
 	}
 }
+
+func (o NatPolicyRulesResourceRulesTargetObject) AncestorName() string {
+	return "target"
+}
+
+func (o NatPolicyRulesResourceRulesTargetObject) EntryName() *string {
+	return nil
+}
 func (o *NatPolicyRulesResourceRulesTargetDevicesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -3280,28 +3517,61 @@ func (o *NatPolicyRulesResourceRulesTargetDevicesObject) AttributeTypes() map[st
 		"vsys": types.ListType{},
 	}
 }
+
+func (o NatPolicyRulesResourceRulesTargetDevicesObject) AncestorName() string {
+	return "devices"
+}
+
+func (o NatPolicyRulesResourceRulesTargetDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *NatPolicyRulesResourceRulesTargetDevicesVsysObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name": types.StringType,
 	}
 }
+
+func (o NatPolicyRulesResourceRulesTargetDevicesVsysObject) AncestorName() string {
+	return "vsys"
+}
+
+func (o NatPolicyRulesResourceRulesTargetDevicesVsysObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) AttributeTypes() map[string]attr.Type {
 
 	var dnsRewriteObj *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject
+
 	return map[string]attr.Type{
-		"translated_address": types.StringType,
-		"translated_port":    types.Int64Type,
 		"dns_rewrite": types.ObjectType{
 			AttrTypes: dnsRewriteObj.AttributeTypes(),
 		},
+		"translated_address": types.StringType,
+		"translated_port":    types.Int64Type,
 	}
+}
+
+func (o NatPolicyRulesResourceRulesDestinationTranslationObject) AncestorName() string {
+	return "destination-translation"
+}
+
+func (o NatPolicyRulesResourceRulesDestinationTranslationObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"direction": types.StringType,
 	}
+}
+
+func (o NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) AncestorName() string {
+	return "dns-rewrite"
+}
+
+func (o NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) EntryName() *string {
+	return nil
 }
 func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) AttributeTypes() map[string]attr.Type {
 
@@ -3312,7 +3582,15 @@ func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) Attribu
 	}
 }
 
-func (o *NatPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj **nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) AncestorName() string {
+	return "dynamic-destination-translation"
+}
+
+func (o NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) EntryName() *string {
+	return nil
+}
+
+func (o *NatPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	activeActiveDeviceBinding_value := o.ActiveActiveDeviceBinding.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
@@ -3342,8 +3620,8 @@ func (o *NatPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj
 		} else {
 			sourceTranslation_entry = new(nat.SourceTranslation)
 		}
-
-		diags.Append(o.SourceTranslation.CopyToPango(ctx, &sourceTranslation_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SourceTranslation.CopyToPango(ctx, append(ancestors, o), &sourceTranslation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3360,8 +3638,8 @@ func (o *NatPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj
 		} else {
 			target_entry = new(nat.Target)
 		}
-
-		diags.Append(o.Target.CopyToPango(ctx, &target_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Target.CopyToPango(ctx, append(ancestors, o), &target_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3379,8 +3657,8 @@ func (o *NatPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj
 		} else {
 			destinationTranslation_entry = new(nat.DestinationTranslation)
 		}
-
-		diags.Append(o.DestinationTranslation.CopyToPango(ctx, &destinationTranslation_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DestinationTranslation.CopyToPango(ctx, append(ancestors, o), &destinationTranslation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3392,8 +3670,8 @@ func (o *NatPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj
 		} else {
 			dynamicDestinationTranslation_entry = new(nat.DynamicDestinationTranslation)
 		}
-
-		diags.Append(o.DynamicDestinationTranslation.CopyToPango(ctx, &dynamicDestinationTranslation_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DynamicDestinationTranslation.CopyToPango(ctx, append(ancestors, o), &dynamicDestinationTranslation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3422,7 +3700,7 @@ func (o *NatPolicyRulesResourceRulesObject) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamicIp_entry *nat.SourceTranslationDynamicIp
 	if o.DynamicIp != nil {
@@ -3431,8 +3709,8 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyToPango(ctx con
 		} else {
 			dynamicIp_entry = new(nat.SourceTranslationDynamicIp)
 		}
-
-		diags.Append(o.DynamicIp.CopyToPango(ctx, &dynamicIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DynamicIp.CopyToPango(ctx, append(ancestors, o), &dynamicIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3444,8 +3722,8 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyToPango(ctx con
 		} else {
 			dynamicIpAndPort_entry = new(nat.SourceTranslationDynamicIpAndPort)
 		}
-
-		diags.Append(o.DynamicIpAndPort.CopyToPango(ctx, &dynamicIpAndPort_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DynamicIpAndPort.CopyToPango(ctx, append(ancestors, o), &dynamicIpAndPort_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3457,8 +3735,8 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyToPango(ctx con
 		} else {
 			staticIp_entry = new(nat.SourceTranslationStaticIp)
 		}
-
-		diags.Append(o.StaticIp.CopyToPango(ctx, &staticIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.StaticIp.CopyToPango(ctx, append(ancestors, o), &staticIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3473,7 +3751,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var fallback_entry *nat.SourceTranslationDynamicIpFallback
 	if o.Fallback != nil {
@@ -3482,8 +3760,8 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) CopyToPang
 		} else {
 			fallback_entry = new(nat.SourceTranslationDynamicIpFallback)
 		}
-
-		diags.Append(o.Fallback.CopyToPango(ctx, &fallback_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Fallback.CopyToPango(ctx, append(ancestors, o), &fallback_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3502,7 +3780,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) CopyToPang
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpFallback, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIpFallback, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interfaceAddress_entry *nat.SourceTranslationDynamicIpFallbackInterfaceAddress
 	if o.InterfaceAddress != nil {
@@ -3511,8 +3789,8 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) Co
 		} else {
 			interfaceAddress_entry = new(nat.SourceTranslationDynamicIpFallbackInterfaceAddress)
 		}
-
-		diags.Append(o.InterfaceAddress.CopyToPango(ctx, &interfaceAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.InterfaceAddress.CopyToPango(ctx, append(ancestors, o), &interfaceAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3531,7 +3809,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) Co
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpFallbackInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIpFallbackInterfaceAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	floatingIp_value := o.FloatingIp.ValueStringPointer()
@@ -3546,7 +3824,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceA
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpAndPort, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIpAndPort, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var interfaceAddress_entry *nat.SourceTranslationDynamicIpAndPortInterfaceAddress
 	if o.InterfaceAddress != nil {
@@ -3555,8 +3833,8 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) Cop
 		} else {
 			interfaceAddress_entry = new(nat.SourceTranslationDynamicIpAndPortInterfaceAddress)
 		}
-
-		diags.Append(o.InterfaceAddress.CopyToPango(ctx, &interfaceAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.InterfaceAddress.CopyToPango(ctx, append(ancestors, o), &interfaceAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3575,7 +3853,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) Cop
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationDynamicIpAndPortInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationDynamicIpAndPortInterfaceAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	floatingIp_value := o.FloatingIp.ValueStringPointer()
@@ -3590,7 +3868,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAd
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) CopyToPango(ctx context.Context, obj **nat.SourceTranslationStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.SourceTranslationStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	biDirectional_value := o.BiDirectional.ValueStringPointer()
 	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
@@ -3603,7 +3881,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) CopyToPango
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context.Context, obj **nat.Target, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.Target, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var devices_tf_entries []NatPolicyRulesResourceRulesTargetDevicesObject
 	var devices_pango_entries []nat.TargetDevices
@@ -3615,7 +3893,7 @@ func (o *NatPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context.Contex
 		}
 		for _, elt := range devices_tf_entries {
 			var entry *nat.TargetDevices
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3638,7 +3916,7 @@ func (o *NatPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, obj **nat.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.TargetDevices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_tf_entries []NatPolicyRulesResourceRulesTargetDevicesVsysObject
 	var vsys_pango_entries []nat.TargetDevicesVsys
@@ -3650,7 +3928,7 @@ func (o *NatPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx context
 		}
 		for _, elt := range vsys_tf_entries {
 			var entry *nat.TargetDevicesVsys
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3666,7 +3944,7 @@ func (o *NatPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, obj **nat.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesTargetDevicesVsysObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.TargetDevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3676,10 +3954,8 @@ func (o *NatPolicyRulesResourceRulesTargetDevicesVsysObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) CopyToPango(ctx context.Context, obj **nat.DestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.DestinationTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
-	translatedPort_value := o.TranslatedPort.ValueInt64Pointer()
 	var dnsRewrite_entry *nat.DestinationTranslationDnsRewrite
 	if o.DnsRewrite != nil {
 		if *obj != nil && (*obj).DnsRewrite != nil {
@@ -3687,23 +3963,25 @@ func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) CopyToPango(ct
 		} else {
 			dnsRewrite_entry = new(nat.DestinationTranslationDnsRewrite)
 		}
-
-		diags.Append(o.DnsRewrite.CopyToPango(ctx, &dnsRewrite_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DnsRewrite.CopyToPango(ctx, append(ancestors, o), &dnsRewrite_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
+	translatedPort_value := o.TranslatedPort.ValueInt64Pointer()
 
 	if (*obj) == nil {
 		*obj = new(nat.DestinationTranslation)
 	}
+	(*obj).DnsRewrite = dnsRewrite_entry
 	(*obj).TranslatedAddress = translatedAddress_value
 	(*obj).TranslatedPort = translatedPort_value
-	(*obj).DnsRewrite = dnsRewrite_entry
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) CopyToPango(ctx context.Context, obj **nat.DestinationTranslationDnsRewrite, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.DestinationTranslationDnsRewrite, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	direction_value := o.Direction.ValueStringPointer()
 
@@ -3714,7 +3992,7 @@ func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) Copy
 
 	return diags
 }
-func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) CopyToPango(ctx context.Context, obj **nat.DynamicDestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **nat.DynamicDestinationTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	distribution_value := o.Distribution.ValueStringPointer()
 	translatedAddress_value := o.TranslatedAddress.ValueStringPointer()
@@ -3730,43 +4008,57 @@ func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) CopyToP
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Context, obj *nat.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var destinationAddresses_list types.List
 	{
 		var list_diags diag.Diagnostics
 		destinationAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Destination)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceZones_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceZones_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.From)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceAddresses_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sourceAddresses_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Source)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var tag_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var destinationZone_list types.List
 	{
 		var list_diags diag.Diagnostics
 		destinationZone_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.To)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sourceTranslation_object *NatPolicyRulesResourceRulesSourceTranslationObject
 	if obj.SourceTranslation != nil {
 		sourceTranslation_object = new(NatPolicyRulesResourceRulesSourceTranslationObject)
-
-		diags.Append(sourceTranslation_object.CopyFromPango(ctx, obj.SourceTranslation, encrypted)...)
+		diags.Append(sourceTranslation_object.CopyFromPango(ctx, append(ancestors, o), obj.SourceTranslation, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3774,8 +4066,7 @@ func (o *NatPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Context, o
 	var target_object *NatPolicyRulesResourceRulesTargetObject
 	if obj.Target != nil {
 		target_object = new(NatPolicyRulesResourceRulesTargetObject)
-
-		diags.Append(target_object.CopyFromPango(ctx, obj.Target, encrypted)...)
+		diags.Append(target_object.CopyFromPango(ctx, append(ancestors, o), obj.Target, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3783,8 +4074,7 @@ func (o *NatPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Context, o
 	var destinationTranslation_object *NatPolicyRulesResourceRulesDestinationTranslationObject
 	if obj.DestinationTranslation != nil {
 		destinationTranslation_object = new(NatPolicyRulesResourceRulesDestinationTranslationObject)
-
-		diags.Append(destinationTranslation_object.CopyFromPango(ctx, obj.DestinationTranslation, encrypted)...)
+		diags.Append(destinationTranslation_object.CopyFromPango(ctx, append(ancestors, o), obj.DestinationTranslation, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3792,8 +4082,7 @@ func (o *NatPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Context, o
 	var dynamicDestinationTranslation_object *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject
 	if obj.DynamicDestinationTranslation != nil {
 		dynamicDestinationTranslation_object = new(NatPolicyRulesResourceRulesDynamicDestinationTranslationObject)
-
-		diags.Append(dynamicDestinationTranslation_object.CopyFromPango(ctx, obj.DynamicDestinationTranslation, encrypted)...)
+		diags.Append(dynamicDestinationTranslation_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicDestinationTranslation, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3848,13 +4137,12 @@ func (o *NatPolicyRulesResourceRulesObject) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamicIp_object *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject
 	if obj.DynamicIp != nil {
 		dynamicIp_object = new(NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject)
-
-		diags.Append(dynamicIp_object.CopyFromPango(ctx, obj.DynamicIp, encrypted)...)
+		diags.Append(dynamicIp_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3862,8 +4150,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyFromPango(ctx c
 	var dynamicIpAndPort_object *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject
 	if obj.DynamicIpAndPort != nil {
 		dynamicIpAndPort_object = new(NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject)
-
-		diags.Append(dynamicIpAndPort_object.CopyFromPango(ctx, obj.DynamicIpAndPort, encrypted)...)
+		diags.Append(dynamicIpAndPort_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicIpAndPort, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3871,8 +4158,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyFromPango(ctx c
 	var staticIp_object *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject
 	if obj.StaticIp != nil {
 		staticIp_object = new(NatPolicyRulesResourceRulesSourceTranslationStaticIpObject)
-
-		diags.Append(staticIp_object.CopyFromPango(ctx, obj.StaticIp, encrypted)...)
+		diags.Append(staticIp_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3885,19 +4171,21 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var translatedAddress_list types.List
 	{
 		var list_diags diag.Diagnostics
 		translatedAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TranslatedAddress)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var fallback_object *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject
 	if obj.Fallback != nil {
 		fallback_object = new(NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject)
-
-		diags.Append(fallback_object.CopyFromPango(ctx, obj.Fallback, encrypted)...)
+		diags.Append(fallback_object.CopyFromPango(ctx, append(ancestors, o), obj.Fallback, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3909,19 +4197,21 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) CopyFromPa
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpFallback, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIpFallback, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var translatedAddress_list types.List
 	{
 		var list_diags diag.Diagnostics
 		translatedAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TranslatedAddress)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var interfaceAddress_object *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject
 	if obj.InterfaceAddress != nil {
 		interfaceAddress_object = new(NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject)
-
-		diags.Append(interfaceAddress_object.CopyFromPango(ctx, obj.InterfaceAddress, encrypted)...)
+		diags.Append(interfaceAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.InterfaceAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3933,7 +4223,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) Co
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpFallbackInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIpFallbackInterfaceAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -3955,19 +4245,21 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceA
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpAndPort, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIpAndPort, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var translatedAddress_list types.List
 	{
 		var list_diags diag.Diagnostics
 		translatedAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TranslatedAddress)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var interfaceAddress_object *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject
 	if obj.InterfaceAddress != nil {
 		interfaceAddress_object = new(NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject)
-
-		diags.Append(interfaceAddress_object.CopyFromPango(ctx, obj.InterfaceAddress, encrypted)...)
+		diags.Append(interfaceAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.InterfaceAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3979,7 +4271,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) Cop
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationDynamicIpAndPortInterfaceAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationDynamicIpAndPortInterfaceAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -4001,7 +4293,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAd
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) CopyFromPango(ctx context.Context, obj *nat.SourceTranslationStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.SourceTranslationStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var biDirectional_value types.String
@@ -4018,15 +4310,19 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) CopyFromPan
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context.Context, obj *nat.Target, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.Target, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var devices_list types.List
 	{
 		var devices_tf_entries []NatPolicyRulesResourceRulesTargetDevicesObject
 		for _, elt := range obj.Devices {
-			var entry NatPolicyRulesResourceRulesTargetDevicesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := NatPolicyRulesResourceRulesTargetDevicesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			devices_tf_entries = append(devices_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4039,6 +4335,9 @@ func (o *NatPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context.Cont
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var negate_value types.Bool
@@ -4052,15 +4351,19 @@ func (o *NatPolicyRulesResourceRulesTargetObject) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, obj *nat.TargetDevices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesTargetDevicesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.TargetDevices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
 		var vsys_tf_entries []NatPolicyRulesResourceRulesTargetDevicesVsysObject
 		for _, elt := range obj.Vsys {
-			var entry NatPolicyRulesResourceRulesTargetDevicesVsysObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := NatPolicyRulesResourceRulesTargetDevicesVsysObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			vsys_tf_entries = append(vsys_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4075,20 +4378,19 @@ func (o *NatPolicyRulesResourceRulesTargetDevicesObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, obj *nat.TargetDevicesVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesTargetDevicesVsysObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.TargetDevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) CopyFromPango(ctx context.Context, obj *nat.DestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.DestinationTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsRewrite_object *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject
 	if obj.DnsRewrite != nil {
 		dnsRewrite_object = new(NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject)
-
-		diags.Append(dnsRewrite_object.CopyFromPango(ctx, obj.DnsRewrite, encrypted)...)
+		diags.Append(dnsRewrite_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsRewrite, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4102,14 +4404,14 @@ func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) CopyFromPango(
 	if obj.TranslatedPort != nil {
 		translatedPort_value = types.Int64Value(*obj.TranslatedPort)
 	}
+	o.DnsRewrite = dnsRewrite_object
 	o.TranslatedAddress = translatedAddress_value
 	o.TranslatedPort = translatedPort_value
-	o.DnsRewrite = dnsRewrite_object
 
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) CopyFromPango(ctx context.Context, obj *nat.DestinationTranslationDnsRewrite, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.DestinationTranslationDnsRewrite, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var direction_value types.String
@@ -4121,7 +4423,7 @@ func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) Copy
 	return diags
 }
 
-func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) CopyFromPango(ctx context.Context, obj *nat.DynamicDestinationTranslation, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *nat.DynamicDestinationTranslation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var distribution_value types.String
@@ -4143,6 +4445,11 @@ func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) CopyFro
 	return diags
 }
 
+func (o *NatPolicyRulesResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *NatPolicyRulesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 
 	var state NatPolicyRulesResourceModel
@@ -4156,6 +4463,13 @@ func (r *NatPolicyRulesResource) Create(ctx context.Context, req resource.Create
 		"resource_name": "panos_nat_policy_rules_resource",
 		"function":      "Create",
 	})
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location nat.Location
 
@@ -4209,11 +4523,17 @@ func (r *NatPolicyRulesResource) Create(ctx context.Context, req resource.Create
 	entries := make([]*nat.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *nat.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 		entries[idx] = entry
+	}
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
 	}
 	var positionAttribute TerraformPositionObject
 	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
@@ -4221,7 +4541,7 @@ func (r *NatPolicyRulesResource) Create(ctx context.Context, req resource.Create
 		return
 	}
 	position := positionAttribute.CopyToPango()
-	processed, err := r.manager.CreateMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
+	processed, err := r.manager.CreateMany(ctx, location, components, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
 		return
@@ -4229,7 +4549,7 @@ func (r *NatPolicyRulesResource) Create(ctx context.Context, req resource.Create
 	objects := make([]NatPolicyRulesResourceRulesObject, len(processed))
 	for idx, elt := range processed {
 		var object NatPolicyRulesResourceRulesObject
-		copy_diags := object.CopyFromPango(ctx, elt, nil)
+		copy_diags := object.CopyFromPango(ctx, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -4243,6 +4563,13 @@ func (r *NatPolicyRulesResource) Create(ctx context.Context, req resource.Create
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
@@ -4261,6 +4588,17 @@ func (o *NatPolicyRulesResource) Read(ctx context.Context, req resource.ReadRequ
 		"resource_name": "panos_nat_policy_rules",
 		"function":      "Create",
 	})
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location nat.Location
 
@@ -4314,7 +4652,7 @@ func (o *NatPolicyRulesResource) Read(ctx context.Context, req resource.ReadRequ
 	entries := make([]*nat.Entry, 0, len(elements))
 	for _, elt := range elements {
 		var entry *nat.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -4341,7 +4679,7 @@ func (o *NatPolicyRulesResource) Read(ctx context.Context, req resource.ReadRequ
 	var objects []NatPolicyRulesResourceRulesObject
 	for _, elt := range readEntries {
 		var object NatPolicyRulesResourceRulesObject
-		err := object.CopyFromPango(ctx, elt, nil)
+		err := object.CopyFromPango(ctx, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -4358,6 +4696,13 @@ func (o *NatPolicyRulesResource) Read(ctx context.Context, req resource.ReadRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
@@ -4376,6 +4721,17 @@ func (r *NatPolicyRulesResource) Update(ctx context.Context, req resource.Update
 		"resource_name": "panos_nat_policy_rules_resource",
 		"function":      "Create",
 	})
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location nat.Location
 
@@ -4428,7 +4784,7 @@ func (r *NatPolicyRulesResource) Update(ctx context.Context, req resource.Update
 	stateEntries := make([]*nat.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *nat.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -4461,14 +4817,20 @@ func (r *NatPolicyRulesResource) Update(ctx context.Context, req resource.Update
 	planEntries := make([]*nat.Entry, len(elements))
 	for idx, elt := range elements {
 		entry, _ := existingEntriesByName[elt.Name.ValueString()]
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
 		planEntries[idx] = entry
 	}
 
-	processed, err := r.manager.UpdateMany(ctx, location, stateEntries, planEntries, sdkmanager.NonExhaustive, position)
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	processed, err := r.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to udpate entries", err.Error())
 	}
@@ -4476,7 +4838,7 @@ func (r *NatPolicyRulesResource) Update(ctx context.Context, req resource.Update
 	objects := make([]*NatPolicyRulesResourceRulesObject, len(processed))
 	for idx, elt := range processed {
 		var object NatPolicyRulesResourceRulesObject
-		copy_diags := object.CopyFromPango(ctx, elt, nil)
+		copy_diags := object.CopyFromPango(ctx, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -4490,6 +4852,13 @@ func (r *NatPolicyRulesResource) Update(ctx context.Context, req resource.Update
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
@@ -4560,7 +4929,13 @@ func (r *NatPolicyRulesResource) Delete(ctx context.Context, req resource.Delete
 	for _, elt := range elements {
 		names = append(names, elt.Name.ValueString())
 	}
-	err := r.manager.Delete(ctx, location, names, sdkmanager.NonExhaustive)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, names, sdkmanager.NonExhaustive)
 	if err != nil {
 		resp.Diagnostics.AddError("error while deleting entries", err.Error())
 		return
@@ -4729,6 +5104,13 @@ func (r *NatPolicyRulesResource) ImportState(ctx context.Context, req resource.I
 		return
 	}
 
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
+
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
 		var diagsErr *DiagnosticsError
@@ -4757,7 +5139,7 @@ func (r *NatPolicyRulesResource) ImportState(ctx context.Context, req resource.I
 	}
 	for _, elt := range objectNames {
 		object := &NatPolicyRulesResourceRulesObject{}
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, &nat.Entry{}, nil)...)
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, &nat.Entry{}, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}

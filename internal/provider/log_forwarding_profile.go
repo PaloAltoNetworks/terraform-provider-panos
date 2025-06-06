@@ -121,6 +121,14 @@ func (o *LogForwardingProfileDataSourceModel) AttributeTypes() map[string]attr.T
 		"match_list":                   types.ListType{},
 	}
 }
+
+func (o LogForwardingProfileDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o LogForwardingProfileDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *LogForwardingProfileDataSourceMatchListObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -137,6 +145,14 @@ func (o *LogForwardingProfileDataSourceMatchListObject) AttributeTypes() map[str
 		"actions":          types.ListType{},
 	}
 }
+
+func (o LogForwardingProfileDataSourceMatchListObject) AncestorName() string {
+	return "match-list"
+}
+
+func (o LogForwardingProfileDataSourceMatchListObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogForwardingProfileDataSourceMatchListActionsObject) AttributeTypes() map[string]attr.Type {
 
 	var typeObj *LogForwardingProfileDataSourceMatchListActionsTypeObject
@@ -146,6 +162,14 @@ func (o *LogForwardingProfileDataSourceMatchListActionsObject) AttributeTypes() 
 			AttrTypes: typeObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsObject) AncestorName() string {
+	return "actions"
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -161,11 +185,27 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) AttributeType
 		},
 	}
 }
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"action": types.StringType,
 	}
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) AncestorName() string {
+	return "integration"
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) EntryName() *string {
+	return nil
 }
 func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) AttributeTypes() map[string]attr.Type {
 
@@ -180,6 +220,14 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) Attrib
 		},
 		"tags": types.ListType{},
 	}
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) AncestorName() string {
+	return "tagging"
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) EntryName() *string {
+	return nil
 }
 func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject) AttributeTypes() map[string]attr.Type {
 
@@ -200,11 +248,35 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 		},
 	}
 }
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject) AncestorName() string {
+	return "registration"
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject) EntryName() *string {
+	return nil
+}
 func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) AncestorName() string {
+	return "localhost"
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) EntryName() *string {
+	return nil
+}
 func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject) AncestorName() string {
+	return "panorama"
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject) EntryName() *string {
+	return nil
 }
 func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject) AttributeTypes() map[string]attr.Type {
 
@@ -213,7 +285,15 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRe
 	}
 }
 
-func (o *LogForwardingProfileDataSourceModel) CopyToPango(ctx context.Context, obj **logforwarding.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject) AncestorName() string {
+	return "remote"
+}
+
+func (o LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject) EntryName() *string {
+	return nil
+}
+
+func (o *LogForwardingProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -228,7 +308,7 @@ func (o *LogForwardingProfileDataSourceModel) CopyToPango(ctx context.Context, o
 		}
 		for _, elt := range matchList_tf_entries {
 			var entry *logforwarding.MatchList
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -247,7 +327,7 @@ func (o *LogForwardingProfileDataSourceModel) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *LogForwardingProfileDataSourceMatchListObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	actionDesc_value := o.ActionDesc.ValueStringPointer()
 	logType_value := o.LogType.ValueStringPointer()
@@ -284,7 +364,7 @@ func (o *LogForwardingProfileDataSourceMatchListObject) CopyToPango(ctx context.
 		}
 		for _, elt := range actions_tf_entries {
 			var entry *logforwarding.MatchListActions
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -309,7 +389,7 @@ func (o *LogForwardingProfileDataSourceMatchListObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LogForwardingProfileDataSourceMatchListActionsObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_entry *logforwarding.MatchListActionsType
 	if o.Type != nil {
@@ -318,8 +398,8 @@ func (o *LogForwardingProfileDataSourceMatchListActionsObject) CopyToPango(ctx c
 		} else {
 			type_entry = new(logforwarding.MatchListActionsType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -333,7 +413,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var integration_entry *logforwarding.MatchListActionsTypeIntegration
 	if o.Integration != nil {
@@ -342,8 +422,8 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) CopyToPango(c
 		} else {
 			integration_entry = new(logforwarding.MatchListActionsTypeIntegration)
 		}
-
-		diags.Append(o.Integration.CopyToPango(ctx, &integration_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Integration.CopyToPango(ctx, append(ancestors, o), &integration_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -355,8 +435,8 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) CopyToPango(c
 		} else {
 			tagging_entry = new(logforwarding.MatchListActionsTypeTagging)
 		}
-
-		diags.Append(o.Tagging.CopyToPango(ctx, &tagging_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tagging.CopyToPango(ctx, append(ancestors, o), &tagging_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -370,7 +450,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) CopyToPango(c
 
 	return diags
 }
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeIntegration, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeIntegration, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 
@@ -381,7 +461,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) Co
 
 	return diags
 }
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTagging, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTagging, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	target_value := o.Target.ValueStringPointer()
 	action_value := o.Action.ValueStringPointer()
@@ -393,8 +473,8 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyTo
 		} else {
 			registration_entry = new(logforwarding.MatchListActionsTypeTaggingRegistration)
 		}
-
-		diags.Append(o.Registration.CopyToPango(ctx, &registration_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Registration.CopyToPango(ctx, append(ancestors, o), &registration_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -416,7 +496,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyTo
 
 	return diags
 }
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistration, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTaggingRegistration, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localhost_entry *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost
 	if o.Localhost != nil {
@@ -425,8 +505,8 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 		} else {
 			localhost_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost)
 		}
-
-		diags.Append(o.Localhost.CopyToPango(ctx, &localhost_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Localhost.CopyToPango(ctx, append(ancestors, o), &localhost_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -438,8 +518,8 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 		} else {
 			panorama_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationPanorama)
 		}
-
-		diags.Append(o.Panorama.CopyToPango(ctx, &panorama_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Panorama.CopyToPango(ctx, append(ancestors, o), &panorama_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -451,8 +531,8 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 		} else {
 			remote_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationRemote)
 		}
-
-		diags.Append(o.Remote.CopyToPango(ctx, &remote_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Remote.CopyToPango(ctx, append(ancestors, o), &remote_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -467,7 +547,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 
 	return diags
 }
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -476,7 +556,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLo
 
 	return diags
 }
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -485,7 +565,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPa
 
 	return diags
 }
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistrationRemote, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTaggingRegistrationRemote, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	httpProfile_value := o.HttpProfile.ValueStringPointer()
 
@@ -497,15 +577,19 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRe
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *logforwarding.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var matchList_list types.List
 	{
 		var matchList_tf_entries []LogForwardingProfileDataSourceMatchListObject
 		for _, elt := range obj.MatchList {
-			var entry LogForwardingProfileDataSourceMatchListObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogForwardingProfileDataSourceMatchListObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			matchList_tf_entries = append(matchList_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -535,39 +619,55 @@ func (o *LogForwardingProfileDataSourceModel) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var sendSnmptrap_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendSnmptrap_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendSnmptrap)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sendEmail_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendEmail_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendEmail)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sendSyslog_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendSyslog_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendSyslog)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sendHttp_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendHttp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendHttp)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var actions_list types.List
 	{
 		var actions_tf_entries []LogForwardingProfileDataSourceMatchListActionsObject
 		for _, elt := range obj.Actions {
-			var entry LogForwardingProfileDataSourceMatchListActionsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogForwardingProfileDataSourceMatchListActionsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			actions_tf_entries = append(actions_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -611,13 +711,12 @@ func (o *LogForwardingProfileDataSourceMatchListObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListActionsObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_object *LogForwardingProfileDataSourceMatchListActionsTypeObject
 	if obj.Type != nil {
 		type_object = new(LogForwardingProfileDataSourceMatchListActionsTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -629,13 +728,12 @@ func (o *LogForwardingProfileDataSourceMatchListActionsObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var integration_object *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject
 	if obj.Integration != nil {
 		integration_object = new(LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject)
-
-		diags.Append(integration_object.CopyFromPango(ctx, obj.Integration, encrypted)...)
+		diags.Append(integration_object.CopyFromPango(ctx, append(ancestors, o), obj.Integration, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -643,8 +741,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) CopyFromPango
 	var tagging_object *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject
 	if obj.Tagging != nil {
 		tagging_object = new(LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject)
-
-		diags.Append(tagging_object.CopyFromPango(ctx, obj.Tagging, encrypted)...)
+		diags.Append(tagging_object.CopyFromPango(ctx, append(ancestors, o), obj.Tagging, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -656,7 +753,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeObject) CopyFromPango
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeIntegration, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeIntegration, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -668,19 +765,21 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeIntegrationObject) Co
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTagging, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTagging, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tags_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var registration_object *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject
 	if obj.Registration != nil {
 		registration_object = new(LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject)
-
-		diags.Append(registration_object.CopyFromPango(ctx, obj.Registration, encrypted)...)
+		diags.Append(registration_object.CopyFromPango(ctx, append(ancestors, o), obj.Registration, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -707,13 +806,12 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingObject) CopyFr
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistration, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTaggingRegistration, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localhost_object *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject
 	if obj.Localhost != nil {
 		localhost_object = new(LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject)
-
-		diags.Append(localhost_object.CopyFromPango(ctx, obj.Localhost, encrypted)...)
+		diags.Append(localhost_object.CopyFromPango(ctx, append(ancestors, o), obj.Localhost, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -721,8 +819,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 	var panorama_object *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject
 	if obj.Panorama != nil {
 		panorama_object = new(LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject)
-
-		diags.Append(panorama_object.CopyFromPango(ctx, obj.Panorama, encrypted)...)
+		diags.Append(panorama_object.CopyFromPango(ctx, append(ancestors, o), obj.Panorama, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -730,8 +827,7 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 	var remote_object *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject
 	if obj.Remote != nil {
 		remote_object = new(LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject)
-
-		diags.Append(remote_object.CopyFromPango(ctx, obj.Remote, encrypted)...)
+		diags.Append(remote_object.CopyFromPango(ctx, append(ancestors, o), obj.Remote, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -744,19 +840,19 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationOb
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationRemote, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRemoteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTaggingRegistrationRemote, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var httpProfile_value types.String
@@ -766,6 +862,11 @@ func (o *LogForwardingProfileDataSourceMatchListActionsTypeTaggingRegistrationRe
 	o.HttpProfile = httpProfile_value
 
 	return diags
+}
+
+func (o *LogForwardingProfileDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func LogForwardingProfileDataSourceSchema() dsschema.Schema {
@@ -1324,13 +1425,20 @@ func (d *LogForwardingProfileDataSource) Configure(_ context.Context, req dataso
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, logforwarding.NewService(d.client), batchSize, specifier, logforwarding.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*logforwarding.Entry, logforwarding.Location, *logforwarding.Service](d.client, logforwarding.NewService(d.client), batchSize, specifier, logforwarding.SpecMatches)
 }
 func (o *LogForwardingProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state LogForwardingProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1371,8 +1479,12 @@ func (o *LogForwardingProfileDataSource) Read(ctx context.Context, req datasourc
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -1382,7 +1494,7 @@ func (o *LogForwardingProfileDataSource) Read(ctx context.Context, req datasourc
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -2044,7 +2156,7 @@ func (r *LogForwardingProfileResource) Configure(ctx context.Context, req resour
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, logforwarding.NewService(r.client), batchSize, specifier, logforwarding.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*logforwarding.Entry, logforwarding.Location, *logforwarding.Service](r.client, logforwarding.NewService(r.client), batchSize, specifier, logforwarding.SpecMatches)
 }
 
 func (o *LogForwardingProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -2062,6 +2174,14 @@ func (o *LogForwardingProfileResourceModel) AttributeTypes() map[string]attr.Typ
 		"match_list":                   types.ListType{},
 	}
 }
+
+func (o LogForwardingProfileResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o LogForwardingProfileResourceModel) EntryName() *string {
+	return nil
+}
 func (o *LogForwardingProfileResourceMatchListObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2078,6 +2198,14 @@ func (o *LogForwardingProfileResourceMatchListObject) AttributeTypes() map[strin
 		"actions":          types.ListType{},
 	}
 }
+
+func (o LogForwardingProfileResourceMatchListObject) AncestorName() string {
+	return "match-list"
+}
+
+func (o LogForwardingProfileResourceMatchListObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LogForwardingProfileResourceMatchListActionsObject) AttributeTypes() map[string]attr.Type {
 
 	var typeObj *LogForwardingProfileResourceMatchListActionsTypeObject
@@ -2087,6 +2215,14 @@ func (o *LogForwardingProfileResourceMatchListActionsObject) AttributeTypes() ma
 			AttrTypes: typeObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o LogForwardingProfileResourceMatchListActionsObject) AncestorName() string {
+	return "actions"
+}
+
+func (o LogForwardingProfileResourceMatchListActionsObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LogForwardingProfileResourceMatchListActionsTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -2102,11 +2238,27 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeObject) AttributeTypes(
 		},
 	}
 }
+
+func (o LogForwardingProfileResourceMatchListActionsTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeObject) EntryName() *string {
+	return nil
+}
 func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"action": types.StringType,
 	}
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) AncestorName() string {
+	return "integration"
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) EntryName() *string {
+	return nil
 }
 func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) AttributeTypes() map[string]attr.Type {
 
@@ -2121,6 +2273,14 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) Attribut
 		},
 		"tags": types.ListType{},
 	}
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingObject) AncestorName() string {
+	return "tagging"
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingObject) EntryName() *string {
+	return nil
 }
 func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) AttributeTypes() map[string]attr.Type {
 
@@ -2141,11 +2301,35 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 		},
 	}
 }
+
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) AncestorName() string {
+	return "registration"
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) EntryName() *string {
+	return nil
+}
 func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject) AncestorName() string {
+	return "localhost"
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject) EntryName() *string {
+	return nil
+}
 func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) AncestorName() string {
+	return "panorama"
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) EntryName() *string {
+	return nil
 }
 func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject) AttributeTypes() map[string]attr.Type {
 
@@ -2154,7 +2338,15 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemo
 	}
 }
 
-func (o *LogForwardingProfileResourceModel) CopyToPango(ctx context.Context, obj **logforwarding.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject) AncestorName() string {
+	return "remote"
+}
+
+func (o LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject) EntryName() *string {
+	return nil
+}
+
+func (o *LogForwardingProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -2169,7 +2361,7 @@ func (o *LogForwardingProfileResourceModel) CopyToPango(ctx context.Context, obj
 		}
 		for _, elt := range matchList_tf_entries {
 			var entry *logforwarding.MatchList
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2188,7 +2380,7 @@ func (o *LogForwardingProfileResourceModel) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	actionDesc_value := o.ActionDesc.ValueStringPointer()
 	logType_value := o.LogType.ValueStringPointer()
@@ -2225,7 +2417,7 @@ func (o *LogForwardingProfileResourceMatchListObject) CopyToPango(ctx context.Co
 		}
 		for _, elt := range actions_tf_entries {
 			var entry *logforwarding.MatchListActions
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2250,7 +2442,7 @@ func (o *LogForwardingProfileResourceMatchListObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListActionsObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_entry *logforwarding.MatchListActionsType
 	if o.Type != nil {
@@ -2259,8 +2451,8 @@ func (o *LogForwardingProfileResourceMatchListActionsObject) CopyToPango(ctx con
 		} else {
 			type_entry = new(logforwarding.MatchListActionsType)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2274,7 +2466,7 @@ func (o *LogForwardingProfileResourceMatchListActionsObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var integration_entry *logforwarding.MatchListActionsTypeIntegration
 	if o.Integration != nil {
@@ -2283,8 +2475,8 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyToPango(ctx
 		} else {
 			integration_entry = new(logforwarding.MatchListActionsTypeIntegration)
 		}
-
-		diags.Append(o.Integration.CopyToPango(ctx, &integration_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Integration.CopyToPango(ctx, append(ancestors, o), &integration_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2296,8 +2488,8 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyToPango(ctx
 		} else {
 			tagging_entry = new(logforwarding.MatchListActionsTypeTagging)
 		}
-
-		diags.Append(o.Tagging.CopyToPango(ctx, &tagging_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tagging.CopyToPango(ctx, append(ancestors, o), &tagging_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2311,7 +2503,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeIntegration, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeIntegration, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 
@@ -2322,7 +2514,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) Copy
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTagging, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTagging, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	target_value := o.Target.ValueStringPointer()
 	action_value := o.Action.ValueStringPointer()
@@ -2334,8 +2526,8 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyToPa
 		} else {
 			registration_entry = new(logforwarding.MatchListActionsTypeTaggingRegistration)
 		}
-
-		diags.Append(o.Registration.CopyToPango(ctx, &registration_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Registration.CopyToPango(ctx, append(ancestors, o), &registration_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2357,7 +2549,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyToPa
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistration, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTaggingRegistration, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localhost_entry *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost
 	if o.Localhost != nil {
@@ -2366,8 +2558,8 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 		} else {
 			localhost_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost)
 		}
-
-		diags.Append(o.Localhost.CopyToPango(ctx, &localhost_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Localhost.CopyToPango(ctx, append(ancestors, o), &localhost_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2379,8 +2571,8 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 		} else {
 			panorama_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationPanorama)
 		}
-
-		diags.Append(o.Panorama.CopyToPango(ctx, &panorama_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Panorama.CopyToPango(ctx, append(ancestors, o), &panorama_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2392,8 +2584,8 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 		} else {
 			remote_entry = new(logforwarding.MatchListActionsTypeTaggingRegistrationRemote)
 		}
-
-		diags.Append(o.Remote.CopyToPango(ctx, &remote_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Remote.CopyToPango(ctx, append(ancestors, o), &remote_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2408,7 +2600,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2417,7 +2609,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLoca
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2426,7 +2618,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPano
 
 	return diags
 }
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject) CopyToPango(ctx context.Context, obj **logforwarding.MatchListActionsTypeTaggingRegistrationRemote, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **logforwarding.MatchListActionsTypeTaggingRegistrationRemote, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	httpProfile_value := o.HttpProfile.ValueStringPointer()
 
@@ -2438,15 +2630,19 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemo
 	return diags
 }
 
-func (o *LogForwardingProfileResourceModel) CopyFromPango(ctx context.Context, obj *logforwarding.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var matchList_list types.List
 	{
 		var matchList_tf_entries []LogForwardingProfileResourceMatchListObject
 		for _, elt := range obj.MatchList {
-			var entry LogForwardingProfileResourceMatchListObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogForwardingProfileResourceMatchListObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			matchList_tf_entries = append(matchList_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -2476,39 +2672,55 @@ func (o *LogForwardingProfileResourceModel) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *LogForwardingProfileResourceMatchListObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchList, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchList, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var sendSnmptrap_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendSnmptrap_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendSnmptrap)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sendEmail_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendEmail_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendEmail)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sendSyslog_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendSyslog_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendSyslog)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var sendHttp_list types.List
 	{
 		var list_diags diag.Diagnostics
 		sendHttp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.SendHttp)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var actions_list types.List
 	{
 		var actions_tf_entries []LogForwardingProfileResourceMatchListActionsObject
 		for _, elt := range obj.Actions {
-			var entry LogForwardingProfileResourceMatchListActionsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LogForwardingProfileResourceMatchListActionsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			actions_tf_entries = append(actions_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -2552,13 +2764,12 @@ func (o *LogForwardingProfileResourceMatchListObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LogForwardingProfileResourceMatchListActionsObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActions, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActions, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_object *LogForwardingProfileResourceMatchListActionsTypeObject
 	if obj.Type != nil {
 		type_object = new(LogForwardingProfileResourceMatchListActionsTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2570,13 +2781,12 @@ func (o *LogForwardingProfileResourceMatchListActionsObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var integration_object *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject
 	if obj.Integration != nil {
 		integration_object = new(LogForwardingProfileResourceMatchListActionsTypeIntegrationObject)
-
-		diags.Append(integration_object.CopyFromPango(ctx, obj.Integration, encrypted)...)
+		diags.Append(integration_object.CopyFromPango(ctx, append(ancestors, o), obj.Integration, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2584,8 +2794,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyFromPango(c
 	var tagging_object *LogForwardingProfileResourceMatchListActionsTypeTaggingObject
 	if obj.Tagging != nil {
 		tagging_object = new(LogForwardingProfileResourceMatchListActionsTypeTaggingObject)
-
-		diags.Append(tagging_object.CopyFromPango(ctx, obj.Tagging, encrypted)...)
+		diags.Append(tagging_object.CopyFromPango(ctx, append(ancestors, o), obj.Tagging, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2597,7 +2806,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeObject) CopyFromPango(c
 	return diags
 }
 
-func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeIntegration, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeIntegration, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2609,19 +2818,21 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeIntegrationObject) Copy
 	return diags
 }
 
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTagging, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTagging, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tags_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tags)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var registration_object *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject
 	if obj.Registration != nil {
 		registration_object = new(LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject)
-
-		diags.Append(registration_object.CopyFromPango(ctx, obj.Registration, encrypted)...)
+		diags.Append(registration_object.CopyFromPango(ctx, append(ancestors, o), obj.Registration, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2648,13 +2859,12 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingObject) CopyFrom
 	return diags
 }
 
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistration, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTaggingRegistration, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localhost_object *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject
 	if obj.Localhost != nil {
 		localhost_object = new(LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject)
-
-		diags.Append(localhost_object.CopyFromPango(ctx, obj.Localhost, encrypted)...)
+		diags.Append(localhost_object.CopyFromPango(ctx, append(ancestors, o), obj.Localhost, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2662,8 +2872,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 	var panorama_object *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject
 	if obj.Panorama != nil {
 		panorama_object = new(LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject)
-
-		diags.Append(panorama_object.CopyFromPango(ctx, obj.Panorama, encrypted)...)
+		diags.Append(panorama_object.CopyFromPango(ctx, append(ancestors, o), obj.Panorama, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2671,8 +2880,7 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 	var remote_object *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject
 	if obj.Remote != nil {
 		remote_object = new(LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject)
-
-		diags.Append(remote_object.CopyFromPango(ctx, obj.Remote, encrypted)...)
+		diags.Append(remote_object.CopyFromPango(ctx, append(ancestors, o), obj.Remote, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2685,19 +2893,19 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationObje
 	return diags
 }
 
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationLocalhostObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTaggingRegistrationLocalhost, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationPanoramaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTaggingRegistrationPanorama, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject) CopyFromPango(ctx context.Context, obj *logforwarding.MatchListActionsTypeTaggingRegistrationRemote, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemoteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *logforwarding.MatchListActionsTypeTaggingRegistrationRemote, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var httpProfile_value types.String
@@ -2707,6 +2915,11 @@ func (o *LogForwardingProfileResourceMatchListActionsTypeTaggingRegistrationRemo
 	o.HttpProfile = httpProfile_value
 
 	return diags
+}
+
+func (o *LogForwardingProfileResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *LogForwardingProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -2726,6 +2939,13 @@ func (r *LogForwardingProfileResource) Create(ctx context.Context, req resource.
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -2768,8 +2988,7 @@ func (r *LogForwardingProfileResource) Create(ctx context.Context, req resource.
 
 	// Load the desired config.
 	var obj *logforwarding.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -2781,17 +3000,29 @@ func (r *LogForwardingProfileResource) Create(ctx context.Context, req resource.
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -2801,6 +3032,17 @@ func (o *LogForwardingProfileResource) Read(ctx context.Context, req resource.Re
 	var savestate, state LogForwardingProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -2841,8 +3083,12 @@ func (o *LogForwardingProfileResource) Read(ctx context.Context, req resource.Re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -2852,7 +3098,7 @@ func (o *LogForwardingProfileResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -2862,6 +3108,13 @@ func (o *LogForwardingProfileResource) Read(ctx context.Context, req resource.Re
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -2873,6 +3126,17 @@ func (r *LogForwardingProfileResource) Update(ctx context.Context, req resource.
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -2917,19 +3181,31 @@ func (r *LogForwardingProfileResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -2943,11 +3219,18 @@ func (r *LogForwardingProfileResource) Update(ctx context.Context, req resource.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -3004,9 +3287,15 @@ func (r *LogForwardingProfileResource) Delete(ctx context.Context, req resource.
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

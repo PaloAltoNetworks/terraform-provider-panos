@@ -109,7 +109,7 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 				Description: ProviderParamDescription(
 					"The hostname or IP address of the PAN-OS instance (NGFW or Panorama).",
 					"",
-					"PANOS_HOST",
+					"PANOS_HOSTNAME",
 					"hostname",
 				),
 				Optional: true,
@@ -305,7 +305,7 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 
 	resp.DataSourceData = providerData
 	resp.ResourceData = providerData
-	resp.EphemeralResourceData = con
+	resp.EphemeralResourceData = providerData
 
 	// Done.
 	tflog.Info(ctx, "Configured client", map[string]any{"success": true})
@@ -315,8 +315,10 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewAdminRoleDataSource,
+		NewCertificateDataSource,
 		NewDnsSettingsDataSource,
 		NewDynamicUpdatesDataSource,
+		NewGeneralSettingsDataSource,
 		NewNtpSettingsDataSource,
 		NewLdapProfileDataSource,
 		NewSslDecryptDataSource,
@@ -329,7 +331,13 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewLogicalRouterDataSource,
 		NewAntiSpywareSecurityProfileDataSource,
 		NewInterfaceManagementProfileDataSource,
+		NewAggregateLayer3SubinterfaceDataSource,
+		NewEthernetLayer3SubinterfaceDataSource,
 		NewIpsecTunnelDataSource,
+		NewVirtualRouterStaticRouteIpv4DataSource,
+		NewVirtualRouterStaticRoutesIpv4DataSource,
+		NewVirtualRouterStaticRouteIpv6DataSource,
+		NewVirtualRouterStaticRoutesIpv6DataSource,
 		NewVirtualRouterDataSource,
 		NewZoneDataSource,
 		NewAddressGroupDataSource,
@@ -373,6 +381,7 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewAdminRoleResource,
 		NewDnsSettingsResource,
 		NewDynamicUpdatesResource,
+		NewGeneralSettingsResource,
 		NewNtpSettingsResource,
 		NewLdapProfileResource,
 		NewSslDecryptResource,
@@ -385,7 +394,13 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewLogicalRouterResource,
 		NewAntiSpywareSecurityProfileResource,
 		NewInterfaceManagementProfileResource,
+		NewAggregateLayer3SubinterfaceResource,
+		NewEthernetLayer3SubinterfaceResource,
 		NewIpsecTunnelResource,
+		NewVirtualRouterStaticRouteIpv4Resource,
+		NewVirtualRouterStaticRoutesIpv4Resource,
+		NewVirtualRouterStaticRouteIpv6Resource,
+		NewVirtualRouterStaticRoutesIpv6Resource,
 		NewVirtualRouterResource,
 		NewZoneResource,
 		NewAddressGroupResource,
@@ -471,6 +486,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_aggregate_interface": resourceFuncs{
 		CreateImportId: AggregateInterfaceImportStateCreator,
 	},
+	"panos_aggregate_layer3_subinterface": resourceFuncs{
+		CreateImportId: AggregateLayer3SubinterfaceImportStateCreator,
+	},
 	"panos_anti_spyware_security_profile": resourceFuncs{
 		CreateImportId: AntiSpywareSecurityProfileImportStateCreator,
 	},
@@ -500,6 +518,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_ethernet_interface": resourceFuncs{
 		CreateImportId: EthernetInterfaceImportStateCreator,
+	},
+	"panos_ethernet_layer3_subinterface": resourceFuncs{
+		CreateImportId: EthernetLayer3SubinterfaceImportStateCreator,
 	},
 	"panos_external_dynamic_list": resourceFuncs{
 		CreateImportId: ExternalDynamicListImportStateCreator,
@@ -575,6 +596,18 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_virtual_router": resourceFuncs{
 		CreateImportId: VirtualRouterImportStateCreator,
+	},
+	"panos_virtual_router_static_route_ipv4": resourceFuncs{
+		CreateImportId: VirtualRouterStaticRouteIpv4ImportStateCreator,
+	},
+	"panos_virtual_router_static_route_ipv6": resourceFuncs{
+		CreateImportId: VirtualRouterStaticRouteIpv6ImportStateCreator,
+	},
+	"panos_virtual_router_static_routes_ipv4": resourceFuncs{
+		CreateImportId: VirtualRouterStaticRoutesIpv4ImportStateCreator,
+	},
+	"panos_virtual_router_static_routes_ipv6": resourceFuncs{
+		CreateImportId: VirtualRouterStaticRoutesIpv6ImportStateCreator,
 	},
 	"panos_vlan_interface": resourceFuncs{
 		CreateImportId: VlanInterfaceImportStateCreator,

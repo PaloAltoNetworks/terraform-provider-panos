@@ -69,8 +69,8 @@ type ZoneDataSourceDeviceAclObject struct {
 type ZoneDataSourceNetworkObject struct {
 	EnablePacketBufferProtection types.Bool                         `tfsdk:"enable_packet_buffer_protection"`
 	LogSetting                   types.String                       `tfsdk:"log_setting"`
-	ZoneProtectionProfile        types.String                       `tfsdk:"zone_protection_profile"`
 	NetInspection                types.Bool                         `tfsdk:"net_inspection"`
+	ZoneProtectionProfile        types.String                       `tfsdk:"zone_protection_profile"`
 	External                     types.List                         `tfsdk:"external"`
 	Layer2                       types.List                         `tfsdk:"layer2"`
 	Layer3                       types.List                         `tfsdk:"layer3"`
@@ -112,12 +112,28 @@ func (o *ZoneDataSourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o ZoneDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o ZoneDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *ZoneDataSourceDeviceAclObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"exclude_list": types.ListType{},
 		"include_list": types.ListType{},
 	}
+}
+
+func (o ZoneDataSourceDeviceAclObject) AncestorName() string {
+	return "device-acl"
+}
+
+func (o ZoneDataSourceDeviceAclObject) EntryName() *string {
+	return nil
 }
 func (o *ZoneDataSourceNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -126,8 +142,8 @@ func (o *ZoneDataSourceNetworkObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"enable_packet_buffer_protection": types.BoolType,
 		"log_setting":                     types.StringType,
-		"zone_protection_profile":         types.StringType,
 		"net_inspection":                  types.BoolType,
+		"zone_protection_profile":         types.StringType,
 		"external":                        types.ListType{},
 		"layer2":                          types.ListType{},
 		"layer3":                          types.ListType{},
@@ -138,8 +154,24 @@ func (o *ZoneDataSourceNetworkObject) AttributeTypes() map[string]attr.Type {
 		"virtual_wire": types.ListType{},
 	}
 }
+
+func (o ZoneDataSourceNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o ZoneDataSourceNetworkObject) EntryName() *string {
+	return nil
+}
 func (o *ZoneDataSourceNetworkTunnelObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ZoneDataSourceNetworkTunnelObject) AncestorName() string {
+	return "tunnel"
+}
+
+func (o ZoneDataSourceNetworkTunnelObject) EntryName() *string {
+	return nil
 }
 func (o *ZoneDataSourceUserAclObject) AttributeTypes() map[string]attr.Type {
 
@@ -149,7 +181,15 @@ func (o *ZoneDataSourceUserAclObject) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-func (o *ZoneDataSourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o ZoneDataSourceUserAclObject) AncestorName() string {
+	return "user-acl"
+}
+
+func (o ZoneDataSourceUserAclObject) EntryName() *string {
+	return nil
+}
+
+func (o *ZoneDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var deviceAcl_entry *zone.DeviceAcl
 	if o.DeviceAcl != nil {
@@ -158,8 +198,8 @@ func (o *ZoneDataSourceModel) CopyToPango(ctx context.Context, obj **zone.Entry,
 		} else {
 			deviceAcl_entry = new(zone.DeviceAcl)
 		}
-
-		diags.Append(o.DeviceAcl.CopyToPango(ctx, &deviceAcl_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.DeviceAcl.CopyToPango(ctx, ancestors, &deviceAcl_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -173,8 +213,8 @@ func (o *ZoneDataSourceModel) CopyToPango(ctx context.Context, obj **zone.Entry,
 		} else {
 			network_entry = new(zone.Network)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Network.CopyToPango(ctx, ancestors, &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -186,8 +226,8 @@ func (o *ZoneDataSourceModel) CopyToPango(ctx context.Context, obj **zone.Entry,
 		} else {
 			userAcl_entry = new(zone.UserAcl)
 		}
-
-		diags.Append(o.UserAcl.CopyToPango(ctx, &userAcl_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.UserAcl.CopyToPango(ctx, ancestors, &userAcl_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -205,7 +245,7 @@ func (o *ZoneDataSourceModel) CopyToPango(ctx context.Context, obj **zone.Entry,
 
 	return diags
 }
-func (o *ZoneDataSourceDeviceAclObject) CopyToPango(ctx context.Context, obj **zone.DeviceAcl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneDataSourceDeviceAclObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.DeviceAcl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	excludeList_pango_entries := make([]string, 0)
 	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
@@ -226,12 +266,12 @@ func (o *ZoneDataSourceDeviceAclObject) CopyToPango(ctx context.Context, obj **z
 
 	return diags
 }
-func (o *ZoneDataSourceNetworkObject) CopyToPango(ctx context.Context, obj **zone.Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneDataSourceNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enablePacketBufferProtection_value := o.EnablePacketBufferProtection.ValueBoolPointer()
 	logSetting_value := o.LogSetting.ValueStringPointer()
-	zoneProtectionProfile_value := o.ZoneProtectionProfile.ValueStringPointer()
 	netInspection_value := o.NetInspection.ValueBoolPointer()
+	zoneProtectionProfile_value := o.ZoneProtectionProfile.ValueStringPointer()
 	external_pango_entries := make([]string, 0)
 	diags.Append(o.External.ElementsAs(ctx, &external_pango_entries, false)...)
 	if diags.HasError() {
@@ -259,8 +299,8 @@ func (o *ZoneDataSourceNetworkObject) CopyToPango(ctx context.Context, obj **zon
 		} else {
 			tunnel_entry = new(zone.NetworkTunnel)
 		}
-
-		diags.Append(o.Tunnel.CopyToPango(ctx, &tunnel_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tunnel.CopyToPango(ctx, append(ancestors, o), &tunnel_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -276,8 +316,8 @@ func (o *ZoneDataSourceNetworkObject) CopyToPango(ctx context.Context, obj **zon
 	}
 	(*obj).EnablePacketBufferProtection = enablePacketBufferProtection_value
 	(*obj).LogSetting = logSetting_value
-	(*obj).ZoneProtectionProfile = zoneProtectionProfile_value
 	(*obj).NetInspection = netInspection_value
+	(*obj).ZoneProtectionProfile = zoneProtectionProfile_value
 	(*obj).External = external_pango_entries
 	(*obj).Layer2 = layer2_pango_entries
 	(*obj).Layer3 = layer3_pango_entries
@@ -287,7 +327,7 @@ func (o *ZoneDataSourceNetworkObject) CopyToPango(ctx context.Context, obj **zon
 
 	return diags
 }
-func (o *ZoneDataSourceNetworkTunnelObject) CopyToPango(ctx context.Context, obj **zone.NetworkTunnel, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneDataSourceNetworkTunnelObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.NetworkTunnel, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -296,7 +336,7 @@ func (o *ZoneDataSourceNetworkTunnelObject) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *ZoneDataSourceUserAclObject) CopyToPango(ctx context.Context, obj **zone.UserAcl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneDataSourceUserAclObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.UserAcl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	excludeList_pango_entries := make([]string, 0)
 	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
@@ -318,13 +358,12 @@ func (o *ZoneDataSourceUserAclObject) CopyToPango(ctx context.Context, obj **zon
 	return diags
 }
 
-func (o *ZoneDataSourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var deviceAcl_object *ZoneDataSourceDeviceAclObject
 	if obj.DeviceAcl != nil {
 		deviceAcl_object = new(ZoneDataSourceDeviceAclObject)
-
-		diags.Append(deviceAcl_object.CopyFromPango(ctx, obj.DeviceAcl, encrypted)...)
+		diags.Append(deviceAcl_object.CopyFromPango(ctx, ancestors, obj.DeviceAcl, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -332,8 +371,7 @@ func (o *ZoneDataSourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry
 	var network_object *ZoneDataSourceNetworkObject
 	if obj.Network != nil {
 		network_object = new(ZoneDataSourceNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, ancestors, obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -341,8 +379,7 @@ func (o *ZoneDataSourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry
 	var userAcl_object *ZoneDataSourceUserAclObject
 	if obj.UserAcl != nil {
 		userAcl_object = new(ZoneDataSourceUserAclObject)
-
-		diags.Append(userAcl_object.CopyFromPango(ctx, obj.UserAcl, encrypted)...)
+		diags.Append(userAcl_object.CopyFromPango(ctx, ancestors, obj.UserAcl, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -366,19 +403,25 @@ func (o *ZoneDataSourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry
 	return diags
 }
 
-func (o *ZoneDataSourceDeviceAclObject) CopyFromPango(ctx context.Context, obj *zone.DeviceAcl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneDataSourceDeviceAclObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.DeviceAcl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var excludeList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		excludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExcludeList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var includeList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		includeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.IncludeList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.ExcludeList = excludeList_list
@@ -387,43 +430,57 @@ func (o *ZoneDataSourceDeviceAclObject) CopyFromPango(ctx context.Context, obj *
 	return diags
 }
 
-func (o *ZoneDataSourceNetworkObject) CopyFromPango(ctx context.Context, obj *zone.Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneDataSourceNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var external_list types.List
 	{
 		var list_diags diag.Diagnostics
 		external_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.External)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var layer2_list types.List
 	{
 		var list_diags diag.Diagnostics
 		layer2_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Layer2)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var layer3_list types.List
 	{
 		var list_diags diag.Diagnostics
 		layer3_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Layer3)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var tap_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tap_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tap)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var virtualWire_list types.List
 	{
 		var list_diags diag.Diagnostics
 		virtualWire_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.VirtualWire)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var tunnel_object *ZoneDataSourceNetworkTunnelObject
 	if obj.Tunnel != nil {
 		tunnel_object = new(ZoneDataSourceNetworkTunnelObject)
-
-		diags.Append(tunnel_object.CopyFromPango(ctx, obj.Tunnel, encrypted)...)
+		diags.Append(tunnel_object.CopyFromPango(ctx, append(ancestors, o), obj.Tunnel, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -437,18 +494,18 @@ func (o *ZoneDataSourceNetworkObject) CopyFromPango(ctx context.Context, obj *zo
 	if obj.LogSetting != nil {
 		logSetting_value = types.StringValue(*obj.LogSetting)
 	}
-	var zoneProtectionProfile_value types.String
-	if obj.ZoneProtectionProfile != nil {
-		zoneProtectionProfile_value = types.StringValue(*obj.ZoneProtectionProfile)
-	}
 	var netInspection_value types.Bool
 	if obj.NetInspection != nil {
 		netInspection_value = types.BoolValue(*obj.NetInspection)
 	}
+	var zoneProtectionProfile_value types.String
+	if obj.ZoneProtectionProfile != nil {
+		zoneProtectionProfile_value = types.StringValue(*obj.ZoneProtectionProfile)
+	}
 	o.EnablePacketBufferProtection = enablePacketBufferProtection_value
 	o.LogSetting = logSetting_value
-	o.ZoneProtectionProfile = zoneProtectionProfile_value
 	o.NetInspection = netInspection_value
+	o.ZoneProtectionProfile = zoneProtectionProfile_value
 	o.External = external_list
 	o.Layer2 = layer2_list
 	o.Layer3 = layer3_list
@@ -459,31 +516,42 @@ func (o *ZoneDataSourceNetworkObject) CopyFromPango(ctx context.Context, obj *zo
 	return diags
 }
 
-func (o *ZoneDataSourceNetworkTunnelObject) CopyFromPango(ctx context.Context, obj *zone.NetworkTunnel, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneDataSourceNetworkTunnelObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.NetworkTunnel, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ZoneDataSourceUserAclObject) CopyFromPango(ctx context.Context, obj *zone.UserAcl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneDataSourceUserAclObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.UserAcl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var excludeList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		excludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExcludeList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var includeList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		includeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.IncludeList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.ExcludeList = excludeList_list
 	o.IncludeList = includeList_list
 
 	return diags
+}
+
+func (o *ZoneDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func ZoneDataSourceSchema() dsschema.Schema {
@@ -616,16 +684,16 @@ func ZoneDataSourceNetworkSchema() dsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"zone_protection_profile": dsschema.StringAttribute{
-				Description: "Zone protection profile",
+			"net_inspection": dsschema.BoolAttribute{
+				Description: "",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"net_inspection": dsschema.BoolAttribute{
-				Description: "",
+			"zone_protection_profile": dsschema.StringAttribute{
+				Description: "Zone protection profile",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -816,13 +884,20 @@ func (d *ZoneDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, zone.NewService(d.client), batchSize, specifier, zone.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*zone.Entry, zone.Location, *zone.Service](d.client, zone.NewService(d.client), batchSize, specifier, zone.SpecMatches)
 }
 func (o *ZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state ZoneDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -879,8 +954,12 @@ func (o *ZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -890,7 +969,7 @@ func (o *ZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -947,8 +1026,8 @@ type ZoneResourceDeviceAclObject struct {
 type ZoneResourceNetworkObject struct {
 	EnablePacketBufferProtection types.Bool                       `tfsdk:"enable_packet_buffer_protection"`
 	LogSetting                   types.String                     `tfsdk:"log_setting"`
-	ZoneProtectionProfile        types.String                     `tfsdk:"zone_protection_profile"`
 	NetInspection                types.Bool                       `tfsdk:"net_inspection"`
+	ZoneProtectionProfile        types.String                     `tfsdk:"zone_protection_profile"`
 	External                     types.List                       `tfsdk:"external"`
 	Layer2                       types.List                       `tfsdk:"layer2"`
 	Layer3                       types.List                       `tfsdk:"layer3"`
@@ -1098,16 +1177,16 @@ func ZoneResourceNetworkSchema() rsschema.SingleNestedAttribute {
 				Sensitive:   false,
 			},
 
-			"zone_protection_profile": rsschema.StringAttribute{
-				Description: "Zone protection profile",
+			"net_inspection": rsschema.BoolAttribute{
+				Description: "",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
 				Sensitive:   false,
 			},
 
-			"net_inspection": rsschema.BoolAttribute{
-				Description: "",
+			"zone_protection_profile": rsschema.StringAttribute{
+				Description: "Zone protection profile",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -1305,7 +1384,7 @@ func (r *ZoneResource) Configure(ctx context.Context, req resource.ConfigureRequ
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, zone.NewService(r.client), batchSize, specifier, zone.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*zone.Entry, zone.Location, *zone.Service](r.client, zone.NewService(r.client), batchSize, specifier, zone.SpecMatches)
 }
 
 func (o *ZoneResourceModel) AttributeTypes() map[string]attr.Type {
@@ -1335,12 +1414,28 @@ func (o *ZoneResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o ZoneResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o ZoneResourceModel) EntryName() *string {
+	return nil
+}
 func (o *ZoneResourceDeviceAclObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"exclude_list": types.ListType{},
 		"include_list": types.ListType{},
 	}
+}
+
+func (o ZoneResourceDeviceAclObject) AncestorName() string {
+	return "device-acl"
+}
+
+func (o ZoneResourceDeviceAclObject) EntryName() *string {
+	return nil
 }
 func (o *ZoneResourceNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -1349,8 +1444,8 @@ func (o *ZoneResourceNetworkObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"enable_packet_buffer_protection": types.BoolType,
 		"log_setting":                     types.StringType,
-		"zone_protection_profile":         types.StringType,
 		"net_inspection":                  types.BoolType,
+		"zone_protection_profile":         types.StringType,
 		"external":                        types.ListType{},
 		"layer2":                          types.ListType{},
 		"layer3":                          types.ListType{},
@@ -1361,8 +1456,24 @@ func (o *ZoneResourceNetworkObject) AttributeTypes() map[string]attr.Type {
 		"virtual_wire": types.ListType{},
 	}
 }
+
+func (o ZoneResourceNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o ZoneResourceNetworkObject) EntryName() *string {
+	return nil
+}
 func (o *ZoneResourceNetworkTunnelObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o ZoneResourceNetworkTunnelObject) AncestorName() string {
+	return "tunnel"
+}
+
+func (o ZoneResourceNetworkTunnelObject) EntryName() *string {
+	return nil
 }
 func (o *ZoneResourceUserAclObject) AttributeTypes() map[string]attr.Type {
 
@@ -1372,7 +1483,15 @@ func (o *ZoneResourceUserAclObject) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-func (o *ZoneResourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o ZoneResourceUserAclObject) AncestorName() string {
+	return "user-acl"
+}
+
+func (o ZoneResourceUserAclObject) EntryName() *string {
+	return nil
+}
+
+func (o *ZoneResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var deviceAcl_entry *zone.DeviceAcl
 	if o.DeviceAcl != nil {
@@ -1381,8 +1500,8 @@ func (o *ZoneResourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, e
 		} else {
 			deviceAcl_entry = new(zone.DeviceAcl)
 		}
-
-		diags.Append(o.DeviceAcl.CopyToPango(ctx, &deviceAcl_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.DeviceAcl.CopyToPango(ctx, ancestors, &deviceAcl_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1396,8 +1515,8 @@ func (o *ZoneResourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, e
 		} else {
 			network_entry = new(zone.Network)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Network.CopyToPango(ctx, ancestors, &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1409,8 +1528,8 @@ func (o *ZoneResourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, e
 		} else {
 			userAcl_entry = new(zone.UserAcl)
 		}
-
-		diags.Append(o.UserAcl.CopyToPango(ctx, &userAcl_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.UserAcl.CopyToPango(ctx, ancestors, &userAcl_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1428,7 +1547,7 @@ func (o *ZoneResourceModel) CopyToPango(ctx context.Context, obj **zone.Entry, e
 
 	return diags
 }
-func (o *ZoneResourceDeviceAclObject) CopyToPango(ctx context.Context, obj **zone.DeviceAcl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneResourceDeviceAclObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.DeviceAcl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	excludeList_pango_entries := make([]string, 0)
 	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
@@ -1449,12 +1568,12 @@ func (o *ZoneResourceDeviceAclObject) CopyToPango(ctx context.Context, obj **zon
 
 	return diags
 }
-func (o *ZoneResourceNetworkObject) CopyToPango(ctx context.Context, obj **zone.Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneResourceNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enablePacketBufferProtection_value := o.EnablePacketBufferProtection.ValueBoolPointer()
 	logSetting_value := o.LogSetting.ValueStringPointer()
-	zoneProtectionProfile_value := o.ZoneProtectionProfile.ValueStringPointer()
 	netInspection_value := o.NetInspection.ValueBoolPointer()
+	zoneProtectionProfile_value := o.ZoneProtectionProfile.ValueStringPointer()
 	external_pango_entries := make([]string, 0)
 	diags.Append(o.External.ElementsAs(ctx, &external_pango_entries, false)...)
 	if diags.HasError() {
@@ -1482,8 +1601,8 @@ func (o *ZoneResourceNetworkObject) CopyToPango(ctx context.Context, obj **zone.
 		} else {
 			tunnel_entry = new(zone.NetworkTunnel)
 		}
-
-		diags.Append(o.Tunnel.CopyToPango(ctx, &tunnel_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tunnel.CopyToPango(ctx, append(ancestors, o), &tunnel_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1499,8 +1618,8 @@ func (o *ZoneResourceNetworkObject) CopyToPango(ctx context.Context, obj **zone.
 	}
 	(*obj).EnablePacketBufferProtection = enablePacketBufferProtection_value
 	(*obj).LogSetting = logSetting_value
-	(*obj).ZoneProtectionProfile = zoneProtectionProfile_value
 	(*obj).NetInspection = netInspection_value
+	(*obj).ZoneProtectionProfile = zoneProtectionProfile_value
 	(*obj).External = external_pango_entries
 	(*obj).Layer2 = layer2_pango_entries
 	(*obj).Layer3 = layer3_pango_entries
@@ -1510,7 +1629,7 @@ func (o *ZoneResourceNetworkObject) CopyToPango(ctx context.Context, obj **zone.
 
 	return diags
 }
-func (o *ZoneResourceNetworkTunnelObject) CopyToPango(ctx context.Context, obj **zone.NetworkTunnel, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneResourceNetworkTunnelObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.NetworkTunnel, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1519,7 +1638,7 @@ func (o *ZoneResourceNetworkTunnelObject) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *ZoneResourceUserAclObject) CopyToPango(ctx context.Context, obj **zone.UserAcl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneResourceUserAclObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **zone.UserAcl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	excludeList_pango_entries := make([]string, 0)
 	diags.Append(o.ExcludeList.ElementsAs(ctx, &excludeList_pango_entries, false)...)
@@ -1541,13 +1660,12 @@ func (o *ZoneResourceUserAclObject) CopyToPango(ctx context.Context, obj **zone.
 	return diags
 }
 
-func (o *ZoneResourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var deviceAcl_object *ZoneResourceDeviceAclObject
 	if obj.DeviceAcl != nil {
 		deviceAcl_object = new(ZoneResourceDeviceAclObject)
-
-		diags.Append(deviceAcl_object.CopyFromPango(ctx, obj.DeviceAcl, encrypted)...)
+		diags.Append(deviceAcl_object.CopyFromPango(ctx, ancestors, obj.DeviceAcl, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1555,8 +1673,7 @@ func (o *ZoneResourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry, 
 	var network_object *ZoneResourceNetworkObject
 	if obj.Network != nil {
 		network_object = new(ZoneResourceNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, ancestors, obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1564,8 +1681,7 @@ func (o *ZoneResourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry, 
 	var userAcl_object *ZoneResourceUserAclObject
 	if obj.UserAcl != nil {
 		userAcl_object = new(ZoneResourceUserAclObject)
-
-		diags.Append(userAcl_object.CopyFromPango(ctx, obj.UserAcl, encrypted)...)
+		diags.Append(userAcl_object.CopyFromPango(ctx, ancestors, obj.UserAcl, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1589,19 +1705,25 @@ func (o *ZoneResourceModel) CopyFromPango(ctx context.Context, obj *zone.Entry, 
 	return diags
 }
 
-func (o *ZoneResourceDeviceAclObject) CopyFromPango(ctx context.Context, obj *zone.DeviceAcl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneResourceDeviceAclObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.DeviceAcl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var excludeList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		excludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExcludeList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var includeList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		includeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.IncludeList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.ExcludeList = excludeList_list
@@ -1610,43 +1732,57 @@ func (o *ZoneResourceDeviceAclObject) CopyFromPango(ctx context.Context, obj *zo
 	return diags
 }
 
-func (o *ZoneResourceNetworkObject) CopyFromPango(ctx context.Context, obj *zone.Network, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneResourceNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.Network, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var external_list types.List
 	{
 		var list_diags diag.Diagnostics
 		external_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.External)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var layer2_list types.List
 	{
 		var list_diags diag.Diagnostics
 		layer2_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Layer2)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var layer3_list types.List
 	{
 		var list_diags diag.Diagnostics
 		layer3_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Layer3)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var tap_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tap_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tap)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var virtualWire_list types.List
 	{
 		var list_diags diag.Diagnostics
 		virtualWire_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.VirtualWire)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var tunnel_object *ZoneResourceNetworkTunnelObject
 	if obj.Tunnel != nil {
 		tunnel_object = new(ZoneResourceNetworkTunnelObject)
-
-		diags.Append(tunnel_object.CopyFromPango(ctx, obj.Tunnel, encrypted)...)
+		diags.Append(tunnel_object.CopyFromPango(ctx, append(ancestors, o), obj.Tunnel, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1660,18 +1796,18 @@ func (o *ZoneResourceNetworkObject) CopyFromPango(ctx context.Context, obj *zone
 	if obj.LogSetting != nil {
 		logSetting_value = types.StringValue(*obj.LogSetting)
 	}
-	var zoneProtectionProfile_value types.String
-	if obj.ZoneProtectionProfile != nil {
-		zoneProtectionProfile_value = types.StringValue(*obj.ZoneProtectionProfile)
-	}
 	var netInspection_value types.Bool
 	if obj.NetInspection != nil {
 		netInspection_value = types.BoolValue(*obj.NetInspection)
 	}
+	var zoneProtectionProfile_value types.String
+	if obj.ZoneProtectionProfile != nil {
+		zoneProtectionProfile_value = types.StringValue(*obj.ZoneProtectionProfile)
+	}
 	o.EnablePacketBufferProtection = enablePacketBufferProtection_value
 	o.LogSetting = logSetting_value
-	o.ZoneProtectionProfile = zoneProtectionProfile_value
 	o.NetInspection = netInspection_value
+	o.ZoneProtectionProfile = zoneProtectionProfile_value
 	o.External = external_list
 	o.Layer2 = layer2_list
 	o.Layer3 = layer3_list
@@ -1682,31 +1818,42 @@ func (o *ZoneResourceNetworkObject) CopyFromPango(ctx context.Context, obj *zone
 	return diags
 }
 
-func (o *ZoneResourceNetworkTunnelObject) CopyFromPango(ctx context.Context, obj *zone.NetworkTunnel, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneResourceNetworkTunnelObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.NetworkTunnel, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *ZoneResourceUserAclObject) CopyFromPango(ctx context.Context, obj *zone.UserAcl, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ZoneResourceUserAclObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *zone.UserAcl, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var excludeList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		excludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.ExcludeList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var includeList_list types.List
 	{
 		var list_diags diag.Diagnostics
 		includeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.IncludeList)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.ExcludeList = excludeList_list
 	o.IncludeList = includeList_list
 
 	return diags
+}
+
+func (o *ZoneResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *ZoneResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -1726,6 +1873,13 @@ func (r *ZoneResource) Create(ctx context.Context, req resource.CreateRequest, r
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1784,8 +1938,7 @@ func (r *ZoneResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// Load the desired config.
 	var obj *zone.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1797,17 +1950,29 @@ func (r *ZoneResource) Create(ctx context.Context, req resource.CreateRequest, r
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1817,6 +1982,17 @@ func (o *ZoneResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	var savestate, state ZoneResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1873,8 +2049,12 @@ func (o *ZoneResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1884,7 +2064,7 @@ func (o *ZoneResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1894,6 +2074,13 @@ func (o *ZoneResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1905,6 +2092,17 @@ func (r *ZoneResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1965,19 +2163,31 @@ func (r *ZoneResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1991,11 +2201,18 @@ func (r *ZoneResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -2068,9 +2285,15 @@ func (r *ZoneResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

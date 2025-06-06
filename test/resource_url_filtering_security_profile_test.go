@@ -2,7 +2,6 @@ package provider_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -15,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -26,7 +24,6 @@ func TestAccUrlFilteringSecurityProfile(t *testing.T) {
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccUrlFilteringSecurityProfileDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: urlFilteringSecurityProfile1Tmpl,
@@ -291,37 +288,5 @@ func (o *urlFilteringSecurityProfileExpectNoEntriesInLocation) CheckState(ctx co
 
 	if len(dangling) > 0 {
 		resp.Error = fmt.Errorf("delete of the resource didn't remove it from the server")
-	}
-}
-
-func testAccUrlFilteringSecurityProfileDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		service := urlfiltering.NewService(sdkClient)
-
-		location := urlfiltering.NewDeviceGroupLocation()
-		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg1", prefix)
-
-		ctx := context.TODO()
-		entries, err := service.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkerrors.IsObjectNotFound(err) {
-			return fmt.Errorf("failed to list existing entries via sdk: %w", err)
-		}
-
-		var leftEntries []string
-		for _, elt := range entries {
-			if strings.HasPrefix(elt.Name, prefix) {
-				leftEntries = append(leftEntries, elt.Name)
-			}
-		}
-
-		if len(leftEntries) > 0 {
-			err := fmt.Errorf("terraform failed to remove entries from the server")
-			delErr := service.Delete(ctx, *location, leftEntries...)
-			if delErr != nil {
-				return errors.Join(err, delErr)
-			}
-		}
-
-		return nil
 	}
 }

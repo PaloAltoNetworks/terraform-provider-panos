@@ -9,7 +9,6 @@ import (
 	"testing"
 	"text/template"
 
-	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/policies/rules/nat"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -18,7 +17,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -353,7 +351,6 @@ func TestAccNatPolicyExtended(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: natPolicyExtendedResource1Tmpl,
@@ -448,7 +445,6 @@ func TestAccNatPolicyExtended(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: natPolicyExtendedResource2Tmpl,
@@ -531,7 +527,6 @@ func TestAccNatPolicyExtended(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: natPolicyExtendedResource3Tmpl,
@@ -578,7 +573,6 @@ func TestAccNatPolicyExtended(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: natPolicyExtendedResource4Tmpl,
@@ -679,10 +673,8 @@ func TestAccPanosNatPolicyOrdering(t *testing.T) {
 		PreCheck: func() {
 			testAccPreCheck(t)
 			natPolicyPreCheck(prefix, sdkLocation)
-
 		},
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             natPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: makeNatPolicyConfig(prefix),
@@ -851,84 +843,5 @@ func natPolicyPreCheck(prefix string, location nat.Location) {
 		if err != nil {
 			panic(fmt.Sprintf("natPolicyPreCheck failed: %s", err))
 		}
-
 	}
-}
-
-func natPolicyCheckDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		service := nat.NewService(sdkClient)
-		ctx := context.TODO()
-
-		location := nat.NewDeviceGroupLocation()
-		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
-
-		rules, err := service.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkerrors.IsObjectNotFound(err) {
-			return err
-		}
-
-		var danglingNames []string
-		for _, elt := range rules {
-			if strings.HasPrefix(elt.Name, prefix) {
-				danglingNames = append(danglingNames, elt.Name)
-			}
-		}
-
-		if len(danglingNames) > 0 {
-			err := DanglingObjectsError
-			delErr := service.Delete(ctx, *location, danglingNames...)
-			if delErr != nil {
-				err = errors.Join(err, delErr)
-			}
-
-			return err
-		}
-
-		return nil
-	}
-}
-
-func init() {
-	resource.AddTestSweepers("pango_nat_policy", &resource.Sweeper{
-		Name: "pango_nat_policy",
-		F: func(typ string) error {
-			service := nat.NewService(sdkClient)
-
-			var deviceTyp deviceType
-			switch typ {
-			case "panorama":
-				deviceTyp = devicePanorama
-			case "firewall":
-				deviceTyp = deviceFirewall
-			default:
-				panic("invalid device type")
-			}
-
-			for _, rulebase := range []string{"pre-rulebase", "post-rulebase"} {
-				location, _ := natPolicyLocationByDeviceType(deviceTyp, rulebase)
-				ctx := context.TODO()
-				objects, err := service.List(ctx, location, "get", "", "")
-				if err != nil && !sdkerrors.IsObjectNotFound(err) {
-					return fmt.Errorf("Failed to list NAT rules during sweep: %w", err)
-				}
-
-				var names []string
-				for _, elt := range objects {
-					if strings.HasPrefix(elt.Name, "test-acc") {
-						names = append(names, elt.Name)
-					}
-				}
-
-				if len(names) > 0 {
-					err = service.Delete(ctx, location, names...)
-					if err != nil {
-						return fmt.Errorf("Failed to delete NAT rules during sweep: %w", err)
-					}
-				}
-			}
-
-			return nil
-		},
-	})
 }

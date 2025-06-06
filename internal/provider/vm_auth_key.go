@@ -117,6 +117,11 @@ func (r *VmAuthKeyResource) Configure(ctx context.Context, req ephemeral.Configu
 	r.client = providerData.Client
 }
 
+func (o *VmAuthKeyResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *VmAuthKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest, resp *ephemeral.OpenResponse) {
 
 	var data VmAuthKeyResourceModel

@@ -52,9 +52,8 @@ type NtpSettingsDataSourceFilter struct {
 }
 
 type NtpSettingsDataSourceModel struct {
-	Location        types.Object                           `tfsdk:"location"`
-	NtpServers      *NtpSettingsDataSourceNtpServersObject `tfsdk:"ntp_servers"`
-	EncryptedValues types.Map                              `tfsdk:"encrypted_values"`
+	Location   types.Object                           `tfsdk:"location"`
+	NtpServers *NtpSettingsDataSourceNtpServersObject `tfsdk:"ntp_servers"`
 }
 type NtpSettingsDataSourceNtpServersObject struct {
 	PrimaryNtpServer   *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject   `tfsdk:"primary_ntp_server"`
@@ -120,7 +119,6 @@ func (o *NtpSettingsDataSourceModel) AttributeTypes() map[string]attr.Type {
 	var locationObj NtpSettingsLocation
 
 	var ntpServersObj *NtpSettingsDataSourceNtpServersObject
-
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
@@ -128,8 +126,15 @@ func (o *NtpSettingsDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"ntp_servers": types.ObjectType{
 			AttrTypes: ntpServersObj.AttributeTypes(),
 		},
-		"encrypted_values": types.MapType{},
 	}
+}
+
+func (o NtpSettingsDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o NtpSettingsDataSourceModel) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsDataSourceNtpServersObject) AttributeTypes() map[string]attr.Type {
 
@@ -145,6 +150,14 @@ func (o *NtpSettingsDataSourceNtpServersObject) AttributeTypes() map[string]attr
 		},
 	}
 }
+
+func (o NtpSettingsDataSourceNtpServersObject) AncestorName() string {
+	return "ntp-servers"
+}
+
+func (o NtpSettingsDataSourceNtpServersObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) AttributeTypes() map[string]attr.Type {
 
 	var authenticationTypeObj *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
@@ -155,6 +168,14 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) AttributeTypes()
 		},
 		"ntp_server_address": types.StringType,
 	}
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) AncestorName() string {
+	return "primary-ntp-server"
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -175,11 +196,35 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 		},
 	}
 }
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject) AncestorName() string {
+	return "authentication-type"
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) AncestorName() string {
+	return "autokey"
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) AncestorName() string {
+	return "none"
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) AttributeTypes() map[string]attr.Type {
 
@@ -191,6 +236,14 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 		},
 		"key_id": types.Int64Type,
 	}
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) AncestorName() string {
+	return "symmetric-key"
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AttributeTypes() map[string]attr.Type {
 
@@ -206,17 +259,41 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 		},
 	}
 }
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AncestorName() string {
+	return "algorithm"
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"authentication_key": types.StringType,
 	}
 }
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AncestorName() string {
+	return "md5"
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"authentication_key": types.StringType,
 	}
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AncestorName() string {
+	return "sha1"
+}
+
+func (o NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) AttributeTypes() map[string]attr.Type {
 
@@ -228,6 +305,14 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) AttributeTypes
 		},
 		"ntp_server_address": types.StringType,
 	}
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) AncestorName() string {
+	return "secondary-ntp-server"
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -248,11 +333,35 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObje
 		},
 	}
 }
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject) AncestorName() string {
+	return "authentication-type"
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) AncestorName() string {
+	return "autokey"
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) AncestorName() string {
+	return "none"
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) AttributeTypes() map[string]attr.Type {
 
@@ -264,6 +373,14 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 		},
 		"key_id": types.Int64Type,
 	}
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) AncestorName() string {
+	return "symmetric-key"
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AttributeTypes() map[string]attr.Type {
 
@@ -279,11 +396,27 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 		},
 	}
 }
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AncestorName() string {
+	return "algorithm"
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"authentication_key": types.StringType,
 	}
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AncestorName() string {
+	return "md5"
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AttributeTypes() map[string]attr.Type {
 
@@ -292,7 +425,15 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 	}
 }
 
-func (o *NtpSettingsDataSourceModel) CopyToPango(ctx context.Context, obj **ntp.Config, encrypted *map[string]types.String) diag.Diagnostics {
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AncestorName() string {
+	return "sha1"
+}
+
+func (o NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) EntryName() *string {
+	return nil
+}
+
+func (o *NtpSettingsDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ntpServers_entry *ntp.NtpServers
 	if o.NtpServers != nil {
@@ -301,8 +442,8 @@ func (o *NtpSettingsDataSourceModel) CopyToPango(ctx context.Context, obj **ntp.
 		} else {
 			ntpServers_entry = new(ntp.NtpServers)
 		}
-
-		diags.Append(o.NtpServers.CopyToPango(ctx, &ntpServers_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.NtpServers.CopyToPango(ctx, ancestors, &ntpServers_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -315,7 +456,7 @@ func (o *NtpSettingsDataSourceModel) CopyToPango(ctx context.Context, obj **ntp.
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersObject) CopyToPango(ctx context.Context, obj **ntp.NtpServers, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServers, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var primaryNtpServer_entry *ntp.NtpServersPrimaryNtpServer
 	if o.PrimaryNtpServer != nil {
@@ -324,8 +465,8 @@ func (o *NtpSettingsDataSourceNtpServersObject) CopyToPango(ctx context.Context,
 		} else {
 			primaryNtpServer_entry = new(ntp.NtpServersPrimaryNtpServer)
 		}
-
-		diags.Append(o.PrimaryNtpServer.CopyToPango(ctx, &primaryNtpServer_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PrimaryNtpServer.CopyToPango(ctx, append(ancestors, o), &primaryNtpServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -337,8 +478,8 @@ func (o *NtpSettingsDataSourceNtpServersObject) CopyToPango(ctx context.Context,
 		} else {
 			secondaryNtpServer_entry = new(ntp.NtpServersSecondaryNtpServer)
 		}
-
-		diags.Append(o.SecondaryNtpServer.CopyToPango(ctx, &secondaryNtpServer_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SecondaryNtpServer.CopyToPango(ctx, append(ancestors, o), &secondaryNtpServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -352,7 +493,7 @@ func (o *NtpSettingsDataSourceNtpServersObject) CopyToPango(ctx context.Context,
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authenticationType_entry *ntp.NtpServersPrimaryNtpServerAuthenticationType
 	if o.AuthenticationType != nil {
@@ -361,8 +502,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) CopyToPango(ctx 
 		} else {
 			authenticationType_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationType)
 		}
-
-		diags.Append(o.AuthenticationType.CopyToPango(ctx, &authenticationType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AuthenticationType.CopyToPango(ctx, append(ancestors, o), &authenticationType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -377,7 +518,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var autokey_entry *ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey
 	if o.Autokey != nil {
@@ -386,8 +527,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 		} else {
 			autokey_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey)
 		}
-
-		diags.Append(o.Autokey.CopyToPango(ctx, &autokey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Autokey.CopyToPango(ctx, append(ancestors, o), &autokey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -399,8 +540,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 		} else {
 			none_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone)
 		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -412,8 +553,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 		} else {
 			symmetricKey_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey)
 		}
-
-		diags.Append(o.SymmetricKey.CopyToPango(ctx, &symmetricKey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SymmetricKey.CopyToPango(ctx, append(ancestors, o), &symmetricKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -428,7 +569,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -437,7 +578,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutoke
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -446,7 +587,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneOb
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_entry *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm
 	if o.Algorithm != nil {
@@ -455,8 +596,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 		} else {
 			algorithm_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm)
 		}
-
-		diags.Append(o.Algorithm.CopyToPango(ctx, &algorithm_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Algorithm.CopyToPango(ctx, append(ancestors, o), &algorithm_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -471,7 +612,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_entry *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5
 	if o.Md5 != nil {
@@ -480,8 +621,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 		} else {
 			md5_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5)
 		}
-
-		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Md5.CopyToPango(ctx, append(ancestors, o), &md5_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -493,8 +634,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 		} else {
 			sha1_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1)
 		}
-
-		diags.Append(o.Sha1.CopyToPango(ctx, &sha1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha1.CopyToPango(ctx, append(ancestors, o), &sha1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -508,10 +649,21 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"] = o.AuthenticationKey
-	authenticationKey_value := o.AuthenticationKey.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var authenticationKey_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.AuthenticationKey.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	authenticationKey_value = o.AuthenticationKey.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5)
@@ -520,10 +672,21 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"] = o.AuthenticationKey
-	authenticationKey_value := o.AuthenticationKey.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var authenticationKey_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.AuthenticationKey.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	authenticationKey_value = o.AuthenticationKey.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1)
@@ -532,7 +695,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authenticationType_entry *ntp.NtpServersSecondaryNtpServerAuthenticationType
 	if o.AuthenticationType != nil {
@@ -541,8 +704,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) CopyToPango(ct
 		} else {
 			authenticationType_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationType)
 		}
-
-		diags.Append(o.AuthenticationType.CopyToPango(ctx, &authenticationType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AuthenticationType.CopyToPango(ctx, append(ancestors, o), &authenticationType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -557,7 +720,7 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) CopyToPango(ct
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var autokey_entry *ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey
 	if o.Autokey != nil {
@@ -566,8 +729,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObje
 		} else {
 			autokey_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey)
 		}
-
-		diags.Append(o.Autokey.CopyToPango(ctx, &autokey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Autokey.CopyToPango(ctx, append(ancestors, o), &autokey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -579,8 +742,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObje
 		} else {
 			none_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone)
 		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -592,8 +755,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObje
 		} else {
 			symmetricKey_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey)
 		}
-
-		diags.Append(o.SymmetricKey.CopyToPango(ctx, &symmetricKey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SymmetricKey.CopyToPango(ctx, append(ancestors, o), &symmetricKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -608,7 +771,7 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObje
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -617,7 +780,7 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAuto
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -626,7 +789,7 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNone
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_entry *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm
 	if o.Algorithm != nil {
@@ -635,8 +798,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 		} else {
 			algorithm_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm)
 		}
-
-		diags.Append(o.Algorithm.CopyToPango(ctx, &algorithm_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Algorithm.CopyToPango(ctx, append(ancestors, o), &algorithm_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -651,7 +814,7 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_entry *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5
 	if o.Md5 != nil {
@@ -660,8 +823,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 		} else {
 			md5_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5)
 		}
-
-		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Md5.CopyToPango(ctx, append(ancestors, o), &md5_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -673,8 +836,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 		} else {
 			sha1_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1)
 		}
-
-		diags.Append(o.Sha1.CopyToPango(ctx, &sha1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha1.CopyToPango(ctx, append(ancestors, o), &sha1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -688,10 +851,21 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"] = o.AuthenticationKey
-	authenticationKey_value := o.AuthenticationKey.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var authenticationKey_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.AuthenticationKey.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	authenticationKey_value = o.AuthenticationKey.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5)
@@ -700,10 +874,21 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 
 	return diags
 }
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"] = o.AuthenticationKey
-	authenticationKey_value := o.AuthenticationKey.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var authenticationKey_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.AuthenticationKey.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	authenticationKey_value = o.AuthenticationKey.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1)
@@ -713,13 +898,12 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 	return diags
 }
 
-func (o *NtpSettingsDataSourceModel) CopyFromPango(ctx context.Context, obj *ntp.Config, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ntpServers_object *NtpSettingsDataSourceNtpServersObject
 	if obj.NtpServers != nil {
 		ntpServers_object = new(NtpSettingsDataSourceNtpServersObject)
-
-		diags.Append(ntpServers_object.CopyFromPango(ctx, obj.NtpServers, encrypted)...)
+		diags.Append(ntpServers_object.CopyFromPango(ctx, ancestors, obj.NtpServers, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -730,13 +914,12 @@ func (o *NtpSettingsDataSourceModel) CopyFromPango(ctx context.Context, obj *ntp
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServers, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServers, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var primaryNtpServer_object *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject
 	if obj.PrimaryNtpServer != nil {
 		primaryNtpServer_object = new(NtpSettingsDataSourceNtpServersPrimaryNtpServerObject)
-
-		diags.Append(primaryNtpServer_object.CopyFromPango(ctx, obj.PrimaryNtpServer, encrypted)...)
+		diags.Append(primaryNtpServer_object.CopyFromPango(ctx, append(ancestors, o), obj.PrimaryNtpServer, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -744,8 +927,7 @@ func (o *NtpSettingsDataSourceNtpServersObject) CopyFromPango(ctx context.Contex
 	var secondaryNtpServer_object *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject
 	if obj.SecondaryNtpServer != nil {
 		secondaryNtpServer_object = new(NtpSettingsDataSourceNtpServersSecondaryNtpServerObject)
-
-		diags.Append(secondaryNtpServer_object.CopyFromPango(ctx, obj.SecondaryNtpServer, encrypted)...)
+		diags.Append(secondaryNtpServer_object.CopyFromPango(ctx, append(ancestors, o), obj.SecondaryNtpServer, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -757,13 +939,12 @@ func (o *NtpSettingsDataSourceNtpServersObject) CopyFromPango(ctx context.Contex
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authenticationType_object *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 	if obj.AuthenticationType != nil {
 		authenticationType_object = new(NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject)
-
-		diags.Append(authenticationType_object.CopyFromPango(ctx, obj.AuthenticationType, encrypted)...)
+		diags.Append(authenticationType_object.CopyFromPango(ctx, append(ancestors, o), obj.AuthenticationType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -779,13 +960,12 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var autokey_object *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject
 	if obj.Autokey != nil {
 		autokey_object = new(NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject)
-
-		diags.Append(autokey_object.CopyFromPango(ctx, obj.Autokey, encrypted)...)
+		diags.Append(autokey_object.CopyFromPango(ctx, append(ancestors, o), obj.Autokey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -793,8 +973,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 	var none_object *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject
 	if obj.None != nil {
 		none_object = new(NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -802,8 +981,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 	var symmetricKey_object *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject
 	if obj.SymmetricKey != nil {
 		symmetricKey_object = new(NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject)
-
-		diags.Append(symmetricKey_object.CopyFromPango(ctx, obj.SymmetricKey, encrypted)...)
+		diags.Append(symmetricKey_object.CopyFromPango(ctx, append(ancestors, o), obj.SymmetricKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -816,25 +994,24 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_object *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
 	if obj.Algorithm != nil {
 		algorithm_object = new(NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject)
-
-		diags.Append(algorithm_object.CopyFromPango(ctx, obj.Algorithm, encrypted)...)
+		diags.Append(algorithm_object.CopyFromPango(ctx, append(ancestors, o), obj.Algorithm, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -850,13 +1027,12 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_object *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
 	if obj.Md5 != nil {
 		md5_object = new(NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		diags.Append(md5_object.CopyFromPango(ctx, append(ancestors, o), obj.Md5, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -864,8 +1040,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 	var sha1_object *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
 	if obj.Sha1 != nil {
 		sha1_object = new(NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		diags.Append(sha1_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -877,14 +1052,32 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authenticationKey_value types.String
 	if obj.AuthenticationKey != nil {
-		(*encrypted)["solo | encrypted | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"] = types.StringValue(*obj.AuthenticationKey)
-		if value, ok := (*encrypted)["solo | plaintext | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"]; ok {
-			authenticationKey_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.AuthenticationKey != evFromState {
+			authenticationKey_value = types.StringPointerValue(obj.AuthenticationKey)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			authenticationKey_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.AuthenticationKey)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	o.AuthenticationKey = authenticationKey_value
@@ -892,14 +1085,32 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authenticationKey_value types.String
 	if obj.AuthenticationKey != nil {
-		(*encrypted)["solo | encrypted | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"] = types.StringValue(*obj.AuthenticationKey)
-		if value, ok := (*encrypted)["solo | plaintext | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"]; ok {
-			authenticationKey_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.AuthenticationKey != evFromState {
+			authenticationKey_value = types.StringPointerValue(obj.AuthenticationKey)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			authenticationKey_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.AuthenticationKey)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	o.AuthenticationKey = authenticationKey_value
@@ -907,13 +1118,12 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authenticationType_object *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 	if obj.AuthenticationType != nil {
 		authenticationType_object = new(NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject)
-
-		diags.Append(authenticationType_object.CopyFromPango(ctx, obj.AuthenticationType, encrypted)...)
+		diags.Append(authenticationType_object.CopyFromPango(ctx, append(ancestors, o), obj.AuthenticationType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -929,13 +1139,12 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) CopyFromPango(
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var autokey_object *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject
 	if obj.Autokey != nil {
 		autokey_object = new(NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject)
-
-		diags.Append(autokey_object.CopyFromPango(ctx, obj.Autokey, encrypted)...)
+		diags.Append(autokey_object.CopyFromPango(ctx, append(ancestors, o), obj.Autokey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -943,8 +1152,7 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObje
 	var none_object *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject
 	if obj.None != nil {
 		none_object = new(NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -952,8 +1160,7 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObje
 	var symmetricKey_object *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject
 	if obj.SymmetricKey != nil {
 		symmetricKey_object = new(NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject)
-
-		diags.Append(symmetricKey_object.CopyFromPango(ctx, obj.SymmetricKey, encrypted)...)
+		diags.Append(symmetricKey_object.CopyFromPango(ctx, append(ancestors, o), obj.SymmetricKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -966,25 +1173,24 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObje
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_object *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
 	if obj.Algorithm != nil {
 		algorithm_object = new(NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject)
-
-		diags.Append(algorithm_object.CopyFromPango(ctx, obj.Algorithm, encrypted)...)
+		diags.Append(algorithm_object.CopyFromPango(ctx, append(ancestors, o), obj.Algorithm, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1000,13 +1206,12 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_object *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
 	if obj.Md5 != nil {
 		md5_object = new(NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		diags.Append(md5_object.CopyFromPango(ctx, append(ancestors, o), obj.Md5, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1014,8 +1219,7 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 	var sha1_object *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
 	if obj.Sha1 != nil {
 		sha1_object = new(NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		diags.Append(sha1_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1027,14 +1231,32 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authenticationKey_value types.String
 	if obj.AuthenticationKey != nil {
-		(*encrypted)["solo | encrypted | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"] = types.StringValue(*obj.AuthenticationKey)
-		if value, ok := (*encrypted)["solo | plaintext | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"]; ok {
-			authenticationKey_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.AuthenticationKey != evFromState {
+			authenticationKey_value = types.StringPointerValue(obj.AuthenticationKey)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			authenticationKey_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.AuthenticationKey)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	o.AuthenticationKey = authenticationKey_value
@@ -1042,19 +1264,42 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 	return diags
 }
 
-func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authenticationKey_value types.String
 	if obj.AuthenticationKey != nil {
-		(*encrypted)["solo | encrypted | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"] = types.StringValue(*obj.AuthenticationKey)
-		if value, ok := (*encrypted)["solo | plaintext | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"]; ok {
-			authenticationKey_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.AuthenticationKey != evFromState {
+			authenticationKey_value = types.StringPointerValue(obj.AuthenticationKey)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			authenticationKey_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.AuthenticationKey)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	o.AuthenticationKey = authenticationKey_value
 
 	return diags
+}
+
+func (o *NtpSettingsDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func NtpSettingsDataSourceSchema() dsschema.Schema {
@@ -1062,15 +1307,6 @@ func NtpSettingsDataSourceSchema() dsschema.Schema {
 		Attributes: map[string]dsschema.Attribute{
 
 			"location": NtpSettingsDataSourceLocationSchema(),
-
-			"encrypted_values": dsschema.MapAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    false,
-				Computed:    true,
-				Sensitive:   true,
-				ElementType: types.StringType,
-			},
 
 			"ntp_servers": NtpSettingsDataSourceNtpServersSchema(),
 		},
@@ -1810,6 +2046,13 @@ func (o *NtpSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
+
 	var location ntp.Location
 
 	{
@@ -1826,7 +2069,7 @@ func (o *NtpSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 			if resp.Diagnostics.HasError() {
 				return
 			}
-			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.System.Device = innerLocation.Device.ValueString()
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -1854,20 +2097,18 @@ func (o *NtpSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 		}
 	}
 
-	ev := make(map[string]types.String, len(state.EncryptedValues.Elements()))
-	resp.Diagnostics.Append(savestate.EncryptedValues.ElementsAs(ctx, &ev, false)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_ntp_settings_resource",
 		"function":      "Read",
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location)
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -1877,7 +2118,7 @@ func (o *NtpSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, &ev)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1887,9 +2128,6 @@ func (o *NtpSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 	*/
 
 	state.Location = savestate.Location
-	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
-	state.EncryptedValues = ev_map
-	resp.Diagnostics.Append(ev_diags...)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1917,9 +2155,8 @@ func NtpSettingsResourceLocationSchema() rsschema.Attribute {
 }
 
 type NtpSettingsResourceModel struct {
-	Location        types.Object                         `tfsdk:"location"`
-	NtpServers      *NtpSettingsResourceNtpServersObject `tfsdk:"ntp_servers"`
-	EncryptedValues types.Map                            `tfsdk:"encrypted_values"`
+	Location   types.Object                         `tfsdk:"location"`
+	NtpServers *NtpSettingsResourceNtpServersObject `tfsdk:"ntp_servers"`
 }
 type NtpSettingsResourceNtpServersObject struct {
 	PrimaryNtpServer   *NtpSettingsResourceNtpServersPrimaryNtpServerObject   `tfsdk:"primary_ntp_server"`
@@ -1990,15 +2227,6 @@ func NtpSettingsResourceSchema() rsschema.Schema {
 		Attributes: map[string]rsschema.Attribute{
 
 			"location": NtpSettingsResourceLocationSchema(),
-
-			"encrypted_values": rsschema.MapAttribute{
-				Description: "",
-				Required:    false,
-				Optional:    false,
-				Computed:    true,
-				Sensitive:   true,
-				ElementType: types.StringType,
-			},
 
 			"ntp_servers": NtpSettingsResourceNtpServersSchema(),
 		},
@@ -2732,7 +2960,6 @@ func (o *NtpSettingsResourceModel) AttributeTypes() map[string]attr.Type {
 	var locationObj NtpSettingsLocation
 
 	var ntpServersObj *NtpSettingsResourceNtpServersObject
-
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
@@ -2740,8 +2967,15 @@ func (o *NtpSettingsResourceModel) AttributeTypes() map[string]attr.Type {
 		"ntp_servers": types.ObjectType{
 			AttrTypes: ntpServersObj.AttributeTypes(),
 		},
-		"encrypted_values": types.MapType{},
 	}
+}
+
+func (o NtpSettingsResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o NtpSettingsResourceModel) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsResourceNtpServersObject) AttributeTypes() map[string]attr.Type {
 
@@ -2757,6 +2991,14 @@ func (o *NtpSettingsResourceNtpServersObject) AttributeTypes() map[string]attr.T
 		},
 	}
 }
+
+func (o NtpSettingsResourceNtpServersObject) AncestorName() string {
+	return "ntp-servers"
+}
+
+func (o NtpSettingsResourceNtpServersObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) AttributeTypes() map[string]attr.Type {
 
 	var authenticationTypeObj *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject
@@ -2767,6 +3009,14 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) AttributeTypes() m
 		},
 		"ntp_server_address": types.StringType,
 	}
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerObject) AncestorName() string {
+	return "primary-ntp-server"
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -2787,11 +3037,35 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) 
 		},
 	}
 }
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) AncestorName() string {
+	return "authentication-type"
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) AncestorName() string {
+	return "autokey"
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) AncestorName() string {
+	return "none"
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) AttributeTypes() map[string]attr.Type {
 
@@ -2803,6 +3077,14 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 		},
 		"key_id": types.Int64Type,
 	}
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) AncestorName() string {
+	return "symmetric-key"
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AttributeTypes() map[string]attr.Type {
 
@@ -2818,17 +3100,41 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 		},
 	}
 }
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AncestorName() string {
+	return "algorithm"
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"authentication_key": types.StringType,
 	}
 }
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AncestorName() string {
+	return "md5"
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"authentication_key": types.StringType,
 	}
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AncestorName() string {
+	return "sha1"
+}
+
+func (o NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) AttributeTypes() map[string]attr.Type {
 
@@ -2840,6 +3146,14 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) AttributeTypes()
 		},
 		"ntp_server_address": types.StringType,
 	}
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerObject) AncestorName() string {
+	return "secondary-ntp-server"
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -2860,11 +3174,35 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 		},
 	}
 }
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject) AncestorName() string {
+	return "authentication-type"
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) AncestorName() string {
+	return "autokey"
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) AncestorName() string {
+	return "none"
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) AttributeTypes() map[string]attr.Type {
 
@@ -2876,6 +3214,14 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 		},
 		"key_id": types.Int64Type,
 	}
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) AncestorName() string {
+	return "symmetric-key"
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AttributeTypes() map[string]attr.Type {
 
@@ -2891,11 +3237,27 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 		},
 	}
 }
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) AncestorName() string {
+	return "algorithm"
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) EntryName() *string {
+	return nil
+}
 func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"authentication_key": types.StringType,
 	}
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) AncestorName() string {
+	return "md5"
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) EntryName() *string {
+	return nil
 }
 func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AttributeTypes() map[string]attr.Type {
 
@@ -2904,7 +3266,15 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 	}
 }
 
-func (o *NtpSettingsResourceModel) CopyToPango(ctx context.Context, obj **ntp.Config, encrypted *map[string]types.String) diag.Diagnostics {
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) AncestorName() string {
+	return "sha1"
+}
+
+func (o NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) EntryName() *string {
+	return nil
+}
+
+func (o *NtpSettingsResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ntpServers_entry *ntp.NtpServers
 	if o.NtpServers != nil {
@@ -2913,8 +3283,8 @@ func (o *NtpSettingsResourceModel) CopyToPango(ctx context.Context, obj **ntp.Co
 		} else {
 			ntpServers_entry = new(ntp.NtpServers)
 		}
-
-		diags.Append(o.NtpServers.CopyToPango(ctx, &ntpServers_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.NtpServers.CopyToPango(ctx, ancestors, &ntpServers_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2927,7 +3297,7 @@ func (o *NtpSettingsResourceModel) CopyToPango(ctx context.Context, obj **ntp.Co
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersObject) CopyToPango(ctx context.Context, obj **ntp.NtpServers, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServers, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var primaryNtpServer_entry *ntp.NtpServersPrimaryNtpServer
 	if o.PrimaryNtpServer != nil {
@@ -2936,8 +3306,8 @@ func (o *NtpSettingsResourceNtpServersObject) CopyToPango(ctx context.Context, o
 		} else {
 			primaryNtpServer_entry = new(ntp.NtpServersPrimaryNtpServer)
 		}
-
-		diags.Append(o.PrimaryNtpServer.CopyToPango(ctx, &primaryNtpServer_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PrimaryNtpServer.CopyToPango(ctx, append(ancestors, o), &primaryNtpServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2949,8 +3319,8 @@ func (o *NtpSettingsResourceNtpServersObject) CopyToPango(ctx context.Context, o
 		} else {
 			secondaryNtpServer_entry = new(ntp.NtpServersSecondaryNtpServer)
 		}
-
-		diags.Append(o.SecondaryNtpServer.CopyToPango(ctx, &secondaryNtpServer_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SecondaryNtpServer.CopyToPango(ctx, append(ancestors, o), &secondaryNtpServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2964,7 +3334,7 @@ func (o *NtpSettingsResourceNtpServersObject) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authenticationType_entry *ntp.NtpServersPrimaryNtpServerAuthenticationType
 	if o.AuthenticationType != nil {
@@ -2973,8 +3343,8 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) CopyToPango(ctx co
 		} else {
 			authenticationType_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationType)
 		}
-
-		diags.Append(o.AuthenticationType.CopyToPango(ctx, &authenticationType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AuthenticationType.CopyToPango(ctx, append(ancestors, o), &authenticationType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2989,7 +3359,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var autokey_entry *ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey
 	if o.Autokey != nil {
@@ -2998,8 +3368,8 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) 
 		} else {
 			autokey_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey)
 		}
-
-		diags.Append(o.Autokey.CopyToPango(ctx, &autokey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Autokey.CopyToPango(ctx, append(ancestors, o), &autokey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3011,8 +3381,8 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) 
 		} else {
 			none_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone)
 		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3024,8 +3394,8 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) 
 		} else {
 			symmetricKey_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey)
 		}
-
-		diags.Append(o.SymmetricKey.CopyToPango(ctx, &symmetricKey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SymmetricKey.CopyToPango(ctx, append(ancestors, o), &symmetricKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3040,7 +3410,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) 
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3049,7 +3419,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyO
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3058,7 +3428,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObje
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_entry *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm
 	if o.Algorithm != nil {
@@ -3067,8 +3437,8 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 		} else {
 			algorithm_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm)
 		}
-
-		diags.Append(o.Algorithm.CopyToPango(ctx, &algorithm_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Algorithm.CopyToPango(ctx, append(ancestors, o), &algorithm_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3083,7 +3453,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_entry *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5
 	if o.Md5 != nil {
@@ -3092,8 +3462,8 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 		} else {
 			md5_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5)
 		}
-
-		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Md5.CopyToPango(ctx, append(ancestors, o), &md5_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3105,8 +3475,8 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 		} else {
 			sha1_entry = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1)
 		}
-
-		diags.Append(o.Sha1.CopyToPango(ctx, &sha1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha1.CopyToPango(ctx, append(ancestors, o), &sha1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3120,10 +3490,21 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"] = o.AuthenticationKey
-	authenticationKey_value := o.AuthenticationKey.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var authenticationKey_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.AuthenticationKey.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	authenticationKey_value = o.AuthenticationKey.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5)
@@ -3132,10 +3513,21 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyToPango(ctx context.Context, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"] = o.AuthenticationKey
-	authenticationKey_value := o.AuthenticationKey.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var authenticationKey_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.AuthenticationKey.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	authenticationKey_value = o.AuthenticationKey.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1)
@@ -3144,7 +3536,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authenticationType_entry *ntp.NtpServersSecondaryNtpServerAuthenticationType
 	if o.AuthenticationType != nil {
@@ -3153,8 +3545,8 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) CopyToPango(ctx 
 		} else {
 			authenticationType_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationType)
 		}
-
-		diags.Append(o.AuthenticationType.CopyToPango(ctx, &authenticationType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AuthenticationType.CopyToPango(ctx, append(ancestors, o), &authenticationType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3169,7 +3561,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var autokey_entry *ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey
 	if o.Autokey != nil {
@@ -3178,8 +3570,8 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 		} else {
 			autokey_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey)
 		}
-
-		diags.Append(o.Autokey.CopyToPango(ctx, &autokey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Autokey.CopyToPango(ctx, append(ancestors, o), &autokey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3191,8 +3583,8 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 		} else {
 			none_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone)
 		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3204,8 +3596,8 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 		} else {
 			symmetricKey_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey)
 		}
-
-		diags.Append(o.SymmetricKey.CopyToPango(ctx, &symmetricKey_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SymmetricKey.CopyToPango(ctx, append(ancestors, o), &symmetricKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3220,7 +3612,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3229,7 +3621,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutoke
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3238,7 +3630,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneOb
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_entry *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm
 	if o.Algorithm != nil {
@@ -3247,8 +3639,8 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 		} else {
 			algorithm_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm)
 		}
-
-		diags.Append(o.Algorithm.CopyToPango(ctx, &algorithm_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Algorithm.CopyToPango(ctx, append(ancestors, o), &algorithm_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3263,7 +3655,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_entry *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5
 	if o.Md5 != nil {
@@ -3272,8 +3664,8 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 		} else {
 			md5_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5)
 		}
-
-		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Md5.CopyToPango(ctx, append(ancestors, o), &md5_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3285,8 +3677,8 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 		} else {
 			sha1_entry = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1)
 		}
-
-		diags.Append(o.Sha1.CopyToPango(ctx, &sha1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha1.CopyToPango(ctx, append(ancestors, o), &sha1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3300,10 +3692,21 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"] = o.AuthenticationKey
-	authenticationKey_value := o.AuthenticationKey.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var authenticationKey_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.AuthenticationKey.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	authenticationKey_value = o.AuthenticationKey.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5)
@@ -3312,10 +3715,21 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 
 	return diags
 }
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyToPango(ctx context.Context, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	(*encrypted)["solo | plaintext | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"] = o.AuthenticationKey
-	authenticationKey_value := o.AuthenticationKey.ValueStringPointer()
+	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+	if err != nil {
+		diags.AddError("Failed to create encrypted values state key", err.Error())
+		return diags
+	}
+
+	var authenticationKey_value *string
+	err = ev.StorePlaintextValue(valueKey, "solo", o.AuthenticationKey.ValueString())
+	if err != nil {
+		diags.AddError("Failed to manage encrypted values state", err.Error())
+		return diags
+	}
+	authenticationKey_value = o.AuthenticationKey.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1)
@@ -3325,13 +3739,12 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 	return diags
 }
 
-func (o *NtpSettingsResourceModel) CopyFromPango(ctx context.Context, obj *ntp.Config, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ntpServers_object *NtpSettingsResourceNtpServersObject
 	if obj.NtpServers != nil {
 		ntpServers_object = new(NtpSettingsResourceNtpServersObject)
-
-		diags.Append(ntpServers_object.CopyFromPango(ctx, obj.NtpServers, encrypted)...)
+		diags.Append(ntpServers_object.CopyFromPango(ctx, ancestors, obj.NtpServers, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3342,13 +3755,12 @@ func (o *NtpSettingsResourceModel) CopyFromPango(ctx context.Context, obj *ntp.C
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServers, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServers, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var primaryNtpServer_object *NtpSettingsResourceNtpServersPrimaryNtpServerObject
 	if obj.PrimaryNtpServer != nil {
 		primaryNtpServer_object = new(NtpSettingsResourceNtpServersPrimaryNtpServerObject)
-
-		diags.Append(primaryNtpServer_object.CopyFromPango(ctx, obj.PrimaryNtpServer, encrypted)...)
+		diags.Append(primaryNtpServer_object.CopyFromPango(ctx, append(ancestors, o), obj.PrimaryNtpServer, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3356,8 +3768,7 @@ func (o *NtpSettingsResourceNtpServersObject) CopyFromPango(ctx context.Context,
 	var secondaryNtpServer_object *NtpSettingsResourceNtpServersSecondaryNtpServerObject
 	if obj.SecondaryNtpServer != nil {
 		secondaryNtpServer_object = new(NtpSettingsResourceNtpServersSecondaryNtpServerObject)
-
-		diags.Append(secondaryNtpServer_object.CopyFromPango(ctx, obj.SecondaryNtpServer, encrypted)...)
+		diags.Append(secondaryNtpServer_object.CopyFromPango(ctx, append(ancestors, o), obj.SecondaryNtpServer, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3369,13 +3780,12 @@ func (o *NtpSettingsResourceNtpServersObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authenticationType_object *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 	if obj.AuthenticationType != nil {
 		authenticationType_object = new(NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject)
-
-		diags.Append(authenticationType_object.CopyFromPango(ctx, obj.AuthenticationType, encrypted)...)
+		diags.Append(authenticationType_object.CopyFromPango(ctx, append(ancestors, o), obj.AuthenticationType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3391,13 +3801,12 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var autokey_object *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject
 	if obj.Autokey != nil {
 		autokey_object = new(NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject)
-
-		diags.Append(autokey_object.CopyFromPango(ctx, obj.Autokey, encrypted)...)
+		diags.Append(autokey_object.CopyFromPango(ctx, append(ancestors, o), obj.Autokey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3405,8 +3814,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) 
 	var none_object *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject
 	if obj.None != nil {
 		none_object = new(NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3414,8 +3822,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) 
 	var symmetricKey_object *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject
 	if obj.SymmetricKey != nil {
 		symmetricKey_object = new(NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject)
-
-		diags.Append(symmetricKey_object.CopyFromPango(ctx, obj.SymmetricKey, encrypted)...)
+		diags.Append(symmetricKey_object.CopyFromPango(ctx, append(ancestors, o), obj.SymmetricKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3428,25 +3835,24 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) 
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeAutokey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_object *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
 	if obj.Algorithm != nil {
 		algorithm_object = new(NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject)
-
-		diags.Append(algorithm_object.CopyFromPango(ctx, obj.Algorithm, encrypted)...)
+		diags.Append(algorithm_object.CopyFromPango(ctx, append(ancestors, o), obj.Algorithm, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3462,13 +3868,12 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_object *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
 	if obj.Md5 != nil {
 		md5_object = new(NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		diags.Append(md5_object.CopyFromPango(ctx, append(ancestors, o), obj.Md5, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3476,8 +3881,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 	var sha1_object *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
 	if obj.Sha1 != nil {
 		sha1_object = new(NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		diags.Append(sha1_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3489,14 +3893,32 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authenticationKey_value types.String
 	if obj.AuthenticationKey != nil {
-		(*encrypted)["solo | encrypted | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"] = types.StringValue(*obj.AuthenticationKey)
-		if value, ok := (*encrypted)["solo | plaintext | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"]; ok {
-			authenticationKey_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.AuthenticationKey != evFromState {
+			authenticationKey_value = types.StringPointerValue(obj.AuthenticationKey)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			authenticationKey_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.AuthenticationKey)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	o.AuthenticationKey = authenticationKey_value
@@ -3504,14 +3926,32 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyFromPango(ctx context.Context, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authenticationKey_value types.String
 	if obj.AuthenticationKey != nil {
-		(*encrypted)["solo | encrypted | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"] = types.StringValue(*obj.AuthenticationKey)
-		if value, ok := (*encrypted)["solo | plaintext | ntp_servers | primary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"]; ok {
-			authenticationKey_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.AuthenticationKey != evFromState {
+			authenticationKey_value = types.StringPointerValue(obj.AuthenticationKey)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			authenticationKey_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.AuthenticationKey)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	o.AuthenticationKey = authenticationKey_value
@@ -3519,13 +3959,12 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authenticationType_object *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 	if obj.AuthenticationType != nil {
 		authenticationType_object = new(NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject)
-
-		diags.Append(authenticationType_object.CopyFromPango(ctx, obj.AuthenticationType, encrypted)...)
+		diags.Append(authenticationType_object.CopyFromPango(ctx, append(ancestors, o), obj.AuthenticationType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3541,13 +3980,12 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var autokey_object *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject
 	if obj.Autokey != nil {
 		autokey_object = new(NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject)
-
-		diags.Append(autokey_object.CopyFromPango(ctx, obj.Autokey, encrypted)...)
+		diags.Append(autokey_object.CopyFromPango(ctx, append(ancestors, o), obj.Autokey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3555,8 +3993,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 	var none_object *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject
 	if obj.None != nil {
 		none_object = new(NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3564,8 +4001,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 	var symmetricKey_object *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject
 	if obj.SymmetricKey != nil {
 		symmetricKey_object = new(NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject)
-
-		diags.Append(symmetricKey_object.CopyFromPango(ctx, obj.SymmetricKey, encrypted)...)
+		diags.Append(symmetricKey_object.CopyFromPango(ctx, append(ancestors, o), obj.SymmetricKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3578,25 +4014,24 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeAutokey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var algorithm_object *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
 	if obj.Algorithm != nil {
 		algorithm_object = new(NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject)
-
-		diags.Append(algorithm_object.CopyFromPango(ctx, obj.Algorithm, encrypted)...)
+		diags.Append(algorithm_object.CopyFromPango(ctx, append(ancestors, o), obj.Algorithm, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3612,13 +4047,12 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithm, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_object *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
 	if obj.Md5 != nil {
 		md5_object = new(NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		diags.Append(md5_object.CopyFromPango(ctx, append(ancestors, o), obj.Md5, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3626,8 +4060,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 	var sha1_object *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
 	if obj.Sha1 != nil {
 		sha1_object = new(NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		diags.Append(sha1_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3639,14 +4072,32 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authenticationKey_value types.String
 	if obj.AuthenticationKey != nil {
-		(*encrypted)["solo | encrypted | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"] = types.StringValue(*obj.AuthenticationKey)
-		if value, ok := (*encrypted)["solo | plaintext | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | md5 | authentication_key"]; ok {
-			authenticationKey_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.AuthenticationKey != evFromState {
+			authenticationKey_value = types.StringPointerValue(obj.AuthenticationKey)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			authenticationKey_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.AuthenticationKey)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	o.AuthenticationKey = authenticationKey_value
@@ -3654,19 +4105,42 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 	return diags
 }
 
-func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyFromPango(ctx context.Context, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ntp.NtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authenticationKey_value types.String
 	if obj.AuthenticationKey != nil {
-		(*encrypted)["solo | encrypted | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"] = types.StringValue(*obj.AuthenticationKey)
-		if value, ok := (*encrypted)["solo | plaintext | ntp_servers | secondary_ntp_server | authentication_type | symmetric_key | algorithm | sha1 | authentication_key"]; ok {
-			authenticationKey_value = value
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "authentication-key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.AuthenticationKey != evFromState {
+			authenticationKey_value = types.StringPointerValue(obj.AuthenticationKey)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			authenticationKey_value = types.StringValue(value)
+		} else {
+			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			return diags
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.AuthenticationKey)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
 		}
 	}
 	o.AuthenticationKey = authenticationKey_value
 
 	return diags
+}
+
+func (o *NtpSettingsResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *NtpSettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -3688,6 +4162,13 @@ func (r *NtpSettingsResource) Create(ctx context.Context, req resource.CreateReq
 		return
 	}
 
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
+
 	// Determine the location.
 
 	var location ntp.Location
@@ -3706,7 +4187,7 @@ func (r *NtpSettingsResource) Create(ctx context.Context, req resource.CreateReq
 			if resp.Diagnostics.HasError() {
 				return
 			}
-			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.System.Device = innerLocation.Device.ValueString()
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -3741,9 +4222,7 @@ func (r *NtpSettingsResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Load the desired config.
 	var obj *ntp.Config
-
-	ev := make(map[string]types.String)
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, &ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -3755,22 +4234,29 @@ func (r *NtpSettingsResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, &ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
-	state.EncryptedValues = ev_map
-	resp.Diagnostics.Append(ev_diags...)
-	if resp.Diagnostics.HasError() {
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
 		return
 	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -3780,6 +4266,17 @@ func (o *NtpSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 	var savestate, state NtpSettingsResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -3799,7 +4296,7 @@ func (o *NtpSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 			if resp.Diagnostics.HasError() {
 				return
 			}
-			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.System.Device = innerLocation.Device.ValueString()
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -3827,20 +4324,18 @@ func (o *NtpSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 		}
 	}
 
-	ev := make(map[string]types.String, len(state.EncryptedValues.Elements()))
-	resp.Diagnostics.Append(savestate.EncryptedValues.ElementsAs(ctx, &ev, false)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
 	// Basic logging.
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_ntp_settings_resource",
 		"function":      "Read",
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location)
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -3850,7 +4345,7 @@ func (o *NtpSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, &ev)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -3860,9 +4355,13 @@ func (o *NtpSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 	*/
 
 	state.Location = savestate.Location
-	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
-	state.EncryptedValues = ev_map
-	resp.Diagnostics.Append(ev_diags...)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -3876,9 +4375,15 @@ func (r *NtpSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	ev := make(map[string]types.String, len(state.EncryptedValues.Elements()))
-	resp.Diagnostics.Append(state.EncryptedValues.ElementsAs(ctx, &ev, false)...)
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -3898,7 +4403,7 @@ func (r *NtpSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 			if resp.Diagnostics.HasError() {
 				return
 			}
-			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.System.Device = innerLocation.Device.ValueString()
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -3937,19 +4442,31 @@ func (r *NtpSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, &ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -3963,14 +4480,18 @@ func (r *NtpSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, &ev)
-	ev_map, ev_diags := types.MapValueFrom(ctx, types.StringType, ev)
-	state.EncryptedValues = ev_map
-	resp.Diagnostics.Append(ev_diags...)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -4012,7 +4533,7 @@ func (r *NtpSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 			if resp.Diagnostics.HasError() {
 				return
 			}
-			location.System.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.System.Device = innerLocation.Device.ValueString()
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -4040,16 +4561,25 @@ func (r *NtpSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 		}
 	}
 
-	ev := make(map[string]types.String)
-	var obj *ntp.Config
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, &ev)...)
-	if resp.Diagnostics.HasError() {
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
 
-	err := r.manager.Delete(ctx, location, obj)
-	if err != nil && errors.Is(err, sdkmanager.ErrObjectNotFound) {
+	existing, err := r.manager.Read(ctx, location, components)
+	if err != nil {
+		resp.Diagnostics.AddError("Error while deleting resource", err.Error())
+		return
+	}
+
+	var obj ntp.Config
+	obj.Misc = existing.Misc
+
+	err = r.manager.Delete(ctx, location, &obj)
+	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }
@@ -4059,7 +4589,7 @@ func (r *NtpSettingsResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 type NtpSettingsSystemLocation struct {
-	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Device types.String `tfsdk:"device"`
 }
 type NtpSettingsTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
@@ -4083,11 +4613,11 @@ func NtpSettingsLocationSchema() rsschema.Attribute {
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
 			"system": rsschema.SingleNestedAttribute{
-				Description: "Located in a system settings.",
+				Description: "System-level configuration",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
+					"device": rsschema.StringAttribute{
+						Description: "Device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -4109,11 +4639,11 @@ func NtpSettingsLocationSchema() rsschema.Attribute {
 				},
 			},
 			"template": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template.",
+				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "Specific Panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -4122,7 +4652,7 @@ func NtpSettingsLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The template.",
+						Description: "Specific Panorama template",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -4131,7 +4661,7 @@ func NtpSettingsLocationSchema() rsschema.Attribute {
 						},
 					},
 					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
+						Description: "The NGFW device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -4145,11 +4675,11 @@ func NtpSettingsLocationSchema() rsschema.Attribute {
 				},
 			},
 			"template_stack": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template stack.",
+				Description: "Located in a specific template stack",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "Specific Panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -4158,7 +4688,7 @@ func NtpSettingsLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The template stack.",
+						Description: "Specific Panorama template stack",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -4167,7 +4697,7 @@ func NtpSettingsLocationSchema() rsschema.Attribute {
 						},
 					},
 					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
+						Description: "The NGFW device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -4186,11 +4716,11 @@ func NtpSettingsLocationSchema() rsschema.Attribute {
 
 func (o NtpSettingsSystemLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Device *string `json:"device,omitempty"`
 	}
 
 	obj := shadow{
-		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+		Device: o.Device.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -4198,14 +4728,14 @@ func (o NtpSettingsSystemLocation) MarshalJSON() ([]byte, error) {
 
 func (o *NtpSettingsSystemLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Device *string `json:"device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
 	}
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Device = types.StringPointerValue(shadow.Device)
 
 	return nil
 }
@@ -4356,7 +4886,7 @@ func (o *NtpSettingsLocation) UnmarshalJSON(data []byte) error {
 
 func (o *NtpSettingsSystemLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"ngfw_device": types.StringType,
+		"device": types.StringType,
 	}
 }
 func (o *NtpSettingsTemplateLocation) AttributeTypes() map[string]attr.Type {

@@ -1,20 +1,14 @@
 package provider_test
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"testing"
-
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/network/interface/loopback"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -28,9 +22,6 @@ func TestAccLoopbackInterface(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosLoopbackInterfaceDestroy(
-			prefix, interfaceName,
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: loopbackInterfaceResource1,
@@ -143,29 +134,3 @@ resource "panos_loopback_interface" "iface" {
   }
 }
 `
-
-func testAccCheckPanosLoopbackInterfaceDestroy(prefix string, entry string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := loopback.NewService(sdkClient)
-		ctx := context.TODO()
-
-		location := loopback.NewTemplateLocation()
-		location.Template.Template = fmt.Sprintf("%s-tmpl", prefix)
-
-		reply, err := api.Read(ctx, *location, entry, "show")
-		if err != nil && !sdkErrors.IsObjectNotFound(err) {
-			return fmt.Errorf("reading ethernet entry via sdk: %v", err)
-		}
-
-		if reply != nil {
-			err := fmt.Errorf("terraform didn't delete the server entry properly")
-			delErr := api.Delete(ctx, *location, entry)
-			if delErr != nil {
-				return errors.Join(err, delErr)
-			}
-			return err
-		}
-
-		return nil
-	}
-}

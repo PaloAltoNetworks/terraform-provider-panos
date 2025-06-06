@@ -2,13 +2,11 @@ package provider_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"regexp"
 	"strings"
 	"testing"
 
-	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/policies/rules/security"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -17,7 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -555,7 +552,6 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 
 		},
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             securityPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: securityPolicyOrderingTmpl,
@@ -681,39 +677,5 @@ func securityPolicyPreCheck(prefix string) {
 			panic(fmt.Sprintf("natPolicyPreCheck failed: %s", err))
 		}
 
-	}
-}
-
-func securityPolicyCheckDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		service := security.NewService(sdkClient)
-		ctx := context.TODO()
-
-		location := security.NewDeviceGroupLocation()
-		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
-
-		rules, err := service.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkerrors.IsObjectNotFound(err) {
-			return err
-		}
-
-		var danglingNames []string
-		for _, elt := range rules {
-			if strings.HasPrefix(elt.Name, prefix) {
-				danglingNames = append(danglingNames, elt.Name)
-			}
-		}
-
-		if len(danglingNames) > 0 {
-			err := DanglingObjectsError
-			delErr := service.Delete(ctx, *location, danglingNames...)
-			if delErr != nil {
-				err = errors.Join(err, delErr)
-			}
-
-			return err
-		}
-
-		return nil
 	}
 }

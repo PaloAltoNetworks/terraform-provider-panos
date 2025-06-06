@@ -1,21 +1,14 @@
 package provider_test
 
 import (
-	"context"
-	"errors"
 	"fmt"
-	"strings"
 	"testing"
-
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/network/zone"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -29,7 +22,6 @@ func TestAccZone(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccZoneDestroy(prefix, fmt.Sprintf("%s-%s", prefix, suffix)),
 		Steps: []resource.TestStep{
 			{
 				Config: zoneResourceTmpl,
@@ -78,7 +70,6 @@ func TestAccZone(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccZoneDestroy(prefix, fmt.Sprintf("%s-%s", prefix, suffix)),
 		Steps: []resource.TestStep{
 			{
 				Config: zoneResourceTmpl,
@@ -96,7 +87,6 @@ func TestAccZone(t *testing.T) {
 	// resource.Test(t, resource.TestCase{
 	// 	PreCheck:                 func() { testAccPreCheck(t) },
 	// 	ProtoV6ProviderFactories: testAccProviders,
-	// 	CheckDestroy:             testAccZoneDestroy(prefix, fmt.Sprintf("%s-%s", prefix, suffix)),
 	// 	Steps: []resource.TestStep{
 	// 		{
 	// 			Config: zoneResourceTmpl,
@@ -114,7 +104,6 @@ func TestAccZone(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccZoneDestroy(prefix, fmt.Sprintf("%s-%s", prefix, suffix)),
 		Steps: []resource.TestStep{
 			{
 				Config: zoneResourceTmpl,
@@ -142,7 +131,6 @@ func TestAccZone(t *testing.T) {
 	// resource.Test(t, resource.TestCase{
 	// 	PreCheck:                 func() { testAccPreCheck(t) },
 	// 	ProtoV6ProviderFactories: testAccProviders,
-	// 	CheckDestroy:             testAccZoneDestroy(prefix, fmt.Sprintf("%s-%s", prefix, suffix)),
 	// 	Steps: []resource.TestStep{
 	// 		{
 	// 			Config: zoneResourceTmpl,
@@ -238,40 +226,3 @@ resource "panos_zone" "zone" {
   network = local.network
 }
 `
-
-func testAccZoneDestroy(prefix string, template string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := zone.NewService(sdkClient)
-		ctx := context.TODO()
-
-		location := zone.NewTemplateLocation()
-		location.Template = &zone.TemplateLocation{
-			Template:       template,
-			Vsys:           "vsys1",
-			NgfwDevice:     "localhost.localdomain",
-			PanoramaDevice: "localhost.localdomain",
-		}
-
-		entries, err := api.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkErrors.IsObjectNotFound(err) {
-			return fmt.Errorf("error while listing entries via sdk: %v", err)
-		}
-
-		var leftEntries []string
-		for _, elt := range entries {
-			if strings.HasPrefix(elt.Name, prefix) {
-				leftEntries = append(leftEntries, elt.Name)
-			}
-		}
-
-		if len(leftEntries) > 0 {
-			err := fmt.Errorf("terraform failed to remove entries from the server")
-			delErr := api.Delete(ctx, *location, leftEntries...)
-			if delErr != nil {
-				return errors.Join(err, delErr)
-			}
-		}
-
-		return nil
-	}
-}

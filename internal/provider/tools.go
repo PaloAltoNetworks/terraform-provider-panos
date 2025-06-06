@@ -57,3 +57,53 @@ func ProviderParamDescription(desc, defaultValue, envName, jsonName string) stri
 
 	return b.String()
 }
+
+type AncestorType string
+
+const (
+	AncestorObjectEntry AncestorType = "object-entry"
+	AncestorListEntry   AncestorType = "list-entry"
+)
+
+type Ancestor interface {
+	AncestorName() string
+	EntryName() *string
+}
+
+type XpathAncestorError struct {
+	name    string
+	message string
+}
+
+func (o XpathAncestorError) Error() string {
+	message := o.message
+	message += fmt.Sprintf(": %s", o.name)
+	return message
+}
+
+func CreateXpathForAttributeWithAncestors(ancestors []Ancestor, attribute string) (string, error) {
+	var xpath []string
+
+	createXpathElements := func(attr Ancestor) ([]string, error) {
+		elts := []string{"/" + attr.AncestorName()}
+		name := attr.EntryName()
+		if name != nil {
+			elts = append(elts, fmt.Sprintf("/entry[@name=\"%s\"]", *name))
+
+		}
+
+		return elts, nil
+	}
+
+	for _, elt := range ancestors {
+		xpathElts, err := createXpathElements(elt)
+		if err != nil {
+			return "", err
+		}
+
+		xpath = append(xpath, xpathElts...)
+	}
+
+	xpath = append(xpath, "/"+attribute)
+	return strings.Join(xpath, ""), nil
+}

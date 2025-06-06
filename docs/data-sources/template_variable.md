@@ -31,6 +31,7 @@ description: |-
 Optional:
 
 - `template` (Attributes) Located in a specific template. (see [below for nested schema](#nestedatt--location--template))
+- `template_stack` (Attributes) Located in a specific template stack. (see [below for nested schema](#nestedatt--location--template_stack))
 
 <a id="nestedatt--location--template"></a>
 ### Nested Schema for `location.template`
@@ -38,6 +39,15 @@ Optional:
 Optional:
 
 - `name` (String) The template.
+- `panorama_device` (String) The panorama device.
+
+
+<a id="nestedatt--location--template_stack"></a>
+### Nested Schema for `location.template_stack`
+
+Optional:
+
+- `name` (String) Specific Panorama Template Stack
 - `panorama_device` (String) The panorama device.
 
 

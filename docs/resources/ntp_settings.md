@@ -47,25 +47,21 @@ resource "panos_ntp_settings" "example" {
 
 - `ntp_servers` (Attributes) (see [below for nested schema](#nestedatt--ntp_servers))
 
-### Read-Only
-
-- `encrypted_values` (Map of String, Sensitive)
-
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 
 Optional:
 
-- `system` (Attributes) Located in a system settings. (see [below for nested schema](#nestedatt--location--system))
-- `template` (Attributes) Located in a specific template. (see [below for nested schema](#nestedatt--location--template))
-- `template_stack` (Attributes) Located in a specific template stack. (see [below for nested schema](#nestedatt--location--template_stack))
+- `system` (Attributes) System-level configuration (see [below for nested schema](#nestedatt--location--system))
+- `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
+- `template_stack` (Attributes) Located in a specific template stack (see [below for nested schema](#nestedatt--location--template_stack))
 
 <a id="nestedatt--location--system"></a>
 ### Nested Schema for `location.system`
 
 Optional:
 
-- `ngfw_device` (String) The NGFW device.
+- `device` (String) Device
 
 
 <a id="nestedatt--location--template"></a>
@@ -73,9 +69,9 @@ Optional:
 
 Optional:
 
-- `name` (String) The template.
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
+- `name` (String) Specific Panorama template
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
 
 
 <a id="nestedatt--location--template_stack"></a>
@@ -83,9 +79,9 @@ Optional:
 
 Optional:
 
-- `name` (String) The template stack.
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
+- `name` (String) Specific Panorama template stack
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
 
 
 

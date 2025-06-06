@@ -67,9 +67,9 @@ type ServiceDataSourceProtocolObject struct {
 	Udp *ServiceDataSourceProtocolUdpObject `tfsdk:"udp"`
 }
 type ServiceDataSourceProtocolTcpObject struct {
+	Override        *ServiceDataSourceProtocolTcpOverrideObject `tfsdk:"override"`
 	DestinationPort types.String                                `tfsdk:"destination_port"`
 	SourcePort      types.String                                `tfsdk:"source_port"`
-	Override        *ServiceDataSourceProtocolTcpOverrideObject `tfsdk:"override"`
 }
 type ServiceDataSourceProtocolTcpOverrideObject struct {
 	HalfcloseTimeout types.Int64 `tfsdk:"halfclose_timeout"`
@@ -77,9 +77,9 @@ type ServiceDataSourceProtocolTcpOverrideObject struct {
 	TimewaitTimeout  types.Int64 `tfsdk:"timewait_timeout"`
 }
 type ServiceDataSourceProtocolUdpObject struct {
+	Override        *ServiceDataSourceProtocolUdpOverrideObject `tfsdk:"override"`
 	DestinationPort types.String                                `tfsdk:"destination_port"`
 	SourcePort      types.String                                `tfsdk:"source_port"`
-	Override        *ServiceDataSourceProtocolUdpOverrideObject `tfsdk:"override"`
 }
 type ServiceDataSourceProtocolUdpOverrideObject struct {
 	Timeout types.Int64 `tfsdk:"timeout"`
@@ -104,6 +104,14 @@ func (o *ServiceDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"tags": types.ListType{},
 	}
 }
+
+func (o ServiceDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o ServiceDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *ServiceDataSourceProtocolObject) AttributeTypes() map[string]attr.Type {
 
 	var tcpObj *ServiceDataSourceProtocolTcpObject
@@ -118,16 +126,33 @@ func (o *ServiceDataSourceProtocolObject) AttributeTypes() map[string]attr.Type 
 		},
 	}
 }
+
+func (o ServiceDataSourceProtocolObject) AncestorName() string {
+	return "protocol"
+}
+
+func (o ServiceDataSourceProtocolObject) EntryName() *string {
+	return nil
+}
 func (o *ServiceDataSourceProtocolTcpObject) AttributeTypes() map[string]attr.Type {
 
 	var overrideObj *ServiceDataSourceProtocolTcpOverrideObject
+
 	return map[string]attr.Type{
-		"destination_port": types.StringType,
-		"source_port":      types.StringType,
 		"override": types.ObjectType{
 			AttrTypes: overrideObj.AttributeTypes(),
 		},
+		"destination_port": types.StringType,
+		"source_port":      types.StringType,
 	}
+}
+
+func (o ServiceDataSourceProtocolTcpObject) AncestorName() string {
+	return "tcp"
+}
+
+func (o ServiceDataSourceProtocolTcpObject) EntryName() *string {
+	return nil
 }
 func (o *ServiceDataSourceProtocolTcpOverrideObject) AttributeTypes() map[string]attr.Type {
 
@@ -137,16 +162,33 @@ func (o *ServiceDataSourceProtocolTcpOverrideObject) AttributeTypes() map[string
 		"timewait_timeout":  types.Int64Type,
 	}
 }
+
+func (o ServiceDataSourceProtocolTcpOverrideObject) AncestorName() string {
+	return "override"
+}
+
+func (o ServiceDataSourceProtocolTcpOverrideObject) EntryName() *string {
+	return nil
+}
 func (o *ServiceDataSourceProtocolUdpObject) AttributeTypes() map[string]attr.Type {
 
 	var overrideObj *ServiceDataSourceProtocolUdpOverrideObject
+
 	return map[string]attr.Type{
-		"destination_port": types.StringType,
-		"source_port":      types.StringType,
 		"override": types.ObjectType{
 			AttrTypes: overrideObj.AttributeTypes(),
 		},
+		"destination_port": types.StringType,
+		"source_port":      types.StringType,
 	}
+}
+
+func (o ServiceDataSourceProtocolUdpObject) AncestorName() string {
+	return "udp"
+}
+
+func (o ServiceDataSourceProtocolUdpObject) EntryName() *string {
+	return nil
 }
 func (o *ServiceDataSourceProtocolUdpOverrideObject) AttributeTypes() map[string]attr.Type {
 
@@ -155,7 +197,15 @@ func (o *ServiceDataSourceProtocolUdpOverrideObject) AttributeTypes() map[string
 	}
 }
 
-func (o *ServiceDataSourceModel) CopyToPango(ctx context.Context, obj **service.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o ServiceDataSourceProtocolUdpOverrideObject) AncestorName() string {
+	return "override"
+}
+
+func (o ServiceDataSourceProtocolUdpOverrideObject) EntryName() *string {
+	return nil
+}
+
+func (o *ServiceDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -166,8 +216,8 @@ func (o *ServiceDataSourceModel) CopyToPango(ctx context.Context, obj **service.
 		} else {
 			protocol_entry = new(service.Protocol)
 		}
-
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Protocol.CopyToPango(ctx, ancestors, &protocol_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -189,7 +239,7 @@ func (o *ServiceDataSourceModel) CopyToPango(ctx context.Context, obj **service.
 
 	return diags
 }
-func (o *ServiceDataSourceProtocolObject) CopyToPango(ctx context.Context, obj **service.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tcp_entry *service.ProtocolTcp
 	if o.Tcp != nil {
@@ -198,8 +248,8 @@ func (o *ServiceDataSourceProtocolObject) CopyToPango(ctx context.Context, obj *
 		} else {
 			tcp_entry = new(service.ProtocolTcp)
 		}
-
-		diags.Append(o.Tcp.CopyToPango(ctx, &tcp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tcp.CopyToPango(ctx, append(ancestors, o), &tcp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -211,8 +261,8 @@ func (o *ServiceDataSourceProtocolObject) CopyToPango(ctx context.Context, obj *
 		} else {
 			udp_entry = new(service.ProtocolUdp)
 		}
-
-		diags.Append(o.Udp.CopyToPango(ctx, &udp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Udp.CopyToPango(ctx, append(ancestors, o), &udp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -226,10 +276,8 @@ func (o *ServiceDataSourceProtocolObject) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *ServiceDataSourceProtocolTcpObject) CopyToPango(ctx context.Context, obj **service.ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolTcpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.ProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	destinationPort_value := o.DestinationPort.ValueStringPointer()
-	sourcePort_value := o.SourcePort.ValueStringPointer()
 	var override_entry *service.ProtocolTcpOverride
 	if o.Override != nil {
 		if *obj != nil && (*obj).Override != nil {
@@ -237,23 +285,25 @@ func (o *ServiceDataSourceProtocolTcpObject) CopyToPango(ctx context.Context, ob
 		} else {
 			override_entry = new(service.ProtocolTcpOverride)
 		}
-
-		diags.Append(o.Override.CopyToPango(ctx, &override_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Override.CopyToPango(ctx, append(ancestors, o), &override_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	destinationPort_value := o.DestinationPort.ValueStringPointer()
+	sourcePort_value := o.SourcePort.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(service.ProtocolTcp)
 	}
+	(*obj).Override = override_entry
 	(*obj).Port = destinationPort_value
 	(*obj).SourcePort = sourcePort_value
-	(*obj).Override = override_entry
 
 	return diags
 }
-func (o *ServiceDataSourceProtocolTcpOverrideObject) CopyToPango(ctx context.Context, obj **service.ProtocolTcpOverride, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolTcpOverrideObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.ProtocolTcpOverride, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	halfcloseTimeout_value := o.HalfcloseTimeout.ValueInt64Pointer()
 	timeout_value := o.Timeout.ValueInt64Pointer()
@@ -268,10 +318,8 @@ func (o *ServiceDataSourceProtocolTcpOverrideObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *ServiceDataSourceProtocolUdpObject) CopyToPango(ctx context.Context, obj **service.ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolUdpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.ProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	destinationPort_value := o.DestinationPort.ValueStringPointer()
-	sourcePort_value := o.SourcePort.ValueStringPointer()
 	var override_entry *service.ProtocolUdpOverride
 	if o.Override != nil {
 		if *obj != nil && (*obj).Override != nil {
@@ -279,23 +327,25 @@ func (o *ServiceDataSourceProtocolUdpObject) CopyToPango(ctx context.Context, ob
 		} else {
 			override_entry = new(service.ProtocolUdpOverride)
 		}
-
-		diags.Append(o.Override.CopyToPango(ctx, &override_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Override.CopyToPango(ctx, append(ancestors, o), &override_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	destinationPort_value := o.DestinationPort.ValueStringPointer()
+	sourcePort_value := o.SourcePort.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(service.ProtocolUdp)
 	}
+	(*obj).Override = override_entry
 	(*obj).Port = destinationPort_value
 	(*obj).SourcePort = sourcePort_value
-	(*obj).Override = override_entry
 
 	return diags
 }
-func (o *ServiceDataSourceProtocolUdpOverrideObject) CopyToPango(ctx context.Context, obj **service.ProtocolUdpOverride, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolUdpOverrideObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.ProtocolUdpOverride, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	timeout_value := o.Timeout.ValueInt64Pointer()
 
@@ -307,19 +357,21 @@ func (o *ServiceDataSourceProtocolUdpOverrideObject) CopyToPango(ctx context.Con
 	return diags
 }
 
-func (o *ServiceDataSourceModel) CopyFromPango(ctx context.Context, obj *service.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tags_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var protocol_object *ServiceDataSourceProtocolObject
 	if obj.Protocol != nil {
 		protocol_object = new(ServiceDataSourceProtocolObject)
-
-		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
+		diags.Append(protocol_object.CopyFromPango(ctx, ancestors, obj.Protocol, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -342,13 +394,12 @@ func (o *ServiceDataSourceModel) CopyFromPango(ctx context.Context, obj *service
 	return diags
 }
 
-func (o *ServiceDataSourceProtocolObject) CopyFromPango(ctx context.Context, obj *service.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tcp_object *ServiceDataSourceProtocolTcpObject
 	if obj.Tcp != nil {
 		tcp_object = new(ServiceDataSourceProtocolTcpObject)
-
-		diags.Append(tcp_object.CopyFromPango(ctx, obj.Tcp, encrypted)...)
+		diags.Append(tcp_object.CopyFromPango(ctx, append(ancestors, o), obj.Tcp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -356,8 +407,7 @@ func (o *ServiceDataSourceProtocolObject) CopyFromPango(ctx context.Context, obj
 	var udp_object *ServiceDataSourceProtocolUdpObject
 	if obj.Udp != nil {
 		udp_object = new(ServiceDataSourceProtocolUdpObject)
-
-		diags.Append(udp_object.CopyFromPango(ctx, obj.Udp, encrypted)...)
+		diags.Append(udp_object.CopyFromPango(ctx, append(ancestors, o), obj.Udp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -369,13 +419,12 @@ func (o *ServiceDataSourceProtocolObject) CopyFromPango(ctx context.Context, obj
 	return diags
 }
 
-func (o *ServiceDataSourceProtocolTcpObject) CopyFromPango(ctx context.Context, obj *service.ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolTcpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.ProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var override_object *ServiceDataSourceProtocolTcpOverrideObject
 	if obj.Override != nil {
 		override_object = new(ServiceDataSourceProtocolTcpOverrideObject)
-
-		diags.Append(override_object.CopyFromPango(ctx, obj.Override, encrypted)...)
+		diags.Append(override_object.CopyFromPango(ctx, append(ancestors, o), obj.Override, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -389,14 +438,14 @@ func (o *ServiceDataSourceProtocolTcpObject) CopyFromPango(ctx context.Context, 
 	if obj.SourcePort != nil {
 		sourcePort_value = types.StringValue(*obj.SourcePort)
 	}
+	o.Override = override_object
 	o.DestinationPort = destinationPort_value
 	o.SourcePort = sourcePort_value
-	o.Override = override_object
 
 	return diags
 }
 
-func (o *ServiceDataSourceProtocolTcpOverrideObject) CopyFromPango(ctx context.Context, obj *service.ProtocolTcpOverride, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolTcpOverrideObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.ProtocolTcpOverride, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var halfcloseTimeout_value types.Int64
@@ -418,13 +467,12 @@ func (o *ServiceDataSourceProtocolTcpOverrideObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *ServiceDataSourceProtocolUdpObject) CopyFromPango(ctx context.Context, obj *service.ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolUdpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.ProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var override_object *ServiceDataSourceProtocolUdpOverrideObject
 	if obj.Override != nil {
 		override_object = new(ServiceDataSourceProtocolUdpOverrideObject)
-
-		diags.Append(override_object.CopyFromPango(ctx, obj.Override, encrypted)...)
+		diags.Append(override_object.CopyFromPango(ctx, append(ancestors, o), obj.Override, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -438,14 +486,14 @@ func (o *ServiceDataSourceProtocolUdpObject) CopyFromPango(ctx context.Context, 
 	if obj.SourcePort != nil {
 		sourcePort_value = types.StringValue(*obj.SourcePort)
 	}
+	o.Override = override_object
 	o.DestinationPort = destinationPort_value
 	o.SourcePort = sourcePort_value
-	o.Override = override_object
 
 	return diags
 }
 
-func (o *ServiceDataSourceProtocolUdpOverrideObject) CopyFromPango(ctx context.Context, obj *service.ProtocolUdpOverride, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceDataSourceProtocolUdpOverrideObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.ProtocolUdpOverride, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var timeout_value types.Int64
@@ -455,6 +503,11 @@ func (o *ServiceDataSourceProtocolUdpOverrideObject) CopyFromPango(ctx context.C
 	o.Timeout = timeout_value
 
 	return diags
+}
+
+func (o *ServiceDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func ServiceDataSourceSchema() dsschema.Schema {
@@ -569,6 +622,8 @@ func ServiceDataSourceProtocolTcpSchema() dsschema.SingleNestedAttribute {
 		},
 		Attributes: map[string]dsschema.Attribute{
 
+			"override": ServiceDataSourceProtocolTcpOverrideSchema(),
+
 			"destination_port": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -584,8 +639,6 @@ func ServiceDataSourceProtocolTcpSchema() dsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"override": ServiceDataSourceProtocolTcpOverrideSchema(),
 		},
 	}
 }
@@ -678,6 +731,8 @@ func ServiceDataSourceProtocolUdpSchema() dsschema.SingleNestedAttribute {
 		},
 		Attributes: map[string]dsschema.Attribute{
 
+			"override": ServiceDataSourceProtocolUdpOverrideSchema(),
+
 			"destination_port": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -693,8 +748,6 @@ func ServiceDataSourceProtocolUdpSchema() dsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"override": ServiceDataSourceProtocolUdpOverrideSchema(),
 		},
 	}
 }
@@ -783,13 +836,20 @@ func (d *ServiceDataSource) Configure(_ context.Context, req datasource.Configur
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, service.NewService(d.client), batchSize, specifier, service.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*service.Entry, service.Location, *service.Service](d.client, service.NewService(d.client), batchSize, specifier, service.SpecMatches)
 }
 func (o *ServiceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state ServiceDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -841,8 +901,12 @@ func (o *ServiceDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -852,7 +916,7 @@ func (o *ServiceDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -906,9 +970,9 @@ type ServiceResourceProtocolObject struct {
 	Udp *ServiceResourceProtocolUdpObject `tfsdk:"udp"`
 }
 type ServiceResourceProtocolTcpObject struct {
+	Override        *ServiceResourceProtocolTcpOverrideObject `tfsdk:"override"`
 	DestinationPort types.String                              `tfsdk:"destination_port"`
 	SourcePort      types.String                              `tfsdk:"source_port"`
-	Override        *ServiceResourceProtocolTcpOverrideObject `tfsdk:"override"`
 }
 type ServiceResourceProtocolTcpOverrideObject struct {
 	HalfcloseTimeout types.Int64 `tfsdk:"halfclose_timeout"`
@@ -916,9 +980,9 @@ type ServiceResourceProtocolTcpOverrideObject struct {
 	TimewaitTimeout  types.Int64 `tfsdk:"timewait_timeout"`
 }
 type ServiceResourceProtocolUdpObject struct {
+	Override        *ServiceResourceProtocolUdpOverrideObject `tfsdk:"override"`
 	DestinationPort types.String                              `tfsdk:"destination_port"`
 	SourcePort      types.String                              `tfsdk:"source_port"`
-	Override        *ServiceResourceProtocolUdpOverrideObject `tfsdk:"override"`
 }
 type ServiceResourceProtocolUdpOverrideObject struct {
 	Timeout types.Int64 `tfsdk:"timeout"`
@@ -1047,6 +1111,8 @@ func ServiceResourceProtocolTcpSchema() rsschema.SingleNestedAttribute {
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"override": ServiceResourceProtocolTcpOverrideSchema(),
+
 			"destination_port": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -1062,8 +1128,6 @@ func ServiceResourceProtocolTcpSchema() rsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"override": ServiceResourceProtocolTcpOverrideSchema(),
 		},
 	}
 }
@@ -1156,6 +1220,8 @@ func ServiceResourceProtocolUdpSchema() rsschema.SingleNestedAttribute {
 		},
 		Attributes: map[string]rsschema.Attribute{
 
+			"override": ServiceResourceProtocolUdpOverrideSchema(),
+
 			"destination_port": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -1171,8 +1237,6 @@ func ServiceResourceProtocolUdpSchema() rsschema.SingleNestedAttribute {
 				Optional:    true,
 				Sensitive:   false,
 			},
-
-			"override": ServiceResourceProtocolUdpOverrideSchema(),
 		},
 	}
 }
@@ -1258,7 +1322,7 @@ func (r *ServiceResource) Configure(ctx context.Context, req resource.ConfigureR
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, service.NewService(r.client), batchSize, specifier, service.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*service.Entry, service.Location, *service.Service](r.client, service.NewService(r.client), batchSize, specifier, service.SpecMatches)
 }
 
 func (o *ServiceResourceModel) AttributeTypes() map[string]attr.Type {
@@ -1280,6 +1344,14 @@ func (o *ServiceResourceModel) AttributeTypes() map[string]attr.Type {
 		"tags": types.ListType{},
 	}
 }
+
+func (o ServiceResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o ServiceResourceModel) EntryName() *string {
+	return nil
+}
 func (o *ServiceResourceProtocolObject) AttributeTypes() map[string]attr.Type {
 
 	var tcpObj *ServiceResourceProtocolTcpObject
@@ -1294,16 +1366,33 @@ func (o *ServiceResourceProtocolObject) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o ServiceResourceProtocolObject) AncestorName() string {
+	return "protocol"
+}
+
+func (o ServiceResourceProtocolObject) EntryName() *string {
+	return nil
+}
 func (o *ServiceResourceProtocolTcpObject) AttributeTypes() map[string]attr.Type {
 
 	var overrideObj *ServiceResourceProtocolTcpOverrideObject
+
 	return map[string]attr.Type{
-		"destination_port": types.StringType,
-		"source_port":      types.StringType,
 		"override": types.ObjectType{
 			AttrTypes: overrideObj.AttributeTypes(),
 		},
+		"destination_port": types.StringType,
+		"source_port":      types.StringType,
 	}
+}
+
+func (o ServiceResourceProtocolTcpObject) AncestorName() string {
+	return "tcp"
+}
+
+func (o ServiceResourceProtocolTcpObject) EntryName() *string {
+	return nil
 }
 func (o *ServiceResourceProtocolTcpOverrideObject) AttributeTypes() map[string]attr.Type {
 
@@ -1313,16 +1402,33 @@ func (o *ServiceResourceProtocolTcpOverrideObject) AttributeTypes() map[string]a
 		"timewait_timeout":  types.Int64Type,
 	}
 }
+
+func (o ServiceResourceProtocolTcpOverrideObject) AncestorName() string {
+	return "override"
+}
+
+func (o ServiceResourceProtocolTcpOverrideObject) EntryName() *string {
+	return nil
+}
 func (o *ServiceResourceProtocolUdpObject) AttributeTypes() map[string]attr.Type {
 
 	var overrideObj *ServiceResourceProtocolUdpOverrideObject
+
 	return map[string]attr.Type{
-		"destination_port": types.StringType,
-		"source_port":      types.StringType,
 		"override": types.ObjectType{
 			AttrTypes: overrideObj.AttributeTypes(),
 		},
+		"destination_port": types.StringType,
+		"source_port":      types.StringType,
 	}
+}
+
+func (o ServiceResourceProtocolUdpObject) AncestorName() string {
+	return "udp"
+}
+
+func (o ServiceResourceProtocolUdpObject) EntryName() *string {
+	return nil
 }
 func (o *ServiceResourceProtocolUdpOverrideObject) AttributeTypes() map[string]attr.Type {
 
@@ -1331,7 +1437,15 @@ func (o *ServiceResourceProtocolUdpOverrideObject) AttributeTypes() map[string]a
 	}
 }
 
-func (o *ServiceResourceModel) CopyToPango(ctx context.Context, obj **service.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o ServiceResourceProtocolUdpOverrideObject) AncestorName() string {
+	return "override"
+}
+
+func (o ServiceResourceProtocolUdpOverrideObject) EntryName() *string {
+	return nil
+}
+
+func (o *ServiceResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -1342,8 +1456,8 @@ func (o *ServiceResourceModel) CopyToPango(ctx context.Context, obj **service.En
 		} else {
 			protocol_entry = new(service.Protocol)
 		}
-
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Protocol.CopyToPango(ctx, ancestors, &protocol_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1365,7 +1479,7 @@ func (o *ServiceResourceModel) CopyToPango(ctx context.Context, obj **service.En
 
 	return diags
 }
-func (o *ServiceResourceProtocolObject) CopyToPango(ctx context.Context, obj **service.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tcp_entry *service.ProtocolTcp
 	if o.Tcp != nil {
@@ -1374,8 +1488,8 @@ func (o *ServiceResourceProtocolObject) CopyToPango(ctx context.Context, obj **s
 		} else {
 			tcp_entry = new(service.ProtocolTcp)
 		}
-
-		diags.Append(o.Tcp.CopyToPango(ctx, &tcp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tcp.CopyToPango(ctx, append(ancestors, o), &tcp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1387,8 +1501,8 @@ func (o *ServiceResourceProtocolObject) CopyToPango(ctx context.Context, obj **s
 		} else {
 			udp_entry = new(service.ProtocolUdp)
 		}
-
-		diags.Append(o.Udp.CopyToPango(ctx, &udp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Udp.CopyToPango(ctx, append(ancestors, o), &udp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1402,10 +1516,8 @@ func (o *ServiceResourceProtocolObject) CopyToPango(ctx context.Context, obj **s
 
 	return diags
 }
-func (o *ServiceResourceProtocolTcpObject) CopyToPango(ctx context.Context, obj **service.ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolTcpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.ProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	destinationPort_value := o.DestinationPort.ValueStringPointer()
-	sourcePort_value := o.SourcePort.ValueStringPointer()
 	var override_entry *service.ProtocolTcpOverride
 	if o.Override != nil {
 		if *obj != nil && (*obj).Override != nil {
@@ -1413,23 +1525,25 @@ func (o *ServiceResourceProtocolTcpObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			override_entry = new(service.ProtocolTcpOverride)
 		}
-
-		diags.Append(o.Override.CopyToPango(ctx, &override_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Override.CopyToPango(ctx, append(ancestors, o), &override_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	destinationPort_value := o.DestinationPort.ValueStringPointer()
+	sourcePort_value := o.SourcePort.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(service.ProtocolTcp)
 	}
+	(*obj).Override = override_entry
 	(*obj).Port = destinationPort_value
 	(*obj).SourcePort = sourcePort_value
-	(*obj).Override = override_entry
 
 	return diags
 }
-func (o *ServiceResourceProtocolTcpOverrideObject) CopyToPango(ctx context.Context, obj **service.ProtocolTcpOverride, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolTcpOverrideObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.ProtocolTcpOverride, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	halfcloseTimeout_value := o.HalfcloseTimeout.ValueInt64Pointer()
 	timeout_value := o.Timeout.ValueInt64Pointer()
@@ -1444,10 +1558,8 @@ func (o *ServiceResourceProtocolTcpOverrideObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *ServiceResourceProtocolUdpObject) CopyToPango(ctx context.Context, obj **service.ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolUdpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.ProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	destinationPort_value := o.DestinationPort.ValueStringPointer()
-	sourcePort_value := o.SourcePort.ValueStringPointer()
 	var override_entry *service.ProtocolUdpOverride
 	if o.Override != nil {
 		if *obj != nil && (*obj).Override != nil {
@@ -1455,23 +1567,25 @@ func (o *ServiceResourceProtocolUdpObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			override_entry = new(service.ProtocolUdpOverride)
 		}
-
-		diags.Append(o.Override.CopyToPango(ctx, &override_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Override.CopyToPango(ctx, append(ancestors, o), &override_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	destinationPort_value := o.DestinationPort.ValueStringPointer()
+	sourcePort_value := o.SourcePort.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(service.ProtocolUdp)
 	}
+	(*obj).Override = override_entry
 	(*obj).Port = destinationPort_value
 	(*obj).SourcePort = sourcePort_value
-	(*obj).Override = override_entry
 
 	return diags
 }
-func (o *ServiceResourceProtocolUdpOverrideObject) CopyToPango(ctx context.Context, obj **service.ProtocolUdpOverride, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolUdpOverrideObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **service.ProtocolUdpOverride, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	timeout_value := o.Timeout.ValueInt64Pointer()
 
@@ -1483,19 +1597,21 @@ func (o *ServiceResourceProtocolUdpOverrideObject) CopyToPango(ctx context.Conte
 	return diags
 }
 
-func (o *ServiceResourceModel) CopyFromPango(ctx context.Context, obj *service.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tags_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var protocol_object *ServiceResourceProtocolObject
 	if obj.Protocol != nil {
 		protocol_object = new(ServiceResourceProtocolObject)
-
-		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
+		diags.Append(protocol_object.CopyFromPango(ctx, ancestors, obj.Protocol, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1518,13 +1634,12 @@ func (o *ServiceResourceModel) CopyFromPango(ctx context.Context, obj *service.E
 	return diags
 }
 
-func (o *ServiceResourceProtocolObject) CopyFromPango(ctx context.Context, obj *service.Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tcp_object *ServiceResourceProtocolTcpObject
 	if obj.Tcp != nil {
 		tcp_object = new(ServiceResourceProtocolTcpObject)
-
-		diags.Append(tcp_object.CopyFromPango(ctx, obj.Tcp, encrypted)...)
+		diags.Append(tcp_object.CopyFromPango(ctx, append(ancestors, o), obj.Tcp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1532,8 +1647,7 @@ func (o *ServiceResourceProtocolObject) CopyFromPango(ctx context.Context, obj *
 	var udp_object *ServiceResourceProtocolUdpObject
 	if obj.Udp != nil {
 		udp_object = new(ServiceResourceProtocolUdpObject)
-
-		diags.Append(udp_object.CopyFromPango(ctx, obj.Udp, encrypted)...)
+		diags.Append(udp_object.CopyFromPango(ctx, append(ancestors, o), obj.Udp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1545,13 +1659,12 @@ func (o *ServiceResourceProtocolObject) CopyFromPango(ctx context.Context, obj *
 	return diags
 }
 
-func (o *ServiceResourceProtocolTcpObject) CopyFromPango(ctx context.Context, obj *service.ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolTcpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.ProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var override_object *ServiceResourceProtocolTcpOverrideObject
 	if obj.Override != nil {
 		override_object = new(ServiceResourceProtocolTcpOverrideObject)
-
-		diags.Append(override_object.CopyFromPango(ctx, obj.Override, encrypted)...)
+		diags.Append(override_object.CopyFromPango(ctx, append(ancestors, o), obj.Override, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1565,14 +1678,14 @@ func (o *ServiceResourceProtocolTcpObject) CopyFromPango(ctx context.Context, ob
 	if obj.SourcePort != nil {
 		sourcePort_value = types.StringValue(*obj.SourcePort)
 	}
+	o.Override = override_object
 	o.DestinationPort = destinationPort_value
 	o.SourcePort = sourcePort_value
-	o.Override = override_object
 
 	return diags
 }
 
-func (o *ServiceResourceProtocolTcpOverrideObject) CopyFromPango(ctx context.Context, obj *service.ProtocolTcpOverride, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolTcpOverrideObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.ProtocolTcpOverride, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var halfcloseTimeout_value types.Int64
@@ -1594,13 +1707,12 @@ func (o *ServiceResourceProtocolTcpOverrideObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *ServiceResourceProtocolUdpObject) CopyFromPango(ctx context.Context, obj *service.ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolUdpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.ProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var override_object *ServiceResourceProtocolUdpOverrideObject
 	if obj.Override != nil {
 		override_object = new(ServiceResourceProtocolUdpOverrideObject)
-
-		diags.Append(override_object.CopyFromPango(ctx, obj.Override, encrypted)...)
+		diags.Append(override_object.CopyFromPango(ctx, append(ancestors, o), obj.Override, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1614,14 +1726,14 @@ func (o *ServiceResourceProtocolUdpObject) CopyFromPango(ctx context.Context, ob
 	if obj.SourcePort != nil {
 		sourcePort_value = types.StringValue(*obj.SourcePort)
 	}
+	o.Override = override_object
 	o.DestinationPort = destinationPort_value
 	o.SourcePort = sourcePort_value
-	o.Override = override_object
 
 	return diags
 }
 
-func (o *ServiceResourceProtocolUdpOverrideObject) CopyFromPango(ctx context.Context, obj *service.ProtocolUdpOverride, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ServiceResourceProtocolUdpOverrideObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *service.ProtocolUdpOverride, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var timeout_value types.Int64
@@ -1631,6 +1743,11 @@ func (o *ServiceResourceProtocolUdpOverrideObject) CopyFromPango(ctx context.Con
 	o.Timeout = timeout_value
 
 	return diags
+}
+
+func (o *ServiceResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -1650,6 +1767,13 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1703,8 +1827,7 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 
 	// Load the desired config.
 	var obj *service.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1716,17 +1839,29 @@ func (r *ServiceResource) Create(ctx context.Context, req resource.CreateRequest
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1736,6 +1871,17 @@ func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 	var savestate, state ServiceResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1787,8 +1933,12 @@ func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1798,7 +1948,7 @@ func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1808,6 +1958,13 @@ func (o *ServiceResource) Read(ctx context.Context, req resource.ReadRequest, re
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1819,6 +1976,17 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1874,19 +2042,31 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1900,11 +2080,18 @@ func (r *ServiceResource) Update(ctx context.Context, req resource.UpdateRequest
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1972,9 +2159,15 @@ func (r *ServiceResource) Delete(ctx context.Context, req resource.DeleteRequest
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

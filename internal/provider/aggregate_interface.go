@@ -165,11 +165,11 @@ type AggregateInterfaceDataSourceLayer3IpObject struct {
 }
 type AggregateInterfaceDataSourceLayer3Ipv6Object struct {
 	Address           types.List                                                     `tfsdk:"address"`
+	DhcpClient        *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject        `tfsdk:"dhcp_client"`
 	Enabled           types.Bool                                                     `tfsdk:"enabled"`
+	Inherited         *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject         `tfsdk:"inherited"`
 	InterfaceId       types.String                                                   `tfsdk:"interface_id"`
 	NeighborDiscovery *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
-	DhcpClient        *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject        `tfsdk:"dhcp_client"`
-	Inherited         *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject         `tfsdk:"inherited"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6AddressObject struct {
 	Name              types.String                                                  `tfsdk:"name"`
@@ -188,47 +188,6 @@ type AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject struct {
 	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
 	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
 	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject struct {
-	DadAttempts         types.Int64                                                                       `tfsdk:"dad_attempts"`
-	EnableDad           types.Bool                                                                        `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                                        `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                                        `tfsdk:"neighbor"`
-	NsInterval          types.Int64                                                                       `tfsdk:"ns_interval"`
-	ReachableTime       types.Int64                                                                       `tfsdk:"reachable_time"`
-	RouterAdvertisement *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject struct {
-	DnsSupport             *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
-	Enable                 types.Bool                                                                                  `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool                                                                                  `tfsdk:"enable_consistency_check"`
-	HopLimit               types.String                                                                                `tfsdk:"hop_limit"`
-	Lifetime               types.Int64                                                                                 `tfsdk:"lifetime"`
-	LinkMtu                types.String                                                                                `tfsdk:"link_mtu"`
-	ManagedFlag            types.Bool                                                                                  `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64                                                                                 `tfsdk:"max_interval"`
-	MinInterval            types.Int64                                                                                 `tfsdk:"min_interval"`
-	OtherFlag              types.Bool                                                                                  `tfsdk:"other_flag"`
-	ReachableTime          types.String                                                                                `tfsdk:"reachable_time"`
-	RetransmissionTimer    types.String                                                                                `tfsdk:"retransmission_timer"`
-	RouterPreference       types.String                                                                                `tfsdk:"router_preference"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
-	Enable types.Bool `tfsdk:"enable"`
-	Server types.List `tfsdk:"server"`
-	Suffix types.List `tfsdk:"suffix"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
-}
-type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject struct {
 	AcceptRaRoute      types.Bool                                                               `tfsdk:"accept_ra_route"`
@@ -429,6 +388,47 @@ type AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdver
 	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
 	RouterPreference       types.String `tfsdk:"router_preference"`
 }
+type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject struct {
+	DadAttempts         types.Int64                                                                       `tfsdk:"dad_attempts"`
+	EnableDad           types.Bool                                                                        `tfsdk:"enable_dad"`
+	EnableNdpMonitor    types.Bool                                                                        `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List                                                                        `tfsdk:"neighbor"`
+	NsInterval          types.Int64                                                                       `tfsdk:"ns_interval"`
+	ReachableTime       types.Int64                                                                       `tfsdk:"reachable_time"`
+	RouterAdvertisement *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject struct {
+	DnsSupport             *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
+	Enable                 types.Bool                                                                                  `tfsdk:"enable"`
+	EnableConsistencyCheck types.Bool                                                                                  `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String                                                                                `tfsdk:"hop_limit"`
+	Lifetime               types.Int64                                                                                 `tfsdk:"lifetime"`
+	LinkMtu                types.String                                                                                `tfsdk:"link_mtu"`
+	ManagedFlag            types.Bool                                                                                  `tfsdk:"managed_flag"`
+	MaxInterval            types.Int64                                                                                 `tfsdk:"max_interval"`
+	MinInterval            types.Int64                                                                                 `tfsdk:"min_interval"`
+	OtherFlag              types.Bool                                                                                  `tfsdk:"other_flag"`
+	ReachableTime          types.String                                                                                `tfsdk:"reachable_time"`
+	RetransmissionTimer    types.String                                                                                `tfsdk:"retransmission_timer"`
+	RouterPreference       types.String                                                                                `tfsdk:"router_preference"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
+	Enable types.Bool `tfsdk:"enable"`
+	Server types.List `tfsdk:"server"`
+	Suffix types.List `tfsdk:"suffix"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
+type AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
 type AggregateInterfaceDataSourceLayer3LacpObject struct {
 	Enable           types.Bool                                                    `tfsdk:"enable"`
 	FastFailover     types.Bool                                                    `tfsdk:"fast_failover"`
@@ -522,8 +522,24 @@ func (o *AggregateInterfaceDataSourceModel) AttributeTypes() map[string]attr.Typ
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o AggregateInterfaceDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceDecryptMirrorObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceDataSourceDecryptMirrorObject) AncestorName() string {
+	return "decrypt-mirror"
+}
+
+func (o AggregateInterfaceDataSourceDecryptMirrorObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceHaObject) AttributeTypes() map[string]attr.Type {
 
@@ -533,6 +549,14 @@ func (o *AggregateInterfaceDataSourceHaObject) AttributeTypes() map[string]attr.
 			AttrTypes: lacpObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceHaObject) AncestorName() string {
+	return "ha"
+}
+
+func (o AggregateInterfaceDataSourceHaObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceHaLacpObject) AttributeTypes() map[string]attr.Type {
 
@@ -544,6 +568,14 @@ func (o *AggregateInterfaceDataSourceHaLacpObject) AttributeTypes() map[string]a
 		"system_priority":   types.Int64Type,
 		"transmission_rate": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceHaLacpObject) AncestorName() string {
+	return "lacp"
+}
+
+func (o AggregateInterfaceDataSourceHaLacpObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer2Object) AttributeTypes() map[string]attr.Type {
 
@@ -561,6 +593,14 @@ func (o *AggregateInterfaceDataSourceLayer2Object) AttributeTypes() map[string]a
 		"netflow_profile": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer2Object) AncestorName() string {
+	return "layer2"
+}
+
+func (o AggregateInterfaceDataSourceLayer2Object) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer2LacpObject) AttributeTypes() map[string]attr.Type {
 
 	var highAvailabilityObj *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject
@@ -577,11 +617,27 @@ func (o *AggregateInterfaceDataSourceLayer2LacpObject) AttributeTypes() map[stri
 		"transmission_rate": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer2LacpObject) AncestorName() string {
+	return "lacp"
+}
+
+func (o AggregateInterfaceDataSourceLayer2LacpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"passive_pre_negotiation": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer2LldpObject) AttributeTypes() map[string]attr.Type {
 
@@ -595,11 +651,27 @@ func (o *AggregateInterfaceDataSourceLayer2LldpObject) AttributeTypes() map[stri
 		"profile": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer2LldpObject) AncestorName() string {
+	return "lldp"
+}
+
+func (o AggregateInterfaceDataSourceLayer2LldpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"passive_pre_negotiation": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Object) AttributeTypes() map[string]attr.Type {
 
@@ -659,6 +731,14 @@ func (o *AggregateInterfaceDataSourceLayer3Object) AttributeTypes() map[string]a
 		"untagged_sub_interface": types.BoolType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Object) AncestorName() string {
+	return "layer3"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Object) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -667,12 +747,28 @@ func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) AttributeTypes() 
 		"ipv6_mss_adjustment": types.Int64Type,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) AncestorName() string {
+	return "adjust-tcp-mss"
+}
+
+func (o AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3ArpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":       types.StringType,
 		"hw_address": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3ArpObject) AncestorName() string {
+	return "arp"
+}
+
+func (o AggregateInterfaceDataSourceLayer3ArpObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceDataSourceLayer3BonjourObject) AttributeTypes() map[string]attr.Type {
 
@@ -681,6 +777,14 @@ func (o *AggregateInterfaceDataSourceLayer3BonjourObject) AttributeTypes() map[s
 		"group_id":  types.Int64Type,
 		"ttl_check": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3BonjourObject) AncestorName() string {
+	return "bonjour"
+}
+
+func (o AggregateInterfaceDataSourceLayer3BonjourObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) AttributeTypes() map[string]attr.Type {
 
@@ -695,12 +799,28 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) AttributeTypes() ma
 		"ddns_vendor_config":   types.ListType{},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3DdnsConfigObject) AncestorName() string {
+	return "ddns-config"
+}
+
+func (o AggregateInterfaceDataSourceLayer3DdnsConfigObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":  types.StringType,
 		"value": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) AncestorName() string {
+	return "ddns-vendor-config"
+}
+
+func (o AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) AttributeTypes() map[string]attr.Type {
 
@@ -714,12 +834,28 @@ func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) AttributeTypes() ma
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3DhcpClientObject) AncestorName() string {
+	return "dhcp-client"
+}
+
+func (o AggregateInterfaceDataSourceLayer3DhcpClientObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enable":   types.BoolType,
 		"hostname": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) AncestorName() string {
+	return "send-hostname"
+}
+
+func (o AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3IpObject) AttributeTypes() map[string]attr.Type {
 
@@ -728,27 +864,43 @@ func (o *AggregateInterfaceDataSourceLayer3IpObject) AttributeTypes() map[string
 		"sdwan_gateway": types.StringType,
 	}
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) AttributeTypes() map[string]attr.Type {
 
-	var neighborDiscoveryObj *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject
+func (o AggregateInterfaceDataSourceLayer3IpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o AggregateInterfaceDataSourceLayer3IpObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) AttributeTypes() map[string]attr.Type {
 
 	var dhcpClientObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject
 
 	var inheritedObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject
+
+	var neighborDiscoveryObj *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject
 	return map[string]attr.Type{
-		"address":      types.ListType{},
-		"enabled":      types.BoolType,
+		"address": types.ListType{},
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"enabled": types.BoolType,
+		"inherited": types.ObjectType{
+			AttrTypes: inheritedObj.AttributeTypes(),
+		},
 		"interface_id": types.StringType,
 		"neighbor_discovery": types.ObjectType{
 			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
 		},
-		"dhcp_client": types.ObjectType{
-			AttrTypes: dhcpClientObj.AttributeTypes(),
-		},
-		"inherited": types.ObjectType{
-			AttrTypes: inheritedObj.AttributeTypes(),
-		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6Object) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -771,11 +923,35 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) AttributeTypes() m
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6AddressObject) AncestorName() string {
+	return "address"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6AddressObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) AncestorName() string {
+	return "prefix"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) AncestorName() string {
+	return "anycast"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) AttributeTypes() map[string]attr.Type {
 
@@ -787,71 +963,13 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) Attribute
 		"auto_config_flag":   types.BoolType,
 	}
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
 
-	var routerAdvertisementObj *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
-	return map[string]attr.Type{
-		"dad_attempts":       types.Int64Type,
-		"enable_dad":         types.BoolType,
-		"enable_ndp_monitor": types.BoolType,
-		"neighbor":           types.ListType{},
-		"ns_interval":        types.Int64Type,
-		"reachable_time":     types.Int64Type,
-		"router_advertisement": types.ObjectType{
-			AttrTypes: routerAdvertisementObj.AttributeTypes(),
-		},
-	}
+func (o AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) AncestorName() string {
+	return "advertise"
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
 
-	return map[string]attr.Type{
-		"name":       types.StringType,
-		"hw_address": types.StringType,
-	}
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
-
-	var dnsSupportObj *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
-
-	return map[string]attr.Type{
-		"dns_support": types.ObjectType{
-			AttrTypes: dnsSupportObj.AttributeTypes(),
-		},
-		"enable":                   types.BoolType,
-		"enable_consistency_check": types.BoolType,
-		"hop_limit":                types.StringType,
-		"lifetime":                 types.Int64Type,
-		"link_mtu":                 types.StringType,
-		"managed_flag":             types.BoolType,
-		"max_interval":             types.Int64Type,
-		"min_interval":             types.Int64Type,
-		"other_flag":               types.BoolType,
-		"reachable_time":           types.StringType,
-		"retransmission_timer":     types.StringType,
-		"router_preference":        types.StringType,
-	}
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
-
-	return map[string]attr.Type{
-		"enable": types.BoolType,
-		"server": types.ListType{},
-		"suffix": types.ListType{},
-	}
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AttributeTypes() map[string]attr.Type {
-
-	return map[string]attr.Type{
-		"name":     types.StringType,
-		"lifetime": types.Int64Type,
-	}
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AttributeTypes() map[string]attr.Type {
-
-	return map[string]attr.Type{
-		"name":     types.StringType,
-		"lifetime": types.Int64Type,
-	}
+func (o AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) AttributeTypes() map[string]attr.Type {
 
@@ -876,6 +994,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) AttributeTypes(
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) AncestorName() string {
+	return "dhcp-client"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
 
 	var dnsServerObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject
@@ -897,6 +1023,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
 		"reachable_time":     types.Int64Type,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) AncestorName() string {
+	return "neighbor-discovery"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
 
 	var sourceObj *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject
@@ -906,6 +1040,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSer
 			AttrTypes: sourceObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) AncestorName() string {
+	return "dns-server"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -921,8 +1063,24 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSer
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) AncestorName() string {
+	return "source"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) AncestorName() string {
+	return "dhcpv6"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
 
@@ -930,12 +1088,28 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSer
 		"server": types.ListType{},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AncestorName() string {
+	return "manual"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":     types.StringType,
 		"lifetime": types.Int64Type,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) AncestorName() string {
+	return "server"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
 
@@ -946,6 +1120,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuf
 			AttrTypes: sourceObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) AncestorName() string {
+	return "dns-suffix"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -961,14 +1143,38 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuf
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) AncestorName() string {
+	return "source"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AncestorName() string {
+	return "dhcpv6"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"suffix": types.ListType{},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AncestorName() string {
+	return "manual"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
 
@@ -977,12 +1183,28 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuf
 		"lifetime": types.Int64Type,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AncestorName() string {
+	return "suffix"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":       types.StringType,
 		"hw_address": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) AttributeTypes() map[string]attr.Type {
 
@@ -992,6 +1214,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject)
 			AttrTypes: enableObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) AncestorName() string {
+	return "prefix-delegation"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) AttributeTypes() map[string]attr.Type {
 
@@ -1007,8 +1237,24 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableO
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) AncestorName() string {
+	return "enable"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) AncestorName() string {
+	return "no"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) AttributeTypes() map[string]attr.Type {
 
@@ -1017,6 +1263,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableY
 		"prefix_len":      types.Int64Type,
 		"prefix_len_hint": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) AncestorName() string {
+	return "yes"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1030,6 +1284,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) Attrib
 		"rapid_commit":          types.BoolType,
 		"support_srvr_reconfig": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) AncestorName() string {
+	return "v6-options"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) AttributeTypes() map[string]attr.Type {
 
@@ -1045,8 +1307,24 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) 
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) AncestorName() string {
+	return "enable"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) AncestorName() string {
+	return "no"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) AttributeTypes() map[string]attr.Type {
 
@@ -1054,6 +1332,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObjec
 		"non_temp_addr": types.BoolType,
 		"temp_addr":     types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) AncestorName() string {
+	return "yes"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) AttributeTypes() map[string]attr.Type {
 
@@ -1066,6 +1352,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) AttributeTypes()
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) AncestorName() string {
+	return "inherited"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) AttributeTypes() map[string]attr.Type {
 
 	var typeObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject
@@ -1075,6 +1369,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) Attrib
 			AttrTypes: typeObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) AncestorName() string {
+	return "assign-addr"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -1089,6 +1391,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) At
 			AttrTypes: ulaObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) AttributeTypes() map[string]attr.Type {
 
@@ -1106,6 +1416,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) AncestorName() string {
+	return "gua"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var dynamicObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
@@ -1120,14 +1438,38 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTyp
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) AncestorName() string {
+	return "pool-type"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) AncestorName() string {
+	return "dynamic"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"identifier": types.Int64Type,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) AncestorName() string {
+	return "dynamic-id"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) AttributeTypes() map[string]attr.Type {
 
@@ -1136,6 +1478,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdverti
 		"onlink_flag":      types.BoolType,
 		"auto_config_flag": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) AncestorName() string {
+	return "advertise"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) AttributeTypes() map[string]attr.Type {
 
@@ -1150,6 +1500,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject)
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) AncestorName() string {
+	return "ula"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1159,6 +1517,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdverti
 		"onlink_flag":        types.BoolType,
 		"auto_config_flag":   types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) AncestorName() string {
+	return "advertise"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
 
@@ -1185,6 +1551,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) AncestorName() string {
+	return "neighbor-discovery"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
 
 	var sourceObj *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
@@ -1194,6 +1568,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServ
 			AttrTypes: sourceObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) AncestorName() string {
+	return "dns-server"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -1209,11 +1591,27 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServ
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) AncestorName() string {
+	return "source"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"prefix_pool": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) AncestorName() string {
+	return "dhcpv6"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
 
@@ -1221,12 +1619,28 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServ
 		"server": types.ListType{},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AncestorName() string {
+	return "manual"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":     types.StringType,
 		"lifetime": types.Int64Type,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) AncestorName() string {
+	return "server"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
 
@@ -1237,6 +1651,14 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuff
 			AttrTypes: sourceObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) AncestorName() string {
+	return "dns-suffix"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -1252,17 +1674,41 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuff
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) AncestorName() string {
+	return "source"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"prefix_pool": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AncestorName() string {
+	return "dhcpv6"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"suffix": types.ListType{},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AncestorName() string {
+	return "manual"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
 
@@ -1271,12 +1717,28 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuff
 		"lifetime": types.Int64Type,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AncestorName() string {
+	return "suffix"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":       types.StringType,
 		"hw_address": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
 
@@ -1295,6 +1757,128 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterA
 		"router_preference":        types.StringType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) AncestorName() string {
+	return "router-advertisement"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) EntryName() *string {
+	return nil
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var routerAdvertisementObj *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts":       types.Int64Type,
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) AncestorName() string {
+	return "neighbor-discovery"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) EntryName() *string {
+	return nil
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsSupportObj *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+
+	return map[string]attr.Type{
+		"dns_support": types.ObjectType{
+			AttrTypes: dnsSupportObj.AttributeTypes(),
+		},
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) AncestorName() string {
+	return "router-advertisement"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) EntryName() *string {
+	return nil
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"server": types.ListType{},
+		"suffix": types.ListType{},
+	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AncestorName() string {
+	return "dns-support"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) EntryName() *string {
+	return nil
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AncestorName() string {
+	return "server"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AncestorName() string {
+	return "suffix"
+}
+
+func (o AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *AggregateInterfaceDataSourceLayer3LacpObject) AttributeTypes() map[string]attr.Type {
 
 	var highAvailabilityObj *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject
@@ -1311,11 +1895,27 @@ func (o *AggregateInterfaceDataSourceLayer3LacpObject) AttributeTypes() map[stri
 		"transmission_rate": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3LacpObject) AncestorName() string {
+	return "lacp"
+}
+
+func (o AggregateInterfaceDataSourceLayer3LacpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"passive_pre_negotiation": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3LldpObject) AttributeTypes() map[string]attr.Type {
 
@@ -1329,11 +1929,27 @@ func (o *AggregateInterfaceDataSourceLayer3LldpObject) AttributeTypes() map[stri
 		"profile": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3LldpObject) AncestorName() string {
+	return "lldp"
+}
+
+func (o AggregateInterfaceDataSourceLayer3LldpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"passive_pre_negotiation": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) AttributeTypes() map[string]attr.Type {
 
@@ -1342,12 +1958,28 @@ func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) AttributeTypes() map[
 		"enabled": types.BoolType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3NdpProxyObject) AncestorName() string {
+	return "ndp-proxy"
+}
+
+func (o AggregateInterfaceDataSourceLayer3NdpProxyObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":   types.StringType,
 		"negate": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) AncestorName() string {
+	return "address"
+}
+
+func (o AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1359,6 +1991,14 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) AttributeTyp
 			AttrTypes: upstreamNatObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) AncestorName() string {
+	return "sdwan-link-settings"
+}
+
+func (o AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) AttributeTypes() map[string]attr.Type {
 
@@ -1375,8 +2015,24 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) A
 		},
 	}
 }
+
+func (o AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) AncestorName() string {
+	return "upstream-nat"
+}
+
+func (o AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) AncestorName() string {
+	return "ddns"
+}
+
+func (o AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) AttributeTypes() map[string]attr.Type {
 
@@ -1384,6 +2040,14 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpO
 		"fqdn":       types.StringType,
 		"ip_address": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) AncestorName() string {
+	return "static-ip"
+}
+
+func (o AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceVirtualWireObject) AttributeTypes() map[string]attr.Type {
 
@@ -1395,6 +2059,14 @@ func (o *AggregateInterfaceDataSourceVirtualWireObject) AttributeTypes() map[str
 		},
 		"netflow_profile": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceDataSourceVirtualWireObject) AncestorName() string {
+	return "virtual-wire"
+}
+
+func (o AggregateInterfaceDataSourceVirtualWireObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) AttributeTypes() map[string]attr.Type {
 
@@ -1408,6 +2080,14 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) AttributeTypes() map
 		"profile": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceDataSourceVirtualWireLldpObject) AncestorName() string {
+	return "lldp"
+}
+
+func (o AggregateInterfaceDataSourceVirtualWireLldpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1415,7 +2095,15 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) Attr
 	}
 }
 
-func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **aggregate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) EntryName() *string {
+	return nil
+}
+
+func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	comment_value := o.Comment.ValueStringPointer()
 	var decryptMirror_entry *aggregate.DecryptMirror
@@ -1425,8 +2113,8 @@ func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			decryptMirror_entry = new(aggregate.DecryptMirror)
 		}
-
-		diags.Append(o.DecryptMirror.CopyToPango(ctx, &decryptMirror_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.DecryptMirror.CopyToPango(ctx, ancestors, &decryptMirror_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1438,8 +2126,8 @@ func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			ha_entry = new(aggregate.Ha)
 		}
-
-		diags.Append(o.Ha.CopyToPango(ctx, &ha_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Ha.CopyToPango(ctx, ancestors, &ha_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1451,8 +2139,8 @@ func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			layer2_entry = new(aggregate.Layer2)
 		}
-
-		diags.Append(o.Layer2.CopyToPango(ctx, &layer2_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Layer2.CopyToPango(ctx, ancestors, &layer2_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1464,8 +2152,8 @@ func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			layer3_entry = new(aggregate.Layer3)
 		}
-
-		diags.Append(o.Layer3.CopyToPango(ctx, &layer3_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Layer3.CopyToPango(ctx, ancestors, &layer3_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1477,8 +2165,8 @@ func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			virtualWire_entry = new(aggregate.VirtualWire)
 		}
-
-		diags.Append(o.VirtualWire.CopyToPango(ctx, &virtualWire_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.VirtualWire.CopyToPango(ctx, ancestors, &virtualWire_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1497,7 +2185,7 @@ func (o *AggregateInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceDecryptMirrorObject) CopyToPango(ctx context.Context, obj **aggregate.DecryptMirror, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceDecryptMirrorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.DecryptMirror, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1506,7 +2194,7 @@ func (o *AggregateInterfaceDataSourceDecryptMirrorObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceHaObject) CopyToPango(ctx context.Context, obj **aggregate.Ha, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceHaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Ha, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lacp_entry *aggregate.HaLacp
 	if o.Lacp != nil {
@@ -1515,8 +2203,8 @@ func (o *AggregateInterfaceDataSourceHaObject) CopyToPango(ctx context.Context, 
 		} else {
 			lacp_entry = new(aggregate.HaLacp)
 		}
-
-		diags.Append(o.Lacp.CopyToPango(ctx, &lacp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lacp.CopyToPango(ctx, append(ancestors, o), &lacp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1529,7 +2217,7 @@ func (o *AggregateInterfaceDataSourceHaObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceHaLacpObject) CopyToPango(ctx context.Context, obj **aggregate.HaLacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceHaLacpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.HaLacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	fastFailover_value := o.FastFailover.ValueBoolPointer()
@@ -1550,7 +2238,7 @@ func (o *AggregateInterfaceDataSourceHaLacpObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer2Object) CopyToPango(ctx context.Context, obj **aggregate.Layer2, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lacp_entry *aggregate.Layer2Lacp
 	if o.Lacp != nil {
@@ -1559,8 +2247,8 @@ func (o *AggregateInterfaceDataSourceLayer2Object) CopyToPango(ctx context.Conte
 		} else {
 			lacp_entry = new(aggregate.Layer2Lacp)
 		}
-
-		diags.Append(o.Lacp.CopyToPango(ctx, &lacp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lacp.CopyToPango(ctx, append(ancestors, o), &lacp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1572,8 +2260,8 @@ func (o *AggregateInterfaceDataSourceLayer2Object) CopyToPango(ctx context.Conte
 		} else {
 			lldp_entry = new(aggregate.Layer2Lldp)
 		}
-
-		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lldp.CopyToPango(ctx, append(ancestors, o), &lldp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1589,7 +2277,7 @@ func (o *AggregateInterfaceDataSourceLayer2Object) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2Lacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	fastFailover_value := o.FastFailover.ValueBoolPointer()
@@ -1600,8 +2288,8 @@ func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyToPango(ctx context.C
 		} else {
 			highAvailability_entry = new(aggregate.Layer2LacpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1624,7 +2312,7 @@ func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2LacpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -1635,7 +2323,7 @@ func (o *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) CopyToPan
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer2LldpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2LldpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2Lldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var highAvailability_entry *aggregate.Layer2LldpHighAvailability
@@ -1645,8 +2333,8 @@ func (o *AggregateInterfaceDataSourceLayer2LldpObject) CopyToPango(ctx context.C
 		} else {
 			highAvailability_entry = new(aggregate.Layer2LldpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1662,7 +2350,7 @@ func (o *AggregateInterfaceDataSourceLayer2LldpObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2LldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -1673,7 +2361,7 @@ func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) CopyToPan
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var adjustTcpMss_entry *aggregate.Layer3AdjustTcpMss
 	if o.AdjustTcpMss != nil {
@@ -1682,8 +2370,8 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		} else {
 			adjustTcpMss_entry = new(aggregate.Layer3AdjustTcpMss)
 		}
-
-		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, &adjustTcpMss_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, append(ancestors, o), &adjustTcpMss_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1698,7 +2386,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		}
 		for _, elt := range arp_tf_entries {
 			var entry *aggregate.Layer3Arp
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1712,8 +2400,8 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		} else {
 			bonjour_entry = new(aggregate.Layer3Bonjour)
 		}
-
-		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bonjour.CopyToPango(ctx, append(ancestors, o), &bonjour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1725,8 +2413,8 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		} else {
 			ddnsConfig_entry = new(aggregate.Layer3DdnsConfig)
 		}
-
-		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DdnsConfig.CopyToPango(ctx, append(ancestors, o), &ddnsConfig_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1740,8 +2428,8 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		} else {
 			dhcpClient_entry = new(aggregate.Layer3DhcpClient)
 		}
-
-		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DhcpClient.CopyToPango(ctx, append(ancestors, o), &dhcpClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1757,7 +2445,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		}
 		for _, elt := range ip_tf_entries {
 			var entry *aggregate.Layer3Ip
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1771,8 +2459,8 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		} else {
 			ipv6_entry = new(aggregate.Layer3Ipv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1784,8 +2472,8 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		} else {
 			lacp_entry = new(aggregate.Layer3Lacp)
 		}
-
-		diags.Append(o.Lacp.CopyToPango(ctx, &lacp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lacp.CopyToPango(ctx, append(ancestors, o), &lacp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1797,8 +2485,8 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		} else {
 			lldp_entry = new(aggregate.Layer3Lldp)
 		}
-
-		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lldp.CopyToPango(ctx, append(ancestors, o), &lldp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1811,8 +2499,8 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		} else {
 			ndpProxy_entry = new(aggregate.Layer3NdpProxy)
 		}
-
-		diags.Append(o.NdpProxy.CopyToPango(ctx, &ndpProxy_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.NdpProxy.CopyToPango(ctx, append(ancestors, o), &ndpProxy_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1825,8 +2513,8 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 		} else {
 			sdwanLinkSettings_entry = new(aggregate.Layer3SdwanLinkSettings)
 		}
-
-		diags.Append(o.SdwanLinkSettings.CopyToPango(ctx, &sdwanLinkSettings_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SdwanLinkSettings.CopyToPango(ctx, append(ancestors, o), &sdwanLinkSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1856,7 +2544,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
@@ -1871,7 +2559,7 @@ func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Arp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -1883,7 +2571,7 @@ func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	groupId_value := o.GroupId.ValueInt64Pointer()
@@ -1898,7 +2586,7 @@ func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ddnsCertProfile_value := o.DdnsCertProfile.ValueStringPointer()
 	ddnsEnabled_value := o.DdnsEnabled.ValueBoolPointer()
@@ -1925,7 +2613,7 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyToPango(ctx con
 		}
 		for _, elt := range ddnsVendorConfig_tf_entries {
 			var entry *aggregate.Layer3DdnsConfigDdnsVendorConfig
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1947,7 +2635,7 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DdnsConfigDdnsVendorConfig, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -1959,7 +2647,7 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) Cop
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
@@ -1971,8 +2659,8 @@ func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyToPango(ctx con
 		} else {
 			sendHostname_entry = new(aggregate.Layer3DhcpClientSendHostname)
 		}
-
-		diags.Append(o.SendHostname.CopyToPango(ctx, &sendHostname_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SendHostname.CopyToPango(ctx, append(ancestors, o), &sendHostname_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1988,7 +2676,7 @@ func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	hostname_value := o.Hostname.ValueStringPointer()
@@ -2001,7 +2689,7 @@ func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) CopyToP
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	sdwanGateway_value := o.SdwanGateway.ValueStringPointer()
 
@@ -2013,7 +2701,7 @@ func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6AddressObject
 	var address_pango_entries []aggregate.Layer3Ipv6Address
@@ -2025,26 +2713,11 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyToPango(ctx context.C
 		}
 		for _, elt := range address_tf_entries {
 			var entry *aggregate.Layer3Ipv6Address
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
 			address_pango_entries = append(address_pango_entries, *entry)
-		}
-	}
-	enabled_value := o.Enabled.ValueBoolPointer()
-	interfaceId_value := o.InterfaceId.ValueStringPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6NeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6NeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
 		}
 	}
 	var dhcpClient_entry *aggregate.Layer3Ipv6DhcpClient
@@ -2054,12 +2727,13 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyToPango(ctx context.C
 		} else {
 			dhcpClient_entry = new(aggregate.Layer3Ipv6DhcpClient)
 		}
-
-		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DhcpClient.CopyToPango(ctx, append(ancestors, o), &dhcpClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	enabled_value := o.Enabled.ValueBoolPointer()
 	var inherited_entry *aggregate.Layer3Ipv6Inherited
 	if o.Inherited != nil {
 		if *obj != nil && (*obj).Inherited != nil {
@@ -2067,8 +2741,22 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyToPango(ctx context.C
 		} else {
 			inherited_entry = new(aggregate.Layer3Ipv6Inherited)
 		}
-
-		diags.Append(o.Inherited.CopyToPango(ctx, &inherited_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Inherited.CopyToPango(ctx, append(ancestors, o), &inherited_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	interfaceId_value := o.InterfaceId.ValueStringPointer()
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6NeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6NeighborDiscovery)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2078,15 +2766,15 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyToPango(ctx context.C
 		*obj = new(aggregate.Layer3Ipv6)
 	}
 	(*obj).Address = address_pango_entries
+	(*obj).DhcpClient = dhcpClient_entry
 	(*obj).Enabled = enabled_value
+	(*obj).Inherited = inherited_entry
 	(*obj).InterfaceId = interfaceId_value
 	(*obj).NeighborDiscovery = neighborDiscovery_entry
-	(*obj).DhcpClient = dhcpClient_entry
-	(*obj).Inherited = inherited_entry
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *aggregate.Layer3Ipv6AddressPrefix
@@ -2096,8 +2784,8 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyToPango(ctx co
 		} else {
 			prefix_entry = new(aggregate.Layer3Ipv6AddressPrefix)
 		}
-
-		diags.Append(o.Prefix.CopyToPango(ctx, &prefix_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Prefix.CopyToPango(ctx, append(ancestors, o), &prefix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2109,8 +2797,8 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyToPango(ctx co
 		} else {
 			anycast_entry = new(aggregate.Layer3Ipv6AddressAnycast)
 		}
-
-		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Anycast.CopyToPango(ctx, append(ancestors, o), &anycast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2122,8 +2810,8 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyToPango(ctx co
 		} else {
 			advertise_entry = new(aggregate.Layer3Ipv6AddressAdvertise)
 		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2140,7 +2828,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2149,7 +2837,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) CopyToPango(
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2158,7 +2846,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) CopyToPango
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	validLifetime_value := o.ValidLifetime.ValueStringPointer()
@@ -2177,7 +2865,1150 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) CopyToPan
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
+	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
+	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	preference_value := o.Preference.ValueStringPointer()
+	var prefixDelegation_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegation
+	if o.PrefixDelegation != nil {
+		if *obj != nil && (*obj).PrefixDelegation != nil {
+			prefixDelegation_entry = (*obj).PrefixDelegation
+		} else {
+			prefixDelegation_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.PrefixDelegation.CopyToPango(ctx, append(ancestors, o), &prefixDelegation_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var v6Options_entry *aggregate.Layer3Ipv6DhcpClientV6Options
+	if o.V6Options != nil {
+		if *obj != nil && (*obj).V6Options != nil {
+			v6Options_entry = (*obj).V6Options
+		} else {
+			v6Options_entry = new(aggregate.Layer3Ipv6DhcpClientV6Options)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.V6Options.CopyToPango(ctx, append(ancestors, o), &v6Options_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClient)
+	}
+	(*obj).AcceptRaRoute = acceptRaRoute_value
+	(*obj).DefaultRouteMetric = defaultRouteMetric_value
+	(*obj).Enable = enable_value
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
+	(*obj).Preference = preference_value
+	(*obj).PrefixDelegation = prefixDelegation_entry
+	(*obj).V6Options = v6Options_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
+	var dnsServer_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer
+	if o.DnsServer != nil {
+		if *obj != nil && (*obj).DnsServer != nil {
+			dnsServer_entry = (*obj).DnsServer
+		} else {
+			dnsServer_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DnsServer.CopyToPango(ctx, append(ancestors, o), &dnsServer_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSuffix_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix
+	if o.DnsSuffix != nil {
+		if *obj != nil && (*obj).DnsSuffix != nil {
+			dnsSuffix_entry = (*obj).DnsSuffix
+		} else {
+			dnsSuffix_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DnsSuffix.CopyToPango(ctx, append(ancestors, o), &dnsSuffix_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableDad_value := o.EnableDad.ValueBoolPointer()
+	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
+	var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
+	var neighbor_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
+	{
+		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range neighbor_tf_entries {
+			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
+		}
+	}
+	nsInterval_value := o.NsInterval.ValueInt64Pointer()
+	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
+	}
+	(*obj).DadAttempts = dadAttempts_value
+	(*obj).DnsServer = dnsServer_entry
+	(*obj).DnsSuffix = dnsSuffix_entry
+	(*obj).EnableDad = enableDad_value
+	(*obj).EnableNdpMonitor = enableNdpMonitor_value
+	(*obj).Neighbor = neighbor_pango_entries
+	(*obj).NsInterval = nsInterval_value
+	(*obj).ReachableTime = reachableTime_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
+	var server_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
+	{
+		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range server_tf_entries {
+			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_pango_entries = append(server_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
+	}
+	(*obj).Server = server_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+	var suffix_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
+	{
+		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range suffix_tf_entries {
+			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_pango_entries = append(suffix_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
+	}
+	(*obj).Suffix = suffix_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Enable.CopyToPango(ctx, append(ancestors, o), &enable_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
+	}
+	(*obj).Enable = enable_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
+	}
+	(*obj).No = no_entry
+	(*obj).Yes = yes_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
+	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
+	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
+	}
+	(*obj).PfxPoolName = pfxPoolName_value
+	(*obj).PrefixLen = prefixLen_value
+	(*obj).PrefixLenHint = prefixLenHint_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	duidType_value := o.DuidType.ValueStringPointer()
+	var enable_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Enable.CopyToPango(ctx, append(ancestors, o), &enable_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
+	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6Options)
+	}
+	(*obj).DuidType = duidType_value
+	(*obj).Enable = enable_entry
+	(*obj).RapidCommit = rapidCommit_value
+	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
+	}
+	(*obj).No = no_entry
+	(*obj).Yes = yes_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
+	tempAddr_value := o.TempAddr.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
+	}
+	(*obj).NonTempAddr = nonTempAddr_value
+	(*obj).TempAddr = tempAddr_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var assignAddr_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject
+	var assignAddr_pango_entries []aggregate.Layer3Ipv6InheritedAssignAddr
+	{
+		d := o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range assignAddr_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedAssignAddr
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			assignAddr_pango_entries = append(assignAddr_pango_entries, *entry)
+		}
+	}
+	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6InheritedNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6Inherited)
+	}
+	(*obj).AssignAddr = assignAddr_pango_entries
+	(*obj).Enable = enable_value
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var type_entry *aggregate.Layer3Ipv6InheritedAssignAddrType
+	if o.Type != nil {
+		if *obj != nil && (*obj).Type != nil {
+			type_entry = (*obj).Type
+		} else {
+			type_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddr)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Type = type_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var gua_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua
+	if o.Gua != nil {
+		if *obj != nil && (*obj).Gua != nil {
+			gua_entry = (*obj).Gua
+		} else {
+			gua_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Gua.CopyToPango(ctx, append(ancestors, o), &gua_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ula_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla
+	if o.Ula != nil {
+		if *obj != nil && (*obj).Ula != nil {
+			ula_entry = (*obj).Ula
+		} else {
+			ula_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Ula.CopyToPango(ctx, append(ancestors, o), &ula_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
+	}
+	(*obj).Gua = gua_entry
+	(*obj).Ula = ula_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+	var poolType_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType
+	if o.PoolType != nil {
+		if *obj != nil && (*obj).PoolType != nil {
+			poolType_entry = (*obj).PoolType
+		} else {
+			poolType_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.PoolType.CopyToPango(ctx, append(ancestors, o), &poolType_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
+	}
+	(*obj).EnableOnInterface = enableOnInterface_value
+	(*obj).PrefixPool = prefixPool_value
+	(*obj).PoolType = poolType_entry
+	(*obj).Advertise = advertise_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dynamic_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
+	if o.Dynamic != nil {
+		if *obj != nil && (*obj).Dynamic != nil {
+			dynamic_entry = (*obj).Dynamic
+		} else {
+			dynamic_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dynamic.CopyToPango(ctx, append(ancestors, o), &dynamic_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dynamicId_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
+	if o.DynamicId != nil {
+		if *obj != nil && (*obj).DynamicId != nil {
+			dynamicId_entry = (*obj).DynamicId
+		} else {
+			dynamicId_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DynamicId.CopyToPango(ctx, append(ancestors, o), &dynamicId_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
+	}
+	(*obj).Dynamic = dynamic_entry
+	(*obj).DynamicId = dynamicId_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	identifier_value := o.Identifier.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
+	}
+	(*obj).Identifier = identifier_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
+	}
+	(*obj).Enable = enable_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	address_value := o.Address.ValueStringPointer()
+	prefix_value := o.Prefix.ValueBoolPointer()
+	anycast_value := o.Anycast.ValueBoolPointer()
+	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
+	}
+	(*obj).EnableOnInterface = enableOnInterface_value
+	(*obj).Address = address_value
+	(*obj).Prefix = prefix_value
+	(*obj).Anycast = anycast_value
+	(*obj).Advertise = advertise_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	validLifetime_value := o.ValidLifetime.ValueStringPointer()
+	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
+	}
+	(*obj).Enable = enable_value
+	(*obj).ValidLifetime = validLifetime_value
+	(*obj).PreferredLifetime = preferredLifetime_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
+	var dnsServer_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer
+	if o.DnsServer != nil {
+		if *obj != nil && (*obj).DnsServer != nil {
+			dnsServer_entry = (*obj).DnsServer
+		} else {
+			dnsServer_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DnsServer.CopyToPango(ctx, append(ancestors, o), &dnsServer_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSuffix_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix
+	if o.DnsSuffix != nil {
+		if *obj != nil && (*obj).DnsSuffix != nil {
+			dnsSuffix_entry = (*obj).DnsSuffix
+		} else {
+			dnsSuffix_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DnsSuffix.CopyToPango(ctx, append(ancestors, o), &dnsSuffix_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableDad_value := o.EnableDad.ValueBoolPointer()
+	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
+	var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
+	var neighbor_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
+	{
+		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range neighbor_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
+		}
+	}
+	nsInterval_value := o.NsInterval.ValueInt64Pointer()
+	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
+	var routerAdvertisement_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement
+	if o.RouterAdvertisement != nil {
+		if *obj != nil && (*obj).RouterAdvertisement != nil {
+			routerAdvertisement_entry = (*obj).RouterAdvertisement
+		} else {
+			routerAdvertisement_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, append(ancestors, o), &routerAdvertisement_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
+	}
+	(*obj).DadAttempts = dadAttempts_value
+	(*obj).DnsServer = dnsServer_entry
+	(*obj).DnsSuffix = dnsSuffix_entry
+	(*obj).EnableDad = enableDad_value
+	(*obj).EnableNdpMonitor = enableNdpMonitor_value
+	(*obj).Neighbor = neighbor_pango_entries
+	(*obj).NsInterval = nsInterval_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RouterAdvertisement = routerAdvertisement_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
+	}
+	(*obj).PrefixPool = prefixPool_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+	var server_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+	{
+		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range server_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_pango_entries = append(server_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
+	}
+	(*obj).Server = server_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
+	}
+	(*obj).PrefixPool = prefixPool_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+	var suffix_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+	{
+		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range suffix_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_pango_entries = append(suffix_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
+	}
+	(*obj).Suffix = suffix_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
+	hopLimit_value := o.HopLimit.ValueStringPointer()
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
+	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
+	minInterval_value := o.MinInterval.ValueInt64Pointer()
+	otherFlag_value := o.OtherFlag.ValueBoolPointer()
+	reachableTime_value := o.ReachableTime.ValueStringPointer()
+	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+	}
+	(*obj).Enable = enable_value
+	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
+	(*obj).HopLimit = hopLimit_value
+	(*obj).Lifetime = lifetime_value
+	(*obj).LinkMtu = linkMtu_value
+	(*obj).ManagedFlag = managedFlag_value
+	(*obj).MaxInterval = maxInterval_value
+	(*obj).MinInterval = minInterval_value
+	(*obj).OtherFlag = otherFlag_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RetransmissionTimer = retransmissionTimer_value
+	(*obj).RouterPreference = routerPreference_value
+
+	return diags
+}
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	enableDad_value := o.EnableDad.ValueBoolPointer()
@@ -2192,7 +4023,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyToPa
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *aggregate.Layer3Ipv6NeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2208,8 +4039,8 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyToPa
 		} else {
 			routerAdvertisement_entry = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement)
 		}
-
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, append(ancestors, o), &routerAdvertisement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2228,7 +4059,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyToPa
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -2240,7 +4071,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) 
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSupport_entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport
 	if o.DnsSupport != nil {
@@ -2249,8 +4080,8 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 		} else {
 			dnsSupport_entry = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport)
 		}
-
-		diags.Append(o.DnsSupport.CopyToPango(ctx, &dnsSupport_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DnsSupport.CopyToPango(ctx, append(ancestors, o), &dnsSupport_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2287,7 +4118,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
@@ -2300,7 +4131,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 		}
 		for _, elt := range server_tf_entries {
 			var entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2317,7 +4148,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 		}
 		for _, elt := range suffix_tf_entries {
 			var entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2334,7 +4165,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -2346,7 +4177,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -2358,1150 +4189,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
-	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	preference_value := o.Preference.ValueStringPointer()
-	var prefixDelegation_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegation
-	if o.PrefixDelegation != nil {
-		if *obj != nil && (*obj).PrefixDelegation != nil {
-			prefixDelegation_entry = (*obj).PrefixDelegation
-		} else {
-			prefixDelegation_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
-		}
-
-		diags.Append(o.PrefixDelegation.CopyToPango(ctx, &prefixDelegation_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var v6Options_entry *aggregate.Layer3Ipv6DhcpClientV6Options
-	if o.V6Options != nil {
-		if *obj != nil && (*obj).V6Options != nil {
-			v6Options_entry = (*obj).V6Options
-		} else {
-			v6Options_entry = new(aggregate.Layer3Ipv6DhcpClientV6Options)
-		}
-
-		diags.Append(o.V6Options.CopyToPango(ctx, &v6Options_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClient)
-	}
-	(*obj).AcceptRaRoute = acceptRaRoute_value
-	(*obj).DefaultRouteMetric = defaultRouteMetric_value
-	(*obj).Enable = enable_value
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
-	(*obj).Preference = preference_value
-	(*obj).PrefixDelegation = prefixDelegation_entry
-	(*obj).V6Options = v6Options_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
-	var dnsServer_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
-		if *obj != nil && (*obj).DnsServer != nil {
-			dnsServer_entry = (*obj).DnsServer
-		} else {
-			dnsServer_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer)
-		}
-
-		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSuffix_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
-		if *obj != nil && (*obj).DnsSuffix != nil {
-			dnsSuffix_entry = (*obj).DnsSuffix
-		} else {
-			dnsSuffix_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
-		}
-
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	enableDad_value := o.EnableDad.ValueBoolPointer()
-	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
-	var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
-	var neighbor_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
-	{
-		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range neighbor_tf_entries {
-			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
-		}
-	}
-	nsInterval_value := o.NsInterval.ValueInt64Pointer()
-	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
-	}
-	(*obj).DadAttempts = dadAttempts_value
-	(*obj).DnsServer = dnsServer_entry
-	(*obj).DnsSuffix = dnsSuffix_entry
-	(*obj).EnableDad = enableDad_value
-	(*obj).EnableNdpMonitor = enableNdpMonitor_value
-	(*obj).Neighbor = neighbor_pango_entries
-	(*obj).NsInterval = nsInterval_value
-	(*obj).ReachableTime = reachableTime_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-	var server_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
-	{
-		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range server_tf_entries {
-			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			server_pango_entries = append(server_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
-	}
-	(*obj).Server = server_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-	var suffix_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
-	{
-		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range suffix_tf_entries {
-			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			suffix_pango_entries = append(suffix_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
-	}
-	(*obj).Suffix = suffix_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var enable_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
-	}
-	(*obj).Enable = enable_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
-	}
-	(*obj).No = no_entry
-	(*obj).Yes = yes_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
-	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
-	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
-	}
-	(*obj).PfxPoolName = pfxPoolName_value
-	(*obj).PrefixLen = prefixLen_value
-	(*obj).PrefixLenHint = prefixLenHint_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	duidType_value := o.DuidType.ValueStringPointer()
-	var enable_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
-	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6Options)
-	}
-	(*obj).DuidType = duidType_value
-	(*obj).Enable = enable_entry
-	(*obj).RapidCommit = rapidCommit_value
-	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
-	}
-	(*obj).No = no_entry
-	(*obj).Yes = yes_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
-	tempAddr_value := o.TempAddr.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
-	}
-	(*obj).NonTempAddr = nonTempAddr_value
-	(*obj).TempAddr = tempAddr_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var assignAddr_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject
-	var assignAddr_pango_entries []aggregate.Layer3Ipv6InheritedAssignAddr
-	{
-		d := o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range assignAddr_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedAssignAddr
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			assignAddr_pango_entries = append(assignAddr_pango_entries, *entry)
-		}
-	}
-	enable_value := o.Enable.ValueBoolPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6InheritedNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6Inherited)
-	}
-	(*obj).AssignAddr = assignAddr_pango_entries
-	(*obj).Enable = enable_value
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var type_entry *aggregate.Layer3Ipv6InheritedAssignAddrType
-	if o.Type != nil {
-		if *obj != nil && (*obj).Type != nil {
-			type_entry = (*obj).Type
-		} else {
-			type_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
-		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddr)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Type = type_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var gua_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua
-	if o.Gua != nil {
-		if *obj != nil && (*obj).Gua != nil {
-			gua_entry = (*obj).Gua
-		} else {
-			gua_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
-		}
-
-		diags.Append(o.Gua.CopyToPango(ctx, &gua_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ula_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla
-	if o.Ula != nil {
-		if *obj != nil && (*obj).Ula != nil {
-			ula_entry = (*obj).Ula
-		} else {
-			ula_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
-		}
-
-		diags.Append(o.Ula.CopyToPango(ctx, &ula_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
-	}
-	(*obj).Gua = gua_entry
-	(*obj).Ula = ula_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-	var poolType_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType
-	if o.PoolType != nil {
-		if *obj != nil && (*obj).PoolType != nil {
-			poolType_entry = (*obj).PoolType
-		} else {
-			poolType_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
-		}
-
-		diags.Append(o.PoolType.CopyToPango(ctx, &poolType_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
-	}
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).PrefixPool = prefixPool_value
-	(*obj).PoolType = poolType_entry
-	(*obj).Advertise = advertise_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dynamic_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
-	if o.Dynamic != nil {
-		if *obj != nil && (*obj).Dynamic != nil {
-			dynamic_entry = (*obj).Dynamic
-		} else {
-			dynamic_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
-		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dynamicId_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
-	if o.DynamicId != nil {
-		if *obj != nil && (*obj).DynamicId != nil {
-			dynamicId_entry = (*obj).DynamicId
-		} else {
-			dynamicId_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
-		}
-
-		diags.Append(o.DynamicId.CopyToPango(ctx, &dynamicId_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
-	}
-	(*obj).Dynamic = dynamic_entry
-	(*obj).DynamicId = dynamicId_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	identifier_value := o.Identifier.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
-	}
-	(*obj).Identifier = identifier_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	address_value := o.Address.ValueStringPointer()
-	prefix_value := o.Prefix.ValueBoolPointer()
-	anycast_value := o.Anycast.ValueBoolPointer()
-	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
-	}
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).Address = address_value
-	(*obj).Prefix = prefix_value
-	(*obj).Anycast = anycast_value
-	(*obj).Advertise = advertise_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	validLifetime_value := o.ValidLifetime.ValueStringPointer()
-	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).ValidLifetime = validLifetime_value
-	(*obj).PreferredLifetime = preferredLifetime_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
-	var dnsServer_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
-		if *obj != nil && (*obj).DnsServer != nil {
-			dnsServer_entry = (*obj).DnsServer
-		} else {
-			dnsServer_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
-		}
-
-		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSuffix_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
-		if *obj != nil && (*obj).DnsSuffix != nil {
-			dnsSuffix_entry = (*obj).DnsSuffix
-		} else {
-			dnsSuffix_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
-		}
-
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	enableDad_value := o.EnableDad.ValueBoolPointer()
-	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
-	var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
-	var neighbor_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
-	{
-		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range neighbor_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
-		}
-	}
-	nsInterval_value := o.NsInterval.ValueInt64Pointer()
-	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
-	var routerAdvertisement_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement
-	if o.RouterAdvertisement != nil {
-		if *obj != nil && (*obj).RouterAdvertisement != nil {
-			routerAdvertisement_entry = (*obj).RouterAdvertisement
-		} else {
-			routerAdvertisement_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
-		}
-
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
-	}
-	(*obj).DadAttempts = dadAttempts_value
-	(*obj).DnsServer = dnsServer_entry
-	(*obj).DnsSuffix = dnsSuffix_entry
-	(*obj).EnableDad = enableDad_value
-	(*obj).EnableNdpMonitor = enableNdpMonitor_value
-	(*obj).Neighbor = neighbor_pango_entries
-	(*obj).NsInterval = nsInterval_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).RouterAdvertisement = routerAdvertisement_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
-	}
-	(*obj).PrefixPool = prefixPool_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-	var server_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-	{
-		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range server_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			server_pango_entries = append(server_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
-	}
-	(*obj).Server = server_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
-	}
-	(*obj).PrefixPool = prefixPool_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-	var suffix_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-	{
-		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range suffix_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			suffix_pango_entries = append(suffix_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
-	}
-	(*obj).Suffix = suffix_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
-	hopLimit_value := o.HopLimit.ValueStringPointer()
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-	linkMtu_value := o.LinkMtu.ValueStringPointer()
-	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
-	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
-	minInterval_value := o.MinInterval.ValueInt64Pointer()
-	otherFlag_value := o.OtherFlag.ValueBoolPointer()
-	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
-	}
-	(*obj).Enable = enable_value
-	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
-	(*obj).HopLimit = hopLimit_value
-	(*obj).Lifetime = lifetime_value
-	(*obj).LinkMtu = linkMtu_value
-	(*obj).ManagedFlag = managedFlag_value
-	(*obj).MaxInterval = maxInterval_value
-	(*obj).MinInterval = minInterval_value
-	(*obj).OtherFlag = otherFlag_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).RetransmissionTimer = retransmissionTimer_value
-	(*obj).RouterPreference = routerPreference_value
-
-	return diags
-}
-func (o *AggregateInterfaceDataSourceLayer3LacpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3LacpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Lacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	fastFailover_value := o.FastFailover.ValueBoolPointer()
@@ -3512,8 +4200,8 @@ func (o *AggregateInterfaceDataSourceLayer3LacpObject) CopyToPango(ctx context.C
 		} else {
 			highAvailability_entry = new(aggregate.Layer3LacpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3536,7 +4224,7 @@ func (o *AggregateInterfaceDataSourceLayer3LacpObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3LacpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -3547,7 +4235,7 @@ func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) CopyToPan
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3LldpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3LldpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Lldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var highAvailability_entry *aggregate.Layer3LldpHighAvailability
@@ -3557,8 +4245,8 @@ func (o *AggregateInterfaceDataSourceLayer3LldpObject) CopyToPango(ctx context.C
 		} else {
 			highAvailability_entry = new(aggregate.Layer3LldpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3574,7 +4262,7 @@ func (o *AggregateInterfaceDataSourceLayer3LldpObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3LldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -3585,7 +4273,7 @@ func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) CopyToPan
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []AggregateInterfaceDataSourceLayer3NdpProxyAddressObject
 	var address_pango_entries []aggregate.Layer3NdpProxyAddress
@@ -3597,7 +4285,7 @@ func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) CopyToPango(ctx conte
 		}
 		for _, elt := range address_tf_entries {
 			var entry *aggregate.Layer3NdpProxyAddress
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3614,7 +4302,7 @@ func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3NdpProxyAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	negate_value := o.Negate.ValueBoolPointer()
 
@@ -3626,7 +4314,7 @@ func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	sdwanInterfaceProfile_value := o.SdwanInterfaceProfile.ValueStringPointer()
@@ -3637,8 +4325,8 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) CopyToPango(
 		} else {
 			upstreamNat_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNat)
 		}
-
-		diags.Append(o.UpstreamNat.CopyToPango(ctx, &upstreamNat_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.UpstreamNat.CopyToPango(ctx, append(ancestors, o), &upstreamNat_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3653,7 +4341,7 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) CopyToPango(
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNat, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var ddns_entry *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns
@@ -3663,8 +4351,8 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) C
 		} else {
 			ddns_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns)
 		}
-
-		diags.Append(o.Ddns.CopyToPango(ctx, &ddns_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ddns.CopyToPango(ctx, append(ancestors, o), &ddns_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3676,8 +4364,8 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) C
 		} else {
 			staticIp_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp)
 		}
-
-		diags.Append(o.StaticIp.CopyToPango(ctx, &staticIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.StaticIp.CopyToPango(ctx, append(ancestors, o), &staticIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3692,7 +4380,7 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) C
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3701,7 +4389,7 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObjec
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipAddress_value := o.IpAddress.ValueStringPointer()
@@ -3714,7 +4402,7 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpO
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceVirtualWireObject) CopyToPango(ctx context.Context, obj **aggregate.VirtualWire, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceVirtualWireObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.VirtualWire, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lldp_entry *aggregate.VirtualWireLldp
 	if o.Lldp != nil {
@@ -3723,8 +4411,8 @@ func (o *AggregateInterfaceDataSourceVirtualWireObject) CopyToPango(ctx context.
 		} else {
 			lldp_entry = new(aggregate.VirtualWireLldp)
 		}
-
-		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lldp.CopyToPango(ctx, append(ancestors, o), &lldp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3739,7 +4427,7 @@ func (o *AggregateInterfaceDataSourceVirtualWireObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) CopyToPango(ctx context.Context, obj **aggregate.VirtualWireLldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.VirtualWireLldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var highAvailability_entry *aggregate.VirtualWireLldpHighAvailability
@@ -3749,8 +4437,8 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) CopyToPango(ctx cont
 		} else {
 			highAvailability_entry = new(aggregate.VirtualWireLldpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3766,7 +4454,7 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.VirtualWireLldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.VirtualWireLldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -3778,13 +4466,12 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) Copy
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceModel) CopyFromPango(ctx context.Context, obj *aggregate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var decryptMirror_object *AggregateInterfaceDataSourceDecryptMirrorObject
 	if obj.DecryptMirror != nil {
 		decryptMirror_object = new(AggregateInterfaceDataSourceDecryptMirrorObject)
-
-		diags.Append(decryptMirror_object.CopyFromPango(ctx, obj.DecryptMirror, encrypted)...)
+		diags.Append(decryptMirror_object.CopyFromPango(ctx, ancestors, obj.DecryptMirror, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3792,8 +4479,7 @@ func (o *AggregateInterfaceDataSourceModel) CopyFromPango(ctx context.Context, o
 	var ha_object *AggregateInterfaceDataSourceHaObject
 	if obj.Ha != nil {
 		ha_object = new(AggregateInterfaceDataSourceHaObject)
-
-		diags.Append(ha_object.CopyFromPango(ctx, obj.Ha, encrypted)...)
+		diags.Append(ha_object.CopyFromPango(ctx, ancestors, obj.Ha, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3801,8 +4487,7 @@ func (o *AggregateInterfaceDataSourceModel) CopyFromPango(ctx context.Context, o
 	var layer2_object *AggregateInterfaceDataSourceLayer2Object
 	if obj.Layer2 != nil {
 		layer2_object = new(AggregateInterfaceDataSourceLayer2Object)
-
-		diags.Append(layer2_object.CopyFromPango(ctx, obj.Layer2, encrypted)...)
+		diags.Append(layer2_object.CopyFromPango(ctx, ancestors, obj.Layer2, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3810,8 +4495,7 @@ func (o *AggregateInterfaceDataSourceModel) CopyFromPango(ctx context.Context, o
 	var layer3_object *AggregateInterfaceDataSourceLayer3Object
 	if obj.Layer3 != nil {
 		layer3_object = new(AggregateInterfaceDataSourceLayer3Object)
-
-		diags.Append(layer3_object.CopyFromPango(ctx, obj.Layer3, encrypted)...)
+		diags.Append(layer3_object.CopyFromPango(ctx, ancestors, obj.Layer3, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3819,8 +4503,7 @@ func (o *AggregateInterfaceDataSourceModel) CopyFromPango(ctx context.Context, o
 	var virtualWire_object *AggregateInterfaceDataSourceVirtualWireObject
 	if obj.VirtualWire != nil {
 		virtualWire_object = new(AggregateInterfaceDataSourceVirtualWireObject)
-
-		diags.Append(virtualWire_object.CopyFromPango(ctx, obj.VirtualWire, encrypted)...)
+		diags.Append(virtualWire_object.CopyFromPango(ctx, ancestors, obj.VirtualWire, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3841,19 +4524,18 @@ func (o *AggregateInterfaceDataSourceModel) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceDecryptMirrorObject) CopyFromPango(ctx context.Context, obj *aggregate.DecryptMirror, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceDecryptMirrorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.DecryptMirror, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceHaObject) CopyFromPango(ctx context.Context, obj *aggregate.Ha, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceHaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Ha, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lacp_object *AggregateInterfaceDataSourceHaLacpObject
 	if obj.Lacp != nil {
 		lacp_object = new(AggregateInterfaceDataSourceHaLacpObject)
-
-		diags.Append(lacp_object.CopyFromPango(ctx, obj.Lacp, encrypted)...)
+		diags.Append(lacp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lacp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3864,7 +4546,7 @@ func (o *AggregateInterfaceDataSourceHaObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceHaLacpObject) CopyFromPango(ctx context.Context, obj *aggregate.HaLacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceHaLacpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.HaLacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -3901,13 +4583,12 @@ func (o *AggregateInterfaceDataSourceHaLacpObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer2Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer2, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lacp_object *AggregateInterfaceDataSourceLayer2LacpObject
 	if obj.Lacp != nil {
 		lacp_object = new(AggregateInterfaceDataSourceLayer2LacpObject)
-
-		diags.Append(lacp_object.CopyFromPango(ctx, obj.Lacp, encrypted)...)
+		diags.Append(lacp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lacp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3915,8 +4596,7 @@ func (o *AggregateInterfaceDataSourceLayer2Object) CopyFromPango(ctx context.Con
 	var lldp_object *AggregateInterfaceDataSourceLayer2LldpObject
 	if obj.Lldp != nil {
 		lldp_object = new(AggregateInterfaceDataSourceLayer2LldpObject)
-
-		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
+		diags.Append(lldp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lldp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3933,13 +4613,12 @@ func (o *AggregateInterfaceDataSourceLayer2Object) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer2Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2Lacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3980,7 +4659,7 @@ func (o *AggregateInterfaceDataSourceLayer2LacpObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer2LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2LacpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -3992,13 +4671,12 @@ func (o *AggregateInterfaceDataSourceLayer2LacpHighAvailabilityObject) CopyFromP
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer2LldpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer2Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2LldpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2Lldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4019,7 +4697,7 @@ func (o *AggregateInterfaceDataSourceLayer2LldpObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer2LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2LldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -4031,15 +4709,19 @@ func (o *AggregateInterfaceDataSourceLayer2LldpHighAvailabilityObject) CopyFromP
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var arp_list types.List
 	{
 		var arp_tf_entries []AggregateInterfaceDataSourceLayer3ArpObject
 		for _, elt := range obj.Arp {
-			var entry AggregateInterfaceDataSourceLayer3ArpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceDataSourceLayer3ArpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			arp_tf_entries = append(arp_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4051,9 +4733,13 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	{
 		var ip_tf_entries []AggregateInterfaceDataSourceLayer3IpObject
 		for _, elt := range obj.Ip {
-			var entry AggregateInterfaceDataSourceLayer3IpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceDataSourceLayer3IpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			ip_tf_entries = append(ip_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4064,8 +4750,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	var adjustTcpMss_object *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject
 	if obj.AdjustTcpMss != nil {
 		adjustTcpMss_object = new(AggregateInterfaceDataSourceLayer3AdjustTcpMssObject)
-
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
+		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, append(ancestors, o), obj.AdjustTcpMss, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4073,8 +4758,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	var bonjour_object *AggregateInterfaceDataSourceLayer3BonjourObject
 	if obj.Bonjour != nil {
 		bonjour_object = new(AggregateInterfaceDataSourceLayer3BonjourObject)
-
-		diags.Append(bonjour_object.CopyFromPango(ctx, obj.Bonjour, encrypted)...)
+		diags.Append(bonjour_object.CopyFromPango(ctx, append(ancestors, o), obj.Bonjour, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4082,8 +4766,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	var ddnsConfig_object *AggregateInterfaceDataSourceLayer3DdnsConfigObject
 	if obj.DdnsConfig != nil {
 		ddnsConfig_object = new(AggregateInterfaceDataSourceLayer3DdnsConfigObject)
-
-		diags.Append(ddnsConfig_object.CopyFromPango(ctx, obj.DdnsConfig, encrypted)...)
+		diags.Append(ddnsConfig_object.CopyFromPango(ctx, append(ancestors, o), obj.DdnsConfig, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4091,8 +4774,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	var dhcpClient_object *AggregateInterfaceDataSourceLayer3DhcpClientObject
 	if obj.DhcpClient != nil {
 		dhcpClient_object = new(AggregateInterfaceDataSourceLayer3DhcpClientObject)
-
-		diags.Append(dhcpClient_object.CopyFromPango(ctx, obj.DhcpClient, encrypted)...)
+		diags.Append(dhcpClient_object.CopyFromPango(ctx, append(ancestors, o), obj.DhcpClient, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4100,8 +4782,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	var ipv6_object *AggregateInterfaceDataSourceLayer3Ipv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4109,8 +4790,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	var lacp_object *AggregateInterfaceDataSourceLayer3LacpObject
 	if obj.Lacp != nil {
 		lacp_object = new(AggregateInterfaceDataSourceLayer3LacpObject)
-
-		diags.Append(lacp_object.CopyFromPango(ctx, obj.Lacp, encrypted)...)
+		diags.Append(lacp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lacp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4118,8 +4798,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	var lldp_object *AggregateInterfaceDataSourceLayer3LldpObject
 	if obj.Lldp != nil {
 		lldp_object = new(AggregateInterfaceDataSourceLayer3LldpObject)
-
-		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
+		diags.Append(lldp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lldp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4127,8 +4806,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	var ndpProxy_object *AggregateInterfaceDataSourceLayer3NdpProxyObject
 	if obj.NdpProxy != nil {
 		ndpProxy_object = new(AggregateInterfaceDataSourceLayer3NdpProxyObject)
-
-		diags.Append(ndpProxy_object.CopyFromPango(ctx, obj.NdpProxy, encrypted)...)
+		diags.Append(ndpProxy_object.CopyFromPango(ctx, append(ancestors, o), obj.NdpProxy, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4136,8 +4814,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	var sdwanLinkSettings_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject
 	if obj.SdwanLinkSettings != nil {
 		sdwanLinkSettings_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject)
-
-		diags.Append(sdwanLinkSettings_object.CopyFromPango(ctx, obj.SdwanLinkSettings, encrypted)...)
+		diags.Append(sdwanLinkSettings_object.CopyFromPango(ctx, append(ancestors, o), obj.SdwanLinkSettings, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4188,7 +4865,7 @@ func (o *AggregateInterfaceDataSourceLayer3Object) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4210,7 +4887,7 @@ func (o *AggregateInterfaceDataSourceLayer3AdjustTcpMssObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Arp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -4223,7 +4900,7 @@ func (o *AggregateInterfaceDataSourceLayer3ArpObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4245,27 +4922,37 @@ func (o *AggregateInterfaceDataSourceLayer3BonjourObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ddnsIp_list types.List
 	{
 		var list_diags diag.Diagnostics
 		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var ddnsIpv6_list types.List
 	{
 		var list_diags diag.Diagnostics
 		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var ddnsVendorConfig_list types.List
 	{
 		var ddnsVendorConfig_tf_entries []AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject
 		for _, elt := range obj.DdnsVendorConfig {
-			var entry AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			ddnsVendorConfig_tf_entries = append(ddnsVendorConfig_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4306,7 +4993,7 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DdnsConfigDdnsVendorConfig, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -4319,13 +5006,12 @@ func (o *AggregateInterfaceDataSourceLayer3DdnsConfigDdnsVendorConfigObject) Cop
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var sendHostname_object *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject
 	if obj.SendHostname != nil {
 		sendHostname_object = new(AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject)
-
-		diags.Append(sendHostname_object.CopyFromPango(ctx, obj.SendHostname, encrypted)...)
+		diags.Append(sendHostname_object.CopyFromPango(ctx, append(ancestors, o), obj.SendHostname, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4351,7 +5037,7 @@ func (o *AggregateInterfaceDataSourceLayer3DhcpClientObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4368,7 +5054,7 @@ func (o *AggregateInterfaceDataSourceLayer3DhcpClientSendHostnameObject) CopyFro
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var sdwanGateway_value types.String
@@ -4381,15 +5067,19 @@ func (o *AggregateInterfaceDataSourceLayer3IpObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6AddressObject
 		for _, elt := range obj.Address {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6AddressObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceDataSourceLayer3Ipv6AddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			address_tf_entries = append(address_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4397,20 +5087,10 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyFromPango(ctx context
 		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var neighborDiscovery_object *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject
-	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject)
-
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var dhcpClient_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject
 	if obj.DhcpClient != nil {
 		dhcpClient_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject)
-
-		diags.Append(dhcpClient_object.CopyFromPango(ctx, obj.DhcpClient, encrypted)...)
+		diags.Append(dhcpClient_object.CopyFromPango(ctx, append(ancestors, o), obj.DhcpClient, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4418,8 +5098,15 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyFromPango(ctx context
 	var inherited_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject
 	if obj.Inherited != nil {
 		inherited_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedObject)
-
-		diags.Append(inherited_object.CopyFromPango(ctx, obj.Inherited, encrypted)...)
+		diags.Append(inherited_object.CopyFromPango(ctx, append(ancestors, o), obj.Inherited, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var neighborDiscovery_object *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject
+	if obj.NeighborDiscovery != nil {
+		neighborDiscovery_object = new(AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject)
+		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4434,22 +5121,21 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6Object) CopyFromPango(ctx context
 		interfaceId_value = types.StringValue(*obj.InterfaceId)
 	}
 	o.Address = address_list
+	o.DhcpClient = dhcpClient_object
 	o.Enabled = enabled_value
+	o.Inherited = inherited_object
 	o.InterfaceId = interfaceId_value
 	o.NeighborDiscovery = neighborDiscovery_object
-	o.DhcpClient = dhcpClient_object
-	o.Inherited = inherited_object
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var prefix_object *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject
 	if obj.Prefix != nil {
 		prefix_object = new(AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject)
-
-		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
+		diags.Append(prefix_object.CopyFromPango(ctx, append(ancestors, o), obj.Prefix, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4457,8 +5143,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyFromPango(ctx 
 	var anycast_object *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject
 	if obj.Anycast != nil {
 		anycast_object = new(AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject)
-
-		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
+		diags.Append(anycast_object.CopyFromPango(ctx, append(ancestors, o), obj.Anycast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4466,8 +5151,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyFromPango(ctx 
 	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject
 	if obj.Advertise != nil {
 		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
+		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4486,19 +5170,19 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressPrefixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAnycastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4530,15 +5214,1087 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) CopyFromP
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighborDiscovery_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
+	if obj.NeighborDiscovery != nil {
+		neighborDiscovery_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject)
+		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var prefixDelegation_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject
+	if obj.PrefixDelegation != nil {
+		prefixDelegation_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject)
+		diags.Append(prefixDelegation_object.CopyFromPango(ctx, append(ancestors, o), obj.PrefixDelegation, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var v6Options_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject
+	if obj.V6Options != nil {
+		v6Options_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject)
+		diags.Append(v6Options_object.CopyFromPango(ctx, append(ancestors, o), obj.V6Options, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var acceptRaRoute_value types.Bool
+	if obj.AcceptRaRoute != nil {
+		acceptRaRoute_value = types.BoolValue(*obj.AcceptRaRoute)
+	}
+	var defaultRouteMetric_value types.Int64
+	if obj.DefaultRouteMetric != nil {
+		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var preference_value types.String
+	if obj.Preference != nil {
+		preference_value = types.StringValue(*obj.Preference)
+	}
+	o.AcceptRaRoute = acceptRaRoute_value
+	o.DefaultRouteMetric = defaultRouteMetric_value
+	o.Enable = enable_value
+	o.NeighborDiscovery = neighborDiscovery_object
+	o.Preference = preference_value
+	o.PrefixDelegation = prefixDelegation_object
+	o.V6Options = v6Options_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighbor_list types.List
+	{
+		var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
+		for _, elt := range obj.Neighbor {
+			entry := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("neighbor")
+		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var dnsServer_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject
+	if obj.DnsServer != nil {
+		dnsServer_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject)
+		diags.Append(dnsServer_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSuffix_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject
+	if obj.DnsSuffix != nil {
+		dnsSuffix_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject)
+		diags.Append(dnsSuffix_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSuffix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dadAttempts_value types.Int64
+	if obj.DadAttempts != nil {
+		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
+	}
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
+	var reachableTime_value types.Int64
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.Int64Value(*obj.ReachableTime)
+	}
+	o.DadAttempts = dadAttempts_value
+	o.DnsServer = dnsServer_object
+	o.DnsSuffix = dnsSuffix_object
+	o.EnableDad = enableDad_value
+	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.Neighbor = neighbor_list
+	o.NsInterval = nsInterval_value
+	o.ReachableTime = reachableTime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
+		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
+		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_list types.List
+	{
+		var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
+		for _, elt := range obj.Server {
+			entry := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_tf_entries = append(server_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("server")
+		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Server = server_list
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject)
+		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject)
+		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_list types.List
+	{
+		var suffix_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		for _, elt := range obj.Suffix {
+			entry := AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("suffix")
+		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Suffix = suffix_list
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject
+	if obj.Enable != nil {
+		enable_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject)
+		diags.Append(enable_object.CopyFromPango(ctx, append(ancestors, o), obj.Enable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Enable = enable_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject
+	if obj.No != nil {
+		no_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject)
+		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject
+	if obj.Yes != nil {
+		yes_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject)
+		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.No = no_object
+	o.Yes = yes_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var pfxPoolName_value types.String
+	if obj.PfxPoolName != nil {
+		pfxPoolName_value = types.StringValue(*obj.PfxPoolName)
+	}
+	var prefixLen_value types.Int64
+	if obj.PrefixLen != nil {
+		prefixLen_value = types.Int64Value(*obj.PrefixLen)
+	}
+	var prefixLenHint_value types.Bool
+	if obj.PrefixLenHint != nil {
+		prefixLenHint_value = types.BoolValue(*obj.PrefixLenHint)
+	}
+	o.PfxPoolName = pfxPoolName_value
+	o.PrefixLen = prefixLen_value
+	o.PrefixLenHint = prefixLenHint_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject
+	if obj.Enable != nil {
+		enable_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject)
+		diags.Append(enable_object.CopyFromPango(ctx, append(ancestors, o), obj.Enable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var duidType_value types.String
+	if obj.DuidType != nil {
+		duidType_value = types.StringValue(*obj.DuidType)
+	}
+	var rapidCommit_value types.Bool
+	if obj.RapidCommit != nil {
+		rapidCommit_value = types.BoolValue(*obj.RapidCommit)
+	}
+	var supportSrvrReconfig_value types.Bool
+	if obj.SupportSrvrReconfig != nil {
+		supportSrvrReconfig_value = types.BoolValue(*obj.SupportSrvrReconfig)
+	}
+	o.DuidType = duidType_value
+	o.Enable = enable_object
+	o.RapidCommit = rapidCommit_value
+	o.SupportSrvrReconfig = supportSrvrReconfig_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject
+	if obj.No != nil {
+		no_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject)
+		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject
+	if obj.Yes != nil {
+		yes_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject)
+		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.No = no_object
+	o.Yes = yes_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var nonTempAddr_value types.Bool
+	if obj.NonTempAddr != nil {
+		nonTempAddr_value = types.BoolValue(*obj.NonTempAddr)
+	}
+	var tempAddr_value types.Bool
+	if obj.TempAddr != nil {
+		tempAddr_value = types.BoolValue(*obj.TempAddr)
+	}
+	o.NonTempAddr = nonTempAddr_value
+	o.TempAddr = tempAddr_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var assignAddr_list types.List
+	{
+		var assignAddr_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject
+		for _, elt := range obj.AssignAddr {
+			entry := AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("assign_addr")
+		assignAddr_list, list_diags = types.ListValueFrom(ctx, schemaType, assignAddr_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var neighborDiscovery_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject
+	if obj.NeighborDiscovery != nil {
+		neighborDiscovery_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
+		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.AssignAddr = assignAddr_list
+	o.Enable = enable_value
+	o.NeighborDiscovery = neighborDiscovery_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var type_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject
+	if obj.Type != nil {
+		type_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Name = types.StringValue(obj.Name)
+	o.Type = type_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var gua_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
+	if obj.Gua != nil {
+		gua_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
+		diags.Append(gua_object.CopyFromPango(ctx, append(ancestors, o), obj.Gua, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ula_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject
+	if obj.Ula != nil {
+		ula_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject)
+		diags.Append(ula_object.CopyFromPango(ctx, append(ancestors, o), obj.Ula, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Gua = gua_object
+	o.Ula = ula_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var poolType_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject
+	if obj.PoolType != nil {
+		poolType_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject)
+		diags.Append(poolType_object.CopyFromPango(ctx, append(ancestors, o), obj.PoolType, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject)
+		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.EnableOnInterface = enableOnInterface_value
+	o.PrefixPool = prefixPool_value
+	o.PoolType = poolType_object
+	o.Advertise = advertise_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dynamic_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+	if obj.Dynamic != nil {
+		dynamic_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
+		diags.Append(dynamic_object.CopyFromPango(ctx, append(ancestors, o), obj.Dynamic, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dynamicId_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	if obj.DynamicId != nil {
+		dynamicId_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
+		diags.Append(dynamicId_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicId, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dynamic = dynamic_object
+	o.DynamicId = dynamicId_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var identifier_value types.Int64
+	if obj.Identifier != nil {
+		identifier_value = types.Int64Value(*obj.Identifier)
+	}
+	o.Identifier = identifier_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject)
+		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	var address_value types.String
+	if obj.Address != nil {
+		address_value = types.StringValue(*obj.Address)
+	}
+	var prefix_value types.Bool
+	if obj.Prefix != nil {
+		prefix_value = types.BoolValue(*obj.Prefix)
+	}
+	var anycast_value types.Bool
+	if obj.Anycast != nil {
+		anycast_value = types.BoolValue(*obj.Anycast)
+	}
+	o.EnableOnInterface = enableOnInterface_value
+	o.Address = address_value
+	o.Prefix = prefix_value
+	o.Anycast = anycast_value
+	o.Advertise = advertise_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var validLifetime_value types.String
+	if obj.ValidLifetime != nil {
+		validLifetime_value = types.StringValue(*obj.ValidLifetime)
+	}
+	var preferredLifetime_value types.String
+	if obj.PreferredLifetime != nil {
+		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.ValidLifetime = validLifetime_value
+	o.PreferredLifetime = preferredLifetime_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighbor_list types.List
+	{
+		var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
+		for _, elt := range obj.Neighbor {
+			entry := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("neighbor")
+		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var dnsServer_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject
+	if obj.DnsServer != nil {
+		dnsServer_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject)
+		diags.Append(dnsServer_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSuffix_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject
+	if obj.DnsSuffix != nil {
+		dnsSuffix_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject)
+		diags.Append(dnsSuffix_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSuffix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var routerAdvertisement_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject
+	if obj.RouterAdvertisement != nil {
+		routerAdvertisement_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject)
+		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dadAttempts_value types.Int64
+	if obj.DadAttempts != nil {
+		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
+	}
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
+	var reachableTime_value types.Int64
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.Int64Value(*obj.ReachableTime)
+	}
+	o.DadAttempts = dadAttempts_value
+	o.DnsServer = dnsServer_object
+	o.DnsSuffix = dnsSuffix_object
+	o.EnableDad = enableDad_value
+	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.Neighbor = neighbor_list
+	o.NsInterval = nsInterval_value
+	o.ReachableTime = reachableTime_value
+	o.RouterAdvertisement = routerAdvertisement_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject)
+		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
+		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.PrefixPool = prefixPool_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_list types.List
+	{
+		var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+		for _, elt := range obj.Server {
+			entry := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_tf_entries = append(server_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("server")
+		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Server = server_list
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
+		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
+		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.PrefixPool = prefixPool_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_list types.List
+	{
+		var suffix_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		for _, elt := range obj.Suffix {
+			entry := AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("suffix")
+		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Suffix = suffix_list
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var enableConsistencyCheck_value types.Bool
+	if obj.EnableConsistencyCheck != nil {
+		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
+	}
+	var hopLimit_value types.String
+	if obj.HopLimit != nil {
+		hopLimit_value = types.StringValue(*obj.HopLimit)
+	}
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	var linkMtu_value types.String
+	if obj.LinkMtu != nil {
+		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	}
+	var managedFlag_value types.Bool
+	if obj.ManagedFlag != nil {
+		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
+	}
+	var maxInterval_value types.Int64
+	if obj.MaxInterval != nil {
+		maxInterval_value = types.Int64Value(*obj.MaxInterval)
+	}
+	var minInterval_value types.Int64
+	if obj.MinInterval != nil {
+		minInterval_value = types.Int64Value(*obj.MinInterval)
+	}
+	var otherFlag_value types.Bool
+	if obj.OtherFlag != nil {
+		otherFlag_value = types.BoolValue(*obj.OtherFlag)
+	}
+	var reachableTime_value types.String
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.StringValue(*obj.ReachableTime)
+	}
+	var retransmissionTimer_value types.String
+	if obj.RetransmissionTimer != nil {
+		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
+	}
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
+	}
+	o.Enable = enable_value
+	o.EnableConsistencyCheck = enableConsistencyCheck_value
+	o.HopLimit = hopLimit_value
+	o.Lifetime = lifetime_value
+	o.LinkMtu = linkMtu_value
+	o.ManagedFlag = managedFlag_value
+	o.MaxInterval = maxInterval_value
+	o.MinInterval = minInterval_value
+	o.OtherFlag = otherFlag_value
+	o.ReachableTime = reachableTime_value
+	o.RetransmissionTimer = retransmissionTimer_value
+	o.RouterPreference = routerPreference_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject
 		for _, elt := range obj.Neighbor {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			neighbor_tf_entries = append(neighbor_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4549,8 +6305,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyFrom
 	var routerAdvertisement_object *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
 	if obj.RouterAdvertisement != nil {
 		routerAdvertisement_object = new(AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject)
-
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
+		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, append(ancestors, o), obj.RouterAdvertisement, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4587,7 +6342,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) CopyFrom
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -4600,13 +6355,12 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSupport_object *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
 	if obj.DnsSupport != nil {
 		dnsSupport_object = new(AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
-
-		diags.Append(dnsSupport_object.CopyFromPango(ctx, obj.DnsSupport, encrypted)...)
+		diags.Append(dnsSupport_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSupport, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4677,15 +6431,19 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
 		for _, elt := range obj.Server {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			server_tf_entries = append(server_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4697,9 +6455,13 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 	{
 		var suffix_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
 		for _, elt := range obj.Suffix {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			suffix_tf_entries = append(suffix_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4719,7 +6481,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -4732,7 +6494,7 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -4745,1088 +6507,12 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var neighborDiscovery_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
-	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject)
-
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var prefixDelegation_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject
-	if obj.PrefixDelegation != nil {
-		prefixDelegation_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject)
-
-		diags.Append(prefixDelegation_object.CopyFromPango(ctx, obj.PrefixDelegation, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var v6Options_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject
-	if obj.V6Options != nil {
-		v6Options_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject)
-
-		diags.Append(v6Options_object.CopyFromPango(ctx, obj.V6Options, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var acceptRaRoute_value types.Bool
-	if obj.AcceptRaRoute != nil {
-		acceptRaRoute_value = types.BoolValue(*obj.AcceptRaRoute)
-	}
-	var defaultRouteMetric_value types.Int64
-	if obj.DefaultRouteMetric != nil {
-		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var preference_value types.String
-	if obj.Preference != nil {
-		preference_value = types.StringValue(*obj.Preference)
-	}
-	o.AcceptRaRoute = acceptRaRoute_value
-	o.DefaultRouteMetric = defaultRouteMetric_value
-	o.Enable = enable_value
-	o.NeighborDiscovery = neighborDiscovery_object
-	o.Preference = preference_value
-	o.PrefixDelegation = prefixDelegation_object
-	o.V6Options = v6Options_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var neighbor_list types.List
-	{
-		var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("neighbor")
-		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var dnsServer_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject
-	if obj.DnsServer != nil {
-		dnsServer_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject)
-
-		diags.Append(dnsServer_object.CopyFromPango(ctx, obj.DnsServer, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSuffix_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject
-	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject)
-
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var dadAttempts_value types.Int64
-	if obj.DadAttempts != nil {
-		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
-	}
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
-	}
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
-	var reachableTime_value types.Int64
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.Int64Value(*obj.ReachableTime)
-	}
-	o.DadAttempts = dadAttempts_value
-	o.DnsServer = dnsServer_object
-	o.DnsSuffix = dnsSuffix_object
-	o.EnableDad = enableDad_value
-	o.EnableNdpMonitor = enableNdpMonitor_value
-	o.Neighbor = neighbor_list
-	o.NsInterval = nsInterval_value
-	o.ReachableTime = reachableTime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_list types.List
-	{
-		var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			server_tf_entries = append(server_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("server")
-		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Server = server_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_list types.List
-	{
-		var suffix_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			suffix_tf_entries = append(suffix_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("suffix")
-		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Suffix = suffix_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var enable_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject
-	if obj.Enable != nil {
-		enable_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject)
-
-		diags.Append(enable_object.CopyFromPango(ctx, obj.Enable, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Enable = enable_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject
-	if obj.No != nil {
-		no_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject)
-
-		diags.Append(no_object.CopyFromPango(ctx, obj.No, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject
-	if obj.Yes != nil {
-		yes_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject)
-
-		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.No = no_object
-	o.Yes = yes_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var pfxPoolName_value types.String
-	if obj.PfxPoolName != nil {
-		pfxPoolName_value = types.StringValue(*obj.PfxPoolName)
-	}
-	var prefixLen_value types.Int64
-	if obj.PrefixLen != nil {
-		prefixLen_value = types.Int64Value(*obj.PrefixLen)
-	}
-	var prefixLenHint_value types.Bool
-	if obj.PrefixLenHint != nil {
-		prefixLenHint_value = types.BoolValue(*obj.PrefixLenHint)
-	}
-	o.PfxPoolName = pfxPoolName_value
-	o.PrefixLen = prefixLen_value
-	o.PrefixLenHint = prefixLenHint_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var enable_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject
-	if obj.Enable != nil {
-		enable_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject)
-
-		diags.Append(enable_object.CopyFromPango(ctx, obj.Enable, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var duidType_value types.String
-	if obj.DuidType != nil {
-		duidType_value = types.StringValue(*obj.DuidType)
-	}
-	var rapidCommit_value types.Bool
-	if obj.RapidCommit != nil {
-		rapidCommit_value = types.BoolValue(*obj.RapidCommit)
-	}
-	var supportSrvrReconfig_value types.Bool
-	if obj.SupportSrvrReconfig != nil {
-		supportSrvrReconfig_value = types.BoolValue(*obj.SupportSrvrReconfig)
-	}
-	o.DuidType = duidType_value
-	o.Enable = enable_object
-	o.RapidCommit = rapidCommit_value
-	o.SupportSrvrReconfig = supportSrvrReconfig_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject
-	if obj.No != nil {
-		no_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject)
-
-		diags.Append(no_object.CopyFromPango(ctx, obj.No, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_object *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject
-	if obj.Yes != nil {
-		yes_object = new(AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject)
-
-		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.No = no_object
-	o.Yes = yes_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var nonTempAddr_value types.Bool
-	if obj.NonTempAddr != nil {
-		nonTempAddr_value = types.BoolValue(*obj.NonTempAddr)
-	}
-	var tempAddr_value types.Bool
-	if obj.TempAddr != nil {
-		tempAddr_value = types.BoolValue(*obj.TempAddr)
-	}
-	o.NonTempAddr = nonTempAddr_value
-	o.TempAddr = tempAddr_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var assignAddr_list types.List
-	{
-		var assignAddr_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject
-		for _, elt := range obj.AssignAddr {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("assign_addr")
-		assignAddr_list, list_diags = types.ListValueFrom(ctx, schemaType, assignAddr_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var neighborDiscovery_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject
-	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject)
-
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.AssignAddr = assignAddr_list
-	o.Enable = enable_value
-	o.NeighborDiscovery = neighborDiscovery_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var type_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject
-	if obj.Type != nil {
-		type_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Name = types.StringValue(obj.Name)
-	o.Type = type_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var gua_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
-	if obj.Gua != nil {
-		gua_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
-
-		diags.Append(gua_object.CopyFromPango(ctx, obj.Gua, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ula_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject
-	if obj.Ula != nil {
-		ula_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject)
-
-		diags.Append(ula_object.CopyFromPango(ctx, obj.Ula, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Gua = gua_object
-	o.Ula = ula_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var poolType_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject
-	if obj.PoolType != nil {
-		poolType_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject)
-
-		diags.Append(poolType_object.CopyFromPango(ctx, obj.PoolType, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.EnableOnInterface = enableOnInterface_value
-	o.PrefixPool = prefixPool_value
-	o.PoolType = poolType_object
-	o.Advertise = advertise_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dynamic_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
-	if obj.Dynamic != nil {
-		dynamic_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
-
-		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dynamicId_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
-	if obj.DynamicId != nil {
-		dynamicId_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
-
-		diags.Append(dynamicId_object.CopyFromPango(ctx, obj.DynamicId, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dynamic = dynamic_object
-	o.DynamicId = dynamicId_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var identifier_value types.Int64
-	if obj.Identifier != nil {
-		identifier_value = types.Int64Value(*obj.Identifier)
-	}
-	o.Identifier = identifier_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	o.Enable = enable_value
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var advertise_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	var address_value types.String
-	if obj.Address != nil {
-		address_value = types.StringValue(*obj.Address)
-	}
-	var prefix_value types.Bool
-	if obj.Prefix != nil {
-		prefix_value = types.BoolValue(*obj.Prefix)
-	}
-	var anycast_value types.Bool
-	if obj.Anycast != nil {
-		anycast_value = types.BoolValue(*obj.Anycast)
-	}
-	o.EnableOnInterface = enableOnInterface_value
-	o.Address = address_value
-	o.Prefix = prefix_value
-	o.Anycast = anycast_value
-	o.Advertise = advertise_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var validLifetime_value types.String
-	if obj.ValidLifetime != nil {
-		validLifetime_value = types.StringValue(*obj.ValidLifetime)
-	}
-	var preferredLifetime_value types.String
-	if obj.PreferredLifetime != nil {
-		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	o.Enable = enable_value
-	o.ValidLifetime = validLifetime_value
-	o.PreferredLifetime = preferredLifetime_value
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var neighbor_list types.List
-	{
-		var neighbor_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("neighbor")
-		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var dnsServer_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject
-	if obj.DnsServer != nil {
-		dnsServer_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject)
-
-		diags.Append(dnsServer_object.CopyFromPango(ctx, obj.DnsServer, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSuffix_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject
-	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject)
-
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var routerAdvertisement_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject
-	if obj.RouterAdvertisement != nil {
-		routerAdvertisement_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject)
-
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var dadAttempts_value types.Int64
-	if obj.DadAttempts != nil {
-		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
-	}
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
-	}
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
-	var reachableTime_value types.Int64
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.Int64Value(*obj.ReachableTime)
-	}
-	o.DadAttempts = dadAttempts_value
-	o.DnsServer = dnsServer_object
-	o.DnsSuffix = dnsSuffix_object
-	o.EnableDad = enableDad_value
-	o.EnableNdpMonitor = enableNdpMonitor_value
-	o.Neighbor = neighbor_list
-	o.NsInterval = nsInterval_value
-	o.ReachableTime = reachableTime_value
-	o.RouterAdvertisement = routerAdvertisement_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.PrefixPool = prefixPool_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_list types.List
-	{
-		var server_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			server_tf_entries = append(server_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("server")
-		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Server = server_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.PrefixPool = prefixPool_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_list types.List
-	{
-		var suffix_tf_entries []AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			var entry AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			suffix_tf_entries = append(suffix_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("suffix")
-		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Suffix = suffix_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var enableConsistencyCheck_value types.Bool
-	if obj.EnableConsistencyCheck != nil {
-		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
-	}
-	var hopLimit_value types.String
-	if obj.HopLimit != nil {
-		hopLimit_value = types.StringValue(*obj.HopLimit)
-	}
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	var linkMtu_value types.String
-	if obj.LinkMtu != nil {
-		linkMtu_value = types.StringValue(*obj.LinkMtu)
-	}
-	var managedFlag_value types.Bool
-	if obj.ManagedFlag != nil {
-		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
-	}
-	var maxInterval_value types.Int64
-	if obj.MaxInterval != nil {
-		maxInterval_value = types.Int64Value(*obj.MaxInterval)
-	}
-	var minInterval_value types.Int64
-	if obj.MinInterval != nil {
-		minInterval_value = types.Int64Value(*obj.MinInterval)
-	}
-	var otherFlag_value types.Bool
-	if obj.OtherFlag != nil {
-		otherFlag_value = types.BoolValue(*obj.OtherFlag)
-	}
-	var reachableTime_value types.String
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.StringValue(*obj.ReachableTime)
-	}
-	var retransmissionTimer_value types.String
-	if obj.RetransmissionTimer != nil {
-		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
-	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
-	}
-	o.Enable = enable_value
-	o.EnableConsistencyCheck = enableConsistencyCheck_value
-	o.HopLimit = hopLimit_value
-	o.Lifetime = lifetime_value
-	o.LinkMtu = linkMtu_value
-	o.ManagedFlag = managedFlag_value
-	o.MaxInterval = maxInterval_value
-	o.MinInterval = minInterval_value
-	o.OtherFlag = otherFlag_value
-	o.ReachableTime = reachableTime_value
-	o.RetransmissionTimer = retransmissionTimer_value
-	o.RouterPreference = routerPreference_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceDataSourceLayer3LacpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3LacpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Lacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5867,7 +6553,7 @@ func (o *AggregateInterfaceDataSourceLayer3LacpObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3LacpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -5879,13 +6565,12 @@ func (o *AggregateInterfaceDataSourceLayer3LacpHighAvailabilityObject) CopyFromP
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3LldpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3LldpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Lldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5906,7 +6591,7 @@ func (o *AggregateInterfaceDataSourceLayer3LldpObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3LldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -5918,15 +6603,19 @@ func (o *AggregateInterfaceDataSourceLayer3LldpHighAvailabilityObject) CopyFromP
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []AggregateInterfaceDataSourceLayer3NdpProxyAddressObject
 		for _, elt := range obj.Address {
-			var entry AggregateInterfaceDataSourceLayer3NdpProxyAddressObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceDataSourceLayer3NdpProxyAddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			address_tf_entries = append(address_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -5945,7 +6634,7 @@ func (o *AggregateInterfaceDataSourceLayer3NdpProxyObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3NdpProxyAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var negate_value types.Bool
@@ -5958,13 +6647,12 @@ func (o *AggregateInterfaceDataSourceLayer3NdpProxyAddressObject) CopyFromPango(
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var upstreamNat_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject
 	if obj.UpstreamNat != nil {
 		upstreamNat_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject)
-
-		diags.Append(upstreamNat_object.CopyFromPango(ctx, obj.UpstreamNat, encrypted)...)
+		diags.Append(upstreamNat_object.CopyFromPango(ctx, append(ancestors, o), obj.UpstreamNat, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5985,13 +6673,12 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsObject) CopyFromPang
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNat, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ddns_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject
 	if obj.Ddns != nil {
 		ddns_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject)
-
-		diags.Append(ddns_object.CopyFromPango(ctx, obj.Ddns, encrypted)...)
+		diags.Append(ddns_object.CopyFromPango(ctx, append(ancestors, o), obj.Ddns, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5999,8 +6686,7 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) C
 	var staticIp_object *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject
 	if obj.StaticIp != nil {
 		staticIp_object = new(AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject)
-
-		diags.Append(staticIp_object.CopyFromPango(ctx, obj.StaticIp, encrypted)...)
+		diags.Append(staticIp_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6017,13 +6703,13 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatObject) C
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var fqdn_value types.String
@@ -6040,13 +6726,12 @@ func (o *AggregateInterfaceDataSourceLayer3SdwanLinkSettingsUpstreamNatStaticIpO
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceVirtualWireObject) CopyFromPango(ctx context.Context, obj *aggregate.VirtualWire, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceVirtualWireObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.VirtualWire, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lldp_object *AggregateInterfaceDataSourceVirtualWireLldpObject
 	if obj.Lldp != nil {
 		lldp_object = new(AggregateInterfaceDataSourceVirtualWireLldpObject)
-
-		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
+		diags.Append(lldp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lldp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6062,13 +6747,12 @@ func (o *AggregateInterfaceDataSourceVirtualWireObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) CopyFromPango(ctx context.Context, obj *aggregate.VirtualWireLldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.VirtualWireLldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6089,7 +6773,7 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.VirtualWireLldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.VirtualWireLldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -6099,6 +6783,11 @@ func (o *AggregateInterfaceDataSourceVirtualWireLldpHighAvailabilityObject) Copy
 	o.PassivePreNegotiation = passivePreNegotiation_value
 
 	return diags
+}
+
+func (o *AggregateInterfaceDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func AggregateInterfaceDataSourceSchema() dsschema.Schema {
@@ -7101,6 +7790,8 @@ func AggregateInterfaceDataSourceLayer3Ipv6Schema() dsschema.SingleNestedAttribu
 				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6AddressSchema(),
 			},
 
+			"dhcp_client": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientSchema(),
+
 			"enabled": dsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
 				Computed:    true,
@@ -7108,6 +7799,8 @@ func AggregateInterfaceDataSourceLayer3Ipv6Schema() dsschema.SingleNestedAttribu
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"inherited": AggregateInterfaceDataSourceLayer3Ipv6InheritedSchema(),
 
 			"interface_id": dsschema.StringAttribute{
 				Description: "",
@@ -7118,10 +7811,6 @@ func AggregateInterfaceDataSourceLayer3Ipv6Schema() dsschema.SingleNestedAttribu
 			},
 
 			"neighbor_discovery": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema(),
-
-			"dhcp_client": AggregateInterfaceDataSourceLayer3Ipv6DhcpClientSchema(),
-
-			"inherited": AggregateInterfaceDataSourceLayer3Ipv6InheritedSchema(),
 		},
 	}
 }
@@ -7303,394 +7992,6 @@ func AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseSchema() dsschema.Sin
 
 func (o *AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseObject) getTypeFor(name string) attr.Type {
 	schema := AggregateInterfaceDataSourceLayer3Ipv6AddressAdvertiseSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dad_attempts": dsschema.Int64Attribute{
-				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_dad": dsschema.BoolAttribute{
-				Description: "enable duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_ndp_monitor": dsschema.BoolAttribute{
-				Description: "enable ndp monitoring",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"neighbor": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema(),
-			},
-
-			"ns_interval": dsschema.Int64Attribute{
-				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": dsschema.Int64Attribute{
-				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"router_advertisement": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"hw_address": dsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"dns_support": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_consistency_check": dsschema.BoolAttribute{
-				Description: "check consistency of RA messages from other routers.",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hop_limit": dsschema.StringAttribute{
-				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"link_mtu": dsschema.StringAttribute{
-				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"managed_flag": dsschema.BoolAttribute{
-				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"max_interval": dsschema.Int64Attribute{
-				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"min_interval": dsschema.Int64Attribute{
-				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"other_flag": dsschema.BoolAttribute{
-				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": dsschema.StringAttribute{
-				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"retransmission_timer": dsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"router_preference": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() dsschema.SingleNestedAttribute {
-	return dsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    true,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]dsschema.Attribute{
-
-			"enable": dsschema.BoolAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"server": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
-			},
-
-			"suffix": dsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     true,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case dsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case dsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema() dsschema.NestedAttributeObject {
-	return dsschema.NestedAttributeObject{
-		Attributes: map[string]dsschema.Attribute{
-
-			"name": dsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": dsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -9784,6 +10085,394 @@ func (o *AggregateInterfaceDataSourceLayer3Ipv6InheritedNeighborDiscoveryRouterA
 	panic("unreachable")
 }
 
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"dad_attempts": dsschema.Int64Attribute{
+				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_dad": dsschema.BoolAttribute{
+				Description: "enable duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_ndp_monitor": dsschema.BoolAttribute{
+				Description: "enable ndp monitoring",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema(),
+			},
+
+			"ns_interval": dsschema.Int64Attribute{
+				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"reachable_time": dsschema.Int64Attribute{
+				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"router_advertisement": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoverySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": dsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryNeighborSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"dns_support": AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_consistency_check": dsschema.BoolAttribute{
+				Description: "check consistency of RA messages from other routers.",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hop_limit": dsschema.StringAttribute{
+				Description: "Current Hop Limit advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"link_mtu": dsschema.StringAttribute{
+				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"managed_flag": dsschema.BoolAttribute{
+				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"max_interval": dsschema.Int64Attribute{
+				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"min_interval": dsschema.Int64Attribute{
+				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"other_flag": dsschema.BoolAttribute{
+				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"reachable_time": dsschema.StringAttribute{
+				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"retransmission_timer": dsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"router_preference": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() dsschema.SingleNestedAttribute {
+	return dsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    true,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]dsschema.Attribute{
+
+			"enable": dsschema.BoolAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"server": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
+			},
+
+			"suffix": dsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": dsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceDataSourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func AggregateInterfaceDataSourceLayer3LacpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
@@ -10409,13 +11098,20 @@ func (d *AggregateInterfaceDataSource) Configure(_ context.Context, req datasour
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, aggregate.NewService(d.client), batchSize, specifier, aggregate.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*aggregate.Entry, aggregate.Location, *aggregate.Service](d.client, aggregate.NewService(d.client), batchSize, specifier, aggregate.SpecMatches)
 }
 func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state AggregateInterfaceDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -10479,8 +11175,12 @@ func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -10490,7 +11190,7 @@ func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -10642,11 +11342,11 @@ type AggregateInterfaceResourceLayer3IpObject struct {
 }
 type AggregateInterfaceResourceLayer3Ipv6Object struct {
 	Address           types.List                                                   `tfsdk:"address"`
+	DhcpClient        *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject        `tfsdk:"dhcp_client"`
 	Enabled           types.Bool                                                   `tfsdk:"enabled"`
+	Inherited         *AggregateInterfaceResourceLayer3Ipv6InheritedObject         `tfsdk:"inherited"`
 	InterfaceId       types.String                                                 `tfsdk:"interface_id"`
 	NeighborDiscovery *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
-	DhcpClient        *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject        `tfsdk:"dhcp_client"`
-	Inherited         *AggregateInterfaceResourceLayer3Ipv6InheritedObject         `tfsdk:"inherited"`
 }
 type AggregateInterfaceResourceLayer3Ipv6AddressObject struct {
 	Name              types.String                                                `tfsdk:"name"`
@@ -10665,47 +11365,6 @@ type AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject struct {
 	PreferredLifetime types.String `tfsdk:"preferred_lifetime"`
 	OnlinkFlag        types.Bool   `tfsdk:"onlink_flag"`
 	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
-}
-type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject struct {
-	DadAttempts         types.Int64                                                                     `tfsdk:"dad_attempts"`
-	EnableDad           types.Bool                                                                      `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                                      `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                                      `tfsdk:"neighbor"`
-	NsInterval          types.Int64                                                                     `tfsdk:"ns_interval"`
-	ReachableTime       types.Int64                                                                     `tfsdk:"reachable_time"`
-	RouterAdvertisement *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
-}
-type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject struct {
-	Name      types.String `tfsdk:"name"`
-	HwAddress types.String `tfsdk:"hw_address"`
-}
-type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject struct {
-	DnsSupport             *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
-	Enable                 types.Bool                                                                                `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool                                                                                `tfsdk:"enable_consistency_check"`
-	HopLimit               types.String                                                                              `tfsdk:"hop_limit"`
-	Lifetime               types.Int64                                                                               `tfsdk:"lifetime"`
-	LinkMtu                types.String                                                                              `tfsdk:"link_mtu"`
-	ManagedFlag            types.Bool                                                                                `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64                                                                               `tfsdk:"max_interval"`
-	MinInterval            types.Int64                                                                               `tfsdk:"min_interval"`
-	OtherFlag              types.Bool                                                                                `tfsdk:"other_flag"`
-	ReachableTime          types.String                                                                              `tfsdk:"reachable_time"`
-	RetransmissionTimer    types.String                                                                              `tfsdk:"retransmission_timer"`
-	RouterPreference       types.String                                                                              `tfsdk:"router_preference"`
-}
-type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
-	Enable types.Bool `tfsdk:"enable"`
-	Server types.List `tfsdk:"server"`
-	Suffix types.List `tfsdk:"suffix"`
-}
-type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
-}
-type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject struct {
-	Name     types.String `tfsdk:"name"`
-	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type AggregateInterfaceResourceLayer3Ipv6DhcpClientObject struct {
 	AcceptRaRoute      types.Bool                                                             `tfsdk:"accept_ra_route"`
@@ -10905,6 +11564,47 @@ type AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdverti
 	ReachableTime          types.String `tfsdk:"reachable_time"`
 	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
 	RouterPreference       types.String `tfsdk:"router_preference"`
+}
+type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject struct {
+	DadAttempts         types.Int64                                                                     `tfsdk:"dad_attempts"`
+	EnableDad           types.Bool                                                                      `tfsdk:"enable_dad"`
+	EnableNdpMonitor    types.Bool                                                                      `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List                                                                      `tfsdk:"neighbor"`
+	NsInterval          types.Int64                                                                     `tfsdk:"ns_interval"`
+	ReachableTime       types.Int64                                                                     `tfsdk:"reachable_time"`
+	RouterAdvertisement *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
+}
+type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject struct {
+	Name      types.String `tfsdk:"name"`
+	HwAddress types.String `tfsdk:"hw_address"`
+}
+type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject struct {
+	DnsSupport             *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
+	Enable                 types.Bool                                                                                `tfsdk:"enable"`
+	EnableConsistencyCheck types.Bool                                                                                `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String                                                                              `tfsdk:"hop_limit"`
+	Lifetime               types.Int64                                                                               `tfsdk:"lifetime"`
+	LinkMtu                types.String                                                                              `tfsdk:"link_mtu"`
+	ManagedFlag            types.Bool                                                                                `tfsdk:"managed_flag"`
+	MaxInterval            types.Int64                                                                               `tfsdk:"max_interval"`
+	MinInterval            types.Int64                                                                               `tfsdk:"min_interval"`
+	OtherFlag              types.Bool                                                                                `tfsdk:"other_flag"`
+	ReachableTime          types.String                                                                              `tfsdk:"reachable_time"`
+	RetransmissionTimer    types.String                                                                              `tfsdk:"retransmission_timer"`
+	RouterPreference       types.String                                                                              `tfsdk:"router_preference"`
+}
+type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
+	Enable types.Bool `tfsdk:"enable"`
+	Server types.List `tfsdk:"server"`
+	Suffix types.List `tfsdk:"suffix"`
+}
+type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
+}
+type AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject struct {
+	Name     types.String `tfsdk:"name"`
+	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type AggregateInterfaceResourceLayer3LacpObject struct {
 	Enable           types.Bool                                                  `tfsdk:"enable"`
@@ -11992,6 +12692,8 @@ func AggregateInterfaceResourceLayer3Ipv6Schema() rsschema.SingleNestedAttribute
 				NestedObject: AggregateInterfaceResourceLayer3Ipv6AddressSchema(),
 			},
 
+			"dhcp_client": AggregateInterfaceResourceLayer3Ipv6DhcpClientSchema(),
+
 			"enabled": rsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
 				Computed:    false,
@@ -11999,6 +12701,8 @@ func AggregateInterfaceResourceLayer3Ipv6Schema() rsschema.SingleNestedAttribute
 				Optional:    true,
 				Sensitive:   false,
 			},
+
+			"inherited": AggregateInterfaceResourceLayer3Ipv6InheritedSchema(),
 
 			"interface_id": rsschema.StringAttribute{
 				Description: "",
@@ -12010,10 +12714,6 @@ func AggregateInterfaceResourceLayer3Ipv6Schema() rsschema.SingleNestedAttribute
 			},
 
 			"neighbor_discovery": AggregateInterfaceResourceLayer3Ipv6NeighborDiscoverySchema(),
-
-			"dhcp_client": AggregateInterfaceResourceLayer3Ipv6DhcpClientSchema(),
-
-			"inherited": AggregateInterfaceResourceLayer3Ipv6InheritedSchema(),
 		},
 	}
 }
@@ -12197,407 +12897,6 @@ func AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseSchema() rsschema.Singl
 
 func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) getTypeFor(name string) attr.Type {
 	schema := AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoverySchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"dad_attempts": rsschema.Int64Attribute{
-				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1),
-			},
-
-			"enable_dad": rsschema.BoolAttribute{
-				Description: "enable duplicate address detection",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_ndp_monitor": rsschema.BoolAttribute{
-				Description: "enable ndp monitoring",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"neighbor": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborSchema(),
-			},
-
-			"ns_interval": rsschema.Int64Attribute{
-				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1),
-			},
-
-			"reachable_time": rsschema.Int64Attribute{
-				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(30),
-			},
-
-			"router_advertisement": AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema(),
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoverySchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"hw_address": rsschema.StringAttribute{
-				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"dns_support": AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"enable_consistency_check": rsschema.BoolAttribute{
-				Description: "check consistency of RA messages from other routers.",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"hop_limit": rsschema.StringAttribute{
-				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("64"),
-			},
-
-			"lifetime": rsschema.Int64Attribute{
-				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1800),
-			},
-
-			"link_mtu": rsschema.StringAttribute{
-				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"managed_flag": rsschema.BoolAttribute{
-				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"max_interval": rsschema.Int64Attribute{
-				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(600),
-			},
-
-			"min_interval": rsschema.Int64Attribute{
-				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(200),
-			},
-
-			"other_flag": rsschema.BoolAttribute{
-				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"reachable_time": rsschema.StringAttribute{
-				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"retransmission_timer": rsschema.StringAttribute{
-				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("unspecified"),
-			},
-
-			"router_preference": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("Medium"),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() rsschema.SingleNestedAttribute {
-	return rsschema.SingleNestedAttribute{
-		Description: "",
-		Required:    false,
-		Computed:    false,
-		Optional:    true,
-		Sensitive:   false,
-		Attributes: map[string]rsschema.Attribute{
-
-			"enable": rsschema.BoolAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"server": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
-			},
-
-			"suffix": rsschema.ListNestedAttribute{
-				Description:  "",
-				Required:     false,
-				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
-				NestedObject: AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": rsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1200),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema()
-	if attr, ok := schema.Attributes[name]; !ok {
-		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
-	} else {
-		switch attr := attr.(type) {
-		case rsschema.ListNestedAttribute:
-			return attr.NestedObject.Type()
-		case rsschema.MapNestedAttribute:
-			return attr.NestedObject.Type()
-		default:
-			return attr.GetType()
-		}
-	}
-
-	panic("unreachable")
-}
-
-func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema() rsschema.NestedAttributeObject {
-	return rsschema.NestedAttributeObject{
-		Attributes: map[string]rsschema.Attribute{
-
-			"name": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
-			},
-
-			"lifetime": rsschema.Int64Attribute{
-				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     int64default.StaticInt64(1200),
-			},
-		},
-	}
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) getTypeFor(name string) attr.Type {
-	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -14715,6 +15014,407 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdv
 	panic("unreachable")
 }
 
+func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoverySchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"dad_attempts": rsschema.Int64Attribute{
+				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1),
+			},
+
+			"enable_dad": rsschema.BoolAttribute{
+				Description: "enable duplicate address detection",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_ndp_monitor": rsschema.BoolAttribute{
+				Description: "enable ndp monitoring",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"neighbor": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborSchema(),
+			},
+
+			"ns_interval": rsschema.Int64Attribute{
+				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1),
+			},
+
+			"reachable_time": rsschema.Int64Attribute{
+				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(30),
+			},
+
+			"router_advertisement": AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema(),
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoverySchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"hw_address": rsschema.StringAttribute{
+				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"dns_support": AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"enable_consistency_check": rsschema.BoolAttribute{
+				Description: "check consistency of RA messages from other routers.",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"hop_limit": rsschema.StringAttribute{
+				Description: "Current Hop Limit advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("64"),
+			},
+
+			"lifetime": rsschema.Int64Attribute{
+				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1800),
+			},
+
+			"link_mtu": rsschema.StringAttribute{
+				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"managed_flag": rsschema.BoolAttribute{
+				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"max_interval": rsschema.Int64Attribute{
+				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(600),
+			},
+
+			"min_interval": rsschema.Int64Attribute{
+				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(200),
+			},
+
+			"other_flag": rsschema.BoolAttribute{
+				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"reachable_time": rsschema.StringAttribute{
+				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"retransmission_timer": rsschema.StringAttribute{
+				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("unspecified"),
+			},
+
+			"router_preference": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("Medium"),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() rsschema.SingleNestedAttribute {
+	return rsschema.SingleNestedAttribute{
+		Description: "",
+		Required:    false,
+		Computed:    false,
+		Optional:    true,
+		Sensitive:   false,
+		Attributes: map[string]rsschema.Attribute{
+
+			"enable": rsschema.BoolAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"server": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
+			},
+
+			"suffix": rsschema.ListNestedAttribute{
+				Description:  "",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": rsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1200),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+
+			"lifetime": rsschema.Int64Attribute{
+				Description: "(4-3600) lifetime in seconds",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     int64default.StaticInt64(1200),
+			},
+		},
+	}
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) getTypeFor(name string) attr.Type {
+	schema := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
 func AggregateInterfaceResourceLayer3LacpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
@@ -15347,7 +16047,7 @@ func (r *AggregateInterfaceResource) Configure(ctx context.Context, req resource
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, aggregate.NewService(r.client), batchSize, specifier, aggregate.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*aggregate.Entry, aggregate.Location, *aggregate.Service](r.client, aggregate.NewService(r.client), batchSize, specifier, aggregate.SpecMatches)
 }
 
 func (o *AggregateInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
@@ -15386,8 +16086,24 @@ func (o *AggregateInterfaceResourceModel) AttributeTypes() map[string]attr.Type 
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o AggregateInterfaceResourceModel) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceDecryptMirrorObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceResourceDecryptMirrorObject) AncestorName() string {
+	return "decrypt-mirror"
+}
+
+func (o AggregateInterfaceResourceDecryptMirrorObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceHaObject) AttributeTypes() map[string]attr.Type {
 
@@ -15397,6 +16113,14 @@ func (o *AggregateInterfaceResourceHaObject) AttributeTypes() map[string]attr.Ty
 			AttrTypes: lacpObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceResourceHaObject) AncestorName() string {
+	return "ha"
+}
+
+func (o AggregateInterfaceResourceHaObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceHaLacpObject) AttributeTypes() map[string]attr.Type {
 
@@ -15408,6 +16132,14 @@ func (o *AggregateInterfaceResourceHaLacpObject) AttributeTypes() map[string]att
 		"system_priority":   types.Int64Type,
 		"transmission_rate": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceResourceHaLacpObject) AncestorName() string {
+	return "lacp"
+}
+
+func (o AggregateInterfaceResourceHaLacpObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer2Object) AttributeTypes() map[string]attr.Type {
 
@@ -15425,6 +16157,14 @@ func (o *AggregateInterfaceResourceLayer2Object) AttributeTypes() map[string]att
 		"netflow_profile": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer2Object) AncestorName() string {
+	return "layer2"
+}
+
+func (o AggregateInterfaceResourceLayer2Object) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer2LacpObject) AttributeTypes() map[string]attr.Type {
 
 	var highAvailabilityObj *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject
@@ -15441,11 +16181,27 @@ func (o *AggregateInterfaceResourceLayer2LacpObject) AttributeTypes() map[string
 		"transmission_rate": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer2LacpObject) AncestorName() string {
+	return "lacp"
+}
+
+func (o AggregateInterfaceResourceLayer2LacpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"passive_pre_negotiation": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer2LldpObject) AttributeTypes() map[string]attr.Type {
 
@@ -15459,11 +16215,27 @@ func (o *AggregateInterfaceResourceLayer2LldpObject) AttributeTypes() map[string
 		"profile": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer2LldpObject) AncestorName() string {
+	return "lldp"
+}
+
+func (o AggregateInterfaceResourceLayer2LldpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"passive_pre_negotiation": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Object) AttributeTypes() map[string]attr.Type {
 
@@ -15523,6 +16295,14 @@ func (o *AggregateInterfaceResourceLayer3Object) AttributeTypes() map[string]att
 		"untagged_sub_interface": types.BoolType,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Object) AncestorName() string {
+	return "layer3"
+}
+
+func (o AggregateInterfaceResourceLayer3Object) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -15531,12 +16311,28 @@ func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) AttributeTypes() ma
 		"ipv6_mss_adjustment": types.Int64Type,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3AdjustTcpMssObject) AncestorName() string {
+	return "adjust-tcp-mss"
+}
+
+func (o AggregateInterfaceResourceLayer3AdjustTcpMssObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3ArpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":       types.StringType,
 		"hw_address": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3ArpObject) AncestorName() string {
+	return "arp"
+}
+
+func (o AggregateInterfaceResourceLayer3ArpObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceResourceLayer3BonjourObject) AttributeTypes() map[string]attr.Type {
 
@@ -15545,6 +16341,14 @@ func (o *AggregateInterfaceResourceLayer3BonjourObject) AttributeTypes() map[str
 		"group_id":  types.Int64Type,
 		"ttl_check": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3BonjourObject) AncestorName() string {
+	return "bonjour"
+}
+
+func (o AggregateInterfaceResourceLayer3BonjourObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) AttributeTypes() map[string]attr.Type {
 
@@ -15559,12 +16363,28 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) AttributeTypes() map[
 		"ddns_vendor_config":   types.ListType{},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3DdnsConfigObject) AncestorName() string {
+	return "ddns-config"
+}
+
+func (o AggregateInterfaceResourceLayer3DdnsConfigObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":  types.StringType,
 		"value": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) AncestorName() string {
+	return "ddns-vendor-config"
+}
+
+func (o AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceResourceLayer3DhcpClientObject) AttributeTypes() map[string]attr.Type {
 
@@ -15578,12 +16398,28 @@ func (o *AggregateInterfaceResourceLayer3DhcpClientObject) AttributeTypes() map[
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3DhcpClientObject) AncestorName() string {
+	return "dhcp-client"
+}
+
+func (o AggregateInterfaceResourceLayer3DhcpClientObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enable":   types.BoolType,
 		"hostname": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) AncestorName() string {
+	return "send-hostname"
+}
+
+func (o AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3IpObject) AttributeTypes() map[string]attr.Type {
 
@@ -15592,27 +16428,43 @@ func (o *AggregateInterfaceResourceLayer3IpObject) AttributeTypes() map[string]a
 		"sdwan_gateway": types.StringType,
 	}
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6Object) AttributeTypes() map[string]attr.Type {
 
-	var neighborDiscoveryObj *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject
+func (o AggregateInterfaceResourceLayer3IpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o AggregateInterfaceResourceLayer3IpObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6Object) AttributeTypes() map[string]attr.Type {
 
 	var dhcpClientObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject
 
 	var inheritedObj *AggregateInterfaceResourceLayer3Ipv6InheritedObject
+
+	var neighborDiscoveryObj *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject
 	return map[string]attr.Type{
-		"address":      types.ListType{},
-		"enabled":      types.BoolType,
+		"address": types.ListType{},
+		"dhcp_client": types.ObjectType{
+			AttrTypes: dhcpClientObj.AttributeTypes(),
+		},
+		"enabled": types.BoolType,
+		"inherited": types.ObjectType{
+			AttrTypes: inheritedObj.AttributeTypes(),
+		},
 		"interface_id": types.StringType,
 		"neighbor_discovery": types.ObjectType{
 			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
 		},
-		"dhcp_client": types.ObjectType{
-			AttrTypes: dhcpClientObj.AttributeTypes(),
-		},
-		"inherited": types.ObjectType{
-			AttrTypes: inheritedObj.AttributeTypes(),
-		},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6Object) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -15635,11 +16487,35 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) AttributeTypes() map
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6AddressObject) AncestorName() string {
+	return "address"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6AddressObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) AncestorName() string {
+	return "prefix"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) AncestorName() string {
+	return "anycast"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) AttributeTypes() map[string]attr.Type {
 
@@ -15651,71 +16527,13 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) AttributeTy
 		"auto_config_flag":   types.BoolType,
 	}
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
 
-	var routerAdvertisementObj *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
-	return map[string]attr.Type{
-		"dad_attempts":       types.Int64Type,
-		"enable_dad":         types.BoolType,
-		"enable_ndp_monitor": types.BoolType,
-		"neighbor":           types.ListType{},
-		"ns_interval":        types.Int64Type,
-		"reachable_time":     types.Int64Type,
-		"router_advertisement": types.ObjectType{
-			AttrTypes: routerAdvertisementObj.AttributeTypes(),
-		},
-	}
+func (o AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) AncestorName() string {
+	return "advertise"
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
 
-	return map[string]attr.Type{
-		"name":       types.StringType,
-		"hw_address": types.StringType,
-	}
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
-
-	var dnsSupportObj *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
-
-	return map[string]attr.Type{
-		"dns_support": types.ObjectType{
-			AttrTypes: dnsSupportObj.AttributeTypes(),
-		},
-		"enable":                   types.BoolType,
-		"enable_consistency_check": types.BoolType,
-		"hop_limit":                types.StringType,
-		"lifetime":                 types.Int64Type,
-		"link_mtu":                 types.StringType,
-		"managed_flag":             types.BoolType,
-		"max_interval":             types.Int64Type,
-		"min_interval":             types.Int64Type,
-		"other_flag":               types.BoolType,
-		"reachable_time":           types.StringType,
-		"retransmission_timer":     types.StringType,
-		"router_preference":        types.StringType,
-	}
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
-
-	return map[string]attr.Type{
-		"enable": types.BoolType,
-		"server": types.ListType{},
-		"suffix": types.ListType{},
-	}
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AttributeTypes() map[string]attr.Type {
-
-	return map[string]attr.Type{
-		"name":     types.StringType,
-		"lifetime": types.Int64Type,
-	}
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AttributeTypes() map[string]attr.Type {
-
-	return map[string]attr.Type{
-		"name":     types.StringType,
-		"lifetime": types.Int64Type,
-	}
+func (o AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) AttributeTypes() map[string]attr.Type {
 
@@ -15740,6 +16558,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) AttributeTypes() 
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) AncestorName() string {
+	return "dhcp-client"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
 
 	var dnsServerObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject
@@ -15761,6 +16587,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) 
 		"reachable_time":     types.Int64Type,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) AncestorName() string {
+	return "neighbor-discovery"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
 
 	var sourceObj *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject
@@ -15770,6 +16604,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServe
 			AttrTypes: sourceObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) AncestorName() string {
+	return "dns-server"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -15785,8 +16627,24 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServe
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) AncestorName() string {
+	return "source"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) AncestorName() string {
+	return "dhcpv6"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
 
@@ -15794,12 +16652,28 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServe
 		"server": types.ListType{},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AncestorName() string {
+	return "manual"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":     types.StringType,
 		"lifetime": types.Int64Type,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) AncestorName() string {
+	return "server"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
 
@@ -15810,6 +16684,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffi
 			AttrTypes: sourceObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) AncestorName() string {
+	return "dns-suffix"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -15825,14 +16707,38 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffi
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) AncestorName() string {
+	return "source"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AncestorName() string {
+	return "dhcpv6"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"suffix": types.ListType{},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AncestorName() string {
+	return "manual"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
 
@@ -15841,12 +16747,28 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffi
 		"lifetime": types.Int64Type,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AncestorName() string {
+	return "suffix"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":       types.StringType,
 		"hw_address": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) AttributeTypes() map[string]attr.Type {
 
@@ -15856,6 +16778,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) A
 			AttrTypes: enableObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) AncestorName() string {
+	return "prefix-delegation"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) AttributeTypes() map[string]attr.Type {
 
@@ -15871,8 +16801,24 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObj
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) AncestorName() string {
+	return "enable"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) AncestorName() string {
+	return "no"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) AttributeTypes() map[string]attr.Type {
 
@@ -15881,6 +16827,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYes
 		"prefix_len":      types.Int64Type,
 		"prefix_len_hint": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) AncestorName() string {
+	return "yes"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) AttributeTypes() map[string]attr.Type {
 
@@ -15894,6 +16848,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) Attribut
 		"rapid_commit":          types.BoolType,
 		"support_srvr_reconfig": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) AncestorName() string {
+	return "v6-options"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) AttributeTypes() map[string]attr.Type {
 
@@ -15909,8 +16871,24 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) At
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) AncestorName() string {
+	return "enable"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) AncestorName() string {
+	return "no"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) AttributeTypes() map[string]attr.Type {
 
@@ -15918,6 +16896,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject)
 		"non_temp_addr": types.BoolType,
 		"temp_addr":     types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) AncestorName() string {
+	return "yes"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) AttributeTypes() map[string]attr.Type {
 
@@ -15930,6 +16916,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) AttributeTypes() m
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedObject) AncestorName() string {
+	return "inherited"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) AttributeTypes() map[string]attr.Type {
 
 	var typeObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject
@@ -15939,6 +16933,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) Attribut
 			AttrTypes: typeObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) AncestorName() string {
+	return "assign-addr"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) AttributeTypes() map[string]attr.Type {
 
@@ -15953,6 +16955,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) Attr
 			AttrTypes: ulaObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) AttributeTypes() map[string]attr.Type {
 
@@ -15970,6 +16980,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) A
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) AncestorName() string {
+	return "gua"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) AttributeTypes() map[string]attr.Type {
 
 	var dynamicObj *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
@@ -15984,14 +17002,38 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeO
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) AncestorName() string {
+	return "pool-type"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) AncestorName() string {
+	return "dynamic"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"identifier": types.Int64Type,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) AncestorName() string {
+	return "dynamic-id"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) AttributeTypes() map[string]attr.Type {
 
@@ -16000,6 +17042,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertise
 		"onlink_flag":      types.BoolType,
 		"auto_config_flag": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) AncestorName() string {
+	return "advertise"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) AttributeTypes() map[string]attr.Type {
 
@@ -16014,6 +17064,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) A
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) AncestorName() string {
+	return "ula"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -16023,6 +17081,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertise
 		"onlink_flag":        types.BoolType,
 		"auto_config_flag":   types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) AncestorName() string {
+	return "advertise"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
 
@@ -16049,6 +17115,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) A
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) AncestorName() string {
+	return "neighbor-discovery"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) AttributeTypes() map[string]attr.Type {
 
 	var sourceObj *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
@@ -16058,6 +17132,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServer
 			AttrTypes: sourceObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) AncestorName() string {
+	return "dns-server"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -16073,11 +17155,27 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServer
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) AncestorName() string {
+	return "source"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"prefix_pool": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) AncestorName() string {
+	return "dhcpv6"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
 
@@ -16085,12 +17183,28 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServer
 		"server": types.ListType{},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AncestorName() string {
+	return "manual"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":     types.StringType,
 		"lifetime": types.Int64Type,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) AncestorName() string {
+	return "server"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) AttributeTypes() map[string]attr.Type {
 
@@ -16101,6 +17215,14 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffix
 			AttrTypes: sourceObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) AncestorName() string {
+	return "dns-suffix"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -16116,17 +17238,41 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffix
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) AncestorName() string {
+	return "source"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"prefix_pool": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) AncestorName() string {
+	return "dhcpv6"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"suffix": types.ListType{},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AncestorName() string {
+	return "manual"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AttributeTypes() map[string]attr.Type {
 
@@ -16135,12 +17281,28 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffix
 		"lifetime": types.Int64Type,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) AncestorName() string {
+	return "suffix"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":       types.StringType,
 		"hw_address": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
 
@@ -16159,6 +17321,128 @@ func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdv
 		"router_preference":        types.StringType,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) AncestorName() string {
+	return "router-advertisement"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) EntryName() *string {
+	return nil
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
+
+	var routerAdvertisementObj *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
+	return map[string]attr.Type{
+		"dad_attempts":       types.Int64Type,
+		"enable_dad":         types.BoolType,
+		"enable_ndp_monitor": types.BoolType,
+		"neighbor":           types.ListType{},
+		"ns_interval":        types.Int64Type,
+		"reachable_time":     types.Int64Type,
+		"router_advertisement": types.ObjectType{
+			AttrTypes: routerAdvertisementObj.AttributeTypes(),
+		},
+	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) AncestorName() string {
+	return "neighbor-discovery"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) EntryName() *string {
+	return nil
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":       types.StringType,
+		"hw_address": types.StringType,
+	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) AncestorName() string {
+	return "neighbor"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) AttributeTypes() map[string]attr.Type {
+
+	var dnsSupportObj *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+
+	return map[string]attr.Type{
+		"dns_support": types.ObjectType{
+			AttrTypes: dnsSupportObj.AttributeTypes(),
+		},
+		"enable":                   types.BoolType,
+		"enable_consistency_check": types.BoolType,
+		"hop_limit":                types.StringType,
+		"lifetime":                 types.Int64Type,
+		"link_mtu":                 types.StringType,
+		"managed_flag":             types.BoolType,
+		"max_interval":             types.Int64Type,
+		"min_interval":             types.Int64Type,
+		"other_flag":               types.BoolType,
+		"reachable_time":           types.StringType,
+		"retransmission_timer":     types.StringType,
+		"router_preference":        types.StringType,
+	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) AncestorName() string {
+	return "router-advertisement"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) EntryName() *string {
+	return nil
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"enable": types.BoolType,
+		"server": types.ListType{},
+		"suffix": types.ListType{},
+	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AncestorName() string {
+	return "dns-support"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) EntryName() *string {
+	return nil
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) AncestorName() string {
+	return "server"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name":     types.StringType,
+		"lifetime": types.Int64Type,
+	}
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) AncestorName() string {
+	return "suffix"
+}
+
+func (o AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *AggregateInterfaceResourceLayer3LacpObject) AttributeTypes() map[string]attr.Type {
 
 	var highAvailabilityObj *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject
@@ -16175,11 +17459,27 @@ func (o *AggregateInterfaceResourceLayer3LacpObject) AttributeTypes() map[string
 		"transmission_rate": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3LacpObject) AncestorName() string {
+	return "lacp"
+}
+
+func (o AggregateInterfaceResourceLayer3LacpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"passive_pre_negotiation": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3LldpObject) AttributeTypes() map[string]attr.Type {
 
@@ -16193,11 +17493,27 @@ func (o *AggregateInterfaceResourceLayer3LldpObject) AttributeTypes() map[string
 		"profile": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3LldpObject) AncestorName() string {
+	return "lldp"
+}
+
+func (o AggregateInterfaceResourceLayer3LldpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"passive_pre_negotiation": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3NdpProxyObject) AttributeTypes() map[string]attr.Type {
 
@@ -16206,12 +17522,28 @@ func (o *AggregateInterfaceResourceLayer3NdpProxyObject) AttributeTypes() map[st
 		"enabled": types.BoolType,
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3NdpProxyObject) AncestorName() string {
+	return "ndp-proxy"
+}
+
+func (o AggregateInterfaceResourceLayer3NdpProxyObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":   types.StringType,
 		"negate": types.BoolType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3NdpProxyAddressObject) AncestorName() string {
+	return "address"
+}
+
+func (o AggregateInterfaceResourceLayer3NdpProxyAddressObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) AttributeTypes() map[string]attr.Type {
 
@@ -16223,6 +17555,14 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) AttributeTypes
 			AttrTypes: upstreamNatObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) AncestorName() string {
+	return "sdwan-link-settings"
+}
+
+func (o AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) AttributeTypes() map[string]attr.Type {
 
@@ -16239,8 +17579,24 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) Att
 		},
 	}
 }
+
+func (o AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) AncestorName() string {
+	return "upstream-nat"
+}
+
+func (o AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) AncestorName() string {
+	return "ddns"
+}
+
+func (o AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) AttributeTypes() map[string]attr.Type {
 
@@ -16248,6 +17604,14 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObj
 		"fqdn":       types.StringType,
 		"ip_address": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) AncestorName() string {
+	return "static-ip"
+}
+
+func (o AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceVirtualWireObject) AttributeTypes() map[string]attr.Type {
 
@@ -16259,6 +17623,14 @@ func (o *AggregateInterfaceResourceVirtualWireObject) AttributeTypes() map[strin
 		},
 		"netflow_profile": types.StringType,
 	}
+}
+
+func (o AggregateInterfaceResourceVirtualWireObject) AncestorName() string {
+	return "virtual-wire"
+}
+
+func (o AggregateInterfaceResourceVirtualWireObject) EntryName() *string {
+	return nil
 }
 func (o *AggregateInterfaceResourceVirtualWireLldpObject) AttributeTypes() map[string]attr.Type {
 
@@ -16272,6 +17644,14 @@ func (o *AggregateInterfaceResourceVirtualWireLldpObject) AttributeTypes() map[s
 		"profile": types.StringType,
 	}
 }
+
+func (o AggregateInterfaceResourceVirtualWireLldpObject) AncestorName() string {
+	return "lldp"
+}
+
+func (o AggregateInterfaceResourceVirtualWireLldpObject) EntryName() *string {
+	return nil
+}
 func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -16279,7 +17659,15 @@ func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) Attrib
 	}
 }
 
-func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, obj **aggregate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) AncestorName() string {
+	return "high-availability"
+}
+
+func (o AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) EntryName() *string {
+	return nil
+}
+
+func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	comment_value := o.Comment.ValueStringPointer()
 	var decryptMirror_entry *aggregate.DecryptMirror
@@ -16289,8 +17677,8 @@ func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			decryptMirror_entry = new(aggregate.DecryptMirror)
 		}
-
-		diags.Append(o.DecryptMirror.CopyToPango(ctx, &decryptMirror_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.DecryptMirror.CopyToPango(ctx, ancestors, &decryptMirror_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16302,8 +17690,8 @@ func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			ha_entry = new(aggregate.Ha)
 		}
-
-		diags.Append(o.Ha.CopyToPango(ctx, &ha_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Ha.CopyToPango(ctx, ancestors, &ha_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16315,8 +17703,8 @@ func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			layer2_entry = new(aggregate.Layer2)
 		}
-
-		diags.Append(o.Layer2.CopyToPango(ctx, &layer2_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Layer2.CopyToPango(ctx, ancestors, &layer2_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16328,8 +17716,8 @@ func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			layer3_entry = new(aggregate.Layer3)
 		}
-
-		diags.Append(o.Layer3.CopyToPango(ctx, &layer3_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Layer3.CopyToPango(ctx, ancestors, &layer3_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16341,8 +17729,8 @@ func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			virtualWire_entry = new(aggregate.VirtualWire)
 		}
-
-		diags.Append(o.VirtualWire.CopyToPango(ctx, &virtualWire_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.VirtualWire.CopyToPango(ctx, ancestors, &virtualWire_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16361,7 +17749,7 @@ func (o *AggregateInterfaceResourceModel) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *AggregateInterfaceResourceDecryptMirrorObject) CopyToPango(ctx context.Context, obj **aggregate.DecryptMirror, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceDecryptMirrorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.DecryptMirror, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -16370,7 +17758,7 @@ func (o *AggregateInterfaceResourceDecryptMirrorObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AggregateInterfaceResourceHaObject) CopyToPango(ctx context.Context, obj **aggregate.Ha, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceHaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Ha, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lacp_entry *aggregate.HaLacp
 	if o.Lacp != nil {
@@ -16379,8 +17767,8 @@ func (o *AggregateInterfaceResourceHaObject) CopyToPango(ctx context.Context, ob
 		} else {
 			lacp_entry = new(aggregate.HaLacp)
 		}
-
-		diags.Append(o.Lacp.CopyToPango(ctx, &lacp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lacp.CopyToPango(ctx, append(ancestors, o), &lacp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16393,7 +17781,7 @@ func (o *AggregateInterfaceResourceHaObject) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *AggregateInterfaceResourceHaLacpObject) CopyToPango(ctx context.Context, obj **aggregate.HaLacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceHaLacpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.HaLacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	fastFailover_value := o.FastFailover.ValueBoolPointer()
@@ -16414,7 +17802,7 @@ func (o *AggregateInterfaceResourceHaLacpObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer2Object) CopyToPango(ctx context.Context, obj **aggregate.Layer2, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lacp_entry *aggregate.Layer2Lacp
 	if o.Lacp != nil {
@@ -16423,8 +17811,8 @@ func (o *AggregateInterfaceResourceLayer2Object) CopyToPango(ctx context.Context
 		} else {
 			lacp_entry = new(aggregate.Layer2Lacp)
 		}
-
-		diags.Append(o.Lacp.CopyToPango(ctx, &lacp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lacp.CopyToPango(ctx, append(ancestors, o), &lacp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16436,8 +17824,8 @@ func (o *AggregateInterfaceResourceLayer2Object) CopyToPango(ctx context.Context
 		} else {
 			lldp_entry = new(aggregate.Layer2Lldp)
 		}
-
-		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lldp.CopyToPango(ctx, append(ancestors, o), &lldp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16453,7 +17841,7 @@ func (o *AggregateInterfaceResourceLayer2Object) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer2LacpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2LacpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2Lacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	fastFailover_value := o.FastFailover.ValueBoolPointer()
@@ -16464,8 +17852,8 @@ func (o *AggregateInterfaceResourceLayer2LacpObject) CopyToPango(ctx context.Con
 		} else {
 			highAvailability_entry = new(aggregate.Layer2LacpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16488,7 +17876,7 @@ func (o *AggregateInterfaceResourceLayer2LacpObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2LacpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -16499,7 +17887,7 @@ func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) CopyToPango
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer2LldpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2LldpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2Lldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var highAvailability_entry *aggregate.Layer2LldpHighAvailability
@@ -16509,8 +17897,8 @@ func (o *AggregateInterfaceResourceLayer2LldpObject) CopyToPango(ctx context.Con
 		} else {
 			highAvailability_entry = new(aggregate.Layer2LldpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16526,7 +17914,7 @@ func (o *AggregateInterfaceResourceLayer2LldpObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer2LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer2LldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -16537,7 +17925,7 @@ func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) CopyToPango
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var adjustTcpMss_entry *aggregate.Layer3AdjustTcpMss
 	if o.AdjustTcpMss != nil {
@@ -16546,8 +17934,8 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		} else {
 			adjustTcpMss_entry = new(aggregate.Layer3AdjustTcpMss)
 		}
-
-		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, &adjustTcpMss_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, append(ancestors, o), &adjustTcpMss_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16562,7 +17950,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		}
 		for _, elt := range arp_tf_entries {
 			var entry *aggregate.Layer3Arp
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -16576,8 +17964,8 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		} else {
 			bonjour_entry = new(aggregate.Layer3Bonjour)
 		}
-
-		diags.Append(o.Bonjour.CopyToPango(ctx, &bonjour_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Bonjour.CopyToPango(ctx, append(ancestors, o), &bonjour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16589,8 +17977,8 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		} else {
 			ddnsConfig_entry = new(aggregate.Layer3DdnsConfig)
 		}
-
-		diags.Append(o.DdnsConfig.CopyToPango(ctx, &ddnsConfig_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DdnsConfig.CopyToPango(ctx, append(ancestors, o), &ddnsConfig_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16604,8 +17992,8 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		} else {
 			dhcpClient_entry = new(aggregate.Layer3DhcpClient)
 		}
-
-		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DhcpClient.CopyToPango(ctx, append(ancestors, o), &dhcpClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16621,7 +18009,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		}
 		for _, elt := range ip_tf_entries {
 			var entry *aggregate.Layer3Ip
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -16635,8 +18023,8 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		} else {
 			ipv6_entry = new(aggregate.Layer3Ipv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16648,8 +18036,8 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		} else {
 			lacp_entry = new(aggregate.Layer3Lacp)
 		}
-
-		diags.Append(o.Lacp.CopyToPango(ctx, &lacp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lacp.CopyToPango(ctx, append(ancestors, o), &lacp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16661,8 +18049,8 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		} else {
 			lldp_entry = new(aggregate.Layer3Lldp)
 		}
-
-		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lldp.CopyToPango(ctx, append(ancestors, o), &lldp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16675,8 +18063,8 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		} else {
 			ndpProxy_entry = new(aggregate.Layer3NdpProxy)
 		}
-
-		diags.Append(o.NdpProxy.CopyToPango(ctx, &ndpProxy_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.NdpProxy.CopyToPango(ctx, append(ancestors, o), &ndpProxy_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16689,8 +18077,8 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 		} else {
 			sdwanLinkSettings_entry = new(aggregate.Layer3SdwanLinkSettings)
 		}
-
-		diags.Append(o.SdwanLinkSettings.CopyToPango(ctx, &sdwanLinkSettings_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SdwanLinkSettings.CopyToPango(ctx, append(ancestors, o), &sdwanLinkSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16720,7 +18108,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
@@ -16735,7 +18123,7 @@ func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3ArpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3ArpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Arp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -16747,7 +18135,7 @@ func (o *AggregateInterfaceResourceLayer3ArpObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	groupId_value := o.GroupId.ValueInt64Pointer()
@@ -16762,7 +18150,7 @@ func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ddnsCertProfile_value := o.DdnsCertProfile.ValueStringPointer()
 	ddnsEnabled_value := o.DdnsEnabled.ValueBoolPointer()
@@ -16789,7 +18177,7 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyToPango(ctx conte
 		}
 		for _, elt := range ddnsVendorConfig_tf_entries {
 			var entry *aggregate.Layer3DdnsConfigDdnsVendorConfig
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -16811,7 +18199,7 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DdnsConfigDdnsVendorConfig, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -16823,7 +18211,7 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) CopyT
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
@@ -16835,8 +18223,8 @@ func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyToPango(ctx conte
 		} else {
 			sendHostname_entry = new(aggregate.Layer3DhcpClientSendHostname)
 		}
-
-		diags.Append(o.SendHostname.CopyToPango(ctx, &sendHostname_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SendHostname.CopyToPango(ctx, append(ancestors, o), &sendHostname_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16852,7 +18240,7 @@ func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	hostname_value := o.Hostname.ValueStringPointer()
@@ -16865,7 +18253,7 @@ func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyToPan
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3IpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3IpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	sdwanGateway_value := o.SdwanGateway.ValueStringPointer()
 
@@ -16877,7 +18265,7 @@ func (o *AggregateInterfaceResourceLayer3IpObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []AggregateInterfaceResourceLayer3Ipv6AddressObject
 	var address_pango_entries []aggregate.Layer3Ipv6Address
@@ -16889,26 +18277,11 @@ func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyToPango(ctx context.Con
 		}
 		for _, elt := range address_tf_entries {
 			var entry *aggregate.Layer3Ipv6Address
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
 			address_pango_entries = append(address_pango_entries, *entry)
-		}
-	}
-	enabled_value := o.Enabled.ValueBoolPointer()
-	interfaceId_value := o.InterfaceId.ValueStringPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6NeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6NeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
 		}
 	}
 	var dhcpClient_entry *aggregate.Layer3Ipv6DhcpClient
@@ -16918,12 +18291,13 @@ func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyToPango(ctx context.Con
 		} else {
 			dhcpClient_entry = new(aggregate.Layer3Ipv6DhcpClient)
 		}
-
-		diags.Append(o.DhcpClient.CopyToPango(ctx, &dhcpClient_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DhcpClient.CopyToPango(ctx, append(ancestors, o), &dhcpClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
+	enabled_value := o.Enabled.ValueBoolPointer()
 	var inherited_entry *aggregate.Layer3Ipv6Inherited
 	if o.Inherited != nil {
 		if *obj != nil && (*obj).Inherited != nil {
@@ -16931,8 +18305,22 @@ func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyToPango(ctx context.Con
 		} else {
 			inherited_entry = new(aggregate.Layer3Ipv6Inherited)
 		}
-
-		diags.Append(o.Inherited.CopyToPango(ctx, &inherited_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Inherited.CopyToPango(ctx, append(ancestors, o), &inherited_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	interfaceId_value := o.InterfaceId.ValueStringPointer()
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6NeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6NeighborDiscovery)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16942,15 +18330,15 @@ func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyToPango(ctx context.Con
 		*obj = new(aggregate.Layer3Ipv6)
 	}
 	(*obj).Address = address_pango_entries
+	(*obj).DhcpClient = dhcpClient_entry
 	(*obj).Enabled = enabled_value
+	(*obj).Inherited = inherited_entry
 	(*obj).InterfaceId = interfaceId_value
 	(*obj).NeighborDiscovery = neighborDiscovery_entry
-	(*obj).DhcpClient = dhcpClient_entry
-	(*obj).Inherited = inherited_entry
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *aggregate.Layer3Ipv6AddressPrefix
@@ -16960,8 +18348,8 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyToPango(ctx cont
 		} else {
 			prefix_entry = new(aggregate.Layer3Ipv6AddressPrefix)
 		}
-
-		diags.Append(o.Prefix.CopyToPango(ctx, &prefix_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Prefix.CopyToPango(ctx, append(ancestors, o), &prefix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16973,8 +18361,8 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyToPango(ctx cont
 		} else {
 			anycast_entry = new(aggregate.Layer3Ipv6AddressAnycast)
 		}
-
-		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Anycast.CopyToPango(ctx, append(ancestors, o), &anycast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16986,8 +18374,8 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyToPango(ctx cont
 		} else {
 			advertise_entry = new(aggregate.Layer3Ipv6AddressAdvertise)
 		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17004,7 +18392,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -17013,7 +18401,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -17022,7 +18410,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) CopyToPango(c
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	validLifetime_value := o.ValidLifetime.ValueStringPointer()
@@ -17041,7 +18429,1150 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyToPango
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
+	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
+	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	preference_value := o.Preference.ValueStringPointer()
+	var prefixDelegation_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegation
+	if o.PrefixDelegation != nil {
+		if *obj != nil && (*obj).PrefixDelegation != nil {
+			prefixDelegation_entry = (*obj).PrefixDelegation
+		} else {
+			prefixDelegation_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.PrefixDelegation.CopyToPango(ctx, append(ancestors, o), &prefixDelegation_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var v6Options_entry *aggregate.Layer3Ipv6DhcpClientV6Options
+	if o.V6Options != nil {
+		if *obj != nil && (*obj).V6Options != nil {
+			v6Options_entry = (*obj).V6Options
+		} else {
+			v6Options_entry = new(aggregate.Layer3Ipv6DhcpClientV6Options)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.V6Options.CopyToPango(ctx, append(ancestors, o), &v6Options_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClient)
+	}
+	(*obj).AcceptRaRoute = acceptRaRoute_value
+	(*obj).DefaultRouteMetric = defaultRouteMetric_value
+	(*obj).Enable = enable_value
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
+	(*obj).Preference = preference_value
+	(*obj).PrefixDelegation = prefixDelegation_entry
+	(*obj).V6Options = v6Options_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
+	var dnsServer_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer
+	if o.DnsServer != nil {
+		if *obj != nil && (*obj).DnsServer != nil {
+			dnsServer_entry = (*obj).DnsServer
+		} else {
+			dnsServer_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DnsServer.CopyToPango(ctx, append(ancestors, o), &dnsServer_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSuffix_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix
+	if o.DnsSuffix != nil {
+		if *obj != nil && (*obj).DnsSuffix != nil {
+			dnsSuffix_entry = (*obj).DnsSuffix
+		} else {
+			dnsSuffix_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DnsSuffix.CopyToPango(ctx, append(ancestors, o), &dnsSuffix_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableDad_value := o.EnableDad.ValueBoolPointer()
+	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
+	var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
+	var neighbor_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
+	{
+		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range neighbor_tf_entries {
+			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
+		}
+	}
+	nsInterval_value := o.NsInterval.ValueInt64Pointer()
+	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
+	}
+	(*obj).DadAttempts = dadAttempts_value
+	(*obj).DnsServer = dnsServer_entry
+	(*obj).DnsSuffix = dnsSuffix_entry
+	(*obj).EnableDad = enableDad_value
+	(*obj).EnableNdpMonitor = enableNdpMonitor_value
+	(*obj).Neighbor = neighbor_pango_entries
+	(*obj).NsInterval = nsInterval_value
+	(*obj).ReachableTime = reachableTime_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
+	var server_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
+	{
+		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range server_tf_entries {
+			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_pango_entries = append(server_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
+	}
+	(*obj).Server = server_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+	var suffix_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
+	{
+		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range suffix_tf_entries {
+			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_pango_entries = append(suffix_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
+	}
+	(*obj).Suffix = suffix_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Enable.CopyToPango(ctx, append(ancestors, o), &enable_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
+	}
+	(*obj).Enable = enable_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
+	}
+	(*obj).No = no_entry
+	(*obj).Yes = yes_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
+	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
+	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
+	}
+	(*obj).PfxPoolName = pfxPoolName_value
+	(*obj).PrefixLen = prefixLen_value
+	(*obj).PrefixLenHint = prefixLenHint_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	duidType_value := o.DuidType.ValueStringPointer()
+	var enable_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable
+	if o.Enable != nil {
+		if *obj != nil && (*obj).Enable != nil {
+			enable_entry = (*obj).Enable
+		} else {
+			enable_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Enable.CopyToPango(ctx, append(ancestors, o), &enable_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
+	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6Options)
+	}
+	(*obj).DuidType = duidType_value
+	(*obj).Enable = enable_entry
+	(*obj).RapidCommit = rapidCommit_value
+	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo
+	if o.No != nil {
+		if *obj != nil && (*obj).No != nil {
+			no_entry = (*obj).No
+		} else {
+			no_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes
+	if o.Yes != nil {
+		if *obj != nil && (*obj).Yes != nil {
+			yes_entry = (*obj).Yes
+		} else {
+			yes_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
+	}
+	(*obj).No = no_entry
+	(*obj).Yes = yes_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
+	tempAddr_value := o.TempAddr.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
+	}
+	(*obj).NonTempAddr = nonTempAddr_value
+	(*obj).TempAddr = tempAddr_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var assignAddr_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject
+	var assignAddr_pango_entries []aggregate.Layer3Ipv6InheritedAssignAddr
+	{
+		d := o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range assignAddr_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedAssignAddr
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			assignAddr_pango_entries = append(assignAddr_pango_entries, *entry)
+		}
+	}
+	enable_value := o.Enable.ValueBoolPointer()
+	var neighborDiscovery_entry *aggregate.Layer3Ipv6InheritedNeighborDiscovery
+	if o.NeighborDiscovery != nil {
+		if *obj != nil && (*obj).NeighborDiscovery != nil {
+			neighborDiscovery_entry = (*obj).NeighborDiscovery
+		} else {
+			neighborDiscovery_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6Inherited)
+	}
+	(*obj).AssignAddr = assignAddr_pango_entries
+	(*obj).Enable = enable_value
+	(*obj).NeighborDiscovery = neighborDiscovery_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var type_entry *aggregate.Layer3Ipv6InheritedAssignAddrType
+	if o.Type != nil {
+		if *obj != nil && (*obj).Type != nil {
+			type_entry = (*obj).Type
+		} else {
+			type_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddr)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Type = type_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var gua_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua
+	if o.Gua != nil {
+		if *obj != nil && (*obj).Gua != nil {
+			gua_entry = (*obj).Gua
+		} else {
+			gua_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Gua.CopyToPango(ctx, append(ancestors, o), &gua_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ula_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla
+	if o.Ula != nil {
+		if *obj != nil && (*obj).Ula != nil {
+			ula_entry = (*obj).Ula
+		} else {
+			ula_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Ula.CopyToPango(ctx, append(ancestors, o), &ula_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
+	}
+	(*obj).Gua = gua_entry
+	(*obj).Ula = ula_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+	var poolType_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType
+	if o.PoolType != nil {
+		if *obj != nil && (*obj).PoolType != nil {
+			poolType_entry = (*obj).PoolType
+		} else {
+			poolType_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.PoolType.CopyToPango(ctx, append(ancestors, o), &poolType_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
+	}
+	(*obj).EnableOnInterface = enableOnInterface_value
+	(*obj).PrefixPool = prefixPool_value
+	(*obj).PoolType = poolType_entry
+	(*obj).Advertise = advertise_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dynamic_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
+	if o.Dynamic != nil {
+		if *obj != nil && (*obj).Dynamic != nil {
+			dynamic_entry = (*obj).Dynamic
+		} else {
+			dynamic_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dynamic.CopyToPango(ctx, append(ancestors, o), &dynamic_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dynamicId_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
+	if o.DynamicId != nil {
+		if *obj != nil && (*obj).DynamicId != nil {
+			dynamicId_entry = (*obj).DynamicId
+		} else {
+			dynamicId_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DynamicId.CopyToPango(ctx, append(ancestors, o), &dynamicId_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
+	}
+	(*obj).Dynamic = dynamic_entry
+	(*obj).DynamicId = dynamicId_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
+	}
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	identifier_value := o.Identifier.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
+	}
+	(*obj).Identifier = identifier_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
+	}
+	(*obj).Enable = enable_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
+	address_value := o.Address.ValueStringPointer()
+	prefix_value := o.Prefix.ValueBoolPointer()
+	anycast_value := o.Anycast.ValueBoolPointer()
+	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise
+	if o.Advertise != nil {
+		if *obj != nil && (*obj).Advertise != nil {
+			advertise_entry = (*obj).Advertise
+		} else {
+			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
+	}
+	(*obj).EnableOnInterface = enableOnInterface_value
+	(*obj).Address = address_value
+	(*obj).Prefix = prefix_value
+	(*obj).Anycast = anycast_value
+	(*obj).Advertise = advertise_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	validLifetime_value := o.ValidLifetime.ValueStringPointer()
+	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
+	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
+	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
+	}
+	(*obj).Enable = enable_value
+	(*obj).ValidLifetime = validLifetime_value
+	(*obj).PreferredLifetime = preferredLifetime_value
+	(*obj).OnlinkFlag = onlinkFlag_value
+	(*obj).AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
+	var dnsServer_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer
+	if o.DnsServer != nil {
+		if *obj != nil && (*obj).DnsServer != nil {
+			dnsServer_entry = (*obj).DnsServer
+		} else {
+			dnsServer_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DnsServer.CopyToPango(ctx, append(ancestors, o), &dnsServer_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSuffix_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix
+	if o.DnsSuffix != nil {
+		if *obj != nil && (*obj).DnsSuffix != nil {
+			dnsSuffix_entry = (*obj).DnsSuffix
+		} else {
+			dnsSuffix_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.DnsSuffix.CopyToPango(ctx, append(ancestors, o), &dnsSuffix_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enableDad_value := o.EnableDad.ValueBoolPointer()
+	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
+	var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
+	var neighbor_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
+	{
+		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range neighbor_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
+		}
+	}
+	nsInterval_value := o.NsInterval.ValueInt64Pointer()
+	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
+	var routerAdvertisement_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement
+	if o.RouterAdvertisement != nil {
+		if *obj != nil && (*obj).RouterAdvertisement != nil {
+			routerAdvertisement_entry = (*obj).RouterAdvertisement
+		} else {
+			routerAdvertisement_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, append(ancestors, o), &routerAdvertisement_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
+	}
+	(*obj).DadAttempts = dadAttempts_value
+	(*obj).DnsServer = dnsServer_entry
+	(*obj).DnsSuffix = dnsSuffix_entry
+	(*obj).EnableDad = enableDad_value
+	(*obj).EnableNdpMonitor = enableNdpMonitor_value
+	(*obj).Neighbor = neighbor_pango_entries
+	(*obj).NsInterval = nsInterval_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RouterAdvertisement = routerAdvertisement_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
+	}
+	(*obj).PrefixPool = prefixPool_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+	var server_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+	{
+		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range server_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_pango_entries = append(server_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
+	}
+	(*obj).Server = server_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource
+	if o.Source != nil {
+		if *obj != nil && (*obj).Source != nil {
+			source_entry = (*obj).Source
+		} else {
+			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
+	}
+	(*obj).Enable = enable_value
+	(*obj).Source = source_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
+	if o.Dhcpv6 != nil {
+		if *obj != nil && (*obj).Dhcpv6 != nil {
+			dhcpv6_entry = (*obj).Dhcpv6
+		} else {
+			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
+	if o.Manual != nil {
+		if *obj != nil && (*obj).Manual != nil {
+			manual_entry = (*obj).Manual
+		} else {
+			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
+		}
+		// ModelOrObject: Object
+		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
+	}
+	(*obj).Dhcpv6 = dhcpv6_entry
+	(*obj).Manual = manual_entry
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	prefixPool_value := o.PrefixPool.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
+	}
+	(*obj).PrefixPool = prefixPool_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+	var suffix_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+	{
+		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
+		diags.Append(d...)
+		if diags.HasError() {
+			return diags
+		}
+		for _, elt := range suffix_tf_entries {
+			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_pango_entries = append(suffix_pango_entries, *entry)
+		}
+	}
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
+	}
+	(*obj).Suffix = suffix_pango_entries
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).Lifetime = lifetime_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	hwAddress_value := o.HwAddress.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor)
+	}
+	(*obj).Name = o.Name.ValueString()
+	(*obj).HwAddress = hwAddress_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	enable_value := o.Enable.ValueBoolPointer()
+	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
+	hopLimit_value := o.HopLimit.ValueStringPointer()
+	lifetime_value := o.Lifetime.ValueInt64Pointer()
+	linkMtu_value := o.LinkMtu.ValueStringPointer()
+	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
+	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
+	minInterval_value := o.MinInterval.ValueInt64Pointer()
+	otherFlag_value := o.OtherFlag.ValueBoolPointer()
+	reachableTime_value := o.ReachableTime.ValueStringPointer()
+	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
+	routerPreference_value := o.RouterPreference.ValueStringPointer()
+
+	if (*obj) == nil {
+		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
+	}
+	(*obj).Enable = enable_value
+	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
+	(*obj).HopLimit = hopLimit_value
+	(*obj).Lifetime = lifetime_value
+	(*obj).LinkMtu = linkMtu_value
+	(*obj).ManagedFlag = managedFlag_value
+	(*obj).MaxInterval = maxInterval_value
+	(*obj).MinInterval = minInterval_value
+	(*obj).OtherFlag = otherFlag_value
+	(*obj).ReachableTime = reachableTime_value
+	(*obj).RetransmissionTimer = retransmissionTimer_value
+	(*obj).RouterPreference = routerPreference_value
+
+	return diags
+}
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	enableDad_value := o.EnableDad.ValueBoolPointer()
@@ -17056,7 +19587,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyToPang
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *aggregate.Layer3Ipv6NeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -17072,8 +19603,8 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyToPang
 		} else {
 			routerAdvertisement_entry = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement)
 		}
-
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, append(ancestors, o), &routerAdvertisement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17092,7 +19623,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyToPang
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -17104,7 +19635,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) Co
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSupport_entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport
 	if o.DnsSupport != nil {
@@ -17113,8 +19644,8 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 		} else {
 			dnsSupport_entry = new(aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport)
 		}
-
-		diags.Append(o.DnsSupport.CopyToPango(ctx, &dnsSupport_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.DnsSupport.CopyToPango(ctx, append(ancestors, o), &dnsSupport_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17151,7 +19682,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
@@ -17164,7 +19695,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 		}
 		for _, elt := range server_tf_entries {
 			var entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -17181,7 +19712,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 		}
 		for _, elt := range suffix_tf_entries {
 			var entry *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -17198,7 +19729,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -17210,7 +19741,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -17222,1150 +19753,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
-	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
-	enable_value := o.Enable.ValueBoolPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	preference_value := o.Preference.ValueStringPointer()
-	var prefixDelegation_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegation
-	if o.PrefixDelegation != nil {
-		if *obj != nil && (*obj).PrefixDelegation != nil {
-			prefixDelegation_entry = (*obj).PrefixDelegation
-		} else {
-			prefixDelegation_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
-		}
-
-		diags.Append(o.PrefixDelegation.CopyToPango(ctx, &prefixDelegation_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var v6Options_entry *aggregate.Layer3Ipv6DhcpClientV6Options
-	if o.V6Options != nil {
-		if *obj != nil && (*obj).V6Options != nil {
-			v6Options_entry = (*obj).V6Options
-		} else {
-			v6Options_entry = new(aggregate.Layer3Ipv6DhcpClientV6Options)
-		}
-
-		diags.Append(o.V6Options.CopyToPango(ctx, &v6Options_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClient)
-	}
-	(*obj).AcceptRaRoute = acceptRaRoute_value
-	(*obj).DefaultRouteMetric = defaultRouteMetric_value
-	(*obj).Enable = enable_value
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
-	(*obj).Preference = preference_value
-	(*obj).PrefixDelegation = prefixDelegation_entry
-	(*obj).V6Options = v6Options_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
-	var dnsServer_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
-		if *obj != nil && (*obj).DnsServer != nil {
-			dnsServer_entry = (*obj).DnsServer
-		} else {
-			dnsServer_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer)
-		}
-
-		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSuffix_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
-		if *obj != nil && (*obj).DnsSuffix != nil {
-			dnsSuffix_entry = (*obj).DnsSuffix
-		} else {
-			dnsSuffix_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
-		}
-
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	enableDad_value := o.EnableDad.ValueBoolPointer()
-	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
-	var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
-	var neighbor_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
-	{
-		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range neighbor_tf_entries {
-			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
-		}
-	}
-	nsInterval_value := o.NsInterval.ValueInt64Pointer()
-	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscovery)
-	}
-	(*obj).DadAttempts = dadAttempts_value
-	(*obj).DnsServer = dnsServer_entry
-	(*obj).DnsSuffix = dnsSuffix_entry
-	(*obj).EnableDad = enableDad_value
-	(*obj).EnableNdpMonitor = enableNdpMonitor_value
-	(*obj).Neighbor = neighbor_pango_entries
-	(*obj).NsInterval = nsInterval_value
-	(*obj).ReachableTime = reachableTime_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-	var server_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
-	{
-		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range server_tf_entries {
-			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			server_pango_entries = append(server_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
-	}
-	(*obj).Server = server_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-	var suffix_pango_entries []aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
-	{
-		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range suffix_tf_entries {
-			var entry *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			suffix_pango_entries = append(suffix_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
-	}
-	(*obj).Suffix = suffix_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var enable_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegation)
-	}
-	(*obj).Enable = enable_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_entry *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable)
-	}
-	(*obj).No = no_entry
-	(*obj).Yes = yes_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
-	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
-	prefixLenHint_value := o.PrefixLenHint.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes)
-	}
-	(*obj).PfxPoolName = pfxPoolName_value
-	(*obj).PrefixLen = prefixLen_value
-	(*obj).PrefixLenHint = prefixLenHint_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	duidType_value := o.DuidType.ValueStringPointer()
-	var enable_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable
-	if o.Enable != nil {
-		if *obj != nil && (*obj).Enable != nil {
-			enable_entry = (*obj).Enable
-		} else {
-			enable_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
-		}
-
-		diags.Append(o.Enable.CopyToPango(ctx, &enable_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	rapidCommit_value := o.RapidCommit.ValueBoolPointer()
-	supportSrvrReconfig_value := o.SupportSrvrReconfig.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6Options)
-	}
-	(*obj).DuidType = duidType_value
-	(*obj).Enable = enable_entry
-	(*obj).RapidCommit = rapidCommit_value
-	(*obj).SupportSrvrReconfig = supportSrvrReconfig_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo
-	if o.No != nil {
-		if *obj != nil && (*obj).No != nil {
-			no_entry = (*obj).No
-		} else {
-			no_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
-		}
-
-		diags.Append(o.No.CopyToPango(ctx, &no_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_entry *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes
-	if o.Yes != nil {
-		if *obj != nil && (*obj).Yes != nil {
-			yes_entry = (*obj).Yes
-		} else {
-			yes_entry = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
-		}
-
-		diags.Append(o.Yes.CopyToPango(ctx, &yes_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnable)
-	}
-	(*obj).No = no_entry
-	(*obj).Yes = yes_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
-	tempAddr_value := o.TempAddr.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes)
-	}
-	(*obj).NonTempAddr = nonTempAddr_value
-	(*obj).TempAddr = tempAddr_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var assignAddr_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject
-	var assignAddr_pango_entries []aggregate.Layer3Ipv6InheritedAssignAddr
-	{
-		d := o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range assignAddr_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedAssignAddr
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			assignAddr_pango_entries = append(assignAddr_pango_entries, *entry)
-		}
-	}
-	enable_value := o.Enable.ValueBoolPointer()
-	var neighborDiscovery_entry *aggregate.Layer3Ipv6InheritedNeighborDiscovery
-	if o.NeighborDiscovery != nil {
-		if *obj != nil && (*obj).NeighborDiscovery != nil {
-			neighborDiscovery_entry = (*obj).NeighborDiscovery
-		} else {
-			neighborDiscovery_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
-		}
-
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, &neighborDiscovery_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6Inherited)
-	}
-	(*obj).AssignAddr = assignAddr_pango_entries
-	(*obj).Enable = enable_value
-	(*obj).NeighborDiscovery = neighborDiscovery_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var type_entry *aggregate.Layer3Ipv6InheritedAssignAddrType
-	if o.Type != nil {
-		if *obj != nil && (*obj).Type != nil {
-			type_entry = (*obj).Type
-		} else {
-			type_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
-		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddr)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Type = type_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var gua_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua
-	if o.Gua != nil {
-		if *obj != nil && (*obj).Gua != nil {
-			gua_entry = (*obj).Gua
-		} else {
-			gua_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
-		}
-
-		diags.Append(o.Gua.CopyToPango(ctx, &gua_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ula_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla
-	if o.Ula != nil {
-		if *obj != nil && (*obj).Ula != nil {
-			ula_entry = (*obj).Ula
-		} else {
-			ula_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
-		}
-
-		diags.Append(o.Ula.CopyToPango(ctx, &ula_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrType)
-	}
-	(*obj).Gua = gua_entry
-	(*obj).Ula = ula_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-	var poolType_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType
-	if o.PoolType != nil {
-		if *obj != nil && (*obj).PoolType != nil {
-			poolType_entry = (*obj).PoolType
-		} else {
-			poolType_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
-		}
-
-		diags.Append(o.PoolType.CopyToPango(ctx, &poolType_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGua)
-	}
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).PrefixPool = prefixPool_value
-	(*obj).PoolType = poolType_entry
-	(*obj).Advertise = advertise_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dynamic_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
-	if o.Dynamic != nil {
-		if *obj != nil && (*obj).Dynamic != nil {
-			dynamic_entry = (*obj).Dynamic
-		} else {
-			dynamic_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
-		}
-
-		diags.Append(o.Dynamic.CopyToPango(ctx, &dynamic_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dynamicId_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
-	if o.DynamicId != nil {
-		if *obj != nil && (*obj).DynamicId != nil {
-			dynamicId_entry = (*obj).DynamicId
-		} else {
-			dynamicId_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
-		}
-
-		diags.Append(o.DynamicId.CopyToPango(ctx, &dynamicId_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType)
-	}
-	(*obj).Dynamic = dynamic_entry
-	(*obj).DynamicId = dynamicId_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
-	}
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	identifier_value := o.Identifier.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
-	}
-	(*obj).Identifier = identifier_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
-	address_value := o.Address.ValueStringPointer()
-	prefix_value := o.Prefix.ValueBoolPointer()
-	anycast_value := o.Anycast.ValueBoolPointer()
-	var advertise_entry *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise
-	if o.Advertise != nil {
-		if *obj != nil && (*obj).Advertise != nil {
-			advertise_entry = (*obj).Advertise
-		} else {
-			advertise_entry = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
-		}
-
-		diags.Append(o.Advertise.CopyToPango(ctx, &advertise_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUla)
-	}
-	(*obj).EnableOnInterface = enableOnInterface_value
-	(*obj).Address = address_value
-	(*obj).Prefix = prefix_value
-	(*obj).Anycast = anycast_value
-	(*obj).Advertise = advertise_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	validLifetime_value := o.ValidLifetime.ValueStringPointer()
-	preferredLifetime_value := o.PreferredLifetime.ValueStringPointer()
-	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
-	autoConfigFlag_value := o.AutoConfigFlag.ValueBoolPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise)
-	}
-	(*obj).Enable = enable_value
-	(*obj).ValidLifetime = validLifetime_value
-	(*obj).PreferredLifetime = preferredLifetime_value
-	(*obj).OnlinkFlag = onlinkFlag_value
-	(*obj).AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
-	var dnsServer_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
-		if *obj != nil && (*obj).DnsServer != nil {
-			dnsServer_entry = (*obj).DnsServer
-		} else {
-			dnsServer_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
-		}
-
-		diags.Append(o.DnsServer.CopyToPango(ctx, &dnsServer_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSuffix_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
-		if *obj != nil && (*obj).DnsSuffix != nil {
-			dnsSuffix_entry = (*obj).DnsSuffix
-		} else {
-			dnsSuffix_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
-		}
-
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, &dnsSuffix_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	enableDad_value := o.EnableDad.ValueBoolPointer()
-	enableNdpMonitor_value := o.EnableNdpMonitor.ValueBoolPointer()
-	var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
-	var neighbor_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
-	{
-		d := o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range neighbor_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			neighbor_pango_entries = append(neighbor_pango_entries, *entry)
-		}
-	}
-	nsInterval_value := o.NsInterval.ValueInt64Pointer()
-	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
-	var routerAdvertisement_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement
-	if o.RouterAdvertisement != nil {
-		if *obj != nil && (*obj).RouterAdvertisement != nil {
-			routerAdvertisement_entry = (*obj).RouterAdvertisement
-		} else {
-			routerAdvertisement_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
-		}
-
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, &routerAdvertisement_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscovery)
-	}
-	(*obj).DadAttempts = dadAttempts_value
-	(*obj).DnsServer = dnsServer_entry
-	(*obj).DnsSuffix = dnsSuffix_entry
-	(*obj).EnableDad = enableDad_value
-	(*obj).EnableNdpMonitor = enableNdpMonitor_value
-	(*obj).Neighbor = neighbor_pango_entries
-	(*obj).NsInterval = nsInterval_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).RouterAdvertisement = routerAdvertisement_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
-	}
-	(*obj).PrefixPool = prefixPool_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-	var server_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-	{
-		d := o.Server.ElementsAs(ctx, &server_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range server_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			server_pango_entries = append(server_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
-	}
-	(*obj).Server = server_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	var source_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
-		if *obj != nil && (*obj).Source != nil {
-			source_entry = (*obj).Source
-		} else {
-			source_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
-		}
-
-		diags.Append(o.Source.CopyToPango(ctx, &source_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix)
-	}
-	(*obj).Enable = enable_value
-	(*obj).Source = source_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
-		if *obj != nil && (*obj).Dhcpv6 != nil {
-			dhcpv6_entry = (*obj).Dhcpv6
-		} else {
-			dhcpv6_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
-		}
-
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, &dhcpv6_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
-		if *obj != nil && (*obj).Manual != nil {
-			manual_entry = (*obj).Manual
-		} else {
-			manual_entry = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
-		}
-
-		diags.Append(o.Manual.CopyToPango(ctx, &manual_entry, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
-	}
-	(*obj).Dhcpv6 = dhcpv6_entry
-	(*obj).Manual = manual_entry
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	prefixPool_value := o.PrefixPool.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
-	}
-	(*obj).PrefixPool = prefixPool_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-	var suffix_pango_entries []aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-	{
-		d := o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)
-		diags.Append(d...)
-		if diags.HasError() {
-			return diags
-		}
-		for _, elt := range suffix_tf_entries {
-			var entry *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
-			if diags.HasError() {
-				return diags
-			}
-			suffix_pango_entries = append(suffix_pango_entries, *entry)
-		}
-	}
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
-	}
-	(*obj).Suffix = suffix_pango_entries
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).Lifetime = lifetime_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	hwAddress_value := o.HwAddress.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor)
-	}
-	(*obj).Name = o.Name.ValueString()
-	(*obj).HwAddress = hwAddress_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	enable_value := o.Enable.ValueBoolPointer()
-	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
-	hopLimit_value := o.HopLimit.ValueStringPointer()
-	lifetime_value := o.Lifetime.ValueInt64Pointer()
-	linkMtu_value := o.LinkMtu.ValueStringPointer()
-	managedFlag_value := o.ManagedFlag.ValueBoolPointer()
-	maxInterval_value := o.MaxInterval.ValueInt64Pointer()
-	minInterval_value := o.MinInterval.ValueInt64Pointer()
-	otherFlag_value := o.OtherFlag.ValueBoolPointer()
-	reachableTime_value := o.ReachableTime.ValueStringPointer()
-	retransmissionTimer_value := o.RetransmissionTimer.ValueStringPointer()
-	routerPreference_value := o.RouterPreference.ValueStringPointer()
-
-	if (*obj) == nil {
-		*obj = new(aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
-	}
-	(*obj).Enable = enable_value
-	(*obj).EnableConsistencyCheck = enableConsistencyCheck_value
-	(*obj).HopLimit = hopLimit_value
-	(*obj).Lifetime = lifetime_value
-	(*obj).LinkMtu = linkMtu_value
-	(*obj).ManagedFlag = managedFlag_value
-	(*obj).MaxInterval = maxInterval_value
-	(*obj).MinInterval = minInterval_value
-	(*obj).OtherFlag = otherFlag_value
-	(*obj).ReachableTime = reachableTime_value
-	(*obj).RetransmissionTimer = retransmissionTimer_value
-	(*obj).RouterPreference = routerPreference_value
-
-	return diags
-}
-func (o *AggregateInterfaceResourceLayer3LacpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LacpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Lacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	fastFailover_value := o.FastFailover.ValueBoolPointer()
@@ -18376,8 +19764,8 @@ func (o *AggregateInterfaceResourceLayer3LacpObject) CopyToPango(ctx context.Con
 		} else {
 			highAvailability_entry = new(aggregate.Layer3LacpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18400,7 +19788,7 @@ func (o *AggregateInterfaceResourceLayer3LacpObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3LacpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -18411,7 +19799,7 @@ func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyToPango
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3LldpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LldpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3Lldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var highAvailability_entry *aggregate.Layer3LldpHighAvailability
@@ -18421,8 +19809,8 @@ func (o *AggregateInterfaceResourceLayer3LldpObject) CopyToPango(ctx context.Con
 		} else {
 			highAvailability_entry = new(aggregate.Layer3LldpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18438,7 +19826,7 @@ func (o *AggregateInterfaceResourceLayer3LldpObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3LldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -18449,7 +19837,7 @@ func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) CopyToPango
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3NdpProxyObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3NdpProxyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []AggregateInterfaceResourceLayer3NdpProxyAddressObject
 	var address_pango_entries []aggregate.Layer3NdpProxyAddress
@@ -18461,7 +19849,7 @@ func (o *AggregateInterfaceResourceLayer3NdpProxyObject) CopyToPango(ctx context
 		}
 		for _, elt := range address_tf_entries {
 			var entry *aggregate.Layer3NdpProxyAddress
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -18478,7 +19866,7 @@ func (o *AggregateInterfaceResourceLayer3NdpProxyObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3NdpProxyAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	negate_value := o.Negate.ValueBoolPointer()
 
@@ -18490,7 +19878,7 @@ func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	sdwanInterfaceProfile_value := o.SdwanInterfaceProfile.ValueStringPointer()
@@ -18501,8 +19889,8 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) CopyToPango(ct
 		} else {
 			upstreamNat_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNat)
 		}
-
-		diags.Append(o.UpstreamNat.CopyToPango(ctx, &upstreamNat_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.UpstreamNat.CopyToPango(ctx, append(ancestors, o), &upstreamNat_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18517,7 +19905,7 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNat, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var ddns_entry *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns
@@ -18527,8 +19915,8 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) Cop
 		} else {
 			ddns_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns)
 		}
-
-		diags.Append(o.Ddns.CopyToPango(ctx, &ddns_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ddns.CopyToPango(ctx, append(ancestors, o), &ddns_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18540,8 +19928,8 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) Cop
 		} else {
 			staticIp_entry = new(aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp)
 		}
-
-		diags.Append(o.StaticIp.CopyToPango(ctx, &staticIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.StaticIp.CopyToPango(ctx, append(ancestors, o), &staticIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18556,7 +19944,7 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) Cop
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -18565,7 +19953,7 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject)
 
 	return diags
 }
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipAddress_value := o.IpAddress.ValueStringPointer()
@@ -18578,7 +19966,7 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObj
 
 	return diags
 }
-func (o *AggregateInterfaceResourceVirtualWireObject) CopyToPango(ctx context.Context, obj **aggregate.VirtualWire, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceVirtualWireObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.VirtualWire, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lldp_entry *aggregate.VirtualWireLldp
 	if o.Lldp != nil {
@@ -18587,8 +19975,8 @@ func (o *AggregateInterfaceResourceVirtualWireObject) CopyToPango(ctx context.Co
 		} else {
 			lldp_entry = new(aggregate.VirtualWireLldp)
 		}
-
-		diags.Append(o.Lldp.CopyToPango(ctx, &lldp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Lldp.CopyToPango(ctx, append(ancestors, o), &lldp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18603,7 +19991,7 @@ func (o *AggregateInterfaceResourceVirtualWireObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyToPango(ctx context.Context, obj **aggregate.VirtualWireLldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.VirtualWireLldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var highAvailability_entry *aggregate.VirtualWireLldpHighAvailability
@@ -18613,8 +20001,8 @@ func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyToPango(ctx contex
 		} else {
 			highAvailability_entry = new(aggregate.VirtualWireLldpHighAvailability)
 		}
-
-		diags.Append(o.HighAvailability.CopyToPango(ctx, &highAvailability_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.HighAvailability.CopyToPango(ctx, append(ancestors, o), &highAvailability_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18630,7 +20018,7 @@ func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) CopyToPango(ctx context.Context, obj **aggregate.VirtualWireLldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **aggregate.VirtualWireLldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	passivePreNegotiation_value := o.PassivePreNegotiation.ValueBoolPointer()
 
@@ -18642,13 +20030,12 @@ func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) CopyTo
 	return diags
 }
 
-func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, obj *aggregate.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var decryptMirror_object *AggregateInterfaceResourceDecryptMirrorObject
 	if obj.DecryptMirror != nil {
 		decryptMirror_object = new(AggregateInterfaceResourceDecryptMirrorObject)
-
-		diags.Append(decryptMirror_object.CopyFromPango(ctx, obj.DecryptMirror, encrypted)...)
+		diags.Append(decryptMirror_object.CopyFromPango(ctx, ancestors, obj.DecryptMirror, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18656,8 +20043,7 @@ func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, obj
 	var ha_object *AggregateInterfaceResourceHaObject
 	if obj.Ha != nil {
 		ha_object = new(AggregateInterfaceResourceHaObject)
-
-		diags.Append(ha_object.CopyFromPango(ctx, obj.Ha, encrypted)...)
+		diags.Append(ha_object.CopyFromPango(ctx, ancestors, obj.Ha, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18665,8 +20051,7 @@ func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, obj
 	var layer2_object *AggregateInterfaceResourceLayer2Object
 	if obj.Layer2 != nil {
 		layer2_object = new(AggregateInterfaceResourceLayer2Object)
-
-		diags.Append(layer2_object.CopyFromPango(ctx, obj.Layer2, encrypted)...)
+		diags.Append(layer2_object.CopyFromPango(ctx, ancestors, obj.Layer2, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18674,8 +20059,7 @@ func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, obj
 	var layer3_object *AggregateInterfaceResourceLayer3Object
 	if obj.Layer3 != nil {
 		layer3_object = new(AggregateInterfaceResourceLayer3Object)
-
-		diags.Append(layer3_object.CopyFromPango(ctx, obj.Layer3, encrypted)...)
+		diags.Append(layer3_object.CopyFromPango(ctx, ancestors, obj.Layer3, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18683,8 +20067,7 @@ func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, obj
 	var virtualWire_object *AggregateInterfaceResourceVirtualWireObject
 	if obj.VirtualWire != nil {
 		virtualWire_object = new(AggregateInterfaceResourceVirtualWireObject)
-
-		diags.Append(virtualWire_object.CopyFromPango(ctx, obj.VirtualWire, encrypted)...)
+		diags.Append(virtualWire_object.CopyFromPango(ctx, ancestors, obj.VirtualWire, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18705,19 +20088,18 @@ func (o *AggregateInterfaceResourceModel) CopyFromPango(ctx context.Context, obj
 	return diags
 }
 
-func (o *AggregateInterfaceResourceDecryptMirrorObject) CopyFromPango(ctx context.Context, obj *aggregate.DecryptMirror, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceDecryptMirrorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.DecryptMirror, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceHaObject) CopyFromPango(ctx context.Context, obj *aggregate.Ha, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceHaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Ha, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lacp_object *AggregateInterfaceResourceHaLacpObject
 	if obj.Lacp != nil {
 		lacp_object = new(AggregateInterfaceResourceHaLacpObject)
-
-		diags.Append(lacp_object.CopyFromPango(ctx, obj.Lacp, encrypted)...)
+		diags.Append(lacp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lacp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18728,7 +20110,7 @@ func (o *AggregateInterfaceResourceHaObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceHaLacpObject) CopyFromPango(ctx context.Context, obj *aggregate.HaLacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceHaLacpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.HaLacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -18765,13 +20147,12 @@ func (o *AggregateInterfaceResourceHaLacpObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer2Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer2, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lacp_object *AggregateInterfaceResourceLayer2LacpObject
 	if obj.Lacp != nil {
 		lacp_object = new(AggregateInterfaceResourceLayer2LacpObject)
-
-		diags.Append(lacp_object.CopyFromPango(ctx, obj.Lacp, encrypted)...)
+		diags.Append(lacp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lacp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18779,8 +20160,7 @@ func (o *AggregateInterfaceResourceLayer2Object) CopyFromPango(ctx context.Conte
 	var lldp_object *AggregateInterfaceResourceLayer2LldpObject
 	if obj.Lldp != nil {
 		lldp_object = new(AggregateInterfaceResourceLayer2LldpObject)
-
-		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
+		diags.Append(lldp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lldp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18797,13 +20177,12 @@ func (o *AggregateInterfaceResourceLayer2Object) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer2LacpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer2Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2LacpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2Lacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceResourceLayer2LacpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18844,7 +20223,7 @@ func (o *AggregateInterfaceResourceLayer2LacpObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer2LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2LacpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -18856,13 +20235,12 @@ func (o *AggregateInterfaceResourceLayer2LacpHighAvailabilityObject) CopyFromPan
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer2LldpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer2Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2LldpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2Lldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceResourceLayer2LldpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18883,7 +20261,7 @@ func (o *AggregateInterfaceResourceLayer2LldpObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer2LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer2LldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -18895,15 +20273,19 @@ func (o *AggregateInterfaceResourceLayer2LldpHighAvailabilityObject) CopyFromPan
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var arp_list types.List
 	{
 		var arp_tf_entries []AggregateInterfaceResourceLayer3ArpObject
 		for _, elt := range obj.Arp {
-			var entry AggregateInterfaceResourceLayer3ArpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceResourceLayer3ArpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			arp_tf_entries = append(arp_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -18915,9 +20297,13 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	{
 		var ip_tf_entries []AggregateInterfaceResourceLayer3IpObject
 		for _, elt := range obj.Ip {
-			var entry AggregateInterfaceResourceLayer3IpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceResourceLayer3IpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			ip_tf_entries = append(ip_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -18928,8 +20314,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	var adjustTcpMss_object *AggregateInterfaceResourceLayer3AdjustTcpMssObject
 	if obj.AdjustTcpMss != nil {
 		adjustTcpMss_object = new(AggregateInterfaceResourceLayer3AdjustTcpMssObject)
-
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
+		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, append(ancestors, o), obj.AdjustTcpMss, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18937,8 +20322,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	var bonjour_object *AggregateInterfaceResourceLayer3BonjourObject
 	if obj.Bonjour != nil {
 		bonjour_object = new(AggregateInterfaceResourceLayer3BonjourObject)
-
-		diags.Append(bonjour_object.CopyFromPango(ctx, obj.Bonjour, encrypted)...)
+		diags.Append(bonjour_object.CopyFromPango(ctx, append(ancestors, o), obj.Bonjour, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18946,8 +20330,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	var ddnsConfig_object *AggregateInterfaceResourceLayer3DdnsConfigObject
 	if obj.DdnsConfig != nil {
 		ddnsConfig_object = new(AggregateInterfaceResourceLayer3DdnsConfigObject)
-
-		diags.Append(ddnsConfig_object.CopyFromPango(ctx, obj.DdnsConfig, encrypted)...)
+		diags.Append(ddnsConfig_object.CopyFromPango(ctx, append(ancestors, o), obj.DdnsConfig, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18955,8 +20338,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	var dhcpClient_object *AggregateInterfaceResourceLayer3DhcpClientObject
 	if obj.DhcpClient != nil {
 		dhcpClient_object = new(AggregateInterfaceResourceLayer3DhcpClientObject)
-
-		diags.Append(dhcpClient_object.CopyFromPango(ctx, obj.DhcpClient, encrypted)...)
+		diags.Append(dhcpClient_object.CopyFromPango(ctx, append(ancestors, o), obj.DhcpClient, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18964,8 +20346,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	var ipv6_object *AggregateInterfaceResourceLayer3Ipv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(AggregateInterfaceResourceLayer3Ipv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18973,8 +20354,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	var lacp_object *AggregateInterfaceResourceLayer3LacpObject
 	if obj.Lacp != nil {
 		lacp_object = new(AggregateInterfaceResourceLayer3LacpObject)
-
-		diags.Append(lacp_object.CopyFromPango(ctx, obj.Lacp, encrypted)...)
+		diags.Append(lacp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lacp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18982,8 +20362,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	var lldp_object *AggregateInterfaceResourceLayer3LldpObject
 	if obj.Lldp != nil {
 		lldp_object = new(AggregateInterfaceResourceLayer3LldpObject)
-
-		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
+		diags.Append(lldp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lldp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18991,8 +20370,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	var ndpProxy_object *AggregateInterfaceResourceLayer3NdpProxyObject
 	if obj.NdpProxy != nil {
 		ndpProxy_object = new(AggregateInterfaceResourceLayer3NdpProxyObject)
-
-		diags.Append(ndpProxy_object.CopyFromPango(ctx, obj.NdpProxy, encrypted)...)
+		diags.Append(ndpProxy_object.CopyFromPango(ctx, append(ancestors, o), obj.NdpProxy, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19000,8 +20378,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	var sdwanLinkSettings_object *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject
 	if obj.SdwanLinkSettings != nil {
 		sdwanLinkSettings_object = new(AggregateInterfaceResourceLayer3SdwanLinkSettingsObject)
-
-		diags.Append(sdwanLinkSettings_object.CopyFromPango(ctx, obj.SdwanLinkSettings, encrypted)...)
+		diags.Append(sdwanLinkSettings_object.CopyFromPango(ctx, append(ancestors, o), obj.SdwanLinkSettings, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19052,7 +20429,7 @@ func (o *AggregateInterfaceResourceLayer3Object) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -19074,7 +20451,7 @@ func (o *AggregateInterfaceResourceLayer3AdjustTcpMssObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3ArpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Arp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3ArpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Arp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -19087,7 +20464,7 @@ func (o *AggregateInterfaceResourceLayer3ArpObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Bonjour, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -19109,27 +20486,37 @@ func (o *AggregateInterfaceResourceLayer3BonjourObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DdnsConfig, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ddnsIp_list types.List
 	{
 		var list_diags diag.Diagnostics
 		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var ddnsIpv6_list types.List
 	{
 		var list_diags diag.Diagnostics
 		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var ddnsVendorConfig_list types.List
 	{
 		var ddnsVendorConfig_tf_entries []AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject
 		for _, elt := range obj.DdnsVendorConfig {
-			var entry AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			ddnsVendorConfig_tf_entries = append(ddnsVendorConfig_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -19170,7 +20557,7 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DdnsConfigDdnsVendorConfig, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -19183,13 +20570,12 @@ func (o *AggregateInterfaceResourceLayer3DdnsConfigDdnsVendorConfigObject) CopyF
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var sendHostname_object *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject
 	if obj.SendHostname != nil {
 		sendHostname_object = new(AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject)
-
-		diags.Append(sendHostname_object.CopyFromPango(ctx, obj.SendHostname, encrypted)...)
+		diags.Append(sendHostname_object.CopyFromPango(ctx, append(ancestors, o), obj.SendHostname, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19215,7 +20601,7 @@ func (o *AggregateInterfaceResourceLayer3DhcpClientObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3DhcpClientSendHostname, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -19232,7 +20618,7 @@ func (o *AggregateInterfaceResourceLayer3DhcpClientSendHostnameObject) CopyFromP
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3IpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3IpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var sdwanGateway_value types.String
@@ -19245,15 +20631,19 @@ func (o *AggregateInterfaceResourceLayer3IpObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []AggregateInterfaceResourceLayer3Ipv6AddressObject
 		for _, elt := range obj.Address {
-			var entry AggregateInterfaceResourceLayer3Ipv6AddressObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceResourceLayer3Ipv6AddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			address_tf_entries = append(address_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -19261,20 +20651,10 @@ func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyFromPango(ctx context.C
 		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var neighborDiscovery_object *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject
-	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject)
-
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
 	var dhcpClient_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject
 	if obj.DhcpClient != nil {
 		dhcpClient_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientObject)
-
-		diags.Append(dhcpClient_object.CopyFromPango(ctx, obj.DhcpClient, encrypted)...)
+		diags.Append(dhcpClient_object.CopyFromPango(ctx, append(ancestors, o), obj.DhcpClient, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19282,8 +20662,15 @@ func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyFromPango(ctx context.C
 	var inherited_object *AggregateInterfaceResourceLayer3Ipv6InheritedObject
 	if obj.Inherited != nil {
 		inherited_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedObject)
-
-		diags.Append(inherited_object.CopyFromPango(ctx, obj.Inherited, encrypted)...)
+		diags.Append(inherited_object.CopyFromPango(ctx, append(ancestors, o), obj.Inherited, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var neighborDiscovery_object *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject
+	if obj.NeighborDiscovery != nil {
+		neighborDiscovery_object = new(AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject)
+		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19298,22 +20685,21 @@ func (o *AggregateInterfaceResourceLayer3Ipv6Object) CopyFromPango(ctx context.C
 		interfaceId_value = types.StringValue(*obj.InterfaceId)
 	}
 	o.Address = address_list
+	o.DhcpClient = dhcpClient_object
 	o.Enabled = enabled_value
+	o.Inherited = inherited_object
 	o.InterfaceId = interfaceId_value
 	o.NeighborDiscovery = neighborDiscovery_object
-	o.DhcpClient = dhcpClient_object
-	o.Inherited = inherited_object
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var prefix_object *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject
 	if obj.Prefix != nil {
 		prefix_object = new(AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject)
-
-		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
+		diags.Append(prefix_object.CopyFromPango(ctx, append(ancestors, o), obj.Prefix, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19321,8 +20707,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyFromPango(ctx co
 	var anycast_object *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject
 	if obj.Anycast != nil {
 		anycast_object = new(AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject)
-
-		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
+		diags.Append(anycast_object.CopyFromPango(ctx, append(ancestors, o), obj.Anycast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19330,8 +20715,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyFromPango(ctx co
 	var advertise_object *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject
 	if obj.Advertise != nil {
 		advertise_object = new(AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
+		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19350,19 +20734,19 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressPrefixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAnycastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6AddressAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -19394,15 +20778,1087 @@ func (o *AggregateInterfaceResourceLayer3Ipv6AddressAdvertiseObject) CopyFromPan
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighborDiscovery_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
+	if obj.NeighborDiscovery != nil {
+		neighborDiscovery_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject)
+		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var prefixDelegation_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject
+	if obj.PrefixDelegation != nil {
+		prefixDelegation_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject)
+		diags.Append(prefixDelegation_object.CopyFromPango(ctx, append(ancestors, o), obj.PrefixDelegation, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var v6Options_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject
+	if obj.V6Options != nil {
+		v6Options_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject)
+		diags.Append(v6Options_object.CopyFromPango(ctx, append(ancestors, o), obj.V6Options, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var acceptRaRoute_value types.Bool
+	if obj.AcceptRaRoute != nil {
+		acceptRaRoute_value = types.BoolValue(*obj.AcceptRaRoute)
+	}
+	var defaultRouteMetric_value types.Int64
+	if obj.DefaultRouteMetric != nil {
+		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
+	}
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var preference_value types.String
+	if obj.Preference != nil {
+		preference_value = types.StringValue(*obj.Preference)
+	}
+	o.AcceptRaRoute = acceptRaRoute_value
+	o.DefaultRouteMetric = defaultRouteMetric_value
+	o.Enable = enable_value
+	o.NeighborDiscovery = neighborDiscovery_object
+	o.Preference = preference_value
+	o.PrefixDelegation = prefixDelegation_object
+	o.V6Options = v6Options_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighbor_list types.List
+	{
+		var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
+		for _, elt := range obj.Neighbor {
+			entry := AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("neighbor")
+		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var dnsServer_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject
+	if obj.DnsServer != nil {
+		dnsServer_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject)
+		diags.Append(dnsServer_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSuffix_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject
+	if obj.DnsSuffix != nil {
+		dnsSuffix_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject)
+		diags.Append(dnsSuffix_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSuffix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dadAttempts_value types.Int64
+	if obj.DadAttempts != nil {
+		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
+	}
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
+	var reachableTime_value types.Int64
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.Int64Value(*obj.ReachableTime)
+	}
+	o.DadAttempts = dadAttempts_value
+	o.DnsServer = dnsServer_object
+	o.DnsSuffix = dnsSuffix_object
+	o.EnableDad = enableDad_value
+	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.Neighbor = neighbor_list
+	o.NsInterval = nsInterval_value
+	o.ReachableTime = reachableTime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
+		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
+		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_list types.List
+	{
+		var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
+		for _, elt := range obj.Server {
+			entry := AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_tf_entries = append(server_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("server")
+		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Server = server_list
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject)
+		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject)
+		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_list types.List
+	{
+		var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		for _, elt := range obj.Suffix {
+			entry := AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("suffix")
+		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Suffix = suffix_list
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject
+	if obj.Enable != nil {
+		enable_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject)
+		diags.Append(enable_object.CopyFromPango(ctx, append(ancestors, o), obj.Enable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Enable = enable_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject
+	if obj.No != nil {
+		no_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject)
+		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject
+	if obj.Yes != nil {
+		yes_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject)
+		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.No = no_object
+	o.Yes = yes_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var pfxPoolName_value types.String
+	if obj.PfxPoolName != nil {
+		pfxPoolName_value = types.StringValue(*obj.PfxPoolName)
+	}
+	var prefixLen_value types.Int64
+	if obj.PrefixLen != nil {
+		prefixLen_value = types.Int64Value(*obj.PrefixLen)
+	}
+	var prefixLenHint_value types.Bool
+	if obj.PrefixLenHint != nil {
+		prefixLenHint_value = types.BoolValue(*obj.PrefixLenHint)
+	}
+	o.PfxPoolName = pfxPoolName_value
+	o.PrefixLen = prefixLen_value
+	o.PrefixLenHint = prefixLenHint_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var enable_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject
+	if obj.Enable != nil {
+		enable_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject)
+		diags.Append(enable_object.CopyFromPango(ctx, append(ancestors, o), obj.Enable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var duidType_value types.String
+	if obj.DuidType != nil {
+		duidType_value = types.StringValue(*obj.DuidType)
+	}
+	var rapidCommit_value types.Bool
+	if obj.RapidCommit != nil {
+		rapidCommit_value = types.BoolValue(*obj.RapidCommit)
+	}
+	var supportSrvrReconfig_value types.Bool
+	if obj.SupportSrvrReconfig != nil {
+		supportSrvrReconfig_value = types.BoolValue(*obj.SupportSrvrReconfig)
+	}
+	o.DuidType = duidType_value
+	o.Enable = enable_object
+	o.RapidCommit = rapidCommit_value
+	o.SupportSrvrReconfig = supportSrvrReconfig_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var no_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject
+	if obj.No != nil {
+		no_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject)
+		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var yes_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject
+	if obj.Yes != nil {
+		yes_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject)
+		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.No = no_object
+	o.Yes = yes_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var nonTempAddr_value types.Bool
+	if obj.NonTempAddr != nil {
+		nonTempAddr_value = types.BoolValue(*obj.NonTempAddr)
+	}
+	var tempAddr_value types.Bool
+	if obj.TempAddr != nil {
+		tempAddr_value = types.BoolValue(*obj.TempAddr)
+	}
+	o.NonTempAddr = nonTempAddr_value
+	o.TempAddr = tempAddr_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var assignAddr_list types.List
+	{
+		var assignAddr_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject
+		for _, elt := range obj.AssignAddr {
+			entry := AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("assign_addr")
+		assignAddr_list, list_diags = types.ListValueFrom(ctx, schemaType, assignAddr_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var neighborDiscovery_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject
+	if obj.NeighborDiscovery != nil {
+		neighborDiscovery_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject)
+		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.AssignAddr = assignAddr_list
+	o.Enable = enable_value
+	o.NeighborDiscovery = neighborDiscovery_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var type_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject
+	if obj.Type != nil {
+		type_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject)
+		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Name = types.StringValue(obj.Name)
+	o.Type = type_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var gua_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
+	if obj.Gua != nil {
+		gua_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
+		diags.Append(gua_object.CopyFromPango(ctx, append(ancestors, o), obj.Gua, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var ula_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject
+	if obj.Ula != nil {
+		ula_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject)
+		diags.Append(ula_object.CopyFromPango(ctx, append(ancestors, o), obj.Ula, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Gua = gua_object
+	o.Ula = ula_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var poolType_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject
+	if obj.PoolType != nil {
+		poolType_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject)
+		diags.Append(poolType_object.CopyFromPango(ctx, append(ancestors, o), obj.PoolType, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var advertise_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject)
+		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.EnableOnInterface = enableOnInterface_value
+	o.PrefixPool = prefixPool_value
+	o.PoolType = poolType_object
+	o.Advertise = advertise_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dynamic_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+	if obj.Dynamic != nil {
+		dynamic_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
+		diags.Append(dynamic_object.CopyFromPango(ctx, append(ancestors, o), obj.Dynamic, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dynamicId_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	if obj.DynamicId != nil {
+		dynamicId_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
+		diags.Append(dynamicId_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicId, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dynamic = dynamic_object
+	o.DynamicId = dynamicId_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var identifier_value types.Int64
+	if obj.Identifier != nil {
+		identifier_value = types.Int64Value(*obj.Identifier)
+	}
+	o.Identifier = identifier_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var advertise_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject
+	if obj.Advertise != nil {
+		advertise_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject)
+		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enableOnInterface_value types.Bool
+	if obj.EnableOnInterface != nil {
+		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
+	}
+	var address_value types.String
+	if obj.Address != nil {
+		address_value = types.StringValue(*obj.Address)
+	}
+	var prefix_value types.Bool
+	if obj.Prefix != nil {
+		prefix_value = types.BoolValue(*obj.Prefix)
+	}
+	var anycast_value types.Bool
+	if obj.Anycast != nil {
+		anycast_value = types.BoolValue(*obj.Anycast)
+	}
+	o.EnableOnInterface = enableOnInterface_value
+	o.Address = address_value
+	o.Prefix = prefix_value
+	o.Anycast = anycast_value
+	o.Advertise = advertise_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var validLifetime_value types.String
+	if obj.ValidLifetime != nil {
+		validLifetime_value = types.StringValue(*obj.ValidLifetime)
+	}
+	var preferredLifetime_value types.String
+	if obj.PreferredLifetime != nil {
+		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
+	}
+	var onlinkFlag_value types.Bool
+	if obj.OnlinkFlag != nil {
+		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
+	}
+	var autoConfigFlag_value types.Bool
+	if obj.AutoConfigFlag != nil {
+		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
+	}
+	o.Enable = enable_value
+	o.ValidLifetime = validLifetime_value
+	o.PreferredLifetime = preferredLifetime_value
+	o.OnlinkFlag = onlinkFlag_value
+	o.AutoConfigFlag = autoConfigFlag_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var neighbor_list types.List
+	{
+		var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
+		for _, elt := range obj.Neighbor {
+			entry := AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("neighbor")
+		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
+		diags.Append(list_diags...)
+	}
+	var dnsServer_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject
+	if obj.DnsServer != nil {
+		dnsServer_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject)
+		diags.Append(dnsServer_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var dnsSuffix_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject
+	if obj.DnsSuffix != nil {
+		dnsSuffix_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject)
+		diags.Append(dnsSuffix_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSuffix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var routerAdvertisement_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject
+	if obj.RouterAdvertisement != nil {
+		routerAdvertisement_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject)
+		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dadAttempts_value types.Int64
+	if obj.DadAttempts != nil {
+		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
+	}
+	var enableDad_value types.Bool
+	if obj.EnableDad != nil {
+		enableDad_value = types.BoolValue(*obj.EnableDad)
+	}
+	var enableNdpMonitor_value types.Bool
+	if obj.EnableNdpMonitor != nil {
+		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
+	}
+	var nsInterval_value types.Int64
+	if obj.NsInterval != nil {
+		nsInterval_value = types.Int64Value(*obj.NsInterval)
+	}
+	var reachableTime_value types.Int64
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.Int64Value(*obj.ReachableTime)
+	}
+	o.DadAttempts = dadAttempts_value
+	o.DnsServer = dnsServer_object
+	o.DnsSuffix = dnsSuffix_object
+	o.EnableDad = enableDad_value
+	o.EnableNdpMonitor = enableNdpMonitor_value
+	o.Neighbor = neighbor_list
+	o.NsInterval = nsInterval_value
+	o.ReachableTime = reachableTime_value
+	o.RouterAdvertisement = routerAdvertisement_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject)
+		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
+		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.PrefixPool = prefixPool_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var server_list types.List
+	{
+		var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+		for _, elt := range obj.Server {
+			entry := AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			server_tf_entries = append(server_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("server")
+		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Server = server_list
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var source_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	if obj.Source != nil {
+		source_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
+		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	o.Enable = enable_value
+	o.Source = source_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if obj.Dhcpv6 != nil {
+		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	var manual_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	if obj.Manual != nil {
+		manual_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
+		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	o.Dhcpv6 = dhcpv6_object
+	o.Manual = manual_object
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var prefixPool_value types.String
+	if obj.PrefixPool != nil {
+		prefixPool_value = types.StringValue(*obj.PrefixPool)
+	}
+	o.PrefixPool = prefixPool_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	var suffix_list types.List
+	{
+		var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		for _, elt := range obj.Suffix {
+			entry := AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+		var list_diags diag.Diagnostics
+		schemaType := o.getTypeFor("suffix")
+		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
+		diags.Append(list_diags...)
+	}
+
+	o.Suffix = suffix_list
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.Lifetime = lifetime_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var hwAddress_value types.String
+	if obj.HwAddress != nil {
+		hwAddress_value = types.StringValue(*obj.HwAddress)
+	}
+	o.Name = types.StringValue(obj.Name)
+	o.HwAddress = hwAddress_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var enable_value types.Bool
+	if obj.Enable != nil {
+		enable_value = types.BoolValue(*obj.Enable)
+	}
+	var enableConsistencyCheck_value types.Bool
+	if obj.EnableConsistencyCheck != nil {
+		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
+	}
+	var hopLimit_value types.String
+	if obj.HopLimit != nil {
+		hopLimit_value = types.StringValue(*obj.HopLimit)
+	}
+	var lifetime_value types.Int64
+	if obj.Lifetime != nil {
+		lifetime_value = types.Int64Value(*obj.Lifetime)
+	}
+	var linkMtu_value types.String
+	if obj.LinkMtu != nil {
+		linkMtu_value = types.StringValue(*obj.LinkMtu)
+	}
+	var managedFlag_value types.Bool
+	if obj.ManagedFlag != nil {
+		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
+	}
+	var maxInterval_value types.Int64
+	if obj.MaxInterval != nil {
+		maxInterval_value = types.Int64Value(*obj.MaxInterval)
+	}
+	var minInterval_value types.Int64
+	if obj.MinInterval != nil {
+		minInterval_value = types.Int64Value(*obj.MinInterval)
+	}
+	var otherFlag_value types.Bool
+	if obj.OtherFlag != nil {
+		otherFlag_value = types.BoolValue(*obj.OtherFlag)
+	}
+	var reachableTime_value types.String
+	if obj.ReachableTime != nil {
+		reachableTime_value = types.StringValue(*obj.ReachableTime)
+	}
+	var retransmissionTimer_value types.String
+	if obj.RetransmissionTimer != nil {
+		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
+	}
+	var routerPreference_value types.String
+	if obj.RouterPreference != nil {
+		routerPreference_value = types.StringValue(*obj.RouterPreference)
+	}
+	o.Enable = enable_value
+	o.EnableConsistencyCheck = enableConsistencyCheck_value
+	o.HopLimit = hopLimit_value
+	o.Lifetime = lifetime_value
+	o.LinkMtu = linkMtu_value
+	o.ManagedFlag = managedFlag_value
+	o.MaxInterval = maxInterval_value
+	o.MinInterval = minInterval_value
+	o.OtherFlag = otherFlag_value
+	o.ReachableTime = reachableTime_value
+	o.RetransmissionTimer = retransmissionTimer_value
+	o.RouterPreference = routerPreference_value
+
+	return diags
+}
+
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject
 		for _, elt := range obj.Neighbor {
-			var entry AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			neighbor_tf_entries = append(neighbor_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -19413,8 +21869,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyFromPa
 	var routerAdvertisement_object *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject
 	if obj.RouterAdvertisement != nil {
 		routerAdvertisement_object = new(AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject)
-
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
+		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, append(ancestors, o), obj.RouterAdvertisement, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19451,7 +21906,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryObject) CopyFromPa
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -19464,13 +21919,12 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryNeighborObject) Co
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSupport_object *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
 	if obj.DnsSupport != nil {
 		dnsSupport_object = new(AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
-
-		diags.Append(dnsSupport_object.CopyFromPango(ctx, obj.DnsSupport, encrypted)...)
+		diags.Append(dnsSupport_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSupport, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19541,15 +21995,19 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
 		for _, elt := range obj.Server {
-			var entry AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			server_tf_entries = append(server_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -19561,9 +22019,13 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 	{
 		var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
 		for _, elt := range obj.Suffix {
-			var entry AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			suffix_tf_entries = append(suffix_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -19583,7 +22045,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -19596,7 +22058,7 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -19609,1088 +22071,12 @@ func (o *AggregateInterfaceResourceLayer3Ipv6NeighborDiscoveryRouterAdvertisemen
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClient, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var neighborDiscovery_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject
-	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject)
-
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var prefixDelegation_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject
-	if obj.PrefixDelegation != nil {
-		prefixDelegation_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject)
-
-		diags.Append(prefixDelegation_object.CopyFromPango(ctx, obj.PrefixDelegation, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var v6Options_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject
-	if obj.V6Options != nil {
-		v6Options_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject)
-
-		diags.Append(v6Options_object.CopyFromPango(ctx, obj.V6Options, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var acceptRaRoute_value types.Bool
-	if obj.AcceptRaRoute != nil {
-		acceptRaRoute_value = types.BoolValue(*obj.AcceptRaRoute)
-	}
-	var defaultRouteMetric_value types.Int64
-	if obj.DefaultRouteMetric != nil {
-		defaultRouteMetric_value = types.Int64Value(*obj.DefaultRouteMetric)
-	}
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var preference_value types.String
-	if obj.Preference != nil {
-		preference_value = types.StringValue(*obj.Preference)
-	}
-	o.AcceptRaRoute = acceptRaRoute_value
-	o.DefaultRouteMetric = defaultRouteMetric_value
-	o.Enable = enable_value
-	o.NeighborDiscovery = neighborDiscovery_object
-	o.Preference = preference_value
-	o.PrefixDelegation = prefixDelegation_object
-	o.V6Options = v6Options_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var neighbor_list types.List
-	{
-		var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			var entry AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("neighbor")
-		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var dnsServer_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject
-	if obj.DnsServer != nil {
-		dnsServer_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject)
-
-		diags.Append(dnsServer_object.CopyFromPango(ctx, obj.DnsServer, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSuffix_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject
-	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject)
-
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var dadAttempts_value types.Int64
-	if obj.DadAttempts != nil {
-		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
-	}
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
-	}
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
-	var reachableTime_value types.Int64
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.Int64Value(*obj.ReachableTime)
-	}
-	o.DadAttempts = dadAttempts_value
-	o.DnsServer = dnsServer_object
-	o.DnsSuffix = dnsSuffix_object
-	o.EnableDad = enableDad_value
-	o.EnableNdpMonitor = enableNdpMonitor_value
-	o.Neighbor = neighbor_list
-	o.NsInterval = nsInterval_value
-	o.ReachableTime = reachableTime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_list types.List
-	{
-		var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			var entry AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			server_tf_entries = append(server_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("server")
-		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Server = server_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_list types.List
-	{
-		var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			var entry AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			suffix_tf_entries = append(suffix_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("suffix")
-		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Suffix = suffix_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegation, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var enable_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject
-	if obj.Enable != nil {
-		enable_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject)
-
-		diags.Append(enable_object.CopyFromPango(ctx, obj.Enable, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Enable = enable_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject
-	if obj.No != nil {
-		no_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject)
-
-		diags.Append(no_object.CopyFromPango(ctx, obj.No, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject
-	if obj.Yes != nil {
-		yes_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject)
-
-		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.No = no_object
-	o.Yes = yes_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableNoObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientPrefixDelegationEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var pfxPoolName_value types.String
-	if obj.PfxPoolName != nil {
-		pfxPoolName_value = types.StringValue(*obj.PfxPoolName)
-	}
-	var prefixLen_value types.Int64
-	if obj.PrefixLen != nil {
-		prefixLen_value = types.Int64Value(*obj.PrefixLen)
-	}
-	var prefixLenHint_value types.Bool
-	if obj.PrefixLenHint != nil {
-		prefixLenHint_value = types.BoolValue(*obj.PrefixLenHint)
-	}
-	o.PfxPoolName = pfxPoolName_value
-	o.PrefixLen = prefixLen_value
-	o.PrefixLenHint = prefixLenHint_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientV6Options, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var enable_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject
-	if obj.Enable != nil {
-		enable_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject)
-
-		diags.Append(enable_object.CopyFromPango(ctx, obj.Enable, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var duidType_value types.String
-	if obj.DuidType != nil {
-		duidType_value = types.StringValue(*obj.DuidType)
-	}
-	var rapidCommit_value types.Bool
-	if obj.RapidCommit != nil {
-		rapidCommit_value = types.BoolValue(*obj.RapidCommit)
-	}
-	var supportSrvrReconfig_value types.Bool
-	if obj.SupportSrvrReconfig != nil {
-		supportSrvrReconfig_value = types.BoolValue(*obj.SupportSrvrReconfig)
-	}
-	o.DuidType = duidType_value
-	o.Enable = enable_object
-	o.RapidCommit = rapidCommit_value
-	o.SupportSrvrReconfig = supportSrvrReconfig_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnable, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var no_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject
-	if obj.No != nil {
-		no_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject)
-
-		diags.Append(no_object.CopyFromPango(ctx, obj.No, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var yes_object *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject
-	if obj.Yes != nil {
-		yes_object = new(AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject)
-
-		diags.Append(yes_object.CopyFromPango(ctx, obj.Yes, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.No = no_object
-	o.Yes = yes_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableNo, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6DhcpClientV6OptionsEnableYesObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6DhcpClientV6OptionsEnableYes, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var nonTempAddr_value types.Bool
-	if obj.NonTempAddr != nil {
-		nonTempAddr_value = types.BoolValue(*obj.NonTempAddr)
-	}
-	var tempAddr_value types.Bool
-	if obj.TempAddr != nil {
-		tempAddr_value = types.BoolValue(*obj.TempAddr)
-	}
-	o.NonTempAddr = nonTempAddr_value
-	o.TempAddr = tempAddr_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6Inherited, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var assignAddr_list types.List
-	{
-		var assignAddr_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject
-		for _, elt := range obj.AssignAddr {
-			var entry AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("assign_addr")
-		assignAddr_list, list_diags = types.ListValueFrom(ctx, schemaType, assignAddr_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var neighborDiscovery_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject
-	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject)
-
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, obj.NeighborDiscovery, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.AssignAddr = assignAddr_list
-	o.Enable = enable_value
-	o.NeighborDiscovery = neighborDiscovery_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddr, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var type_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject
-	if obj.Type != nil {
-		type_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Name = types.StringValue(obj.Name)
-	o.Type = type_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var gua_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject
-	if obj.Gua != nil {
-		gua_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject)
-
-		diags.Append(gua_object.CopyFromPango(ctx, obj.Gua, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var ula_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject
-	if obj.Ula != nil {
-		ula_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject)
-
-		diags.Append(ula_object.CopyFromPango(ctx, obj.Ula, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Gua = gua_object
-	o.Ula = ula_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGua, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var poolType_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject
-	if obj.PoolType != nil {
-		poolType_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject)
-
-		diags.Append(poolType_object.CopyFromPango(ctx, obj.PoolType, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var advertise_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.EnableOnInterface = enableOnInterface_value
-	o.PrefixPool = prefixPool_value
-	o.PoolType = poolType_object
-	o.Advertise = advertise_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolType, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dynamic_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
-	if obj.Dynamic != nil {
-		dynamic_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
-
-		diags.Append(dynamic_object.CopyFromPango(ctx, obj.Dynamic, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dynamicId_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
-	if obj.DynamicId != nil {
-		dynamicId_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
-
-		diags.Append(dynamicId_object.CopyFromPango(ctx, obj.DynamicId, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dynamic = dynamic_object
-	o.DynamicId = dynamicId_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var identifier_value types.Int64
-	if obj.Identifier != nil {
-		identifier_value = types.Int64Value(*obj.Identifier)
-	}
-	o.Identifier = identifier_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeGuaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	o.Enable = enable_value
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUla, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var advertise_object *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject
-	if obj.Advertise != nil {
-		advertise_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject)
-
-		diags.Append(advertise_object.CopyFromPango(ctx, obj.Advertise, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enableOnInterface_value types.Bool
-	if obj.EnableOnInterface != nil {
-		enableOnInterface_value = types.BoolValue(*obj.EnableOnInterface)
-	}
-	var address_value types.String
-	if obj.Address != nil {
-		address_value = types.StringValue(*obj.Address)
-	}
-	var prefix_value types.Bool
-	if obj.Prefix != nil {
-		prefix_value = types.BoolValue(*obj.Prefix)
-	}
-	var anycast_value types.Bool
-	if obj.Anycast != nil {
-		anycast_value = types.BoolValue(*obj.Anycast)
-	}
-	o.EnableOnInterface = enableOnInterface_value
-	o.Address = address_value
-	o.Prefix = prefix_value
-	o.Anycast = anycast_value
-	o.Advertise = advertise_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedAssignAddrTypeUlaAdvertise, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var validLifetime_value types.String
-	if obj.ValidLifetime != nil {
-		validLifetime_value = types.StringValue(*obj.ValidLifetime)
-	}
-	var preferredLifetime_value types.String
-	if obj.PreferredLifetime != nil {
-		preferredLifetime_value = types.StringValue(*obj.PreferredLifetime)
-	}
-	var onlinkFlag_value types.Bool
-	if obj.OnlinkFlag != nil {
-		onlinkFlag_value = types.BoolValue(*obj.OnlinkFlag)
-	}
-	var autoConfigFlag_value types.Bool
-	if obj.AutoConfigFlag != nil {
-		autoConfigFlag_value = types.BoolValue(*obj.AutoConfigFlag)
-	}
-	o.Enable = enable_value
-	o.ValidLifetime = validLifetime_value
-	o.PreferredLifetime = preferredLifetime_value
-	o.OnlinkFlag = onlinkFlag_value
-	o.AutoConfigFlag = autoConfigFlag_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscovery, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var neighbor_list types.List
-	{
-		var neighbor_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			var entry AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("neighbor")
-		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
-		diags.Append(list_diags...)
-	}
-	var dnsServer_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject
-	if obj.DnsServer != nil {
-		dnsServer_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject)
-
-		diags.Append(dnsServer_object.CopyFromPango(ctx, obj.DnsServer, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var dnsSuffix_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject
-	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject)
-
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, obj.DnsSuffix, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var routerAdvertisement_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject
-	if obj.RouterAdvertisement != nil {
-		routerAdvertisement_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject)
-
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, obj.RouterAdvertisement, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var dadAttempts_value types.Int64
-	if obj.DadAttempts != nil {
-		dadAttempts_value = types.Int64Value(*obj.DadAttempts)
-	}
-	var enableDad_value types.Bool
-	if obj.EnableDad != nil {
-		enableDad_value = types.BoolValue(*obj.EnableDad)
-	}
-	var enableNdpMonitor_value types.Bool
-	if obj.EnableNdpMonitor != nil {
-		enableNdpMonitor_value = types.BoolValue(*obj.EnableNdpMonitor)
-	}
-	var nsInterval_value types.Int64
-	if obj.NsInterval != nil {
-		nsInterval_value = types.Int64Value(*obj.NsInterval)
-	}
-	var reachableTime_value types.Int64
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.Int64Value(*obj.ReachableTime)
-	}
-	o.DadAttempts = dadAttempts_value
-	o.DnsServer = dnsServer_object
-	o.DnsSuffix = dnsSuffix_object
-	o.EnableDad = enableDad_value
-	o.EnableNdpMonitor = enableNdpMonitor_value
-	o.Neighbor = neighbor_list
-	o.NsInterval = nsInterval_value
-	o.ReachableTime = reachableTime_value
-	o.RouterAdvertisement = routerAdvertisement_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.PrefixPool = prefixPool_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var server_list types.List
-	{
-		var server_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			var entry AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			server_tf_entries = append(server_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("server")
-		server_list, list_diags = types.ListValueFrom(ctx, schemaType, server_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Server = server_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var source_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject
-	if obj.Source != nil {
-		source_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
-
-		diags.Append(source_object.CopyFromPango(ctx, obj.Source, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	o.Enable = enable_value
-	o.Source = source_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSource, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var dhcpv6_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, obj.Dhcpv6, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-	var manual_object *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
-	if obj.Manual != nil {
-		manual_object = new(AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
-
-		diags.Append(manual_object.CopyFromPango(ctx, obj.Manual, encrypted)...)
-		if diags.HasError() {
-			return diags
-		}
-	}
-
-	o.Dhcpv6 = dhcpv6_object
-	o.Manual = manual_object
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var prefixPool_value types.String
-	if obj.PrefixPool != nil {
-		prefixPool_value = types.StringValue(*obj.PrefixPool)
-	}
-	o.PrefixPool = prefixPool_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-	var suffix_list types.List
-	{
-		var suffix_tf_entries []AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			var entry AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
-			suffix_tf_entries = append(suffix_tf_entries, entry)
-		}
-		var list_diags diag.Diagnostics
-		schemaType := o.getTypeFor("suffix")
-		suffix_list, list_diags = types.ListValueFrom(ctx, schemaType, suffix_tf_entries)
-		diags.Append(list_diags...)
-	}
-
-	o.Suffix = suffix_list
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.Lifetime = lifetime_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryNeighbor, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var hwAddress_value types.String
-	if obj.HwAddress != nil {
-		hwAddress_value = types.StringValue(*obj.HwAddress)
-	}
-	o.Name = types.StringValue(obj.Name)
-	o.HwAddress = hwAddress_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3Ipv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Ipv6InheritedNeighborDiscoveryRouterAdvertisement, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var enable_value types.Bool
-	if obj.Enable != nil {
-		enable_value = types.BoolValue(*obj.Enable)
-	}
-	var enableConsistencyCheck_value types.Bool
-	if obj.EnableConsistencyCheck != nil {
-		enableConsistencyCheck_value = types.BoolValue(*obj.EnableConsistencyCheck)
-	}
-	var hopLimit_value types.String
-	if obj.HopLimit != nil {
-		hopLimit_value = types.StringValue(*obj.HopLimit)
-	}
-	var lifetime_value types.Int64
-	if obj.Lifetime != nil {
-		lifetime_value = types.Int64Value(*obj.Lifetime)
-	}
-	var linkMtu_value types.String
-	if obj.LinkMtu != nil {
-		linkMtu_value = types.StringValue(*obj.LinkMtu)
-	}
-	var managedFlag_value types.Bool
-	if obj.ManagedFlag != nil {
-		managedFlag_value = types.BoolValue(*obj.ManagedFlag)
-	}
-	var maxInterval_value types.Int64
-	if obj.MaxInterval != nil {
-		maxInterval_value = types.Int64Value(*obj.MaxInterval)
-	}
-	var minInterval_value types.Int64
-	if obj.MinInterval != nil {
-		minInterval_value = types.Int64Value(*obj.MinInterval)
-	}
-	var otherFlag_value types.Bool
-	if obj.OtherFlag != nil {
-		otherFlag_value = types.BoolValue(*obj.OtherFlag)
-	}
-	var reachableTime_value types.String
-	if obj.ReachableTime != nil {
-		reachableTime_value = types.StringValue(*obj.ReachableTime)
-	}
-	var retransmissionTimer_value types.String
-	if obj.RetransmissionTimer != nil {
-		retransmissionTimer_value = types.StringValue(*obj.RetransmissionTimer)
-	}
-	var routerPreference_value types.String
-	if obj.RouterPreference != nil {
-		routerPreference_value = types.StringValue(*obj.RouterPreference)
-	}
-	o.Enable = enable_value
-	o.EnableConsistencyCheck = enableConsistencyCheck_value
-	o.HopLimit = hopLimit_value
-	o.Lifetime = lifetime_value
-	o.LinkMtu = linkMtu_value
-	o.ManagedFlag = managedFlag_value
-	o.MaxInterval = maxInterval_value
-	o.MinInterval = minInterval_value
-	o.OtherFlag = otherFlag_value
-	o.ReachableTime = reachableTime_value
-	o.RetransmissionTimer = retransmissionTimer_value
-	o.RouterPreference = routerPreference_value
-
-	return diags
-}
-
-func (o *AggregateInterfaceResourceLayer3LacpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Lacp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LacpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Lacp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceResourceLayer3LacpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -20731,7 +22117,7 @@ func (o *AggregateInterfaceResourceLayer3LacpObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3LacpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3LacpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -20743,13 +22129,12 @@ func (o *AggregateInterfaceResourceLayer3LacpHighAvailabilityObject) CopyFromPan
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3LldpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3Lldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LldpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3Lldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceResourceLayer3LldpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -20770,7 +22155,7 @@ func (o *AggregateInterfaceResourceLayer3LldpObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3LldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3LldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -20782,15 +22167,19 @@ func (o *AggregateInterfaceResourceLayer3LldpHighAvailabilityObject) CopyFromPan
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3NdpProxyObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3NdpProxy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3NdpProxyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []AggregateInterfaceResourceLayer3NdpProxyAddressObject
 		for _, elt := range obj.Address {
-			var entry AggregateInterfaceResourceLayer3NdpProxyAddressObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := AggregateInterfaceResourceLayer3NdpProxyAddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			address_tf_entries = append(address_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -20809,7 +22198,7 @@ func (o *AggregateInterfaceResourceLayer3NdpProxyObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3NdpProxyAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var negate_value types.Bool
@@ -20822,13 +22211,12 @@ func (o *AggregateInterfaceResourceLayer3NdpProxyAddressObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var upstreamNat_object *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject
 	if obj.UpstreamNat != nil {
 		upstreamNat_object = new(AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject)
-
-		diags.Append(upstreamNat_object.CopyFromPango(ctx, obj.UpstreamNat, encrypted)...)
+		diags.Append(upstreamNat_object.CopyFromPango(ctx, append(ancestors, o), obj.UpstreamNat, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -20849,13 +22237,12 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsObject) CopyFromPango(
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNat, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ddns_object *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject
 	if obj.Ddns != nil {
 		ddns_object = new(AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject)
-
-		diags.Append(ddns_object.CopyFromPango(ctx, obj.Ddns, encrypted)...)
+		diags.Append(ddns_object.CopyFromPango(ctx, append(ancestors, o), obj.Ddns, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -20863,8 +22250,7 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) Cop
 	var staticIp_object *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject
 	if obj.StaticIp != nil {
 		staticIp_object = new(AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject)
-
-		diags.Append(staticIp_object.CopyFromPango(ctx, obj.StaticIp, encrypted)...)
+		diags.Append(staticIp_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -20881,13 +22267,13 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatObject) Cop
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.Layer3SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var fqdn_value types.String
@@ -20904,13 +22290,12 @@ func (o *AggregateInterfaceResourceLayer3SdwanLinkSettingsUpstreamNatStaticIpObj
 	return diags
 }
 
-func (o *AggregateInterfaceResourceVirtualWireObject) CopyFromPango(ctx context.Context, obj *aggregate.VirtualWire, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceVirtualWireObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.VirtualWire, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lldp_object *AggregateInterfaceResourceVirtualWireLldpObject
 	if obj.Lldp != nil {
 		lldp_object = new(AggregateInterfaceResourceVirtualWireLldpObject)
-
-		diags.Append(lldp_object.CopyFromPango(ctx, obj.Lldp, encrypted)...)
+		diags.Append(lldp_object.CopyFromPango(ctx, append(ancestors, o), obj.Lldp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -20926,13 +22311,12 @@ func (o *AggregateInterfaceResourceVirtualWireObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyFromPango(ctx context.Context, obj *aggregate.VirtualWireLldp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.VirtualWireLldp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var highAvailability_object *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject
 	if obj.HighAvailability != nil {
 		highAvailability_object = new(AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject)
-
-		diags.Append(highAvailability_object.CopyFromPango(ctx, obj.HighAvailability, encrypted)...)
+		diags.Append(highAvailability_object.CopyFromPango(ctx, append(ancestors, o), obj.HighAvailability, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -20953,7 +22337,7 @@ func (o *AggregateInterfaceResourceVirtualWireLldpObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) CopyFromPango(ctx context.Context, obj *aggregate.VirtualWireLldpHighAvailability, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *aggregate.VirtualWireLldpHighAvailability, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var passivePreNegotiation_value types.Bool
@@ -20963,6 +22347,11 @@ func (o *AggregateInterfaceResourceVirtualWireLldpHighAvailabilityObject) CopyFr
 	o.PassivePreNegotiation = passivePreNegotiation_value
 
 	return diags
+}
+
+func (o *AggregateInterfaceResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -20982,6 +22371,13 @@ func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -21047,8 +22443,7 @@ func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 
 	// Load the desired config.
 	var obj *aggregate.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -21060,17 +22455,29 @@ func (r *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -21080,6 +22487,17 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 	var savestate, state AggregateInterfaceResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -21143,8 +22561,12 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -21154,7 +22576,7 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -21164,6 +22586,13 @@ func (o *AggregateInterfaceResource) Read(ctx context.Context, req resource.Read
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -21175,6 +22604,17 @@ func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.Up
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -21242,19 +22682,31 @@ func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.Up
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -21268,11 +22720,18 @@ func (r *AggregateInterfaceResource) Update(ctx context.Context, req resource.Up
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -21352,9 +22811,15 @@ func (r *AggregateInterfaceResource) Delete(ctx context.Context, req resource.De
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

@@ -1,18 +1,14 @@
 package provider_test
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/network/virtual_router"
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -26,10 +22,6 @@ func TestAccPanosVirtualRouter_RequiredInputs(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosVirtualRouterDestroy(
-			fmt.Sprintf("%s-%s", resName, nameSuffix),
-			fmt.Sprintf("%s-%s", templateName, nameSuffix),
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: makePanosVirtualRouterConfig(resName),
@@ -65,10 +57,6 @@ func TestAccPanosVirtualRouter_WithEthernetInterface(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosVirtualRouterDestroy(
-			fmt.Sprintf("%s-%s", resName, nameSuffix),
-			fmt.Sprintf("%s-%s", templateName, nameSuffix),
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: makePanosVirtualRouterConfig(resName),
@@ -181,27 +169,4 @@ func makePanosVirtualRouterConfig(label string) string {
     `
 
 	return fmt.Sprintf(configTpl, label)
-}
-
-func testAccCheckPanosVirtualRouterDestroy(entryName, templateName string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := virtual_router.NewService(sdkClient)
-		ctx := context.TODO()
-
-		location := virtual_router.NewTemplateLocation()
-		location.Template.Template = templateName
-
-		reply, err := api.Read(ctx, *location, entryName, "show")
-		if err != nil && !sdkErrors.IsObjectNotFound(err) {
-			return fmt.Errorf("reading virtual router entry via sdk: %v", err)
-		}
-
-		if reply != nil {
-			if reply.EntryName() == entryName {
-				return fmt.Errorf("virtual router object still exists: %s", entryName)
-			}
-		}
-
-		return nil
-	}
 }

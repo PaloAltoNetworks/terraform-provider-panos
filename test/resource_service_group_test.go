@@ -1,21 +1,14 @@
 package provider_test
 
 import (
-	"context"
-	"errors"
 	"fmt"
-	"strings"
 	"testing"
-
-	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
-	servicegroup "github.com/PaloAltoNetworks/pango/objects/service/group"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -28,7 +21,6 @@ func TestAccPanosServiceGroup(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccCheckPanosServiceGroupDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: testAccPanosServiceGroupTmpl,
@@ -111,34 +103,3 @@ resource "panos_service_group" "group2" {
   members = var.groups["group2"].members
 }
 `
-
-func testAccCheckPanosServiceGroupDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		svc := servicegroup.NewService(sdkClient)
-		ctx := context.TODO()
-		location := servicegroup.NewSharedLocation()
-
-		entries, err := svc.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkerrors.IsObjectNotFound(err) {
-			return fmt.Errorf("Failed to list service group entries: %w", err)
-		}
-
-		err = nil
-		var dangling []string
-		for _, elt := range entries {
-			if strings.HasPrefix(elt.Name, prefix) {
-				dangling = append(dangling, elt.Name)
-				err = errors.Join(err, fmt.Errorf("service group entry not deleted properly: %s", elt.Name))
-			}
-		}
-
-		if len(dangling) > 0 {
-			deleteErr := svc.Delete(ctx, *location, dangling...)
-			if deleteErr != nil && !sdkerrors.IsObjectNotFound(deleteErr) {
-				err = errors.Join(err, fmt.Errorf("failed to delete service group entries: %w", deleteErr))
-			}
-		}
-
-		return err
-	}
-}

@@ -58,6 +58,7 @@ type AddressesDataSourceModel struct {
 	Addresses types.Map    `tfsdk:"addresses"`
 }
 type AddressesDataSourceAddressesObject struct {
+	name            string       `tfsdk:"-"`
 	Description     types.String `tfsdk:"description"`
 	DisableOverride types.String `tfsdk:"disable_override"`
 	Tags            types.List   `tfsdk:"tags"`
@@ -78,6 +79,14 @@ func (o *AddressesDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"addresses": types.MapType{},
 	}
 }
+
+func (o AddressesDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o AddressesDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *AddressesDataSourceAddressesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -91,7 +100,15 @@ func (o *AddressesDataSourceAddressesObject) AttributeTypes() map[string]attr.Ty
 	}
 }
 
-func (o *AddressesDataSourceAddressesObject) CopyToPango(ctx context.Context, obj **address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o AddressesDataSourceAddressesObject) AncestorName() string {
+	return "addresses"
+}
+
+func (o AddressesDataSourceAddressesObject) EntryName() *string {
+	return &o.name
+}
+
+func (o *AddressesDataSourceAddressesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -119,13 +136,16 @@ func (o *AddressesDataSourceAddressesObject) CopyToPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *AddressesDataSourceAddressesObject) CopyFromPango(ctx context.Context, obj *address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AddressesDataSourceAddressesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tags_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var description_value types.String
@@ -161,6 +181,11 @@ func (o *AddressesDataSourceAddressesObject) CopyFromPango(ctx context.Context, 
 	o.IpWildcard = ipWildcard_value
 
 	return diags
+}
+
+func (o *AddressesDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func AddressesDataSourceSchema() dsschema.Schema {
@@ -309,7 +334,7 @@ func (d *AddressesDataSource) Configure(_ context.Context, req datasource.Config
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, address.NewService(d.client), batchSize, specifier, address.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*address.Entry, address.Location, *address.Service](d.client, address.NewService(d.client), batchSize, specifier, address.SpecMatches)
 }
 func (o *AddressesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -325,6 +350,13 @@ func (o *AddressesDataSource) Read(ctx context.Context, req datasource.ReadReque
 		"resource_name": "panos_addresses",
 		"function":      "Create",
 	})
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location address.Location
 
@@ -376,7 +408,7 @@ func (o *AddressesDataSource) Read(ctx context.Context, req datasource.ReadReque
 	entries := make([]*address.Entry, 0, len(elements))
 	for name, elt := range elements {
 		var entry *address.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -384,7 +416,13 @@ func (o *AddressesDataSource) Read(ctx context.Context, req datasource.ReadReque
 		entries = append(entries, entry)
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, entries)
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	readEntries, err := o.manager.ReadMany(ctx, location, components, entries)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -393,11 +431,11 @@ func (o *AddressesDataSource) Read(ctx context.Context, req datasource.ReadReque
 		}
 		return
 	}
-
 	objects := make(map[string]AddressesDataSourceAddressesObject)
 	for _, elt := range readEntries {
 		var object AddressesDataSourceAddressesObject
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, elt, nil)...)
+		object.name = elt.Name
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -445,6 +483,7 @@ type AddressesResourceModel struct {
 	Addresses types.Map    `tfsdk:"addresses"`
 }
 type AddressesResourceAddressesObject struct {
+	name            string       `tfsdk:"-"`
 	Description     types.String `tfsdk:"description"`
 	DisableOverride types.String `tfsdk:"disable_override"`
 	Tags            types.List   `tfsdk:"tags"`
@@ -617,7 +656,7 @@ func (r *AddressesResource) Configure(ctx context.Context, req resource.Configur
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, address.NewService(r.client), batchSize, specifier, address.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*address.Entry, address.Location, *address.Service](r.client, address.NewService(r.client), batchSize, specifier, address.SpecMatches)
 }
 
 func (o *AddressesResourceModel) AttributeTypes() map[string]attr.Type {
@@ -630,6 +669,14 @@ func (o *AddressesResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 		"addresses": types.MapType{},
 	}
+}
+
+func (o AddressesResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o AddressesResourceModel) EntryName() *string {
+	return nil
 }
 func (o *AddressesResourceAddressesObject) AttributeTypes() map[string]attr.Type {
 
@@ -644,7 +691,15 @@ func (o *AddressesResourceAddressesObject) AttributeTypes() map[string]attr.Type
 	}
 }
 
-func (o *AddressesResourceAddressesObject) CopyToPango(ctx context.Context, obj **address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o AddressesResourceAddressesObject) AncestorName() string {
+	return "addresses"
+}
+
+func (o AddressesResourceAddressesObject) EntryName() *string {
+	return &o.name
+}
+
+func (o *AddressesResourceAddressesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -672,13 +727,16 @@ func (o *AddressesResourceAddressesObject) CopyToPango(ctx context.Context, obj 
 	return diags
 }
 
-func (o *AddressesResourceAddressesObject) CopyFromPango(ctx context.Context, obj *address.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AddressesResourceAddressesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tags_list types.List
 	{
 		var list_diags diag.Diagnostics
 		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var description_value types.String
@@ -716,6 +774,11 @@ func (o *AddressesResourceAddressesObject) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
+func (o *AddressesResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *AddressesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 
 	var state AddressesResourceModel
@@ -729,6 +792,13 @@ func (r *AddressesResource) Create(ctx context.Context, req resource.CreateReque
 		"resource_name": "panos_addresses_resource",
 		"function":      "Create",
 	})
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location address.Location
 
@@ -786,7 +856,7 @@ func (r *AddressesResource) Create(ctx context.Context, req resource.CreateReque
 	idx := 0
 	for name, elt := range elements {
 		var entry *address.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -795,7 +865,13 @@ func (r *AddressesResource) Create(ctx context.Context, req resource.CreateReque
 		idx++
 	}
 
-	created, err := r.manager.CreateMany(ctx, location, entries)
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	created, err := r.manager.CreateMany(ctx, location, components, entries)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to create new entries", err.Error())
 		return
@@ -806,7 +882,8 @@ func (r *AddressesResource) Create(ctx context.Context, req resource.CreateReque
 			continue
 		}
 		var object AddressesResourceAddressesObject
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, elt, nil)...)
+		object.name = elt.Name
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -837,6 +914,17 @@ func (o *AddressesResource) Read(ctx context.Context, req resource.ReadRequest, 
 		"resource_name": "panos_addresses",
 		"function":      "Create",
 	})
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location address.Location
 
@@ -888,7 +976,7 @@ func (o *AddressesResource) Read(ctx context.Context, req resource.ReadRequest, 
 	entries := make([]*address.Entry, 0, len(elements))
 	for name, elt := range elements {
 		var entry *address.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -896,7 +984,13 @@ func (o *AddressesResource) Read(ctx context.Context, req resource.ReadRequest, 
 		entries = append(entries, entry)
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, entries)
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	readEntries, err := o.manager.ReadMany(ctx, location, components, entries)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -905,11 +999,11 @@ func (o *AddressesResource) Read(ctx context.Context, req resource.ReadRequest, 
 		}
 		return
 	}
-
 	objects := make(map[string]AddressesResourceAddressesObject)
 	for _, elt := range readEntries {
 		var object AddressesResourceAddressesObject
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, elt, nil)...)
+		object.name = elt.Name
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -922,6 +1016,13 @@ func (o *AddressesResource) Read(ctx context.Context, req resource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
@@ -940,6 +1041,17 @@ func (r *AddressesResource) Update(ctx context.Context, req resource.UpdateReque
 		"resource_name": "panos_addresses_resource",
 		"function":      "Create",
 	})
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
 
 	var location address.Location
 
@@ -998,7 +1110,7 @@ func (r *AddressesResource) Update(ctx context.Context, req resource.UpdateReque
 	idx := 0
 	for name, elt := range elements {
 		var entry *address.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1007,7 +1119,13 @@ func (r *AddressesResource) Update(ctx context.Context, req resource.UpdateReque
 		idx++
 	}
 
-	existing, err := r.manager.ReadMany(ctx, location, stateEntries)
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	existing, err := r.manager.ReadMany(ctx, location, components, stateEntries)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error while reading entries from the server", err.Error())
 		return
@@ -1027,7 +1145,7 @@ func (r *AddressesResource) Update(ctx context.Context, req resource.UpdateReque
 	idx = 0
 	for name, elt := range elements {
 		entry, _ := existingEntriesByName[name]
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, &entry, nil)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1037,30 +1155,38 @@ func (r *AddressesResource) Update(ctx context.Context, req resource.UpdateReque
 		idx++
 	}
 
-	processed, err := r.manager.UpdateMany(ctx, location, stateEntries, planEntries)
+	processed, err := r.manager.UpdateMany(ctx, location, components, stateEntries, planEntries)
 	if err != nil {
 		resp.Diagnostics.AddError("Error while updating entries", err.Error())
 		return
 	}
-
 	objects := make(map[string]*AddressesResourceAddressesObject, len(processed))
 	for _, elt := range processed {
 		var object AddressesResourceAddressesObject
-		copy_diags := object.CopyFromPango(ctx, elt, nil)
+		object.name = elt.Name
+		copy_diags := object.CopyFromPango(ctx, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
-
 		objects[elt.Name] = &object
 	}
 
 	var list_diags diag.Diagnostics
+
 	plan.Addresses, list_diags = types.MapValueFrom(ctx, state.getTypeFor("addresses"), objects)
+
 	resp.Diagnostics.Append(list_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
@@ -1129,7 +1255,13 @@ func (r *AddressesResource) Delete(ctx context.Context, req resource.DeleteReque
 	for name, _ := range elements {
 		names = append(names, name)
 	}
-	err := r.manager.Delete(ctx, location, names)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, names)
 	if err != nil {
 		resp.Diagnostics.AddError("error while deleting entries", err.Error())
 		return
@@ -1267,6 +1399,13 @@ func (r *AddressesResource) ImportState(ctx context.Context, req resource.Import
 		return
 	}
 
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
+		return
+	}
+
 	err = json.Unmarshal(data, &obj)
 	if err != nil {
 		var diagsErr *DiagnosticsError
@@ -1291,7 +1430,7 @@ func (r *AddressesResource) ImportState(ctx context.Context, req resource.Import
 	}
 	for _, elt := range objectNames {
 		object := &AddressesResourceAddressesObject{}
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, &address.Entry{}, nil)...)
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, &address.Entry{}, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}

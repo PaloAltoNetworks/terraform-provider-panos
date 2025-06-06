@@ -68,7 +68,7 @@ provider "panos" {
 
 ### Environment Variables
 
-You can provide your credentials using the `PANOS_USERNAME` and `PANOS_PASSWORD` environment variables for username-password based authentication, or use `PANOS_API_KEY` for API key based authentication, along with `PANOS_HOST`.
+You can provide your credentials using the `PANOS_USERNAME` and `PANOS_PASSWORD` environment variables for username-password based authentication, or use `PANOS_API_KEY` for API key based authentication, along with `PANOS_HOSTNAME`.
 
 ```terraform
 provider "panos" {}
@@ -77,7 +77,7 @@ provider "panos" {}
 Usage:
 
 ```sh
-$ export PANOS_HOST="1.2.3.4"
+$ export PANOS_HOSTNAME="1.2.3.4"
 $ export PANOS_USERNAME="username"
 $ export PANOS_PASSWORD="password"
 $ terraform plan
@@ -121,7 +121,7 @@ provider "panos" {
 - `api_key_in_request` (Boolean) Send the API key in the request body instead of using the authentication header. Environment variable: `PANOS_API_KEY_IN_REQUEST`. JSON config file variable: `api_key_in_request`.
 - `auth_file` (String) Filesystem path to a JSON config file that specifies the provider's params. JSON config file variable: `auth_file`.
 - `config_file` (String) (Local inspection mode) The PAN-OS config file to load read in using `file()` JSON config file variable: `config_file`.
-- `hostname` (String) The hostname or IP address of the PAN-OS instance (NGFW or Panorama). Environment variable: `PANOS_HOST`. JSON config file variable: `hostname`.
+- `hostname` (String) The hostname or IP address of the PAN-OS instance (NGFW or Panorama). Environment variable: `PANOS_HOSTNAME`. JSON config file variable: `hostname`.
 - `multi_config_batch_size` (Number) Number of operations to send as part of a single MultiConfig update Default: `500`. Environment variable: `PANOS_MULTI_CONFIG_BATCH_SIZE`. JSON config file variable: `multi_config_batch_size`.
 - `panos_version` (String) (Local inspection mode) The version of PAN-OS that exported the config file. This is only used if the root 'config' block does not contain the 'detail-version' attribute. Example: `10.2.3`. JSON config file variable: `panos_version`.
 - `password` (String, Sensitive) The password.  This is required if the api_key is not configured. Environment variable: `PANOS_PASSWORD`. JSON config file variable: `password`.

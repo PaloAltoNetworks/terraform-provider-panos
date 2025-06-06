@@ -209,6 +209,7 @@ type AdminRoleDataSourceRoleDeviceWebuiDeviceObject struct {
 	ConfigAudit            types.String                                                         `tfsdk:"config_audit"`
 	DataRedistribution     types.String                                                         `tfsdk:"data_redistribution"`
 	DeviceQuarantine       types.String                                                         `tfsdk:"device_quarantine"`
+	DhcpSyslogServer       types.String                                                         `tfsdk:"dhcp_syslog_server"`
 	DynamicUpdates         types.String                                                         `tfsdk:"dynamic_updates"`
 	GlobalProtectClient    types.String                                                         `tfsdk:"global_protect_client"`
 	HighAvailability       types.String                                                         `tfsdk:"high_availability"`
@@ -229,7 +230,6 @@ type AdminRoleDataSourceRoleDeviceWebuiDeviceObject struct {
 	UserIdentification     types.String                                                         `tfsdk:"user_identification"`
 	VirtualSystems         types.String                                                         `tfsdk:"virtual_systems"`
 	VmInfoSource           types.String                                                         `tfsdk:"vm_info_source"`
-	DhcpSyslogServer       types.String                                                         `tfsdk:"dhcp_syslog_server"`
 }
 type AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject struct {
 	CertificateProfile     types.String `tfsdk:"certificate_profile"`
@@ -374,11 +374,11 @@ type AdminRoleDataSourceRoleDeviceWebuiNetworkObject struct {
 	Qos                   types.String                                                    `tfsdk:"qos"`
 	Routing               *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject         `tfsdk:"routing"`
 	SdwanInterfaceProfile types.String                                                    `tfsdk:"sdwan_interface_profile"`
+	SecureWebGateway      types.String                                                    `tfsdk:"secure_web_gateway"`
 	VirtualRouters        types.String                                                    `tfsdk:"virtual_routers"`
 	VirtualWires          types.String                                                    `tfsdk:"virtual_wires"`
 	Vlans                 types.String                                                    `tfsdk:"vlans"`
 	Zones                 types.String                                                    `tfsdk:"zones"`
-	SecureWebGateway      types.String                                                    `tfsdk:"secure_web_gateway"`
 }
 type AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject struct {
 	ClientlessAppGroups types.String `tfsdk:"clientless_app_groups"`
@@ -494,9 +494,9 @@ type AdminRoleDataSourceRoleDeviceWebuiPrivacyObject struct {
 	ViewPcapFiles                 types.String `tfsdk:"view_pcap_files"`
 }
 type AdminRoleDataSourceRoleDeviceWebuiSaveObject struct {
+	ObjectLevelChanges types.String `tfsdk:"object_level_changes"`
 	PartialSave        types.String `tfsdk:"partial_save"`
 	SaveForOtherAdmins types.String `tfsdk:"save_for_other_admins"`
-	ObjectLevelChanges types.String `tfsdk:"object_level_changes"`
 }
 type AdminRoleDataSourceRoleDeviceXmlapiObject struct {
 	Commit types.String `tfsdk:"commit"`
@@ -537,8 +537,8 @@ type AdminRoleDataSourceRoleVsysRestapiNetworkObject struct {
 	GlobalprotectGateways            types.String `tfsdk:"globalprotect_gateways"`
 	GlobalprotectMdmServers          types.String `tfsdk:"globalprotect_mdm_servers"`
 	GlobalprotectPortals             types.String `tfsdk:"globalprotect_portals"`
-	Zones                            types.String `tfsdk:"zones"`
 	SdwanInterfaceProfiles           types.String `tfsdk:"sdwan_interface_profiles"`
+	Zones                            types.String `tfsdk:"zones"`
 }
 type AdminRoleDataSourceRoleVsysRestapiObjectsObject struct {
 	AddressGroups                           types.String `tfsdk:"address_groups"`
@@ -623,6 +623,7 @@ type AdminRoleDataSourceRoleVsysWebuiDeviceObject struct {
 	CertificateManagement  *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject `tfsdk:"certificate_management"`
 	DataRedistribution     types.String                                                       `tfsdk:"data_redistribution"`
 	DeviceQuarantine       types.String                                                       `tfsdk:"device_quarantine"`
+	DhcpSyslogServer       types.String                                                       `tfsdk:"dhcp_syslog_server"`
 	LocalUserDatabase      *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject     `tfsdk:"local_user_database"`
 	LogSettings            *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject           `tfsdk:"log_settings"`
 	PolicyRecommendations  *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject `tfsdk:"policy_recommendations"`
@@ -631,7 +632,6 @@ type AdminRoleDataSourceRoleVsysWebuiDeviceObject struct {
 	Troubleshooting        types.String                                                       `tfsdk:"troubleshooting"`
 	UserIdentification     types.String                                                       `tfsdk:"user_identification"`
 	VmInfoSource           types.String                                                       `tfsdk:"vm_info_source"`
-	DhcpSyslogServer       types.String                                                       `tfsdk:"dhcp_syslog_server"`
 }
 type AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject struct {
 	CertificateProfile     types.String `tfsdk:"certificate_profile"`
@@ -842,9 +842,9 @@ type AdminRoleDataSourceRoleVsysWebuiPrivacyObject struct {
 	ViewPcapFiles                 types.String `tfsdk:"view_pcap_files"`
 }
 type AdminRoleDataSourceRoleVsysWebuiSaveObject struct {
+	ObjectLevelChanges types.String `tfsdk:"object_level_changes"`
 	PartialSave        types.String `tfsdk:"partial_save"`
 	SaveForOtherAdmins types.String `tfsdk:"save_for_other_admins"`
-	ObjectLevelChanges types.String `tfsdk:"object_level_changes"`
 }
 type AdminRoleDataSourceRoleVsysXmlapiObject struct {
 	Commit types.String `tfsdk:"commit"`
@@ -874,6 +874,14 @@ func (o *AdminRoleDataSourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o AdminRoleDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o AdminRoleDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleObject) AttributeTypes() map[string]attr.Type {
 
 	var deviceObj *AdminRoleDataSourceRoleDeviceObject
@@ -887,6 +895,14 @@ func (o *AdminRoleDataSourceRoleObject) AttributeTypes() map[string]attr.Type {
 			AttrTypes: vsysObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AdminRoleDataSourceRoleObject) AncestorName() string {
+	return "role"
+}
+
+func (o AdminRoleDataSourceRoleObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceObject) AttributeTypes() map[string]attr.Type {
 
@@ -907,6 +923,14 @@ func (o *AdminRoleDataSourceRoleDeviceObject) AttributeTypes() map[string]attr.T
 			AttrTypes: xmlapiObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleDataSourceRoleDeviceObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceRestapiObject) AttributeTypes() map[string]attr.Type {
 
@@ -937,6 +961,14 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) AttributeTypes() map[string
 		},
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceRestapiObject) AncestorName() string {
+	return "restapi"
+}
+
+func (o AdminRoleDataSourceRoleDeviceRestapiObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceRestapiDeviceObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -948,6 +980,14 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiDeviceObject) AttributeTypes() map[
 		"syslog_server_profiles":    types.StringType,
 		"virtual_systems":           types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceRestapiDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleDataSourceRoleDeviceRestapiDeviceObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceRestapiNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -988,6 +1028,14 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiNetworkObject) AttributeTypes() map
 		"zone_protection_network_profiles":            types.StringType,
 		"zones":                                       types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceRestapiNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o AdminRoleDataSourceRoleDeviceRestapiNetworkObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceRestapiObjectsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1032,6 +1080,14 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObjectsObject) AttributeTypes() map
 		"wildfire_analysis_security_profiles":        types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceRestapiObjectsObject) AncestorName() string {
+	return "objects"
+}
+
+func (o AdminRoleDataSourceRoleDeviceRestapiObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1048,11 +1104,27 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) AttributeTypes() ma
 		"tunnel_inspection_rules":       types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) AncestorName() string {
+	return "policies"
+}
+
+func (o AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceRestapiSystemObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"configuration": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceRestapiSystemObject) AncestorName() string {
+	return "system"
+}
+
+func (o AdminRoleDataSourceRoleDeviceRestapiSystemObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiObject) AttributeTypes() map[string]attr.Type {
 
@@ -1113,6 +1185,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) AttributeTypes() map[string]a
 		"validate": types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObject) AncestorName() string {
+	return "webui"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiCommitObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1120,6 +1200,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiCommitObject) AttributeTypes() map[st
 		"device":                  types.StringType,
 		"object_level_changes":    types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiCommitObject) AncestorName() string {
+	return "commit"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiCommitObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) AttributeTypes() map[string]attr.Type {
 
@@ -1148,6 +1236,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) AttributeTypes() map[st
 		"config_audit":          types.StringType,
 		"data_redistribution":   types.StringType,
 		"device_quarantine":     types.StringType,
+		"dhcp_syslog_server":    types.StringType,
 		"dynamic_updates":       types.StringType,
 		"global_protect_client": types.StringType,
 		"high_availability":     types.StringType,
@@ -1178,8 +1267,15 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) AttributeTypes() map[st
 		"user_identification": types.StringType,
 		"virtual_systems":     types.StringType,
 		"vm_info_source":      types.StringType,
-		"dhcp_syslog_server":  types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) AttributeTypes() map[string]attr.Type {
 
@@ -1193,12 +1289,28 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) At
 		"ssl_tls_service_profile":  types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) AncestorName() string {
+	return "certificate-management"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"user_groups": types.StringType,
 		"users":       types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) AncestorName() string {
+	return "local-user-database"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1214,12 +1326,28 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) AttributeTyp
 		"user_id":       types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) AncestorName() string {
+	return "log-settings"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"iot":  types.StringType,
 		"saas": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) AncestorName() string {
+	return "policy-recommendations"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) AttributeTypes() map[string]attr.Type {
 
@@ -1239,6 +1367,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) AttributeT
 		"tacplus":   types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) AncestorName() string {
+	return "server-profile"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1253,11 +1389,27 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) AttributeTypes() m
 		"wildfire":   types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) AncestorName() string {
+	return "setup"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiGlobalObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"system_alarms": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiGlobalObject) AncestorName() string {
+	return "global"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiGlobalObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) AttributeTypes() map[string]attr.Type {
 
@@ -1297,12 +1449,28 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) AttributeTypes() map[s
 		"view_custom_reports":   types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorObject) AncestorName() string {
+	return "monitor"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"correlated_events":   types.StringType,
 		"correlation_objects": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) AncestorName() string {
+	return "automated-correlation-engine"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1331,6 +1499,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) Attribute
 		"wildfire_log":           types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) AncestorName() string {
+	return "custom-reports"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1353,6 +1529,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) AttributeTypes() m
 		"wildfire":       types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) AncestorName() string {
+	return "logs"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1363,6 +1547,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) AttributeTyp
 		"saas_application_usage_report": types.StringType,
 		"user_activity_report":          types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) AncestorName() string {
+	return "pdf-reports"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -1390,12 +1582,20 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) AttributeTypes() map[s
 			AttrTypes: routingObj.AttributeTypes(),
 		},
 		"sdwan_interface_profile": types.StringType,
+		"secure_web_gateway":      types.StringType,
 		"virtual_routers":         types.StringType,
 		"virtual_wires":           types.StringType,
 		"vlans":                   types.StringType,
 		"zones":                   types.StringType,
-		"secure_web_gateway":      types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) AttributeTypes() map[string]attr.Type {
 
@@ -1406,6 +1606,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) Attribute
 		"mdm":                   types.StringType,
 		"portals":               types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) AncestorName() string {
+	return "global-protect"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -1422,6 +1630,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) Attribu
 		"zone_protection":     types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) AncestorName() string {
+	return "network-profiles"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) AttributeTypes() map[string]attr.Type {
 
 	var routingProfilesObj *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject
@@ -1431,6 +1647,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) AttributeTypes(
 			AttrTypes: routingProfilesObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) AncestorName() string {
+	return "routing"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -1443,6 +1667,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) 
 		"ospfv3":    types.StringType,
 		"ripv2":     types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) AncestorName() string {
+	return "routing-profiles"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1491,6 +1723,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) AttributeTypes() map[s
 		"tags":           types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsObject) AncestorName() string {
+	return "objects"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1500,11 +1740,27 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) Attribute
 		"vulnerability": types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) AncestorName() string {
+	return "custom-objects"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"decryption_profile": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) AncestorName() string {
+	return "decryption"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) AttributeTypes() map[string]attr.Type {
 
@@ -1512,6 +1768,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) Attribute
 		"hip_objects":  types.StringType,
 		"hip_profiles": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) AncestorName() string {
+	return "global-protect"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) AttributeTypes() map[string]attr.Type {
 
@@ -1521,6 +1785,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) AttributeTypes() 
 		"sdwan_profile":                  types.StringType,
 		"sdwan_saas_quality_profile":     types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) AncestorName() string {
+	return "sdwan"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -1537,6 +1809,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) Attrib
 		"wildfire_analysis":        types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) AncestorName() string {
+	return "security-profiles"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiOperationsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1546,6 +1826,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiOperationsObject) AttributeTypes() ma
 		"generate_tech_support_file": types.StringType,
 		"reboot":                     types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiOperationsObject) AncestorName() string {
+	return "operations"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiOperationsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) AttributeTypes() map[string]attr.Type {
 
@@ -1564,6 +1852,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) AttributeTypes() map[
 		"tunnel_inspect_rulebase":        types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) AncestorName() string {
+	return "policies"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1572,13 +1868,29 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) AttributeTypes() map[s
 		"view_pcap_files":                     types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) AncestorName() string {
+	return "privacy"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleDeviceWebuiSaveObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
+		"object_level_changes":  types.StringType,
 		"partial_save":          types.StringType,
 		"save_for_other_admins": types.StringType,
-		"object_level_changes":  types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiSaveObject) AncestorName() string {
+	return "save"
+}
+
+func (o AdminRoleDataSourceRoleDeviceWebuiSaveObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleDeviceXmlapiObject) AttributeTypes() map[string]attr.Type {
 
@@ -1593,6 +1905,14 @@ func (o *AdminRoleDataSourceRoleDeviceXmlapiObject) AttributeTypes() map[string]
 		"report":  types.StringType,
 		"user_id": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleDeviceXmlapiObject) AncestorName() string {
+	return "xmlapi"
+}
+
+func (o AdminRoleDataSourceRoleDeviceXmlapiObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysObject) AttributeTypes() map[string]attr.Type {
 
@@ -1613,6 +1933,14 @@ func (o *AdminRoleDataSourceRoleVsysObject) AttributeTypes() map[string]attr.Typ
 			AttrTypes: xmlapiObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysObject) AncestorName() string {
+	return "vsys"
+}
+
+func (o AdminRoleDataSourceRoleVsysObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysRestapiObject) AttributeTypes() map[string]attr.Type {
 
@@ -1643,6 +1971,14 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) AttributeTypes() map[string]a
 		},
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysRestapiObject) AncestorName() string {
+	return "restapi"
+}
+
+func (o AdminRoleDataSourceRoleVsysRestapiObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysRestapiDeviceObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1655,6 +1991,14 @@ func (o *AdminRoleDataSourceRoleVsysRestapiDeviceObject) AttributeTypes() map[st
 		"virtual_systems":           types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysRestapiDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleDataSourceRoleVsysRestapiDeviceObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysRestapiNetworkObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1663,9 +2007,17 @@ func (o *AdminRoleDataSourceRoleVsysRestapiNetworkObject) AttributeTypes() map[s
 		"globalprotect_gateways":              types.StringType,
 		"globalprotect_mdm_servers":           types.StringType,
 		"globalprotect_portals":               types.StringType,
-		"zones":                               types.StringType,
 		"sdwan_interface_profiles":            types.StringType,
+		"zones":                               types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysRestapiNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o AdminRoleDataSourceRoleVsysRestapiNetworkObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysRestapiObjectsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1710,6 +2062,14 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObjectsObject) AttributeTypes() map[s
 		"wildfire_analysis_security_profiles":        types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysRestapiObjectsObject) AncestorName() string {
+	return "objects"
+}
+
+func (o AdminRoleDataSourceRoleVsysRestapiObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysRestapiPoliciesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1726,11 +2086,27 @@ func (o *AdminRoleDataSourceRoleVsysRestapiPoliciesObject) AttributeTypes() map[
 		"tunnel_inspection_rules":       types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysRestapiPoliciesObject) AncestorName() string {
+	return "policies"
+}
+
+func (o AdminRoleDataSourceRoleVsysRestapiPoliciesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysRestapiSystemObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"configuration": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysRestapiSystemObject) AncestorName() string {
+	return "system"
+}
+
+func (o AdminRoleDataSourceRoleVsysRestapiSystemObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiObject) AttributeTypes() map[string]attr.Type {
 
@@ -1786,12 +2162,28 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) AttributeTypes() map[string]att
 		"validate": types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiObject) AncestorName() string {
+	return "webui"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiCommitObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"commit_for_other_admins": types.StringType,
 		"virtual_systems":         types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiCommitObject) AncestorName() string {
+	return "commit"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiCommitObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) AttributeTypes() map[string]attr.Type {
 
@@ -1817,6 +2209,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) AttributeTypes() map[stri
 		},
 		"data_redistribution": types.StringType,
 		"device_quarantine":   types.StringType,
+		"dhcp_syslog_server":  types.StringType,
 		"local_user_database": types.ObjectType{
 			AttrTypes: localUserDatabaseObj.AttributeTypes(),
 		},
@@ -1835,8 +2228,15 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) AttributeTypes() map[stri
 		"troubleshooting":     types.StringType,
 		"user_identification": types.StringType,
 		"vm_info_source":      types.StringType,
-		"dhcp_syslog_server":  types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) AttributeTypes() map[string]attr.Type {
 
@@ -1850,12 +2250,28 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) Attr
 		"ssl_tls_service_profile":  types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) AncestorName() string {
+	return "certificate-management"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"user_groups": types.StringType,
 		"users":       types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) AncestorName() string {
+	return "local-user-database"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1869,12 +2285,28 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) AttributeTypes
 		"user_id":       types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) AncestorName() string {
+	return "log-settings"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"iot":  types.StringType,
 		"saas": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) AncestorName() string {
+	return "policy-recommendations"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) AttributeTypes() map[string]attr.Type {
 
@@ -1894,6 +2326,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) AttributeTyp
 		"tacplus":   types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) AncestorName() string {
+	return "server-profile"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1907,6 +2347,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) AttributeTypes() map
 		"telemetry":  types.StringType,
 		"wildfire":   types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) AncestorName() string {
+	return "setup"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) AttributeTypes() map[string]attr.Type {
 
@@ -1938,12 +2386,28 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) AttributeTypes() map[str
 		"view_custom_reports": types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorObject) AncestorName() string {
+	return "monitor"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"correlated_events":   types.StringType,
 		"correlation_objects": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) AncestorName() string {
+	return "automated-correlation-engine"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) AttributeTypes() map[string]attr.Type {
 
@@ -1972,6 +2436,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) AttributeTy
 		"wildfire_log":           types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) AncestorName() string {
+	return "custom-reports"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1991,6 +2463,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) AttributeTypes() map
 		"wildfire":       types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) AncestorName() string {
+	return "logs"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2001,6 +2481,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) AttributeTypes
 		"saas_application_usage_report": types.StringType,
 		"user_activity_report":          types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) AncestorName() string {
+	return "pdf-reports"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -2014,6 +2502,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) AttributeTypes() map[str
 		"zones":                   types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiNetworkObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2023,6 +2519,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) AttributeTy
 		"mdm":                   types.StringType,
 		"portals":               types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) AncestorName() string {
+	return "global-protect"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) AttributeTypes() map[string]attr.Type {
 
@@ -2071,6 +2575,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) AttributeTypes() map[str
 		"tags":           types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsObject) AncestorName() string {
+	return "objects"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2080,11 +2592,27 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) AttributeTy
 		"vulnerability": types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) AncestorName() string {
+	return "custom-objects"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"decryption_profile": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) AncestorName() string {
+	return "decryption"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) AttributeTypes() map[string]attr.Type {
 
@@ -2092,6 +2620,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) AttributeTy
 		"hip_objects":  types.StringType,
 		"hip_profiles": types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) AncestorName() string {
+	return "global-protect"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) AttributeTypes() map[string]attr.Type {
 
@@ -2101,6 +2637,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) AttributeTypes() ma
 		"sdwan_profile":                  types.StringType,
 		"sdwan_saas_quality_profile":     types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) AncestorName() string {
+	return "sdwan"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -2117,6 +2661,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) Attribut
 		"wildfire_analysis":        types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) AncestorName() string {
+	return "security-profiles"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiOperationsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2126,6 +2678,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiOperationsObject) AttributeTypes() map[
 		"generate_tech_support_file": types.StringType,
 		"reboot":                     types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiOperationsObject) AncestorName() string {
+	return "operations"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiOperationsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysWebuiPoliciesObject) AttributeTypes() map[string]attr.Type {
 
@@ -2144,6 +2704,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiPoliciesObject) AttributeTypes() map[st
 		"tunnel_inspect_rulebase":        types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiPoliciesObject) AncestorName() string {
+	return "policies"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiPoliciesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiPrivacyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -2152,13 +2720,29 @@ func (o *AdminRoleDataSourceRoleVsysWebuiPrivacyObject) AttributeTypes() map[str
 		"view_pcap_files":                     types.StringType,
 	}
 }
+
+func (o AdminRoleDataSourceRoleVsysWebuiPrivacyObject) AncestorName() string {
+	return "privacy"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiPrivacyObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleDataSourceRoleVsysWebuiSaveObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
+		"object_level_changes":  types.StringType,
 		"partial_save":          types.StringType,
 		"save_for_other_admins": types.StringType,
-		"object_level_changes":  types.StringType,
 	}
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiSaveObject) AncestorName() string {
+	return "save"
+}
+
+func (o AdminRoleDataSourceRoleVsysWebuiSaveObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleDataSourceRoleVsysXmlapiObject) AttributeTypes() map[string]attr.Type {
 
@@ -2175,7 +2759,15 @@ func (o *AdminRoleDataSourceRoleVsysXmlapiObject) AttributeTypes() map[string]at
 	}
 }
 
-func (o *AdminRoleDataSourceModel) CopyToPango(ctx context.Context, obj **adminrole.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o AdminRoleDataSourceRoleVsysXmlapiObject) AncestorName() string {
+	return "xmlapi"
+}
+
+func (o AdminRoleDataSourceRoleVsysXmlapiObject) EntryName() *string {
+	return nil
+}
+
+func (o *AdminRoleDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	var role_entry *adminrole.Role
@@ -2185,8 +2777,8 @@ func (o *AdminRoleDataSourceModel) CopyToPango(ctx context.Context, obj **adminr
 		} else {
 			role_entry = new(adminrole.Role)
 		}
-
-		diags.Append(o.Role.CopyToPango(ctx, &role_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Role.CopyToPango(ctx, ancestors, &role_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2201,7 +2793,7 @@ func (o *AdminRoleDataSourceModel) CopyToPango(ctx context.Context, obj **adminr
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleObject) CopyToPango(ctx context.Context, obj **adminrole.Role, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.Role, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_entry *adminrole.RoleDevice
 	if o.Device != nil {
@@ -2210,8 +2802,8 @@ func (o *AdminRoleDataSourceRoleObject) CopyToPango(ctx context.Context, obj **a
 		} else {
 			device_entry = new(adminrole.RoleDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2223,8 +2815,8 @@ func (o *AdminRoleDataSourceRoleObject) CopyToPango(ctx context.Context, obj **a
 		} else {
 			vsys_entry = new(adminrole.RoleVsys)
 		}
-
-		diags.Append(o.Vsys.CopyToPango(ctx, &vsys_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Vsys.CopyToPango(ctx, append(ancestors, o), &vsys_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2238,7 +2830,7 @@ func (o *AdminRoleDataSourceRoleObject) CopyToPango(ctx context.Context, obj **a
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	cli_value := o.Cli.ValueStringPointer()
 	var restapi_entry *adminrole.RoleDeviceRestapi
@@ -2248,8 +2840,8 @@ func (o *AdminRoleDataSourceRoleDeviceObject) CopyToPango(ctx context.Context, o
 		} else {
 			restapi_entry = new(adminrole.RoleDeviceRestapi)
 		}
-
-		diags.Append(o.Restapi.CopyToPango(ctx, &restapi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Restapi.CopyToPango(ctx, append(ancestors, o), &restapi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2261,8 +2853,8 @@ func (o *AdminRoleDataSourceRoleDeviceObject) CopyToPango(ctx context.Context, o
 		} else {
 			webui_entry = new(adminrole.RoleDeviceWebui)
 		}
-
-		diags.Append(o.Webui.CopyToPango(ctx, &webui_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Webui.CopyToPango(ctx, append(ancestors, o), &webui_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2274,8 +2866,8 @@ func (o *AdminRoleDataSourceRoleDeviceObject) CopyToPango(ctx context.Context, o
 		} else {
 			xmlapi_entry = new(adminrole.RoleDeviceXmlapi)
 		}
-
-		diags.Append(o.Xmlapi.CopyToPango(ctx, &xmlapi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Xmlapi.CopyToPango(ctx, append(ancestors, o), &xmlapi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2291,7 +2883,7 @@ func (o *AdminRoleDataSourceRoleDeviceObject) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_entry *adminrole.RoleDeviceRestapiDevice
 	if o.Device != nil {
@@ -2300,8 +2892,8 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyToPango(ctx context.Con
 		} else {
 			device_entry = new(adminrole.RoleDeviceRestapiDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2313,8 +2905,8 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyToPango(ctx context.Con
 		} else {
 			network_entry = new(adminrole.RoleDeviceRestapiNetwork)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Network.CopyToPango(ctx, append(ancestors, o), &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2326,8 +2918,8 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyToPango(ctx context.Con
 		} else {
 			objects_entry = new(adminrole.RoleDeviceRestapiObjects)
 		}
-
-		diags.Append(o.Objects.CopyToPango(ctx, &objects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Objects.CopyToPango(ctx, append(ancestors, o), &objects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2339,8 +2931,8 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyToPango(ctx context.Con
 		} else {
 			policies_entry = new(adminrole.RoleDeviceRestapiPolicies)
 		}
-
-		diags.Append(o.Policies.CopyToPango(ctx, &policies_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Policies.CopyToPango(ctx, append(ancestors, o), &policies_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2352,8 +2944,8 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyToPango(ctx context.Con
 		} else {
 			system_entry = new(adminrole.RoleDeviceRestapiSystem)
 		}
-
-		diags.Append(o.System.CopyToPango(ctx, &system_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.System.CopyToPango(ctx, append(ancestors, o), &system_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2370,7 +2962,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceRestapiDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	emailServerProfiles_value := o.EmailServerProfiles.ValueStringPointer()
 	httpServerProfiles_value := o.HttpServerProfiles.ValueStringPointer()
@@ -2393,7 +2985,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiDeviceObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceRestapiNetworkObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	aggregateEthernetInterfaces_value := o.AggregateEthernetInterfaces.ValueStringPointer()
 	bfdNetworkProfiles_value := o.BfdNetworkProfiles.ValueStringPointer()
@@ -2472,7 +3064,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiNetworkObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceRestapiObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	addressGroups_value := o.AddressGroups.ValueStringPointer()
 	addresses_value := o.Addresses.ValueStringPointer()
@@ -2557,7 +3149,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObjectsObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationOverrideRules_value := o.ApplicationOverrideRules.ValueStringPointer()
 	authenticationRules_value := o.AuthenticationRules.ValueStringPointer()
@@ -2588,7 +3180,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceRestapiSystemObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiSystem, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiSystemObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiSystem, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	configuration_value := o.Configuration.ValueStringPointer()
 
@@ -2599,7 +3191,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiSystemObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebui, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebui, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	acc_value := o.Acc.ValueStringPointer()
 	var commit_entry *adminrole.RoleDeviceWebuiCommit
@@ -2609,8 +3201,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			commit_entry = new(adminrole.RoleDeviceWebuiCommit)
 		}
-
-		diags.Append(o.Commit.CopyToPango(ctx, &commit_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Commit.CopyToPango(ctx, append(ancestors, o), &commit_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2623,8 +3215,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			device_entry = new(adminrole.RoleDeviceWebuiDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2636,8 +3228,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			global_entry = new(adminrole.RoleDeviceWebuiGlobal)
 		}
-
-		diags.Append(o.Global.CopyToPango(ctx, &global_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Global.CopyToPango(ctx, append(ancestors, o), &global_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2649,8 +3241,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			monitor_entry = new(adminrole.RoleDeviceWebuiMonitor)
 		}
-
-		diags.Append(o.Monitor.CopyToPango(ctx, &monitor_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monitor.CopyToPango(ctx, append(ancestors, o), &monitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2662,8 +3254,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			network_entry = new(adminrole.RoleDeviceWebuiNetwork)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Network.CopyToPango(ctx, append(ancestors, o), &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2675,8 +3267,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			objects_entry = new(adminrole.RoleDeviceWebuiObjects)
 		}
-
-		diags.Append(o.Objects.CopyToPango(ctx, &objects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Objects.CopyToPango(ctx, append(ancestors, o), &objects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2688,8 +3280,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			operations_entry = new(adminrole.RoleDeviceWebuiOperations)
 		}
-
-		diags.Append(o.Operations.CopyToPango(ctx, &operations_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Operations.CopyToPango(ctx, append(ancestors, o), &operations_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2701,8 +3293,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			policies_entry = new(adminrole.RoleDeviceWebuiPolicies)
 		}
-
-		diags.Append(o.Policies.CopyToPango(ctx, &policies_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Policies.CopyToPango(ctx, append(ancestors, o), &policies_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2714,8 +3306,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			privacy_entry = new(adminrole.RoleDeviceWebuiPrivacy)
 		}
-
-		diags.Append(o.Privacy.CopyToPango(ctx, &privacy_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Privacy.CopyToPango(ctx, append(ancestors, o), &privacy_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2727,8 +3319,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 		} else {
 			save_entry = new(adminrole.RoleDeviceWebuiSave)
 		}
-
-		diags.Append(o.Save.CopyToPango(ctx, &save_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Save.CopyToPango(ctx, append(ancestors, o), &save_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2756,7 +3348,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiCommitObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiCommit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiCommitObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiCommit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	commitForOtherAdmins_value := o.CommitForOtherAdmins.ValueStringPointer()
 	device_value := o.Device.ValueStringPointer()
@@ -2771,7 +3363,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiCommitObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessDomain_value := o.AccessDomain.ValueStringPointer()
 	adminRoles_value := o.AdminRoles.ValueStringPointer()
@@ -2786,8 +3378,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 		} else {
 			certificateManagement_entry = new(adminrole.RoleDeviceWebuiDeviceCertificateManagement)
 		}
-
-		diags.Append(o.CertificateManagement.CopyToPango(ctx, &certificateManagement_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CertificateManagement.CopyToPango(ctx, append(ancestors, o), &certificateManagement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2795,6 +3387,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 	configAudit_value := o.ConfigAudit.ValueStringPointer()
 	dataRedistribution_value := o.DataRedistribution.ValueStringPointer()
 	deviceQuarantine_value := o.DeviceQuarantine.ValueStringPointer()
+	dhcpSyslogServer_value := o.DhcpSyslogServer.ValueStringPointer()
 	dynamicUpdates_value := o.DynamicUpdates.ValueStringPointer()
 	globalProtectClient_value := o.GlobalProtectClient.ValueStringPointer()
 	highAvailability_value := o.HighAvailability.ValueStringPointer()
@@ -2806,8 +3399,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 		} else {
 			localUserDatabase_entry = new(adminrole.RoleDeviceWebuiDeviceLocalUserDatabase)
 		}
-
-		diags.Append(o.LocalUserDatabase.CopyToPango(ctx, &localUserDatabase_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalUserDatabase.CopyToPango(ctx, append(ancestors, o), &localUserDatabase_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2820,8 +3413,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 		} else {
 			logSettings_entry = new(adminrole.RoleDeviceWebuiDeviceLogSettings)
 		}
-
-		diags.Append(o.LogSettings.CopyToPango(ctx, &logSettings_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LogSettings.CopyToPango(ctx, append(ancestors, o), &logSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2835,8 +3428,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 		} else {
 			policyRecommendations_entry = new(adminrole.RoleDeviceWebuiDevicePolicyRecommendations)
 		}
-
-		diags.Append(o.PolicyRecommendations.CopyToPango(ctx, &policyRecommendations_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PolicyRecommendations.CopyToPango(ctx, append(ancestors, o), &policyRecommendations_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2849,8 +3442,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 		} else {
 			serverProfile_entry = new(adminrole.RoleDeviceWebuiDeviceServerProfile)
 		}
-
-		diags.Append(o.ServerProfile.CopyToPango(ctx, &serverProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ServerProfile.CopyToPango(ctx, append(ancestors, o), &serverProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2862,8 +3455,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 		} else {
 			setup_entry = new(adminrole.RoleDeviceWebuiDeviceSetup)
 		}
-
-		diags.Append(o.Setup.CopyToPango(ctx, &setup_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Setup.CopyToPango(ctx, append(ancestors, o), &setup_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2875,7 +3468,6 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 	userIdentification_value := o.UserIdentification.ValueStringPointer()
 	virtualSystems_value := o.VirtualSystems.ValueStringPointer()
 	vmInfoSource_value := o.VmInfoSource.ValueStringPointer()
-	dhcpSyslogServer_value := o.DhcpSyslogServer.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleDeviceWebuiDevice)
@@ -2890,6 +3482,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 	(*obj).ConfigAudit = configAudit_value
 	(*obj).DataRedistribution = dataRedistribution_value
 	(*obj).DeviceQuarantine = deviceQuarantine_value
+	(*obj).DhcpSyslogServer = dhcpSyslogServer_value
 	(*obj).DynamicUpdates = dynamicUpdates_value
 	(*obj).GlobalProtectClient = globalProtectClient_value
 	(*obj).HighAvailability = highAvailability_value
@@ -2910,11 +3503,10 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context
 	(*obj).UserIdentification = userIdentification_value
 	(*obj).VirtualSystems = virtualSystems_value
 	(*obj).VmInfoSource = vmInfoSource_value
-	(*obj).DhcpSyslogServer = dhcpSyslogServer_value
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceCertificateManagement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceCertificateManagement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	certificates_value := o.Certificates.ValueStringPointer()
@@ -2937,7 +3529,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) Co
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceLocalUserDatabase, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceLocalUserDatabase, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	userGroups_value := o.UserGroups.ValueStringPointer()
 	users_value := o.Users.ValueStringPointer()
@@ -2950,7 +3542,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyTo
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceLogSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceLogSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ccAlarm_value := o.CcAlarm.ValueStringPointer()
 	config_value := o.Config.ValueStringPointer()
@@ -2977,7 +3569,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) CopyToPango(
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDevicePolicyRecommendations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDevicePolicyRecommendations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	iot_value := o.Iot.ValueStringPointer()
 	saas_value := o.Saas.ValueStringPointer()
@@ -2990,7 +3582,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) Co
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceServerProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceServerProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dns_value := o.Dns.ValueStringPointer()
 	email_value := o.Email.ValueStringPointer()
@@ -3025,7 +3617,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) CopyToPang
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceSetup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceSetup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	contentId_value := o.ContentId.ValueStringPointer()
 	hsm_value := o.Hsm.ValueStringPointer()
@@ -3052,7 +3644,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiGlobalObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiGlobal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiGlobalObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiGlobal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	systemAlarms_value := o.SystemAlarms.ValueStringPointer()
 
@@ -3063,7 +3655,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiGlobalObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	appScope_value := o.AppScope.ValueStringPointer()
 	applicationReports_value := o.ApplicationReports.ValueStringPointer()
@@ -3074,8 +3666,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx contex
 		} else {
 			automatedCorrelationEngine_entry = new(adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine)
 		}
-
-		diags.Append(o.AutomatedCorrelationEngine.CopyToPango(ctx, &automatedCorrelationEngine_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AutomatedCorrelationEngine.CopyToPango(ctx, append(ancestors, o), &automatedCorrelationEngine_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3089,8 +3681,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx contex
 		} else {
 			customReports_entry = new(adminrole.RoleDeviceWebuiMonitorCustomReports)
 		}
-
-		diags.Append(o.CustomReports.CopyToPango(ctx, &customReports_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CustomReports.CopyToPango(ctx, append(ancestors, o), &customReports_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3104,8 +3696,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx contex
 		} else {
 			logs_entry = new(adminrole.RoleDeviceWebuiMonitorLogs)
 		}
-
-		diags.Append(o.Logs.CopyToPango(ctx, &logs_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Logs.CopyToPango(ctx, append(ancestors, o), &logs_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3118,8 +3710,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx contex
 		} else {
 			pdfReports_entry = new(adminrole.RoleDeviceWebuiMonitorPdfReports)
 		}
-
-		diags.Append(o.PdfReports.CopyToPango(ctx, &pdfReports_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PdfReports.CopyToPango(ctx, append(ancestors, o), &pdfReports_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3154,7 +3746,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	correlatedEvents_value := o.CorrelatedEvents.ValueStringPointer()
 	correlationObjects_value := o.CorrelationObjects.ValueStringPointer()
@@ -3167,7 +3759,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObje
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitorCustomReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitorCustomReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationStatistics_value := o.ApplicationStatistics.ValueStringPointer()
 	auth_value := o.Auth.ValueStringPointer()
@@ -3220,7 +3812,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) CopyToPan
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitorLogs, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitorLogs, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	alarm_value := o.Alarm.ValueStringPointer()
 	authentication_value := o.Authentication.ValueStringPointer()
@@ -3263,7 +3855,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitorPdfReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitorPdfReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	emailScheduler_value := o.EmailScheduler.ValueStringPointer()
 	managePdfSummary_value := o.ManagePdfSummary.ValueStringPointer()
@@ -3284,7 +3876,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) CopyToPango(
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dhcp_value := o.Dhcp.ValueStringPointer()
 	dnsProxy_value := o.DnsProxy.ValueStringPointer()
@@ -3295,8 +3887,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx contex
 		} else {
 			globalProtect_entry = new(adminrole.RoleDeviceWebuiNetworkGlobalProtect)
 		}
-
-		diags.Append(o.GlobalProtect.CopyToPango(ctx, &globalProtect_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalProtect.CopyToPango(ctx, append(ancestors, o), &globalProtect_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3312,8 +3904,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx contex
 		} else {
 			networkProfiles_entry = new(adminrole.RoleDeviceWebuiNetworkNetworkProfiles)
 		}
-
-		diags.Append(o.NetworkProfiles.CopyToPango(ctx, &networkProfiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.NetworkProfiles.CopyToPango(ctx, append(ancestors, o), &networkProfiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3326,18 +3918,18 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx contex
 		} else {
 			routing_entry = new(adminrole.RoleDeviceWebuiNetworkRouting)
 		}
-
-		diags.Append(o.Routing.CopyToPango(ctx, &routing_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Routing.CopyToPango(ctx, append(ancestors, o), &routing_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	sdwanInterfaceProfile_value := o.SdwanInterfaceProfile.ValueStringPointer()
+	secureWebGateway_value := o.SecureWebGateway.ValueStringPointer()
 	virtualRouters_value := o.VirtualRouters.ValueStringPointer()
 	virtualWires_value := o.VirtualWires.ValueStringPointer()
 	vlans_value := o.Vlans.ValueStringPointer()
 	zones_value := o.Zones.ValueStringPointer()
-	secureWebGateway_value := o.SecureWebGateway.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleDeviceWebuiNetwork)
@@ -3353,15 +3945,15 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx contex
 	(*obj).Qos = qos_value
 	(*obj).Routing = routing_entry
 	(*obj).SdwanInterfaceProfile = sdwanInterfaceProfile_value
+	(*obj).SecureWebGateway = secureWebGateway_value
 	(*obj).VirtualRouters = virtualRouters_value
 	(*obj).VirtualWires = virtualWires_value
 	(*obj).Vlans = vlans_value
 	(*obj).Zones = zones_value
-	(*obj).SecureWebGateway = secureWebGateway_value
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetworkGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetworkGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	clientlessAppGroups_value := o.ClientlessAppGroups.ValueStringPointer()
 	clientlessApps_value := o.ClientlessApps.ValueStringPointer()
@@ -3380,7 +3972,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyToPan
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetworkNetworkProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetworkNetworkProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	bfdProfile_value := o.BfdProfile.ValueStringPointer()
 	gpAppIpsecCrypto_value := o.GpAppIpsecCrypto.ValueStringPointer()
@@ -3409,7 +4001,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyToP
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetworkRouting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetworkRouting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	logicalRouters_value := o.LogicalRouters.ValueStringPointer()
 	var routingProfiles_entry *adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles
@@ -3419,8 +4011,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) CopyToPango(ctx
 		} else {
 			routingProfiles_entry = new(adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles)
 		}
-
-		diags.Append(o.RoutingProfiles.CopyToPango(ctx, &routingProfiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RoutingProfiles.CopyToPango(ctx, append(ancestors, o), &routingProfiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3434,7 +4026,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	bfd_value := o.Bfd.ValueStringPointer()
 	bgp_value := o.Bgp.ValueStringPointer()
@@ -3457,7 +4049,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) 
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	addressGroups_value := o.AddressGroups.ValueStringPointer()
 	addresses_value := o.Addresses.ValueStringPointer()
@@ -3472,8 +4064,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx contex
 		} else {
 			customObjects_entry = new(adminrole.RoleDeviceWebuiObjectsCustomObjects)
 		}
-
-		diags.Append(o.CustomObjects.CopyToPango(ctx, &customObjects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CustomObjects.CopyToPango(ctx, append(ancestors, o), &customObjects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3485,8 +4077,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx contex
 		} else {
 			decryption_entry = new(adminrole.RoleDeviceWebuiObjectsDecryption)
 		}
-
-		diags.Append(o.Decryption.CopyToPango(ctx, &decryption_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Decryption.CopyToPango(ctx, append(ancestors, o), &decryption_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3501,8 +4093,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx contex
 		} else {
 			globalProtect_entry = new(adminrole.RoleDeviceWebuiObjectsGlobalProtect)
 		}
-
-		diags.Append(o.GlobalProtect.CopyToPango(ctx, &globalProtect_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalProtect.CopyToPango(ctx, append(ancestors, o), &globalProtect_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3518,8 +4110,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx contex
 		} else {
 			sdwan_entry = new(adminrole.RoleDeviceWebuiObjectsSdwan)
 		}
-
-		diags.Append(o.Sdwan.CopyToPango(ctx, &sdwan_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sdwan.CopyToPango(ctx, append(ancestors, o), &sdwan_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3532,8 +4124,8 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx contex
 		} else {
 			securityProfiles_entry = new(adminrole.RoleDeviceWebuiObjectsSecurityProfiles)
 		}
-
-		diags.Append(o.SecurityProfiles.CopyToPango(ctx, &securityProfiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SecurityProfiles.CopyToPango(ctx, append(ancestors, o), &securityProfiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3570,7 +4162,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsCustomObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsCustomObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dataPatterns_value := o.DataPatterns.ValueStringPointer()
 	spyware_value := o.Spyware.ValueStringPointer()
@@ -3587,7 +4179,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyToPan
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsDecryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsDecryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	decryptionProfile_value := o.DecryptionProfile.ValueStringPointer()
 
@@ -3598,7 +4190,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) CopyToPango(
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hipObjects_value := o.HipObjects.ValueStringPointer()
 	hipProfiles_value := o.HipProfiles.ValueStringPointer()
@@ -3611,7 +4203,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyToPan
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsSdwan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsSdwan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	sdwanDistProfile_value := o.SdwanDistProfile.ValueStringPointer()
 	sdwanErrorCorrectionProfile_value := o.SdwanErrorCorrectionProfile.ValueStringPointer()
@@ -3628,7 +4220,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsSecurityProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsSecurityProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	antiSpyware_value := o.AntiSpyware.ValueStringPointer()
 	antivirus_value := o.Antivirus.ValueStringPointer()
@@ -3657,7 +4249,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyTo
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiOperationsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiOperations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiOperationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiOperations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	downloadCoreFiles_value := o.DownloadCoreFiles.ValueStringPointer()
 	downloadPcapFiles_value := o.DownloadPcapFiles.ValueStringPointer()
@@ -3676,7 +4268,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiOperationsObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationOverrideRulebase_value := o.ApplicationOverrideRulebase.ValueStringPointer()
 	authenticationRulebase_value := o.AuthenticationRulebase.ValueStringPointer()
@@ -3709,7 +4301,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiPrivacy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiPrivacy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	showFullIpAddresses_value := o.ShowFullIpAddresses.ValueStringPointer()
 	showUserNamesInLogsAndReports_value := o.ShowUserNamesInLogsAndReports.ValueStringPointer()
@@ -3724,22 +4316,22 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceWebuiSaveObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiSave, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiSaveObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiSave, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
+	objectLevelChanges_value := o.ObjectLevelChanges.ValueStringPointer()
 	partialSave_value := o.PartialSave.ValueStringPointer()
 	saveForOtherAdmins_value := o.SaveForOtherAdmins.ValueStringPointer()
-	objectLevelChanges_value := o.ObjectLevelChanges.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleDeviceWebuiSave)
 	}
+	(*obj).ObjectLevelChanges = objectLevelChanges_value
 	(*obj).PartialSave = partialSave_value
 	(*obj).SaveForOtherAdmins = saveForOtherAdmins_value
-	(*obj).ObjectLevelChanges = objectLevelChanges_value
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleDeviceXmlapiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceXmlapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceXmlapiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceXmlapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	commit_value := o.Commit.ValueStringPointer()
 	config_value := o.Config.ValueStringPointer()
@@ -3766,7 +4358,7 @@ func (o *AdminRoleDataSourceRoleDeviceXmlapiObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	cli_value := o.Cli.ValueStringPointer()
 	var restapi_entry *adminrole.RoleVsysRestapi
@@ -3776,8 +4368,8 @@ func (o *AdminRoleDataSourceRoleVsysObject) CopyToPango(ctx context.Context, obj
 		} else {
 			restapi_entry = new(adminrole.RoleVsysRestapi)
 		}
-
-		diags.Append(o.Restapi.CopyToPango(ctx, &restapi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Restapi.CopyToPango(ctx, append(ancestors, o), &restapi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3789,8 +4381,8 @@ func (o *AdminRoleDataSourceRoleVsysObject) CopyToPango(ctx context.Context, obj
 		} else {
 			webui_entry = new(adminrole.RoleVsysWebui)
 		}
-
-		diags.Append(o.Webui.CopyToPango(ctx, &webui_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Webui.CopyToPango(ctx, append(ancestors, o), &webui_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3802,8 +4394,8 @@ func (o *AdminRoleDataSourceRoleVsysObject) CopyToPango(ctx context.Context, obj
 		} else {
 			xmlapi_entry = new(adminrole.RoleVsysXmlapi)
 		}
-
-		diags.Append(o.Xmlapi.CopyToPango(ctx, &xmlapi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Xmlapi.CopyToPango(ctx, append(ancestors, o), &xmlapi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3819,7 +4411,7 @@ func (o *AdminRoleDataSourceRoleVsysObject) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_entry *adminrole.RoleVsysRestapiDevice
 	if o.Device != nil {
@@ -3828,8 +4420,8 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			device_entry = new(adminrole.RoleVsysRestapiDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3841,8 +4433,8 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			network_entry = new(adminrole.RoleVsysRestapiNetwork)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Network.CopyToPango(ctx, append(ancestors, o), &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3854,8 +4446,8 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			objects_entry = new(adminrole.RoleVsysRestapiObjects)
 		}
-
-		diags.Append(o.Objects.CopyToPango(ctx, &objects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Objects.CopyToPango(ctx, append(ancestors, o), &objects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3867,8 +4459,8 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			policies_entry = new(adminrole.RoleVsysRestapiPolicies)
 		}
-
-		diags.Append(o.Policies.CopyToPango(ctx, &policies_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Policies.CopyToPango(ctx, append(ancestors, o), &policies_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3880,8 +4472,8 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			system_entry = new(adminrole.RoleVsysRestapiSystem)
 		}
-
-		diags.Append(o.System.CopyToPango(ctx, &system_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.System.CopyToPango(ctx, append(ancestors, o), &system_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3898,7 +4490,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysRestapiDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	emailServerProfiles_value := o.EmailServerProfiles.ValueStringPointer()
 	httpServerProfiles_value := o.HttpServerProfiles.ValueStringPointer()
@@ -3921,15 +4513,15 @@ func (o *AdminRoleDataSourceRoleVsysRestapiDeviceObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysRestapiNetworkObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	globalprotectClientlessAppGroups_value := o.GlobalprotectClientlessAppGroups.ValueStringPointer()
 	globalprotectClientlessApps_value := o.GlobalprotectClientlessApps.ValueStringPointer()
 	globalprotectGateways_value := o.GlobalprotectGateways.ValueStringPointer()
 	globalprotectMdmServers_value := o.GlobalprotectMdmServers.ValueStringPointer()
 	globalprotectPortals_value := o.GlobalprotectPortals.ValueStringPointer()
-	zones_value := o.Zones.ValueStringPointer()
 	sdwanInterfaceProfiles_value := o.SdwanInterfaceProfiles.ValueStringPointer()
+	zones_value := o.Zones.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleVsysRestapiNetwork)
@@ -3939,12 +4531,12 @@ func (o *AdminRoleDataSourceRoleVsysRestapiNetworkObject) CopyToPango(ctx contex
 	(*obj).GlobalprotectGateways = globalprotectGateways_value
 	(*obj).GlobalprotectMdmServers = globalprotectMdmServers_value
 	(*obj).GlobalprotectPortals = globalprotectPortals_value
-	(*obj).Zones = zones_value
 	(*obj).SdwanInterfaceProfiles = sdwanInterfaceProfiles_value
+	(*obj).Zones = zones_value
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysRestapiObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	addressGroups_value := o.AddressGroups.ValueStringPointer()
 	addresses_value := o.Addresses.ValueStringPointer()
@@ -4029,7 +4621,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObjectsObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysRestapiPoliciesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiPoliciesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationOverrideRules_value := o.ApplicationOverrideRules.ValueStringPointer()
 	authenticationRules_value := o.AuthenticationRules.ValueStringPointer()
@@ -4060,7 +4652,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiPoliciesObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysRestapiSystemObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiSystem, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiSystemObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiSystem, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	configuration_value := o.Configuration.ValueStringPointer()
 
@@ -4071,7 +4663,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiSystemObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebui, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebui, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	acc_value := o.Acc.ValueStringPointer()
 	var commit_entry *adminrole.RoleVsysWebuiCommit
@@ -4081,8 +4673,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			commit_entry = new(adminrole.RoleVsysWebuiCommit)
 		}
-
-		diags.Append(o.Commit.CopyToPango(ctx, &commit_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Commit.CopyToPango(ctx, append(ancestors, o), &commit_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4095,8 +4687,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			device_entry = new(adminrole.RoleVsysWebuiDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4108,8 +4700,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			monitor_entry = new(adminrole.RoleVsysWebuiMonitor)
 		}
-
-		diags.Append(o.Monitor.CopyToPango(ctx, &monitor_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monitor.CopyToPango(ctx, append(ancestors, o), &monitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4121,8 +4713,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			network_entry = new(adminrole.RoleVsysWebuiNetwork)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Network.CopyToPango(ctx, append(ancestors, o), &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4134,8 +4726,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			objects_entry = new(adminrole.RoleVsysWebuiObjects)
 		}
-
-		diags.Append(o.Objects.CopyToPango(ctx, &objects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Objects.CopyToPango(ctx, append(ancestors, o), &objects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4147,8 +4739,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			operations_entry = new(adminrole.RoleVsysWebuiOperations)
 		}
-
-		diags.Append(o.Operations.CopyToPango(ctx, &operations_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Operations.CopyToPango(ctx, append(ancestors, o), &operations_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4160,8 +4752,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			policies_entry = new(adminrole.RoleVsysWebuiPolicies)
 		}
-
-		diags.Append(o.Policies.CopyToPango(ctx, &policies_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Policies.CopyToPango(ctx, append(ancestors, o), &policies_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4173,8 +4765,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			privacy_entry = new(adminrole.RoleVsysWebuiPrivacy)
 		}
-
-		diags.Append(o.Privacy.CopyToPango(ctx, &privacy_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Privacy.CopyToPango(ctx, append(ancestors, o), &privacy_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4186,8 +4778,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			save_entry = new(adminrole.RoleVsysWebuiSave)
 		}
-
-		diags.Append(o.Save.CopyToPango(ctx, &save_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Save.CopyToPango(ctx, append(ancestors, o), &save_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4214,7 +4806,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiCommitObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiCommit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiCommitObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiCommit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	commitForOtherAdmins_value := o.CommitForOtherAdmins.ValueStringPointer()
 	virtualSystems_value := o.VirtualSystems.ValueStringPointer()
@@ -4227,7 +4819,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiCommitObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	administrators_value := o.Administrators.ValueStringPointer()
 	authenticationProfile_value := o.AuthenticationProfile.ValueStringPointer()
@@ -4240,14 +4832,15 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			certificateManagement_entry = new(adminrole.RoleVsysWebuiDeviceCertificateManagement)
 		}
-
-		diags.Append(o.CertificateManagement.CopyToPango(ctx, &certificateManagement_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CertificateManagement.CopyToPango(ctx, append(ancestors, o), &certificateManagement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	dataRedistribution_value := o.DataRedistribution.ValueStringPointer()
 	deviceQuarantine_value := o.DeviceQuarantine.ValueStringPointer()
+	dhcpSyslogServer_value := o.DhcpSyslogServer.ValueStringPointer()
 	var localUserDatabase_entry *adminrole.RoleVsysWebuiDeviceLocalUserDatabase
 	if o.LocalUserDatabase != nil {
 		if *obj != nil && (*obj).LocalUserDatabase != nil {
@@ -4255,8 +4848,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			localUserDatabase_entry = new(adminrole.RoleVsysWebuiDeviceLocalUserDatabase)
 		}
-
-		diags.Append(o.LocalUserDatabase.CopyToPango(ctx, &localUserDatabase_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalUserDatabase.CopyToPango(ctx, append(ancestors, o), &localUserDatabase_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4268,8 +4861,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			logSettings_entry = new(adminrole.RoleVsysWebuiDeviceLogSettings)
 		}
-
-		diags.Append(o.LogSettings.CopyToPango(ctx, &logSettings_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LogSettings.CopyToPango(ctx, append(ancestors, o), &logSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4281,8 +4874,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			policyRecommendations_entry = new(adminrole.RoleVsysWebuiDevicePolicyRecommendations)
 		}
-
-		diags.Append(o.PolicyRecommendations.CopyToPango(ctx, &policyRecommendations_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PolicyRecommendations.CopyToPango(ctx, append(ancestors, o), &policyRecommendations_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4294,8 +4887,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			serverProfile_entry = new(adminrole.RoleVsysWebuiDeviceServerProfile)
 		}
-
-		diags.Append(o.ServerProfile.CopyToPango(ctx, &serverProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ServerProfile.CopyToPango(ctx, append(ancestors, o), &serverProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4307,8 +4900,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			setup_entry = new(adminrole.RoleVsysWebuiDeviceSetup)
 		}
-
-		diags.Append(o.Setup.CopyToPango(ctx, &setup_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Setup.CopyToPango(ctx, append(ancestors, o), &setup_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4316,7 +4909,6 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.C
 	troubleshooting_value := o.Troubleshooting.ValueStringPointer()
 	userIdentification_value := o.UserIdentification.ValueStringPointer()
 	vmInfoSource_value := o.VmInfoSource.ValueStringPointer()
-	dhcpSyslogServer_value := o.DhcpSyslogServer.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleVsysWebuiDevice)
@@ -4328,6 +4920,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.C
 	(*obj).CertificateManagement = certificateManagement_entry
 	(*obj).DataRedistribution = dataRedistribution_value
 	(*obj).DeviceQuarantine = deviceQuarantine_value
+	(*obj).DhcpSyslogServer = dhcpSyslogServer_value
 	(*obj).LocalUserDatabase = localUserDatabase_entry
 	(*obj).LogSettings = logSettings_entry
 	(*obj).PolicyRecommendations = policyRecommendations_entry
@@ -4336,11 +4929,10 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.C
 	(*obj).Troubleshooting = troubleshooting_value
 	(*obj).UserIdentification = userIdentification_value
 	(*obj).VmInfoSource = vmInfoSource_value
-	(*obj).DhcpSyslogServer = dhcpSyslogServer_value
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceCertificateManagement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceCertificateManagement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	certificates_value := o.Certificates.ValueStringPointer()
@@ -4363,7 +4955,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) Copy
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceLocalUserDatabase, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceLocalUserDatabase, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	userGroups_value := o.UserGroups.ValueStringPointer()
 	users_value := o.Users.ValueStringPointer()
@@ -4376,7 +4968,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyToPa
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceLogSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceLogSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	config_value := o.Config.ValueStringPointer()
 	correlation_value := o.Correlation.ValueStringPointer()
@@ -4399,7 +4991,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDevicePolicyRecommendations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDevicePolicyRecommendations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	iot_value := o.Iot.ValueStringPointer()
 	saas_value := o.Saas.ValueStringPointer()
@@ -4412,7 +5004,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) Copy
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceServerProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceServerProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dns_value := o.Dns.ValueStringPointer()
 	email_value := o.Email.ValueStringPointer()
@@ -4447,7 +5039,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) CopyToPango(
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceSetup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceSetup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	contentId_value := o.ContentId.ValueStringPointer()
 	hsm_value := o.Hsm.ValueStringPointer()
@@ -4474,7 +5066,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	appScope_value := o.AppScope.ValueStringPointer()
 	var automatedCorrelationEngine_entry *adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine
@@ -4484,8 +5076,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.
 		} else {
 			automatedCorrelationEngine_entry = new(adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine)
 		}
-
-		diags.Append(o.AutomatedCorrelationEngine.CopyToPango(ctx, &automatedCorrelationEngine_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AutomatedCorrelationEngine.CopyToPango(ctx, append(ancestors, o), &automatedCorrelationEngine_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4498,8 +5090,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.
 		} else {
 			customReports_entry = new(adminrole.RoleVsysWebuiMonitorCustomReports)
 		}
-
-		diags.Append(o.CustomReports.CopyToPango(ctx, &customReports_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CustomReports.CopyToPango(ctx, append(ancestors, o), &customReports_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4512,8 +5104,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.
 		} else {
 			logs_entry = new(adminrole.RoleVsysWebuiMonitorLogs)
 		}
-
-		diags.Append(o.Logs.CopyToPango(ctx, &logs_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Logs.CopyToPango(ctx, append(ancestors, o), &logs_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4525,8 +5117,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.
 		} else {
 			pdfReports_entry = new(adminrole.RoleVsysWebuiMonitorPdfReports)
 		}
-
-		diags.Append(o.PdfReports.CopyToPango(ctx, &pdfReports_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PdfReports.CopyToPango(ctx, append(ancestors, o), &pdfReports_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4549,7 +5141,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	correlatedEvents_value := o.CorrelatedEvents.ValueStringPointer()
 	correlationObjects_value := o.CorrelationObjects.ValueStringPointer()
@@ -4562,7 +5154,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitorCustomReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitorCustomReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationStatistics_value := o.ApplicationStatistics.ValueStringPointer()
 	auth_value := o.Auth.ValueStringPointer()
@@ -4615,7 +5207,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) CopyToPango
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitorLogs, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitorLogs, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_value := o.Authentication.ValueStringPointer()
 	dataFiltering_value := o.DataFiltering.ValueStringPointer()
@@ -4652,7 +5244,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitorPdfReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitorPdfReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	emailScheduler_value := o.EmailScheduler.ValueStringPointer()
 	managePdfSummary_value := o.ManagePdfSummary.ValueStringPointer()
@@ -4673,7 +5265,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var globalProtect_entry *adminrole.RoleVsysWebuiNetworkGlobalProtect
 	if o.GlobalProtect != nil {
@@ -4682,8 +5274,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) CopyToPango(ctx context.
 		} else {
 			globalProtect_entry = new(adminrole.RoleVsysWebuiNetworkGlobalProtect)
 		}
-
-		diags.Append(o.GlobalProtect.CopyToPango(ctx, &globalProtect_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalProtect.CopyToPango(ctx, append(ancestors, o), &globalProtect_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4700,7 +5292,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiNetworkGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiNetworkGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	clientlessAppGroups_value := o.ClientlessAppGroups.ValueStringPointer()
 	clientlessApps_value := o.ClientlessApps.ValueStringPointer()
@@ -4719,7 +5311,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) CopyToPango
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	addressGroups_value := o.AddressGroups.ValueStringPointer()
 	addresses_value := o.Addresses.ValueStringPointer()
@@ -4734,8 +5326,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			customObjects_entry = new(adminrole.RoleVsysWebuiObjectsCustomObjects)
 		}
-
-		diags.Append(o.CustomObjects.CopyToPango(ctx, &customObjects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CustomObjects.CopyToPango(ctx, append(ancestors, o), &customObjects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4747,8 +5339,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			decryption_entry = new(adminrole.RoleVsysWebuiObjectsDecryption)
 		}
-
-		diags.Append(o.Decryption.CopyToPango(ctx, &decryption_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Decryption.CopyToPango(ctx, append(ancestors, o), &decryption_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4763,8 +5355,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			globalProtect_entry = new(adminrole.RoleVsysWebuiObjectsGlobalProtect)
 		}
-
-		diags.Append(o.GlobalProtect.CopyToPango(ctx, &globalProtect_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalProtect.CopyToPango(ctx, append(ancestors, o), &globalProtect_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4780,8 +5372,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			sdwan_entry = new(adminrole.RoleVsysWebuiObjectsSdwan)
 		}
-
-		diags.Append(o.Sdwan.CopyToPango(ctx, &sdwan_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sdwan.CopyToPango(ctx, append(ancestors, o), &sdwan_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4794,8 +5386,8 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			securityProfiles_entry = new(adminrole.RoleVsysWebuiObjectsSecurityProfiles)
 		}
-
-		diags.Append(o.SecurityProfiles.CopyToPango(ctx, &securityProfiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SecurityProfiles.CopyToPango(ctx, append(ancestors, o), &securityProfiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4832,7 +5424,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsCustomObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsCustomObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dataPatterns_value := o.DataPatterns.ValueStringPointer()
 	spyware_value := o.Spyware.ValueStringPointer()
@@ -4849,7 +5441,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) CopyToPango
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsDecryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsDecryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	decryptionProfile_value := o.DecryptionProfile.ValueStringPointer()
 
@@ -4860,7 +5452,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hipObjects_value := o.HipObjects.ValueStringPointer()
 	hipProfiles_value := o.HipProfiles.ValueStringPointer()
@@ -4873,7 +5465,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) CopyToPango
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsSdwan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsSdwan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	sdwanDistProfile_value := o.SdwanDistProfile.ValueStringPointer()
 	sdwanErrorCorrectionProfile_value := o.SdwanErrorCorrectionProfile.ValueStringPointer()
@@ -4890,7 +5482,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsSecurityProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsSecurityProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	antiSpyware_value := o.AntiSpyware.ValueStringPointer()
 	antivirus_value := o.Antivirus.ValueStringPointer()
@@ -4919,7 +5511,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyToPa
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiOperationsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiOperations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiOperationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiOperations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	downloadCoreFiles_value := o.DownloadCoreFiles.ValueStringPointer()
 	downloadPcapFiles_value := o.DownloadPcapFiles.ValueStringPointer()
@@ -4938,7 +5530,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiOperationsObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiPoliciesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiPoliciesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationOverrideRulebase_value := o.ApplicationOverrideRulebase.ValueStringPointer()
 	authenticationRulebase_value := o.AuthenticationRulebase.ValueStringPointer()
@@ -4971,7 +5563,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiPoliciesObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiPrivacyObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiPrivacy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiPrivacyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiPrivacy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	showFullIpAddresses_value := o.ShowFullIpAddresses.ValueStringPointer()
 	showUserNamesInLogsAndReports_value := o.ShowUserNamesInLogsAndReports.ValueStringPointer()
@@ -4986,22 +5578,22 @@ func (o *AdminRoleDataSourceRoleVsysWebuiPrivacyObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysWebuiSaveObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiSave, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiSaveObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiSave, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
+	objectLevelChanges_value := o.ObjectLevelChanges.ValueStringPointer()
 	partialSave_value := o.PartialSave.ValueStringPointer()
 	saveForOtherAdmins_value := o.SaveForOtherAdmins.ValueStringPointer()
-	objectLevelChanges_value := o.ObjectLevelChanges.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleVsysWebuiSave)
 	}
+	(*obj).ObjectLevelChanges = objectLevelChanges_value
 	(*obj).PartialSave = partialSave_value
 	(*obj).SaveForOtherAdmins = saveForOtherAdmins_value
-	(*obj).ObjectLevelChanges = objectLevelChanges_value
 
 	return diags
 }
-func (o *AdminRoleDataSourceRoleVsysXmlapiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysXmlapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysXmlapiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysXmlapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	commit_value := o.Commit.ValueStringPointer()
 	config_value := o.Config.ValueStringPointer()
@@ -5029,13 +5621,12 @@ func (o *AdminRoleDataSourceRoleVsysXmlapiObject) CopyToPango(ctx context.Contex
 	return diags
 }
 
-func (o *AdminRoleDataSourceModel) CopyFromPango(ctx context.Context, obj *adminrole.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var role_object *AdminRoleDataSourceRoleObject
 	if obj.Role != nil {
 		role_object = new(AdminRoleDataSourceRoleObject)
-
-		diags.Append(role_object.CopyFromPango(ctx, obj.Role, encrypted)...)
+		diags.Append(role_object.CopyFromPango(ctx, ancestors, obj.Role, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5052,13 +5643,12 @@ func (o *AdminRoleDataSourceModel) CopyFromPango(ctx context.Context, obj *admin
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleObject) CopyFromPango(ctx context.Context, obj *adminrole.Role, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.Role, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_object *AdminRoleDataSourceRoleDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleDataSourceRoleDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5066,8 +5656,7 @@ func (o *AdminRoleDataSourceRoleObject) CopyFromPango(ctx context.Context, obj *
 	var vsys_object *AdminRoleDataSourceRoleVsysObject
 	if obj.Vsys != nil {
 		vsys_object = new(AdminRoleDataSourceRoleVsysObject)
-
-		diags.Append(vsys_object.CopyFromPango(ctx, obj.Vsys, encrypted)...)
+		diags.Append(vsys_object.CopyFromPango(ctx, append(ancestors, o), obj.Vsys, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5079,13 +5668,12 @@ func (o *AdminRoleDataSourceRoleObject) CopyFromPango(ctx context.Context, obj *
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var restapi_object *AdminRoleDataSourceRoleDeviceRestapiObject
 	if obj.Restapi != nil {
 		restapi_object = new(AdminRoleDataSourceRoleDeviceRestapiObject)
-
-		diags.Append(restapi_object.CopyFromPango(ctx, obj.Restapi, encrypted)...)
+		diags.Append(restapi_object.CopyFromPango(ctx, append(ancestors, o), obj.Restapi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5093,8 +5681,7 @@ func (o *AdminRoleDataSourceRoleDeviceObject) CopyFromPango(ctx context.Context,
 	var webui_object *AdminRoleDataSourceRoleDeviceWebuiObject
 	if obj.Webui != nil {
 		webui_object = new(AdminRoleDataSourceRoleDeviceWebuiObject)
-
-		diags.Append(webui_object.CopyFromPango(ctx, obj.Webui, encrypted)...)
+		diags.Append(webui_object.CopyFromPango(ctx, append(ancestors, o), obj.Webui, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5102,8 +5689,7 @@ func (o *AdminRoleDataSourceRoleDeviceObject) CopyFromPango(ctx context.Context,
 	var xmlapi_object *AdminRoleDataSourceRoleDeviceXmlapiObject
 	if obj.Xmlapi != nil {
 		xmlapi_object = new(AdminRoleDataSourceRoleDeviceXmlapiObject)
-
-		diags.Append(xmlapi_object.CopyFromPango(ctx, obj.Xmlapi, encrypted)...)
+		diags.Append(xmlapi_object.CopyFromPango(ctx, append(ancestors, o), obj.Xmlapi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5121,13 +5707,12 @@ func (o *AdminRoleDataSourceRoleDeviceObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_object *AdminRoleDataSourceRoleDeviceRestapiDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleDataSourceRoleDeviceRestapiDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5135,8 +5720,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyFromPango(ctx context.C
 	var network_object *AdminRoleDataSourceRoleDeviceRestapiNetworkObject
 	if obj.Network != nil {
 		network_object = new(AdminRoleDataSourceRoleDeviceRestapiNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, append(ancestors, o), obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5144,8 +5728,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyFromPango(ctx context.C
 	var objects_object *AdminRoleDataSourceRoleDeviceRestapiObjectsObject
 	if obj.Objects != nil {
 		objects_object = new(AdminRoleDataSourceRoleDeviceRestapiObjectsObject)
-
-		diags.Append(objects_object.CopyFromPango(ctx, obj.Objects, encrypted)...)
+		diags.Append(objects_object.CopyFromPango(ctx, append(ancestors, o), obj.Objects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5153,8 +5736,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyFromPango(ctx context.C
 	var policies_object *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject
 	if obj.Policies != nil {
 		policies_object = new(AdminRoleDataSourceRoleDeviceRestapiPoliciesObject)
-
-		diags.Append(policies_object.CopyFromPango(ctx, obj.Policies, encrypted)...)
+		diags.Append(policies_object.CopyFromPango(ctx, append(ancestors, o), obj.Policies, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5162,8 +5744,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyFromPango(ctx context.C
 	var system_object *AdminRoleDataSourceRoleDeviceRestapiSystemObject
 	if obj.System != nil {
 		system_object = new(AdminRoleDataSourceRoleDeviceRestapiSystemObject)
-
-		diags.Append(system_object.CopyFromPango(ctx, obj.System, encrypted)...)
+		diags.Append(system_object.CopyFromPango(ctx, append(ancestors, o), obj.System, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5178,7 +5759,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceRestapiDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var emailServerProfiles_value types.String
@@ -5220,7 +5801,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiDeviceObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceRestapiNetworkObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var aggregateEthernetInterfaces_value types.String
@@ -5402,7 +5983,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiNetworkObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceRestapiObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var addressGroups_value types.String
@@ -5599,7 +6180,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiObjectsObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationOverrideRules_value types.String
@@ -5661,7 +6242,7 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiPoliciesObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceRestapiSystemObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiSystem, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceRestapiSystemObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiSystem, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var configuration_value types.String
@@ -5673,13 +6254,12 @@ func (o *AdminRoleDataSourceRoleDeviceRestapiSystemObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebui, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebui, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var commit_object *AdminRoleDataSourceRoleDeviceWebuiCommitObject
 	if obj.Commit != nil {
 		commit_object = new(AdminRoleDataSourceRoleDeviceWebuiCommitObject)
-
-		diags.Append(commit_object.CopyFromPango(ctx, obj.Commit, encrypted)...)
+		diags.Append(commit_object.CopyFromPango(ctx, append(ancestors, o), obj.Commit, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5687,8 +6267,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	var device_object *AdminRoleDataSourceRoleDeviceWebuiDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleDataSourceRoleDeviceWebuiDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5696,8 +6275,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	var global_object *AdminRoleDataSourceRoleDeviceWebuiGlobalObject
 	if obj.Global != nil {
 		global_object = new(AdminRoleDataSourceRoleDeviceWebuiGlobalObject)
-
-		diags.Append(global_object.CopyFromPango(ctx, obj.Global, encrypted)...)
+		diags.Append(global_object.CopyFromPango(ctx, append(ancestors, o), obj.Global, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5705,8 +6283,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	var monitor_object *AdminRoleDataSourceRoleDeviceWebuiMonitorObject
 	if obj.Monitor != nil {
 		monitor_object = new(AdminRoleDataSourceRoleDeviceWebuiMonitorObject)
-
-		diags.Append(monitor_object.CopyFromPango(ctx, obj.Monitor, encrypted)...)
+		diags.Append(monitor_object.CopyFromPango(ctx, append(ancestors, o), obj.Monitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5714,8 +6291,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	var network_object *AdminRoleDataSourceRoleDeviceWebuiNetworkObject
 	if obj.Network != nil {
 		network_object = new(AdminRoleDataSourceRoleDeviceWebuiNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, append(ancestors, o), obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5723,8 +6299,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	var objects_object *AdminRoleDataSourceRoleDeviceWebuiObjectsObject
 	if obj.Objects != nil {
 		objects_object = new(AdminRoleDataSourceRoleDeviceWebuiObjectsObject)
-
-		diags.Append(objects_object.CopyFromPango(ctx, obj.Objects, encrypted)...)
+		diags.Append(objects_object.CopyFromPango(ctx, append(ancestors, o), obj.Objects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5732,8 +6307,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	var operations_object *AdminRoleDataSourceRoleDeviceWebuiOperationsObject
 	if obj.Operations != nil {
 		operations_object = new(AdminRoleDataSourceRoleDeviceWebuiOperationsObject)
-
-		diags.Append(operations_object.CopyFromPango(ctx, obj.Operations, encrypted)...)
+		diags.Append(operations_object.CopyFromPango(ctx, append(ancestors, o), obj.Operations, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5741,8 +6315,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	var policies_object *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject
 	if obj.Policies != nil {
 		policies_object = new(AdminRoleDataSourceRoleDeviceWebuiPoliciesObject)
-
-		diags.Append(policies_object.CopyFromPango(ctx, obj.Policies, encrypted)...)
+		diags.Append(policies_object.CopyFromPango(ctx, append(ancestors, o), obj.Policies, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5750,8 +6323,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	var privacy_object *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject
 	if obj.Privacy != nil {
 		privacy_object = new(AdminRoleDataSourceRoleDeviceWebuiPrivacyObject)
-
-		diags.Append(privacy_object.CopyFromPango(ctx, obj.Privacy, encrypted)...)
+		diags.Append(privacy_object.CopyFromPango(ctx, append(ancestors, o), obj.Privacy, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5759,8 +6331,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	var save_object *AdminRoleDataSourceRoleDeviceWebuiSaveObject
 	if obj.Save != nil {
 		save_object = new(AdminRoleDataSourceRoleDeviceWebuiSaveObject)
-
-		diags.Append(save_object.CopyFromPango(ctx, obj.Save, encrypted)...)
+		diags.Append(save_object.CopyFromPango(ctx, append(ancestors, o), obj.Save, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5800,7 +6371,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiCommitObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiCommit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiCommitObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiCommit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var commitForOtherAdmins_value types.String
@@ -5822,13 +6393,12 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiCommitObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificateManagement_object *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject
 	if obj.CertificateManagement != nil {
 		certificateManagement_object = new(AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject)
-
-		diags.Append(certificateManagement_object.CopyFromPango(ctx, obj.CertificateManagement, encrypted)...)
+		diags.Append(certificateManagement_object.CopyFromPango(ctx, append(ancestors, o), obj.CertificateManagement, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5836,8 +6406,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx conte
 	var localUserDatabase_object *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject
 	if obj.LocalUserDatabase != nil {
 		localUserDatabase_object = new(AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject)
-
-		diags.Append(localUserDatabase_object.CopyFromPango(ctx, obj.LocalUserDatabase, encrypted)...)
+		diags.Append(localUserDatabase_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalUserDatabase, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5845,8 +6414,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx conte
 	var logSettings_object *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject
 	if obj.LogSettings != nil {
 		logSettings_object = new(AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject)
-
-		diags.Append(logSettings_object.CopyFromPango(ctx, obj.LogSettings, encrypted)...)
+		diags.Append(logSettings_object.CopyFromPango(ctx, append(ancestors, o), obj.LogSettings, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5854,8 +6422,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx conte
 	var policyRecommendations_object *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject
 	if obj.PolicyRecommendations != nil {
 		policyRecommendations_object = new(AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject)
-
-		diags.Append(policyRecommendations_object.CopyFromPango(ctx, obj.PolicyRecommendations, encrypted)...)
+		diags.Append(policyRecommendations_object.CopyFromPango(ctx, append(ancestors, o), obj.PolicyRecommendations, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5863,8 +6430,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx conte
 	var serverProfile_object *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject
 	if obj.ServerProfile != nil {
 		serverProfile_object = new(AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject)
-
-		diags.Append(serverProfile_object.CopyFromPango(ctx, obj.ServerProfile, encrypted)...)
+		diags.Append(serverProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.ServerProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5872,8 +6438,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx conte
 	var setup_object *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject
 	if obj.Setup != nil {
 		setup_object = new(AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject)
-
-		diags.Append(setup_object.CopyFromPango(ctx, obj.Setup, encrypted)...)
+		diags.Append(setup_object.CopyFromPango(ctx, append(ancestors, o), obj.Setup, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5914,6 +6479,10 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx conte
 	var deviceQuarantine_value types.String
 	if obj.DeviceQuarantine != nil {
 		deviceQuarantine_value = types.StringValue(*obj.DeviceQuarantine)
+	}
+	var dhcpSyslogServer_value types.String
+	if obj.DhcpSyslogServer != nil {
+		dhcpSyslogServer_value = types.StringValue(*obj.DhcpSyslogServer)
 	}
 	var dynamicUpdates_value types.String
 	if obj.DynamicUpdates != nil {
@@ -5975,10 +6544,6 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx conte
 	if obj.VmInfoSource != nil {
 		vmInfoSource_value = types.StringValue(*obj.VmInfoSource)
 	}
-	var dhcpSyslogServer_value types.String
-	if obj.DhcpSyslogServer != nil {
-		dhcpSyslogServer_value = types.StringValue(*obj.DhcpSyslogServer)
-	}
 	o.AccessDomain = accessDomain_value
 	o.AdminRoles = adminRoles_value
 	o.Administrators = administrators_value
@@ -5989,6 +6554,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx conte
 	o.ConfigAudit = configAudit_value
 	o.DataRedistribution = dataRedistribution_value
 	o.DeviceQuarantine = deviceQuarantine_value
+	o.DhcpSyslogServer = dhcpSyslogServer_value
 	o.DynamicUpdates = dynamicUpdates_value
 	o.GlobalProtectClient = globalProtectClient_value
 	o.HighAvailability = highAvailability_value
@@ -6009,12 +6575,11 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx conte
 	o.UserIdentification = userIdentification_value
 	o.VirtualSystems = virtualSystems_value
 	o.VmInfoSource = vmInfoSource_value
-	o.DhcpSyslogServer = dhcpSyslogServer_value
 
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceCertificateManagement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceCertificateManagement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var certificateProfile_value types.String
@@ -6056,7 +6621,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceCertificateManagementObject) Co
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceLocalUserDatabase, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceLocalUserDatabase, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var userGroups_value types.String
@@ -6073,7 +6638,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyFr
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceLogSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceLogSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ccAlarm_value types.String
@@ -6125,7 +6690,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceLogSettingsObject) CopyFromPang
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDevicePolicyRecommendations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDevicePolicyRecommendations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var iot_value types.String
@@ -6142,7 +6707,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDevicePolicyRecommendationsObject) Co
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceServerProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceServerProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var dns_value types.String
@@ -6214,7 +6779,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceServerProfileObject) CopyFromPa
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceSetup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceSetup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var contentId_value types.String
@@ -6266,7 +6831,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiDeviceSetupObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiGlobalObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiGlobal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiGlobalObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiGlobal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var systemAlarms_value types.String
@@ -6278,13 +6843,12 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiGlobalObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var automatedCorrelationEngine_object *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject
 	if obj.AutomatedCorrelationEngine != nil {
 		automatedCorrelationEngine_object = new(AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject)
-
-		diags.Append(automatedCorrelationEngine_object.CopyFromPango(ctx, obj.AutomatedCorrelationEngine, encrypted)...)
+		diags.Append(automatedCorrelationEngine_object.CopyFromPango(ctx, append(ancestors, o), obj.AutomatedCorrelationEngine, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6292,8 +6856,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx cont
 	var customReports_object *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject
 	if obj.CustomReports != nil {
 		customReports_object = new(AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject)
-
-		diags.Append(customReports_object.CopyFromPango(ctx, obj.CustomReports, encrypted)...)
+		diags.Append(customReports_object.CopyFromPango(ctx, append(ancestors, o), obj.CustomReports, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6301,8 +6864,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx cont
 	var logs_object *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject
 	if obj.Logs != nil {
 		logs_object = new(AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject)
-
-		diags.Append(logs_object.CopyFromPango(ctx, obj.Logs, encrypted)...)
+		diags.Append(logs_object.CopyFromPango(ctx, append(ancestors, o), obj.Logs, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6310,8 +6872,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx cont
 	var pdfReports_object *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject
 	if obj.PdfReports != nil {
 		pdfReports_object = new(AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject)
-
-		diags.Append(pdfReports_object.CopyFromPango(ctx, obj.PdfReports, encrypted)...)
+		diags.Append(pdfReports_object.CopyFromPango(ctx, append(ancestors, o), obj.PdfReports, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6390,7 +6951,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var correlatedEvents_value types.String
@@ -6407,7 +6968,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObje
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitorCustomReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitorCustomReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationStatistics_value types.String
@@ -6524,7 +7085,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorCustomReportsObject) CopyFromP
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitorLogs, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitorLogs, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var alarm_value types.String
@@ -6616,7 +7177,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorLogsObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitorPdfReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitorPdfReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var emailScheduler_value types.String
@@ -6653,13 +7214,12 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiMonitorPdfReportsObject) CopyFromPang
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var globalProtect_object *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject
 	if obj.GlobalProtect != nil {
 		globalProtect_object = new(AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject)
-
-		diags.Append(globalProtect_object.CopyFromPango(ctx, obj.GlobalProtect, encrypted)...)
+		diags.Append(globalProtect_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtect, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6667,8 +7227,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx cont
 	var networkProfiles_object *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject
 	if obj.NetworkProfiles != nil {
 		networkProfiles_object = new(AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject)
-
-		diags.Append(networkProfiles_object.CopyFromPango(ctx, obj.NetworkProfiles, encrypted)...)
+		diags.Append(networkProfiles_object.CopyFromPango(ctx, append(ancestors, o), obj.NetworkProfiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6676,8 +7235,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx cont
 	var routing_object *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject
 	if obj.Routing != nil {
 		routing_object = new(AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject)
-
-		diags.Append(routing_object.CopyFromPango(ctx, obj.Routing, encrypted)...)
+		diags.Append(routing_object.CopyFromPango(ctx, append(ancestors, o), obj.Routing, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6715,6 +7273,10 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx cont
 	if obj.SdwanInterfaceProfile != nil {
 		sdwanInterfaceProfile_value = types.StringValue(*obj.SdwanInterfaceProfile)
 	}
+	var secureWebGateway_value types.String
+	if obj.SecureWebGateway != nil {
+		secureWebGateway_value = types.StringValue(*obj.SecureWebGateway)
+	}
 	var virtualRouters_value types.String
 	if obj.VirtualRouters != nil {
 		virtualRouters_value = types.StringValue(*obj.VirtualRouters)
@@ -6731,10 +7293,6 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx cont
 	if obj.Zones != nil {
 		zones_value = types.StringValue(*obj.Zones)
 	}
-	var secureWebGateway_value types.String
-	if obj.SecureWebGateway != nil {
-		secureWebGateway_value = types.StringValue(*obj.SecureWebGateway)
-	}
 	o.Dhcp = dhcp_value
 	o.DnsProxy = dnsProxy_value
 	o.GlobalProtect = globalProtect_object
@@ -6746,16 +7304,16 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx cont
 	o.Qos = qos_value
 	o.Routing = routing_object
 	o.SdwanInterfaceProfile = sdwanInterfaceProfile_value
+	o.SecureWebGateway = secureWebGateway_value
 	o.VirtualRouters = virtualRouters_value
 	o.VirtualWires = virtualWires_value
 	o.Vlans = vlans_value
 	o.Zones = zones_value
-	o.SecureWebGateway = secureWebGateway_value
 
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetworkGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetworkGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var clientlessAppGroups_value types.String
@@ -6787,7 +7345,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyFromP
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetworkNetworkProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetworkNetworkProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var bfdProfile_value types.String
@@ -6844,13 +7402,12 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyFro
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetworkRouting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetworkRouting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var routingProfiles_object *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject
 	if obj.RoutingProfiles != nil {
 		routingProfiles_object = new(AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject)
-
-		diags.Append(routingProfiles_object.CopyFromPango(ctx, obj.RoutingProfiles, encrypted)...)
+		diags.Append(routingProfiles_object.CopyFromPango(ctx, append(ancestors, o), obj.RoutingProfiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6866,7 +7423,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingObject) CopyFromPango(c
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var bfd_value types.String
@@ -6908,13 +7465,12 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) 
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var customObjects_object *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject
 	if obj.CustomObjects != nil {
 		customObjects_object = new(AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject)
-
-		diags.Append(customObjects_object.CopyFromPango(ctx, obj.CustomObjects, encrypted)...)
+		diags.Append(customObjects_object.CopyFromPango(ctx, append(ancestors, o), obj.CustomObjects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6922,8 +7478,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx cont
 	var decryption_object *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject
 	if obj.Decryption != nil {
 		decryption_object = new(AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject)
-
-		diags.Append(decryption_object.CopyFromPango(ctx, obj.Decryption, encrypted)...)
+		diags.Append(decryption_object.CopyFromPango(ctx, append(ancestors, o), obj.Decryption, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6931,8 +7486,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx cont
 	var globalProtect_object *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject
 	if obj.GlobalProtect != nil {
 		globalProtect_object = new(AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject)
-
-		diags.Append(globalProtect_object.CopyFromPango(ctx, obj.GlobalProtect, encrypted)...)
+		diags.Append(globalProtect_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtect, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6940,8 +7494,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx cont
 	var sdwan_object *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject
 	if obj.Sdwan != nil {
 		sdwan_object = new(AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject)
-
-		diags.Append(sdwan_object.CopyFromPango(ctx, obj.Sdwan, encrypted)...)
+		diags.Append(sdwan_object.CopyFromPango(ctx, append(ancestors, o), obj.Sdwan, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6949,8 +7502,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx cont
 	var securityProfiles_object *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject
 	if obj.SecurityProfiles != nil {
 		securityProfiles_object = new(AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject)
-
-		diags.Append(securityProfiles_object.CopyFromPango(ctx, obj.SecurityProfiles, encrypted)...)
+		diags.Append(securityProfiles_object.CopyFromPango(ctx, append(ancestors, o), obj.SecurityProfiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7050,7 +7602,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsCustomObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsCustomObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var dataPatterns_value types.String
@@ -7077,7 +7629,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyFromP
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsDecryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsDecryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var decryptionProfile_value types.String
@@ -7089,7 +7641,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsDecryptionObject) CopyFromPang
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hipObjects_value types.String
@@ -7106,7 +7658,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyFromP
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsSdwan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsSdwan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var sdwanDistProfile_value types.String
@@ -7133,7 +7685,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSdwanObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsSecurityProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsSecurityProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var antiSpyware_value types.String
@@ -7190,7 +7742,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyFr
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiOperationsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiOperations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiOperationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiOperations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var downloadCoreFiles_value types.String
@@ -7222,7 +7774,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiOperationsObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationOverrideRulebase_value types.String
@@ -7289,7 +7841,7 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiPoliciesObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiPrivacy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiPrivacy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var showFullIpAddresses_value types.String
@@ -7311,9 +7863,13 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiPrivacyObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceWebuiSaveObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiSave, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceWebuiSaveObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiSave, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var objectLevelChanges_value types.String
+	if obj.ObjectLevelChanges != nil {
+		objectLevelChanges_value = types.StringValue(*obj.ObjectLevelChanges)
+	}
 	var partialSave_value types.String
 	if obj.PartialSave != nil {
 		partialSave_value = types.StringValue(*obj.PartialSave)
@@ -7322,18 +7878,14 @@ func (o *AdminRoleDataSourceRoleDeviceWebuiSaveObject) CopyFromPango(ctx context
 	if obj.SaveForOtherAdmins != nil {
 		saveForOtherAdmins_value = types.StringValue(*obj.SaveForOtherAdmins)
 	}
-	var objectLevelChanges_value types.String
-	if obj.ObjectLevelChanges != nil {
-		objectLevelChanges_value = types.StringValue(*obj.ObjectLevelChanges)
-	}
+	o.ObjectLevelChanges = objectLevelChanges_value
 	o.PartialSave = partialSave_value
 	o.SaveForOtherAdmins = saveForOtherAdmins_value
-	o.ObjectLevelChanges = objectLevelChanges_value
 
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleDeviceXmlapiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceXmlapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleDeviceXmlapiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceXmlapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var commit_value types.String
@@ -7385,13 +7937,12 @@ func (o *AdminRoleDataSourceRoleDeviceXmlapiObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var restapi_object *AdminRoleDataSourceRoleVsysRestapiObject
 	if obj.Restapi != nil {
 		restapi_object = new(AdminRoleDataSourceRoleVsysRestapiObject)
-
-		diags.Append(restapi_object.CopyFromPango(ctx, obj.Restapi, encrypted)...)
+		diags.Append(restapi_object.CopyFromPango(ctx, append(ancestors, o), obj.Restapi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7399,8 +7950,7 @@ func (o *AdminRoleDataSourceRoleVsysObject) CopyFromPango(ctx context.Context, o
 	var webui_object *AdminRoleDataSourceRoleVsysWebuiObject
 	if obj.Webui != nil {
 		webui_object = new(AdminRoleDataSourceRoleVsysWebuiObject)
-
-		diags.Append(webui_object.CopyFromPango(ctx, obj.Webui, encrypted)...)
+		diags.Append(webui_object.CopyFromPango(ctx, append(ancestors, o), obj.Webui, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7408,8 +7958,7 @@ func (o *AdminRoleDataSourceRoleVsysObject) CopyFromPango(ctx context.Context, o
 	var xmlapi_object *AdminRoleDataSourceRoleVsysXmlapiObject
 	if obj.Xmlapi != nil {
 		xmlapi_object = new(AdminRoleDataSourceRoleVsysXmlapiObject)
-
-		diags.Append(xmlapi_object.CopyFromPango(ctx, obj.Xmlapi, encrypted)...)
+		diags.Append(xmlapi_object.CopyFromPango(ctx, append(ancestors, o), obj.Xmlapi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7427,13 +7976,12 @@ func (o *AdminRoleDataSourceRoleVsysObject) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_object *AdminRoleDataSourceRoleVsysRestapiDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleDataSourceRoleVsysRestapiDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7441,8 +7989,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyFromPango(ctx context.Con
 	var network_object *AdminRoleDataSourceRoleVsysRestapiNetworkObject
 	if obj.Network != nil {
 		network_object = new(AdminRoleDataSourceRoleVsysRestapiNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, append(ancestors, o), obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7450,8 +7997,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyFromPango(ctx context.Con
 	var objects_object *AdminRoleDataSourceRoleVsysRestapiObjectsObject
 	if obj.Objects != nil {
 		objects_object = new(AdminRoleDataSourceRoleVsysRestapiObjectsObject)
-
-		diags.Append(objects_object.CopyFromPango(ctx, obj.Objects, encrypted)...)
+		diags.Append(objects_object.CopyFromPango(ctx, append(ancestors, o), obj.Objects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7459,8 +8005,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyFromPango(ctx context.Con
 	var policies_object *AdminRoleDataSourceRoleVsysRestapiPoliciesObject
 	if obj.Policies != nil {
 		policies_object = new(AdminRoleDataSourceRoleVsysRestapiPoliciesObject)
-
-		diags.Append(policies_object.CopyFromPango(ctx, obj.Policies, encrypted)...)
+		diags.Append(policies_object.CopyFromPango(ctx, append(ancestors, o), obj.Policies, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7468,8 +8013,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyFromPango(ctx context.Con
 	var system_object *AdminRoleDataSourceRoleVsysRestapiSystemObject
 	if obj.System != nil {
 		system_object = new(AdminRoleDataSourceRoleVsysRestapiSystemObject)
-
-		diags.Append(system_object.CopyFromPango(ctx, obj.System, encrypted)...)
+		diags.Append(system_object.CopyFromPango(ctx, append(ancestors, o), obj.System, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7484,7 +8028,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysRestapiDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var emailServerProfiles_value types.String
@@ -7526,7 +8070,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiDeviceObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysRestapiNetworkObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var globalprotectClientlessAppGroups_value types.String
@@ -7549,26 +8093,26 @@ func (o *AdminRoleDataSourceRoleVsysRestapiNetworkObject) CopyFromPango(ctx cont
 	if obj.GlobalprotectPortals != nil {
 		globalprotectPortals_value = types.StringValue(*obj.GlobalprotectPortals)
 	}
-	var zones_value types.String
-	if obj.Zones != nil {
-		zones_value = types.StringValue(*obj.Zones)
-	}
 	var sdwanInterfaceProfiles_value types.String
 	if obj.SdwanInterfaceProfiles != nil {
 		sdwanInterfaceProfiles_value = types.StringValue(*obj.SdwanInterfaceProfiles)
+	}
+	var zones_value types.String
+	if obj.Zones != nil {
+		zones_value = types.StringValue(*obj.Zones)
 	}
 	o.GlobalprotectClientlessAppGroups = globalprotectClientlessAppGroups_value
 	o.GlobalprotectClientlessApps = globalprotectClientlessApps_value
 	o.GlobalprotectGateways = globalprotectGateways_value
 	o.GlobalprotectMdmServers = globalprotectMdmServers_value
 	o.GlobalprotectPortals = globalprotectPortals_value
-	o.Zones = zones_value
 	o.SdwanInterfaceProfiles = sdwanInterfaceProfiles_value
+	o.Zones = zones_value
 
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysRestapiObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var addressGroups_value types.String
@@ -7765,7 +8309,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiObjectsObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysRestapiPoliciesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiPoliciesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationOverrideRules_value types.String
@@ -7827,7 +8371,7 @@ func (o *AdminRoleDataSourceRoleVsysRestapiPoliciesObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysRestapiSystemObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiSystem, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysRestapiSystemObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiSystem, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var configuration_value types.String
@@ -7839,13 +8383,12 @@ func (o *AdminRoleDataSourceRoleVsysRestapiSystemObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebui, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebui, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var commit_object *AdminRoleDataSourceRoleVsysWebuiCommitObject
 	if obj.Commit != nil {
 		commit_object = new(AdminRoleDataSourceRoleVsysWebuiCommitObject)
-
-		diags.Append(commit_object.CopyFromPango(ctx, obj.Commit, encrypted)...)
+		diags.Append(commit_object.CopyFromPango(ctx, append(ancestors, o), obj.Commit, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7853,8 +8396,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Conte
 	var device_object *AdminRoleDataSourceRoleVsysWebuiDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleDataSourceRoleVsysWebuiDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7862,8 +8404,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Conte
 	var monitor_object *AdminRoleDataSourceRoleVsysWebuiMonitorObject
 	if obj.Monitor != nil {
 		monitor_object = new(AdminRoleDataSourceRoleVsysWebuiMonitorObject)
-
-		diags.Append(monitor_object.CopyFromPango(ctx, obj.Monitor, encrypted)...)
+		diags.Append(monitor_object.CopyFromPango(ctx, append(ancestors, o), obj.Monitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7871,8 +8412,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Conte
 	var network_object *AdminRoleDataSourceRoleVsysWebuiNetworkObject
 	if obj.Network != nil {
 		network_object = new(AdminRoleDataSourceRoleVsysWebuiNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, append(ancestors, o), obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7880,8 +8420,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Conte
 	var objects_object *AdminRoleDataSourceRoleVsysWebuiObjectsObject
 	if obj.Objects != nil {
 		objects_object = new(AdminRoleDataSourceRoleVsysWebuiObjectsObject)
-
-		diags.Append(objects_object.CopyFromPango(ctx, obj.Objects, encrypted)...)
+		diags.Append(objects_object.CopyFromPango(ctx, append(ancestors, o), obj.Objects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7889,8 +8428,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Conte
 	var operations_object *AdminRoleDataSourceRoleVsysWebuiOperationsObject
 	if obj.Operations != nil {
 		operations_object = new(AdminRoleDataSourceRoleVsysWebuiOperationsObject)
-
-		diags.Append(operations_object.CopyFromPango(ctx, obj.Operations, encrypted)...)
+		diags.Append(operations_object.CopyFromPango(ctx, append(ancestors, o), obj.Operations, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7898,8 +8436,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Conte
 	var policies_object *AdminRoleDataSourceRoleVsysWebuiPoliciesObject
 	if obj.Policies != nil {
 		policies_object = new(AdminRoleDataSourceRoleVsysWebuiPoliciesObject)
-
-		diags.Append(policies_object.CopyFromPango(ctx, obj.Policies, encrypted)...)
+		diags.Append(policies_object.CopyFromPango(ctx, append(ancestors, o), obj.Policies, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7907,8 +8444,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Conte
 	var privacy_object *AdminRoleDataSourceRoleVsysWebuiPrivacyObject
 	if obj.Privacy != nil {
 		privacy_object = new(AdminRoleDataSourceRoleVsysWebuiPrivacyObject)
-
-		diags.Append(privacy_object.CopyFromPango(ctx, obj.Privacy, encrypted)...)
+		diags.Append(privacy_object.CopyFromPango(ctx, append(ancestors, o), obj.Privacy, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7916,8 +8452,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Conte
 	var save_object *AdminRoleDataSourceRoleVsysWebuiSaveObject
 	if obj.Save != nil {
 		save_object = new(AdminRoleDataSourceRoleVsysWebuiSaveObject)
-
-		diags.Append(save_object.CopyFromPango(ctx, obj.Save, encrypted)...)
+		diags.Append(save_object.CopyFromPango(ctx, append(ancestors, o), obj.Save, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7956,7 +8491,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiCommitObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiCommit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiCommitObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiCommit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var commitForOtherAdmins_value types.String
@@ -7973,13 +8508,12 @@ func (o *AdminRoleDataSourceRoleVsysWebuiCommitObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificateManagement_object *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject
 	if obj.CertificateManagement != nil {
 		certificateManagement_object = new(AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject)
-
-		diags.Append(certificateManagement_object.CopyFromPango(ctx, obj.CertificateManagement, encrypted)...)
+		diags.Append(certificateManagement_object.CopyFromPango(ctx, append(ancestors, o), obj.CertificateManagement, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7987,8 +8521,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context
 	var localUserDatabase_object *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject
 	if obj.LocalUserDatabase != nil {
 		localUserDatabase_object = new(AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject)
-
-		diags.Append(localUserDatabase_object.CopyFromPango(ctx, obj.LocalUserDatabase, encrypted)...)
+		diags.Append(localUserDatabase_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalUserDatabase, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7996,8 +8529,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context
 	var logSettings_object *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject
 	if obj.LogSettings != nil {
 		logSettings_object = new(AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject)
-
-		diags.Append(logSettings_object.CopyFromPango(ctx, obj.LogSettings, encrypted)...)
+		diags.Append(logSettings_object.CopyFromPango(ctx, append(ancestors, o), obj.LogSettings, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8005,8 +8537,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context
 	var policyRecommendations_object *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject
 	if obj.PolicyRecommendations != nil {
 		policyRecommendations_object = new(AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject)
-
-		diags.Append(policyRecommendations_object.CopyFromPango(ctx, obj.PolicyRecommendations, encrypted)...)
+		diags.Append(policyRecommendations_object.CopyFromPango(ctx, append(ancestors, o), obj.PolicyRecommendations, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8014,8 +8545,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context
 	var serverProfile_object *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject
 	if obj.ServerProfile != nil {
 		serverProfile_object = new(AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject)
-
-		diags.Append(serverProfile_object.CopyFromPango(ctx, obj.ServerProfile, encrypted)...)
+		diags.Append(serverProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.ServerProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8023,8 +8553,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context
 	var setup_object *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject
 	if obj.Setup != nil {
 		setup_object = new(AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject)
-
-		diags.Append(setup_object.CopyFromPango(ctx, obj.Setup, encrypted)...)
+		diags.Append(setup_object.CopyFromPango(ctx, append(ancestors, o), obj.Setup, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8054,6 +8583,10 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context
 	if obj.DeviceQuarantine != nil {
 		deviceQuarantine_value = types.StringValue(*obj.DeviceQuarantine)
 	}
+	var dhcpSyslogServer_value types.String
+	if obj.DhcpSyslogServer != nil {
+		dhcpSyslogServer_value = types.StringValue(*obj.DhcpSyslogServer)
+	}
 	var troubleshooting_value types.String
 	if obj.Troubleshooting != nil {
 		troubleshooting_value = types.StringValue(*obj.Troubleshooting)
@@ -8066,10 +8599,6 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context
 	if obj.VmInfoSource != nil {
 		vmInfoSource_value = types.StringValue(*obj.VmInfoSource)
 	}
-	var dhcpSyslogServer_value types.String
-	if obj.DhcpSyslogServer != nil {
-		dhcpSyslogServer_value = types.StringValue(*obj.DhcpSyslogServer)
-	}
 	o.Administrators = administrators_value
 	o.AuthenticationProfile = authenticationProfile_value
 	o.AuthenticationSequence = authenticationSequence_value
@@ -8077,6 +8606,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context
 	o.CertificateManagement = certificateManagement_object
 	o.DataRedistribution = dataRedistribution_value
 	o.DeviceQuarantine = deviceQuarantine_value
+	o.DhcpSyslogServer = dhcpSyslogServer_value
 	o.LocalUserDatabase = localUserDatabase_object
 	o.LogSettings = logSettings_object
 	o.PolicyRecommendations = policyRecommendations_object
@@ -8085,12 +8615,11 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context
 	o.Troubleshooting = troubleshooting_value
 	o.UserIdentification = userIdentification_value
 	o.VmInfoSource = vmInfoSource_value
-	o.DhcpSyslogServer = dhcpSyslogServer_value
 
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceCertificateManagement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceCertificateManagement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var certificateProfile_value types.String
@@ -8132,7 +8661,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceCertificateManagementObject) Copy
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceLocalUserDatabase, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceLocalUserDatabase, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var userGroups_value types.String
@@ -8149,7 +8678,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyFrom
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceLogSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceLogSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var config_value types.String
@@ -8191,7 +8720,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsObject) CopyFromPango(
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDevicePolicyRecommendations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDevicePolicyRecommendations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var iot_value types.String
@@ -8208,7 +8737,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDevicePolicyRecommendationsObject) Copy
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceServerProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceServerProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var dns_value types.String
@@ -8280,7 +8809,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceServerProfileObject) CopyFromPang
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceSetup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceSetup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var contentId_value types.String
@@ -8332,13 +8861,12 @@ func (o *AdminRoleDataSourceRoleVsysWebuiDeviceSetupObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var automatedCorrelationEngine_object *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject
 	if obj.AutomatedCorrelationEngine != nil {
 		automatedCorrelationEngine_object = new(AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject)
-
-		diags.Append(automatedCorrelationEngine_object.CopyFromPango(ctx, obj.AutomatedCorrelationEngine, encrypted)...)
+		diags.Append(automatedCorrelationEngine_object.CopyFromPango(ctx, append(ancestors, o), obj.AutomatedCorrelationEngine, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8346,8 +8874,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx contex
 	var customReports_object *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject
 	if obj.CustomReports != nil {
 		customReports_object = new(AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject)
-
-		diags.Append(customReports_object.CopyFromPango(ctx, obj.CustomReports, encrypted)...)
+		diags.Append(customReports_object.CopyFromPango(ctx, append(ancestors, o), obj.CustomReports, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8355,8 +8882,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx contex
 	var logs_object *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject
 	if obj.Logs != nil {
 		logs_object = new(AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject)
-
-		diags.Append(logs_object.CopyFromPango(ctx, obj.Logs, encrypted)...)
+		diags.Append(logs_object.CopyFromPango(ctx, append(ancestors, o), obj.Logs, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8364,8 +8890,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx contex
 	var pdfReports_object *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject
 	if obj.PdfReports != nil {
 		pdfReports_object = new(AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject)
-
-		diags.Append(pdfReports_object.CopyFromPango(ctx, obj.PdfReports, encrypted)...)
+		diags.Append(pdfReports_object.CopyFromPango(ctx, append(ancestors, o), obj.PdfReports, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8404,7 +8929,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var correlatedEvents_value types.String
@@ -8421,7 +8946,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitorCustomReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitorCustomReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationStatistics_value types.String
@@ -8538,7 +9063,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorCustomReportsObject) CopyFromPan
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitorLogs, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitorLogs, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authentication_value types.String
@@ -8615,7 +9140,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorLogsObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitorPdfReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitorPdfReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var emailScheduler_value types.String
@@ -8652,13 +9177,12 @@ func (o *AdminRoleDataSourceRoleVsysWebuiMonitorPdfReportsObject) CopyFromPango(
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var globalProtect_object *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject
 	if obj.GlobalProtect != nil {
 		globalProtect_object = new(AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject)
-
-		diags.Append(globalProtect_object.CopyFromPango(ctx, obj.GlobalProtect, encrypted)...)
+		diags.Append(globalProtect_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtect, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8679,7 +9203,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiNetworkObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiNetworkGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiNetworkGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var clientlessAppGroups_value types.String
@@ -8711,13 +9235,12 @@ func (o *AdminRoleDataSourceRoleVsysWebuiNetworkGlobalProtectObject) CopyFromPan
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var customObjects_object *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject
 	if obj.CustomObjects != nil {
 		customObjects_object = new(AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject)
-
-		diags.Append(customObjects_object.CopyFromPango(ctx, obj.CustomObjects, encrypted)...)
+		diags.Append(customObjects_object.CopyFromPango(ctx, append(ancestors, o), obj.CustomObjects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8725,8 +9248,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx contex
 	var decryption_object *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject
 	if obj.Decryption != nil {
 		decryption_object = new(AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject)
-
-		diags.Append(decryption_object.CopyFromPango(ctx, obj.Decryption, encrypted)...)
+		diags.Append(decryption_object.CopyFromPango(ctx, append(ancestors, o), obj.Decryption, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8734,8 +9256,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx contex
 	var globalProtect_object *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject
 	if obj.GlobalProtect != nil {
 		globalProtect_object = new(AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject)
-
-		diags.Append(globalProtect_object.CopyFromPango(ctx, obj.GlobalProtect, encrypted)...)
+		diags.Append(globalProtect_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtect, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8743,8 +9264,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx contex
 	var sdwan_object *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject
 	if obj.Sdwan != nil {
 		sdwan_object = new(AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject)
-
-		diags.Append(sdwan_object.CopyFromPango(ctx, obj.Sdwan, encrypted)...)
+		diags.Append(sdwan_object.CopyFromPango(ctx, append(ancestors, o), obj.Sdwan, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8752,8 +9272,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx contex
 	var securityProfiles_object *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject
 	if obj.SecurityProfiles != nil {
 		securityProfiles_object = new(AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject)
-
-		diags.Append(securityProfiles_object.CopyFromPango(ctx, obj.SecurityProfiles, encrypted)...)
+		diags.Append(securityProfiles_object.CopyFromPango(ctx, append(ancestors, o), obj.SecurityProfiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8853,7 +9372,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsCustomObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsCustomObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var dataPatterns_value types.String
@@ -8880,7 +9399,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsCustomObjectsObject) CopyFromPan
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsDecryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsDecryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var decryptionProfile_value types.String
@@ -8892,7 +9411,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsDecryptionObject) CopyFromPango(
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hipObjects_value types.String
@@ -8909,7 +9428,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsGlobalProtectObject) CopyFromPan
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsSdwan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsSdwan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var sdwanDistProfile_value types.String
@@ -8936,7 +9455,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSdwanObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsSecurityProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsSecurityProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var antiSpyware_value types.String
@@ -8993,7 +9512,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyFrom
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiOperationsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiOperations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiOperationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiOperations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var downloadCoreFiles_value types.String
@@ -9025,7 +9544,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiOperationsObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiPoliciesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiPoliciesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationOverrideRulebase_value types.String
@@ -9092,7 +9611,7 @@ func (o *AdminRoleDataSourceRoleVsysWebuiPoliciesObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiPrivacyObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiPrivacy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiPrivacyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiPrivacy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var showFullIpAddresses_value types.String
@@ -9114,9 +9633,13 @@ func (o *AdminRoleDataSourceRoleVsysWebuiPrivacyObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysWebuiSaveObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiSave, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysWebuiSaveObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiSave, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var objectLevelChanges_value types.String
+	if obj.ObjectLevelChanges != nil {
+		objectLevelChanges_value = types.StringValue(*obj.ObjectLevelChanges)
+	}
 	var partialSave_value types.String
 	if obj.PartialSave != nil {
 		partialSave_value = types.StringValue(*obj.PartialSave)
@@ -9125,18 +9648,14 @@ func (o *AdminRoleDataSourceRoleVsysWebuiSaveObject) CopyFromPango(ctx context.C
 	if obj.SaveForOtherAdmins != nil {
 		saveForOtherAdmins_value = types.StringValue(*obj.SaveForOtherAdmins)
 	}
-	var objectLevelChanges_value types.String
-	if obj.ObjectLevelChanges != nil {
-		objectLevelChanges_value = types.StringValue(*obj.ObjectLevelChanges)
-	}
+	o.ObjectLevelChanges = objectLevelChanges_value
 	o.PartialSave = partialSave_value
 	o.SaveForOtherAdmins = saveForOtherAdmins_value
-	o.ObjectLevelChanges = objectLevelChanges_value
 
 	return diags
 }
 
-func (o *AdminRoleDataSourceRoleVsysXmlapiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysXmlapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleDataSourceRoleVsysXmlapiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysXmlapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var commit_value types.String
@@ -9186,6 +9705,11 @@ func (o *AdminRoleDataSourceRoleVsysXmlapiObject) CopyFromPango(ctx context.Cont
 	o.UserId = userId_value
 
 	return diags
+}
+
+func (o *AdminRoleDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func AdminRoleDataSourceSchema() dsschema.Schema {
@@ -10463,6 +10987,14 @@ func AdminRoleDataSourceRoleDeviceWebuiDeviceSchema() dsschema.SingleNestedAttri
 				Sensitive:   false,
 			},
 
+			"dhcp_syslog_server": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"dynamic_updates": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -10586,14 +11118,6 @@ func AdminRoleDataSourceRoleDeviceWebuiDeviceSchema() dsschema.SingleNestedAttri
 			},
 
 			"vm_info_source": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dhcp_syslog_server": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -11893,6 +12417,14 @@ func AdminRoleDataSourceRoleDeviceWebuiNetworkSchema() dsschema.SingleNestedAttr
 				Sensitive:   false,
 			},
 
+			"secure_web_gateway": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"virtual_routers": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -11918,14 +12450,6 @@ func AdminRoleDataSourceRoleDeviceWebuiNetworkSchema() dsschema.SingleNestedAttr
 			},
 
 			"zones": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"secure_web_gateway": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -13013,6 +13537,14 @@ func AdminRoleDataSourceRoleDeviceWebuiSaveSchema() dsschema.SingleNestedAttribu
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"object_level_changes": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"partial_save": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -13022,14 +13554,6 @@ func AdminRoleDataSourceRoleDeviceWebuiSaveSchema() dsschema.SingleNestedAttribu
 			},
 
 			"save_for_other_admins": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"object_level_changes": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -13386,7 +13910,7 @@ func AdminRoleDataSourceRoleVsysRestapiNetworkSchema() dsschema.SingleNestedAttr
 				Sensitive:   false,
 			},
 
-			"zones": dsschema.StringAttribute{
+			"sdwan_interface_profiles": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -13394,7 +13918,7 @@ func AdminRoleDataSourceRoleVsysRestapiNetworkSchema() dsschema.SingleNestedAttr
 				Sensitive:   false,
 			},
 
-			"sdwan_interface_profiles": dsschema.StringAttribute{
+			"zones": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -14098,6 +14622,14 @@ func AdminRoleDataSourceRoleVsysWebuiDeviceSchema() dsschema.SingleNestedAttribu
 				Sensitive:   false,
 			},
 
+			"dhcp_syslog_server": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"local_user_database": AdminRoleDataSourceRoleVsysWebuiDeviceLocalUserDatabaseSchema(),
 
 			"log_settings": AdminRoleDataSourceRoleVsysWebuiDeviceLogSettingsSchema(),
@@ -14125,14 +14657,6 @@ func AdminRoleDataSourceRoleVsysWebuiDeviceSchema() dsschema.SingleNestedAttribu
 			},
 
 			"vm_info_source": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dhcp_syslog_server": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -16082,6 +16606,14 @@ func AdminRoleDataSourceRoleVsysWebuiSaveSchema() dsschema.SingleNestedAttribute
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
+			"object_level_changes": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"partial_save": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
@@ -16091,14 +16623,6 @@ func AdminRoleDataSourceRoleVsysWebuiSaveSchema() dsschema.SingleNestedAttribute
 			},
 
 			"save_for_other_admins": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"object_level_changes": dsschema.StringAttribute{
 				Description: "",
 				Computed:    true,
 				Required:    false,
@@ -16257,13 +16781,20 @@ func (d *AdminRoleDataSource) Configure(_ context.Context, req datasource.Config
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, adminrole.NewService(d.client), batchSize, specifier, adminrole.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*adminrole.Entry, adminrole.Location, *adminrole.Service](d.client, adminrole.NewService(d.client), batchSize, specifier, adminrole.SpecMatches)
 }
 func (o *AdminRoleDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state AdminRoleDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -16295,8 +16826,12 @@ func (o *AdminRoleDataSource) Read(ctx context.Context, req datasource.ReadReque
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -16306,7 +16841,7 @@ func (o *AdminRoleDataSource) Read(ctx context.Context, req datasource.ReadReque
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -16504,6 +17039,7 @@ type AdminRoleResourceRoleDeviceWebuiDeviceObject struct {
 	ConfigAudit            types.String                                                       `tfsdk:"config_audit"`
 	DataRedistribution     types.String                                                       `tfsdk:"data_redistribution"`
 	DeviceQuarantine       types.String                                                       `tfsdk:"device_quarantine"`
+	DhcpSyslogServer       types.String                                                       `tfsdk:"dhcp_syslog_server"`
 	DynamicUpdates         types.String                                                       `tfsdk:"dynamic_updates"`
 	GlobalProtectClient    types.String                                                       `tfsdk:"global_protect_client"`
 	HighAvailability       types.String                                                       `tfsdk:"high_availability"`
@@ -16524,7 +17060,6 @@ type AdminRoleResourceRoleDeviceWebuiDeviceObject struct {
 	UserIdentification     types.String                                                       `tfsdk:"user_identification"`
 	VirtualSystems         types.String                                                       `tfsdk:"virtual_systems"`
 	VmInfoSource           types.String                                                       `tfsdk:"vm_info_source"`
-	DhcpSyslogServer       types.String                                                       `tfsdk:"dhcp_syslog_server"`
 }
 type AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject struct {
 	CertificateProfile     types.String `tfsdk:"certificate_profile"`
@@ -16669,11 +17204,11 @@ type AdminRoleResourceRoleDeviceWebuiNetworkObject struct {
 	Qos                   types.String                                                  `tfsdk:"qos"`
 	Routing               *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject         `tfsdk:"routing"`
 	SdwanInterfaceProfile types.String                                                  `tfsdk:"sdwan_interface_profile"`
+	SecureWebGateway      types.String                                                  `tfsdk:"secure_web_gateway"`
 	VirtualRouters        types.String                                                  `tfsdk:"virtual_routers"`
 	VirtualWires          types.String                                                  `tfsdk:"virtual_wires"`
 	Vlans                 types.String                                                  `tfsdk:"vlans"`
 	Zones                 types.String                                                  `tfsdk:"zones"`
-	SecureWebGateway      types.String                                                  `tfsdk:"secure_web_gateway"`
 }
 type AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject struct {
 	ClientlessAppGroups types.String `tfsdk:"clientless_app_groups"`
@@ -16789,9 +17324,9 @@ type AdminRoleResourceRoleDeviceWebuiPrivacyObject struct {
 	ViewPcapFiles                 types.String `tfsdk:"view_pcap_files"`
 }
 type AdminRoleResourceRoleDeviceWebuiSaveObject struct {
+	ObjectLevelChanges types.String `tfsdk:"object_level_changes"`
 	PartialSave        types.String `tfsdk:"partial_save"`
 	SaveForOtherAdmins types.String `tfsdk:"save_for_other_admins"`
-	ObjectLevelChanges types.String `tfsdk:"object_level_changes"`
 }
 type AdminRoleResourceRoleDeviceXmlapiObject struct {
 	Commit types.String `tfsdk:"commit"`
@@ -16832,8 +17367,8 @@ type AdminRoleResourceRoleVsysRestapiNetworkObject struct {
 	GlobalprotectGateways            types.String `tfsdk:"globalprotect_gateways"`
 	GlobalprotectMdmServers          types.String `tfsdk:"globalprotect_mdm_servers"`
 	GlobalprotectPortals             types.String `tfsdk:"globalprotect_portals"`
-	Zones                            types.String `tfsdk:"zones"`
 	SdwanInterfaceProfiles           types.String `tfsdk:"sdwan_interface_profiles"`
+	Zones                            types.String `tfsdk:"zones"`
 }
 type AdminRoleResourceRoleVsysRestapiObjectsObject struct {
 	AddressGroups                           types.String `tfsdk:"address_groups"`
@@ -16918,6 +17453,7 @@ type AdminRoleResourceRoleVsysWebuiDeviceObject struct {
 	CertificateManagement  *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject `tfsdk:"certificate_management"`
 	DataRedistribution     types.String                                                     `tfsdk:"data_redistribution"`
 	DeviceQuarantine       types.String                                                     `tfsdk:"device_quarantine"`
+	DhcpSyslogServer       types.String                                                     `tfsdk:"dhcp_syslog_server"`
 	LocalUserDatabase      *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject     `tfsdk:"local_user_database"`
 	LogSettings            *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject           `tfsdk:"log_settings"`
 	PolicyRecommendations  *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject `tfsdk:"policy_recommendations"`
@@ -16926,7 +17462,6 @@ type AdminRoleResourceRoleVsysWebuiDeviceObject struct {
 	Troubleshooting        types.String                                                     `tfsdk:"troubleshooting"`
 	UserIdentification     types.String                                                     `tfsdk:"user_identification"`
 	VmInfoSource           types.String                                                     `tfsdk:"vm_info_source"`
-	DhcpSyslogServer       types.String                                                     `tfsdk:"dhcp_syslog_server"`
 }
 type AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject struct {
 	CertificateProfile     types.String `tfsdk:"certificate_profile"`
@@ -17137,9 +17672,9 @@ type AdminRoleResourceRoleVsysWebuiPrivacyObject struct {
 	ViewPcapFiles                 types.String `tfsdk:"view_pcap_files"`
 }
 type AdminRoleResourceRoleVsysWebuiSaveObject struct {
+	ObjectLevelChanges types.String `tfsdk:"object_level_changes"`
 	PartialSave        types.String `tfsdk:"partial_save"`
 	SaveForOtherAdmins types.String `tfsdk:"save_for_other_admins"`
-	ObjectLevelChanges types.String `tfsdk:"object_level_changes"`
 }
 type AdminRoleResourceRoleVsysXmlapiObject struct {
 	Commit types.String `tfsdk:"commit"`
@@ -18433,6 +18968,14 @@ func AdminRoleResourceRoleDeviceWebuiDeviceSchema() rsschema.SingleNestedAttribu
 				Sensitive:   false,
 			},
 
+			"dhcp_syslog_server": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"dynamic_updates": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -18556,14 +19099,6 @@ func AdminRoleResourceRoleDeviceWebuiDeviceSchema() rsschema.SingleNestedAttribu
 			},
 
 			"vm_info_source": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dhcp_syslog_server": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -19863,6 +20398,14 @@ func AdminRoleResourceRoleDeviceWebuiNetworkSchema() rsschema.SingleNestedAttrib
 				Sensitive:   false,
 			},
 
+			"secure_web_gateway": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"virtual_routers": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -19888,14 +20431,6 @@ func AdminRoleResourceRoleDeviceWebuiNetworkSchema() rsschema.SingleNestedAttrib
 			},
 
 			"zones": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"secure_web_gateway": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -20983,6 +21518,14 @@ func AdminRoleResourceRoleDeviceWebuiSaveSchema() rsschema.SingleNestedAttribute
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"object_level_changes": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"partial_save": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -20992,14 +21535,6 @@ func AdminRoleResourceRoleDeviceWebuiSaveSchema() rsschema.SingleNestedAttribute
 			},
 
 			"save_for_other_admins": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"object_level_changes": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -21356,7 +21891,7 @@ func AdminRoleResourceRoleVsysRestapiNetworkSchema() rsschema.SingleNestedAttrib
 				Sensitive:   false,
 			},
 
-			"zones": rsschema.StringAttribute{
+			"sdwan_interface_profiles": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -21364,7 +21899,7 @@ func AdminRoleResourceRoleVsysRestapiNetworkSchema() rsschema.SingleNestedAttrib
 				Sensitive:   false,
 			},
 
-			"sdwan_interface_profiles": rsschema.StringAttribute{
+			"zones": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -22068,6 +22603,14 @@ func AdminRoleResourceRoleVsysWebuiDeviceSchema() rsschema.SingleNestedAttribute
 				Sensitive:   false,
 			},
 
+			"dhcp_syslog_server": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"local_user_database": AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseSchema(),
 
 			"log_settings": AdminRoleResourceRoleVsysWebuiDeviceLogSettingsSchema(),
@@ -22095,14 +22638,6 @@ func AdminRoleResourceRoleVsysWebuiDeviceSchema() rsschema.SingleNestedAttribute
 			},
 
 			"vm_info_source": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"dhcp_syslog_server": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -24052,6 +24587,14 @@ func AdminRoleResourceRoleVsysWebuiSaveSchema() rsschema.SingleNestedAttribute {
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
+			"object_level_changes": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"partial_save": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
@@ -24061,14 +24604,6 @@ func AdminRoleResourceRoleVsysWebuiSaveSchema() rsschema.SingleNestedAttribute {
 			},
 
 			"save_for_other_admins": rsschema.StringAttribute{
-				Description: "",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"object_level_changes": rsschema.StringAttribute{
 				Description: "",
 				Computed:    false,
 				Required:    false,
@@ -24223,7 +24758,7 @@ func (r *AdminRoleResource) Configure(ctx context.Context, req resource.Configur
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, adminrole.NewService(r.client), batchSize, specifier, adminrole.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*adminrole.Entry, adminrole.Location, *adminrole.Service](r.client, adminrole.NewService(r.client), batchSize, specifier, adminrole.SpecMatches)
 }
 
 func (o *AdminRoleResourceModel) AttributeTypes() map[string]attr.Type {
@@ -24242,6 +24777,14 @@ func (o *AdminRoleResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o AdminRoleResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o AdminRoleResourceModel) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleObject) AttributeTypes() map[string]attr.Type {
 
 	var deviceObj *AdminRoleResourceRoleDeviceObject
@@ -24255,6 +24798,14 @@ func (o *AdminRoleResourceRoleObject) AttributeTypes() map[string]attr.Type {
 			AttrTypes: vsysObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AdminRoleResourceRoleObject) AncestorName() string {
+	return "role"
+}
+
+func (o AdminRoleResourceRoleObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceObject) AttributeTypes() map[string]attr.Type {
 
@@ -24275,6 +24826,14 @@ func (o *AdminRoleResourceRoleDeviceObject) AttributeTypes() map[string]attr.Typ
 			AttrTypes: xmlapiObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleResourceRoleDeviceObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceRestapiObject) AttributeTypes() map[string]attr.Type {
 
@@ -24305,6 +24864,14 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) AttributeTypes() map[string]a
 		},
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceRestapiObject) AncestorName() string {
+	return "restapi"
+}
+
+func (o AdminRoleResourceRoleDeviceRestapiObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceRestapiDeviceObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -24316,6 +24883,14 @@ func (o *AdminRoleResourceRoleDeviceRestapiDeviceObject) AttributeTypes() map[st
 		"syslog_server_profiles":    types.StringType,
 		"virtual_systems":           types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceRestapiDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleResourceRoleDeviceRestapiDeviceObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceRestapiNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -24356,6 +24931,14 @@ func (o *AdminRoleResourceRoleDeviceRestapiNetworkObject) AttributeTypes() map[s
 		"zone_protection_network_profiles":            types.StringType,
 		"zones":                                       types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceRestapiNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o AdminRoleResourceRoleDeviceRestapiNetworkObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceRestapiObjectsObject) AttributeTypes() map[string]attr.Type {
 
@@ -24400,6 +24983,14 @@ func (o *AdminRoleResourceRoleDeviceRestapiObjectsObject) AttributeTypes() map[s
 		"wildfire_analysis_security_profiles":        types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceRestapiObjectsObject) AncestorName() string {
+	return "objects"
+}
+
+func (o AdminRoleResourceRoleDeviceRestapiObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceRestapiPoliciesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -24416,11 +25007,27 @@ func (o *AdminRoleResourceRoleDeviceRestapiPoliciesObject) AttributeTypes() map[
 		"tunnel_inspection_rules":       types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceRestapiPoliciesObject) AncestorName() string {
+	return "policies"
+}
+
+func (o AdminRoleResourceRoleDeviceRestapiPoliciesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceRestapiSystemObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"configuration": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceRestapiSystemObject) AncestorName() string {
+	return "system"
+}
+
+func (o AdminRoleResourceRoleDeviceRestapiSystemObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiObject) AttributeTypes() map[string]attr.Type {
 
@@ -24481,6 +25088,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) AttributeTypes() map[string]att
 		"validate": types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiObject) AncestorName() string {
+	return "webui"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiCommitObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -24488,6 +25103,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiCommitObject) AttributeTypes() map[stri
 		"device":                  types.StringType,
 		"object_level_changes":    types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiCommitObject) AncestorName() string {
+	return "commit"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiCommitObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) AttributeTypes() map[string]attr.Type {
 
@@ -24516,6 +25139,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) AttributeTypes() map[stri
 		"config_audit":          types.StringType,
 		"data_redistribution":   types.StringType,
 		"device_quarantine":     types.StringType,
+		"dhcp_syslog_server":    types.StringType,
 		"dynamic_updates":       types.StringType,
 		"global_protect_client": types.StringType,
 		"high_availability":     types.StringType,
@@ -24546,8 +25170,15 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) AttributeTypes() map[stri
 		"user_identification": types.StringType,
 		"virtual_systems":     types.StringType,
 		"vm_info_source":      types.StringType,
-		"dhcp_syslog_server":  types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) AttributeTypes() map[string]attr.Type {
 
@@ -24561,12 +25192,28 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) Attr
 		"ssl_tls_service_profile":  types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) AncestorName() string {
+	return "certificate-management"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"user_groups": types.StringType,
 		"users":       types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) AncestorName() string {
+	return "local-user-database"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) AttributeTypes() map[string]attr.Type {
 
@@ -24582,12 +25229,28 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) AttributeTypes
 		"user_id":       types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) AncestorName() string {
+	return "log-settings"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"iot":  types.StringType,
 		"saas": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) AncestorName() string {
+	return "policy-recommendations"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) AttributeTypes() map[string]attr.Type {
 
@@ -24607,6 +25270,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) AttributeTyp
 		"tacplus":   types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) AncestorName() string {
+	return "server-profile"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -24621,11 +25292,27 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) AttributeTypes() map
 		"wildfire":   types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) AncestorName() string {
+	return "setup"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiGlobalObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"system_alarms": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiGlobalObject) AncestorName() string {
+	return "global"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiGlobalObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) AttributeTypes() map[string]attr.Type {
 
@@ -24665,12 +25352,28 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) AttributeTypes() map[str
 		"view_custom_reports":   types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorObject) AncestorName() string {
+	return "monitor"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"correlated_events":   types.StringType,
 		"correlation_objects": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) AncestorName() string {
+	return "automated-correlation-engine"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) AttributeTypes() map[string]attr.Type {
 
@@ -24699,6 +25402,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) AttributeTy
 		"wildfire_log":           types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) AncestorName() string {
+	return "custom-reports"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -24721,6 +25432,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) AttributeTypes() map
 		"wildfire":       types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) AncestorName() string {
+	return "logs"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -24731,6 +25450,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) AttributeTypes
 		"saas_application_usage_report": types.StringType,
 		"user_activity_report":          types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) AncestorName() string {
+	return "pdf-reports"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -24758,12 +25485,20 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) AttributeTypes() map[str
 			AttrTypes: routingObj.AttributeTypes(),
 		},
 		"sdwan_interface_profile": types.StringType,
+		"secure_web_gateway":      types.StringType,
 		"virtual_routers":         types.StringType,
 		"virtual_wires":           types.StringType,
 		"vlans":                   types.StringType,
 		"zones":                   types.StringType,
-		"secure_web_gateway":      types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) AttributeTypes() map[string]attr.Type {
 
@@ -24774,6 +25509,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) AttributeTy
 		"mdm":                   types.StringType,
 		"portals":               types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) AncestorName() string {
+	return "global-protect"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -24790,6 +25533,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) Attribute
 		"zone_protection":     types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) AncestorName() string {
+	return "network-profiles"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) AttributeTypes() map[string]attr.Type {
 
 	var routingProfilesObj *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject
@@ -24799,6 +25550,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) AttributeTypes() 
 			AttrTypes: routingProfilesObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) AncestorName() string {
+	return "routing"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -24811,6 +25570,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) At
 		"ospfv3":    types.StringType,
 		"ripv2":     types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) AncestorName() string {
+	return "routing-profiles"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) AttributeTypes() map[string]attr.Type {
 
@@ -24859,6 +25626,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) AttributeTypes() map[str
 		"tags":           types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsObject) AncestorName() string {
+	return "objects"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -24868,11 +25643,27 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) AttributeTy
 		"vulnerability": types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) AncestorName() string {
+	return "custom-objects"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"decryption_profile": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) AncestorName() string {
+	return "decryption"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) AttributeTypes() map[string]attr.Type {
 
@@ -24880,6 +25671,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) AttributeTy
 		"hip_objects":  types.StringType,
 		"hip_profiles": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) AncestorName() string {
+	return "global-protect"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) AttributeTypes() map[string]attr.Type {
 
@@ -24889,6 +25688,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) AttributeTypes() ma
 		"sdwan_profile":                  types.StringType,
 		"sdwan_saas_quality_profile":     types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) AncestorName() string {
+	return "sdwan"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -24905,6 +25712,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) Attribut
 		"wildfire_analysis":        types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) AncestorName() string {
+	return "security-profiles"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiOperationsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -24914,6 +25729,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiOperationsObject) AttributeTypes() map[
 		"generate_tech_support_file": types.StringType,
 		"reboot":                     types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiOperationsObject) AncestorName() string {
+	return "operations"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiOperationsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceWebuiPoliciesObject) AttributeTypes() map[string]attr.Type {
 
@@ -24932,6 +25755,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiPoliciesObject) AttributeTypes() map[st
 		"tunnel_inspect_rulebase":        types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiPoliciesObject) AncestorName() string {
+	return "policies"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiPoliciesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiPrivacyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -24940,13 +25771,29 @@ func (o *AdminRoleResourceRoleDeviceWebuiPrivacyObject) AttributeTypes() map[str
 		"view_pcap_files":                     types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleDeviceWebuiPrivacyObject) AncestorName() string {
+	return "privacy"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiPrivacyObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleDeviceWebuiSaveObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
+		"object_level_changes":  types.StringType,
 		"partial_save":          types.StringType,
 		"save_for_other_admins": types.StringType,
-		"object_level_changes":  types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiSaveObject) AncestorName() string {
+	return "save"
+}
+
+func (o AdminRoleResourceRoleDeviceWebuiSaveObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleDeviceXmlapiObject) AttributeTypes() map[string]attr.Type {
 
@@ -24961,6 +25808,14 @@ func (o *AdminRoleResourceRoleDeviceXmlapiObject) AttributeTypes() map[string]at
 		"report":  types.StringType,
 		"user_id": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleDeviceXmlapiObject) AncestorName() string {
+	return "xmlapi"
+}
+
+func (o AdminRoleResourceRoleDeviceXmlapiObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysObject) AttributeTypes() map[string]attr.Type {
 
@@ -24981,6 +25836,14 @@ func (o *AdminRoleResourceRoleVsysObject) AttributeTypes() map[string]attr.Type 
 			AttrTypes: xmlapiObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o AdminRoleResourceRoleVsysObject) AncestorName() string {
+	return "vsys"
+}
+
+func (o AdminRoleResourceRoleVsysObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysRestapiObject) AttributeTypes() map[string]attr.Type {
 
@@ -25011,6 +25874,14 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) AttributeTypes() map[string]att
 		},
 	}
 }
+
+func (o AdminRoleResourceRoleVsysRestapiObject) AncestorName() string {
+	return "restapi"
+}
+
+func (o AdminRoleResourceRoleVsysRestapiObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysRestapiDeviceObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25023,6 +25894,14 @@ func (o *AdminRoleResourceRoleVsysRestapiDeviceObject) AttributeTypes() map[stri
 		"virtual_systems":           types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysRestapiDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleResourceRoleVsysRestapiDeviceObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysRestapiNetworkObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25031,9 +25910,17 @@ func (o *AdminRoleResourceRoleVsysRestapiNetworkObject) AttributeTypes() map[str
 		"globalprotect_gateways":              types.StringType,
 		"globalprotect_mdm_servers":           types.StringType,
 		"globalprotect_portals":               types.StringType,
-		"zones":                               types.StringType,
 		"sdwan_interface_profiles":            types.StringType,
+		"zones":                               types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysRestapiNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o AdminRoleResourceRoleVsysRestapiNetworkObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysRestapiObjectsObject) AttributeTypes() map[string]attr.Type {
 
@@ -25078,6 +25965,14 @@ func (o *AdminRoleResourceRoleVsysRestapiObjectsObject) AttributeTypes() map[str
 		"wildfire_analysis_security_profiles":        types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysRestapiObjectsObject) AncestorName() string {
+	return "objects"
+}
+
+func (o AdminRoleResourceRoleVsysRestapiObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysRestapiPoliciesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25094,11 +25989,27 @@ func (o *AdminRoleResourceRoleVsysRestapiPoliciesObject) AttributeTypes() map[st
 		"tunnel_inspection_rules":       types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysRestapiPoliciesObject) AncestorName() string {
+	return "policies"
+}
+
+func (o AdminRoleResourceRoleVsysRestapiPoliciesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysRestapiSystemObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"configuration": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysRestapiSystemObject) AncestorName() string {
+	return "system"
+}
+
+func (o AdminRoleResourceRoleVsysRestapiSystemObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiObject) AttributeTypes() map[string]attr.Type {
 
@@ -25154,12 +26065,28 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) AttributeTypes() map[string]attr.
 		"validate": types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiObject) AncestorName() string {
+	return "webui"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiCommitObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"commit_for_other_admins": types.StringType,
 		"virtual_systems":         types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiCommitObject) AncestorName() string {
+	return "commit"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiCommitObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) AttributeTypes() map[string]attr.Type {
 
@@ -25185,6 +26112,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) AttributeTypes() map[string
 		},
 		"data_redistribution": types.StringType,
 		"device_quarantine":   types.StringType,
+		"dhcp_syslog_server":  types.StringType,
 		"local_user_database": types.ObjectType{
 			AttrTypes: localUserDatabaseObj.AttributeTypes(),
 		},
@@ -25203,8 +26131,15 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) AttributeTypes() map[string
 		"troubleshooting":     types.StringType,
 		"user_identification": types.StringType,
 		"vm_info_source":      types.StringType,
-		"dhcp_syslog_server":  types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceObject) AncestorName() string {
+	return "device"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) AttributeTypes() map[string]attr.Type {
 
@@ -25218,12 +26153,28 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) Attrib
 		"ssl_tls_service_profile":  types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) AncestorName() string {
+	return "certificate-management"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"user_groups": types.StringType,
 		"users":       types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) AncestorName() string {
+	return "local-user-database"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) AttributeTypes() map[string]attr.Type {
 
@@ -25237,12 +26188,28 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) AttributeTypes()
 		"user_id":       types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) AncestorName() string {
+	return "log-settings"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"iot":  types.StringType,
 		"saas": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) AncestorName() string {
+	return "policy-recommendations"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) AttributeTypes() map[string]attr.Type {
 
@@ -25262,6 +26229,14 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) AttributeTypes
 		"tacplus":   types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) AncestorName() string {
+	return "server-profile"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiDeviceSetupObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25275,6 +26250,14 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceSetupObject) AttributeTypes() map[s
 		"telemetry":  types.StringType,
 		"wildfire":   types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceSetupObject) AncestorName() string {
+	return "setup"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiDeviceSetupObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) AttributeTypes() map[string]attr.Type {
 
@@ -25306,12 +26289,28 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) AttributeTypes() map[strin
 		"view_custom_reports": types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorObject) AncestorName() string {
+	return "monitor"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"correlated_events":   types.StringType,
 		"correlation_objects": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) AncestorName() string {
+	return "automated-correlation-engine"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) AttributeTypes() map[string]attr.Type {
 
@@ -25340,6 +26339,14 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) AttributeType
 		"wildfire_log":           types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) AncestorName() string {
+	return "custom-reports"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiMonitorLogsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25359,6 +26366,14 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorLogsObject) AttributeTypes() map[s
 		"wildfire":       types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorLogsObject) AncestorName() string {
+	return "logs"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorLogsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25369,6 +26384,14 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) AttributeTypes()
 		"saas_application_usage_report": types.StringType,
 		"user_activity_report":          types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) AncestorName() string {
+	return "pdf-reports"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) AttributeTypes() map[string]attr.Type {
 
@@ -25382,6 +26405,14 @@ func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) AttributeTypes() map[strin
 		"zones":                   types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiNetworkObject) AncestorName() string {
+	return "network"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiNetworkObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25391,6 +26422,14 @@ func (o *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) AttributeType
 		"mdm":                   types.StringType,
 		"portals":               types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) AncestorName() string {
+	return "global-protect"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) AttributeTypes() map[string]attr.Type {
 
@@ -25439,6 +26478,14 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) AttributeTypes() map[strin
 		"tags":           types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsObject) AncestorName() string {
+	return "objects"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25448,11 +26495,27 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) AttributeType
 		"vulnerability": types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) AncestorName() string {
+	return "custom-objects"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"decryption_profile": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) AncestorName() string {
+	return "decryption"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) AttributeTypes() map[string]attr.Type {
 
@@ -25460,6 +26523,14 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) AttributeType
 		"hip_objects":  types.StringType,
 		"hip_profiles": types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) AncestorName() string {
+	return "global-protect"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) AttributeTypes() map[string]attr.Type {
 
@@ -25469,6 +26540,14 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) AttributeTypes() map[
 		"sdwan_profile":                  types.StringType,
 		"sdwan_saas_quality_profile":     types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) AncestorName() string {
+	return "sdwan"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) AttributeTypes() map[string]attr.Type {
 
@@ -25485,6 +26564,14 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) AttributeT
 		"wildfire_analysis":        types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) AncestorName() string {
+	return "security-profiles"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiOperationsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25494,6 +26581,14 @@ func (o *AdminRoleResourceRoleVsysWebuiOperationsObject) AttributeTypes() map[st
 		"generate_tech_support_file": types.StringType,
 		"reboot":                     types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiOperationsObject) AncestorName() string {
+	return "operations"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiOperationsObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysWebuiPoliciesObject) AttributeTypes() map[string]attr.Type {
 
@@ -25512,6 +26607,14 @@ func (o *AdminRoleResourceRoleVsysWebuiPoliciesObject) AttributeTypes() map[stri
 		"tunnel_inspect_rulebase":        types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiPoliciesObject) AncestorName() string {
+	return "policies"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiPoliciesObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiPrivacyObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -25520,13 +26623,29 @@ func (o *AdminRoleResourceRoleVsysWebuiPrivacyObject) AttributeTypes() map[strin
 		"view_pcap_files":                     types.StringType,
 	}
 }
+
+func (o AdminRoleResourceRoleVsysWebuiPrivacyObject) AncestorName() string {
+	return "privacy"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiPrivacyObject) EntryName() *string {
+	return nil
+}
 func (o *AdminRoleResourceRoleVsysWebuiSaveObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
+		"object_level_changes":  types.StringType,
 		"partial_save":          types.StringType,
 		"save_for_other_admins": types.StringType,
-		"object_level_changes":  types.StringType,
 	}
+}
+
+func (o AdminRoleResourceRoleVsysWebuiSaveObject) AncestorName() string {
+	return "save"
+}
+
+func (o AdminRoleResourceRoleVsysWebuiSaveObject) EntryName() *string {
+	return nil
 }
 func (o *AdminRoleResourceRoleVsysXmlapiObject) AttributeTypes() map[string]attr.Type {
 
@@ -25543,7 +26662,15 @@ func (o *AdminRoleResourceRoleVsysXmlapiObject) AttributeTypes() map[string]attr
 	}
 }
 
-func (o *AdminRoleResourceModel) CopyToPango(ctx context.Context, obj **adminrole.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o AdminRoleResourceRoleVsysXmlapiObject) AncestorName() string {
+	return "xmlapi"
+}
+
+func (o AdminRoleResourceRoleVsysXmlapiObject) EntryName() *string {
+	return nil
+}
+
+func (o *AdminRoleResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	var role_entry *adminrole.Role
@@ -25553,8 +26680,8 @@ func (o *AdminRoleResourceModel) CopyToPango(ctx context.Context, obj **adminrol
 		} else {
 			role_entry = new(adminrole.Role)
 		}
-
-		diags.Append(o.Role.CopyToPango(ctx, &role_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Role.CopyToPango(ctx, ancestors, &role_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25569,7 +26696,7 @@ func (o *AdminRoleResourceModel) CopyToPango(ctx context.Context, obj **adminrol
 
 	return diags
 }
-func (o *AdminRoleResourceRoleObject) CopyToPango(ctx context.Context, obj **adminrole.Role, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.Role, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_entry *adminrole.RoleDevice
 	if o.Device != nil {
@@ -25578,8 +26705,8 @@ func (o *AdminRoleResourceRoleObject) CopyToPango(ctx context.Context, obj **adm
 		} else {
 			device_entry = new(adminrole.RoleDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25591,8 +26718,8 @@ func (o *AdminRoleResourceRoleObject) CopyToPango(ctx context.Context, obj **adm
 		} else {
 			vsys_entry = new(adminrole.RoleVsys)
 		}
-
-		diags.Append(o.Vsys.CopyToPango(ctx, &vsys_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Vsys.CopyToPango(ctx, append(ancestors, o), &vsys_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25606,7 +26733,7 @@ func (o *AdminRoleResourceRoleObject) CopyToPango(ctx context.Context, obj **adm
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	cli_value := o.Cli.ValueStringPointer()
 	var restapi_entry *adminrole.RoleDeviceRestapi
@@ -25616,8 +26743,8 @@ func (o *AdminRoleResourceRoleDeviceObject) CopyToPango(ctx context.Context, obj
 		} else {
 			restapi_entry = new(adminrole.RoleDeviceRestapi)
 		}
-
-		diags.Append(o.Restapi.CopyToPango(ctx, &restapi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Restapi.CopyToPango(ctx, append(ancestors, o), &restapi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25629,8 +26756,8 @@ func (o *AdminRoleResourceRoleDeviceObject) CopyToPango(ctx context.Context, obj
 		} else {
 			webui_entry = new(adminrole.RoleDeviceWebui)
 		}
-
-		diags.Append(o.Webui.CopyToPango(ctx, &webui_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Webui.CopyToPango(ctx, append(ancestors, o), &webui_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25642,8 +26769,8 @@ func (o *AdminRoleResourceRoleDeviceObject) CopyToPango(ctx context.Context, obj
 		} else {
 			xmlapi_entry = new(adminrole.RoleDeviceXmlapi)
 		}
-
-		diags.Append(o.Xmlapi.CopyToPango(ctx, &xmlapi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Xmlapi.CopyToPango(ctx, append(ancestors, o), &xmlapi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25659,7 +26786,7 @@ func (o *AdminRoleResourceRoleDeviceObject) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_entry *adminrole.RoleDeviceRestapiDevice
 	if o.Device != nil {
@@ -25668,8 +26795,8 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			device_entry = new(adminrole.RoleDeviceRestapiDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25681,8 +26808,8 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			network_entry = new(adminrole.RoleDeviceRestapiNetwork)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Network.CopyToPango(ctx, append(ancestors, o), &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25694,8 +26821,8 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			objects_entry = new(adminrole.RoleDeviceRestapiObjects)
 		}
-
-		diags.Append(o.Objects.CopyToPango(ctx, &objects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Objects.CopyToPango(ctx, append(ancestors, o), &objects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25707,8 +26834,8 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			policies_entry = new(adminrole.RoleDeviceRestapiPolicies)
 		}
-
-		diags.Append(o.Policies.CopyToPango(ctx, &policies_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Policies.CopyToPango(ctx, append(ancestors, o), &policies_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25720,8 +26847,8 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyToPango(ctx context.Conte
 		} else {
 			system_entry = new(adminrole.RoleDeviceRestapiSystem)
 		}
-
-		diags.Append(o.System.CopyToPango(ctx, &system_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.System.CopyToPango(ctx, append(ancestors, o), &system_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25738,7 +26865,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceRestapiDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	emailServerProfiles_value := o.EmailServerProfiles.ValueStringPointer()
 	httpServerProfiles_value := o.HttpServerProfiles.ValueStringPointer()
@@ -25761,7 +26888,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiDeviceObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceRestapiNetworkObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	aggregateEthernetInterfaces_value := o.AggregateEthernetInterfaces.ValueStringPointer()
 	bfdNetworkProfiles_value := o.BfdNetworkProfiles.ValueStringPointer()
@@ -25840,7 +26967,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiNetworkObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceRestapiObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	addressGroups_value := o.AddressGroups.ValueStringPointer()
 	addresses_value := o.Addresses.ValueStringPointer()
@@ -25925,7 +27052,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiObjectsObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceRestapiPoliciesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiPoliciesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationOverrideRules_value := o.ApplicationOverrideRules.ValueStringPointer()
 	authenticationRules_value := o.AuthenticationRules.ValueStringPointer()
@@ -25956,7 +27083,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiPoliciesObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceRestapiSystemObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceRestapiSystem, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiSystemObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceRestapiSystem, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	configuration_value := o.Configuration.ValueStringPointer()
 
@@ -25967,7 +27094,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiSystemObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebui, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebui, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	acc_value := o.Acc.ValueStringPointer()
 	var commit_entry *adminrole.RoleDeviceWebuiCommit
@@ -25977,8 +27104,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			commit_entry = new(adminrole.RoleDeviceWebuiCommit)
 		}
-
-		diags.Append(o.Commit.CopyToPango(ctx, &commit_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Commit.CopyToPango(ctx, append(ancestors, o), &commit_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -25991,8 +27118,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			device_entry = new(adminrole.RoleDeviceWebuiDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26004,8 +27131,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			global_entry = new(adminrole.RoleDeviceWebuiGlobal)
 		}
-
-		diags.Append(o.Global.CopyToPango(ctx, &global_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Global.CopyToPango(ctx, append(ancestors, o), &global_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26017,8 +27144,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			monitor_entry = new(adminrole.RoleDeviceWebuiMonitor)
 		}
-
-		diags.Append(o.Monitor.CopyToPango(ctx, &monitor_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monitor.CopyToPango(ctx, append(ancestors, o), &monitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26030,8 +27157,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			network_entry = new(adminrole.RoleDeviceWebuiNetwork)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Network.CopyToPango(ctx, append(ancestors, o), &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26043,8 +27170,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			objects_entry = new(adminrole.RoleDeviceWebuiObjects)
 		}
-
-		diags.Append(o.Objects.CopyToPango(ctx, &objects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Objects.CopyToPango(ctx, append(ancestors, o), &objects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26056,8 +27183,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			operations_entry = new(adminrole.RoleDeviceWebuiOperations)
 		}
-
-		diags.Append(o.Operations.CopyToPango(ctx, &operations_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Operations.CopyToPango(ctx, append(ancestors, o), &operations_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26069,8 +27196,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			policies_entry = new(adminrole.RoleDeviceWebuiPolicies)
 		}
-
-		diags.Append(o.Policies.CopyToPango(ctx, &policies_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Policies.CopyToPango(ctx, append(ancestors, o), &policies_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26082,8 +27209,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			privacy_entry = new(adminrole.RoleDeviceWebuiPrivacy)
 		}
-
-		diags.Append(o.Privacy.CopyToPango(ctx, &privacy_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Privacy.CopyToPango(ctx, append(ancestors, o), &privacy_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26095,8 +27222,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 		} else {
 			save_entry = new(adminrole.RoleDeviceWebuiSave)
 		}
-
-		diags.Append(o.Save.CopyToPango(ctx, &save_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Save.CopyToPango(ctx, append(ancestors, o), &save_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26124,7 +27251,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiCommitObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiCommit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiCommitObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiCommit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	commitForOtherAdmins_value := o.CommitForOtherAdmins.ValueStringPointer()
 	device_value := o.Device.ValueStringPointer()
@@ -26139,7 +27266,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiCommitObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessDomain_value := o.AccessDomain.ValueStringPointer()
 	adminRoles_value := o.AdminRoles.ValueStringPointer()
@@ -26154,8 +27281,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			certificateManagement_entry = new(adminrole.RoleDeviceWebuiDeviceCertificateManagement)
 		}
-
-		diags.Append(o.CertificateManagement.CopyToPango(ctx, &certificateManagement_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CertificateManagement.CopyToPango(ctx, append(ancestors, o), &certificateManagement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26163,6 +27290,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 	configAudit_value := o.ConfigAudit.ValueStringPointer()
 	dataRedistribution_value := o.DataRedistribution.ValueStringPointer()
 	deviceQuarantine_value := o.DeviceQuarantine.ValueStringPointer()
+	dhcpSyslogServer_value := o.DhcpSyslogServer.ValueStringPointer()
 	dynamicUpdates_value := o.DynamicUpdates.ValueStringPointer()
 	globalProtectClient_value := o.GlobalProtectClient.ValueStringPointer()
 	highAvailability_value := o.HighAvailability.ValueStringPointer()
@@ -26174,8 +27302,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			localUserDatabase_entry = new(adminrole.RoleDeviceWebuiDeviceLocalUserDatabase)
 		}
-
-		diags.Append(o.LocalUserDatabase.CopyToPango(ctx, &localUserDatabase_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalUserDatabase.CopyToPango(ctx, append(ancestors, o), &localUserDatabase_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26188,8 +27316,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			logSettings_entry = new(adminrole.RoleDeviceWebuiDeviceLogSettings)
 		}
-
-		diags.Append(o.LogSettings.CopyToPango(ctx, &logSettings_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LogSettings.CopyToPango(ctx, append(ancestors, o), &logSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26203,8 +27331,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			policyRecommendations_entry = new(adminrole.RoleDeviceWebuiDevicePolicyRecommendations)
 		}
-
-		diags.Append(o.PolicyRecommendations.CopyToPango(ctx, &policyRecommendations_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PolicyRecommendations.CopyToPango(ctx, append(ancestors, o), &policyRecommendations_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26217,8 +27345,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			serverProfile_entry = new(adminrole.RoleDeviceWebuiDeviceServerProfile)
 		}
-
-		diags.Append(o.ServerProfile.CopyToPango(ctx, &serverProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ServerProfile.CopyToPango(ctx, append(ancestors, o), &serverProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26230,8 +27358,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 		} else {
 			setup_entry = new(adminrole.RoleDeviceWebuiDeviceSetup)
 		}
-
-		diags.Append(o.Setup.CopyToPango(ctx, &setup_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Setup.CopyToPango(ctx, append(ancestors, o), &setup_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26243,7 +27371,6 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 	userIdentification_value := o.UserIdentification.ValueStringPointer()
 	virtualSystems_value := o.VirtualSystems.ValueStringPointer()
 	vmInfoSource_value := o.VmInfoSource.ValueStringPointer()
-	dhcpSyslogServer_value := o.DhcpSyslogServer.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleDeviceWebuiDevice)
@@ -26258,6 +27385,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 	(*obj).ConfigAudit = configAudit_value
 	(*obj).DataRedistribution = dataRedistribution_value
 	(*obj).DeviceQuarantine = deviceQuarantine_value
+	(*obj).DhcpSyslogServer = dhcpSyslogServer_value
 	(*obj).DynamicUpdates = dynamicUpdates_value
 	(*obj).GlobalProtectClient = globalProtectClient_value
 	(*obj).HighAvailability = highAvailability_value
@@ -26278,11 +27406,10 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyToPango(ctx context.C
 	(*obj).UserIdentification = userIdentification_value
 	(*obj).VirtualSystems = virtualSystems_value
 	(*obj).VmInfoSource = vmInfoSource_value
-	(*obj).DhcpSyslogServer = dhcpSyslogServer_value
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceCertificateManagement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceCertificateManagement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	certificates_value := o.Certificates.ValueStringPointer()
@@ -26305,7 +27432,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) Copy
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceLocalUserDatabase, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceLocalUserDatabase, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	userGroups_value := o.UserGroups.ValueStringPointer()
 	users_value := o.Users.ValueStringPointer()
@@ -26318,7 +27445,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyToPa
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceLogSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceLogSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ccAlarm_value := o.CcAlarm.ValueStringPointer()
 	config_value := o.Config.ValueStringPointer()
@@ -26345,7 +27472,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDevicePolicyRecommendations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDevicePolicyRecommendations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	iot_value := o.Iot.ValueStringPointer()
 	saas_value := o.Saas.ValueStringPointer()
@@ -26358,7 +27485,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) Copy
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceServerProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceServerProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dns_value := o.Dns.ValueStringPointer()
 	email_value := o.Email.ValueStringPointer()
@@ -26393,7 +27520,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) CopyToPango(
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiDeviceSetup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiDeviceSetup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	contentId_value := o.ContentId.ValueStringPointer()
 	hsm_value := o.Hsm.ValueStringPointer()
@@ -26420,7 +27547,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiGlobalObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiGlobal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiGlobalObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiGlobal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	systemAlarms_value := o.SystemAlarms.ValueStringPointer()
 
@@ -26431,7 +27558,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiGlobalObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	appScope_value := o.AppScope.ValueStringPointer()
 	applicationReports_value := o.ApplicationReports.ValueStringPointer()
@@ -26442,8 +27569,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx context.
 		} else {
 			automatedCorrelationEngine_entry = new(adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine)
 		}
-
-		diags.Append(o.AutomatedCorrelationEngine.CopyToPango(ctx, &automatedCorrelationEngine_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AutomatedCorrelationEngine.CopyToPango(ctx, append(ancestors, o), &automatedCorrelationEngine_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26457,8 +27584,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx context.
 		} else {
 			customReports_entry = new(adminrole.RoleDeviceWebuiMonitorCustomReports)
 		}
-
-		diags.Append(o.CustomReports.CopyToPango(ctx, &customReports_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CustomReports.CopyToPango(ctx, append(ancestors, o), &customReports_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26472,8 +27599,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx context.
 		} else {
 			logs_entry = new(adminrole.RoleDeviceWebuiMonitorLogs)
 		}
-
-		diags.Append(o.Logs.CopyToPango(ctx, &logs_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Logs.CopyToPango(ctx, append(ancestors, o), &logs_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26486,8 +27613,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx context.
 		} else {
 			pdfReports_entry = new(adminrole.RoleDeviceWebuiMonitorPdfReports)
 		}
-
-		diags.Append(o.PdfReports.CopyToPango(ctx, &pdfReports_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PdfReports.CopyToPango(ctx, append(ancestors, o), &pdfReports_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26522,7 +27649,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	correlatedEvents_value := o.CorrelatedEvents.ValueStringPointer()
 	correlationObjects_value := o.CorrelationObjects.ValueStringPointer()
@@ -26535,7 +27662,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitorCustomReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitorCustomReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationStatistics_value := o.ApplicationStatistics.ValueStringPointer()
 	auth_value := o.Auth.ValueStringPointer()
@@ -26588,7 +27715,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) CopyToPango
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitorLogs, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitorLogs, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	alarm_value := o.Alarm.ValueStringPointer()
 	authentication_value := o.Authentication.ValueStringPointer()
@@ -26631,7 +27758,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiMonitorPdfReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiMonitorPdfReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	emailScheduler_value := o.EmailScheduler.ValueStringPointer()
 	managePdfSummary_value := o.ManagePdfSummary.ValueStringPointer()
@@ -26652,7 +27779,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dhcp_value := o.Dhcp.ValueStringPointer()
 	dnsProxy_value := o.DnsProxy.ValueStringPointer()
@@ -26663,8 +27790,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx context.
 		} else {
 			globalProtect_entry = new(adminrole.RoleDeviceWebuiNetworkGlobalProtect)
 		}
-
-		diags.Append(o.GlobalProtect.CopyToPango(ctx, &globalProtect_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalProtect.CopyToPango(ctx, append(ancestors, o), &globalProtect_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26680,8 +27807,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx context.
 		} else {
 			networkProfiles_entry = new(adminrole.RoleDeviceWebuiNetworkNetworkProfiles)
 		}
-
-		diags.Append(o.NetworkProfiles.CopyToPango(ctx, &networkProfiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.NetworkProfiles.CopyToPango(ctx, append(ancestors, o), &networkProfiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26694,18 +27821,18 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx context.
 		} else {
 			routing_entry = new(adminrole.RoleDeviceWebuiNetworkRouting)
 		}
-
-		diags.Append(o.Routing.CopyToPango(ctx, &routing_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Routing.CopyToPango(ctx, append(ancestors, o), &routing_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	sdwanInterfaceProfile_value := o.SdwanInterfaceProfile.ValueStringPointer()
+	secureWebGateway_value := o.SecureWebGateway.ValueStringPointer()
 	virtualRouters_value := o.VirtualRouters.ValueStringPointer()
 	virtualWires_value := o.VirtualWires.ValueStringPointer()
 	vlans_value := o.Vlans.ValueStringPointer()
 	zones_value := o.Zones.ValueStringPointer()
-	secureWebGateway_value := o.SecureWebGateway.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleDeviceWebuiNetwork)
@@ -26721,15 +27848,15 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyToPango(ctx context.
 	(*obj).Qos = qos_value
 	(*obj).Routing = routing_entry
 	(*obj).SdwanInterfaceProfile = sdwanInterfaceProfile_value
+	(*obj).SecureWebGateway = secureWebGateway_value
 	(*obj).VirtualRouters = virtualRouters_value
 	(*obj).VirtualWires = virtualWires_value
 	(*obj).Vlans = vlans_value
 	(*obj).Zones = zones_value
-	(*obj).SecureWebGateway = secureWebGateway_value
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetworkGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetworkGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	clientlessAppGroups_value := o.ClientlessAppGroups.ValueStringPointer()
 	clientlessApps_value := o.ClientlessApps.ValueStringPointer()
@@ -26748,7 +27875,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyToPango
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetworkNetworkProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetworkNetworkProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	bfdProfile_value := o.BfdProfile.ValueStringPointer()
 	gpAppIpsecCrypto_value := o.GpAppIpsecCrypto.ValueStringPointer()
@@ -26777,7 +27904,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyToPan
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetworkRouting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetworkRouting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	logicalRouters_value := o.LogicalRouters.ValueStringPointer()
 	var routingProfiles_entry *adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles
@@ -26787,8 +27914,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) CopyToPango(ctx c
 		} else {
 			routingProfiles_entry = new(adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles)
 		}
-
-		diags.Append(o.RoutingProfiles.CopyToPango(ctx, &routingProfiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.RoutingProfiles.CopyToPango(ctx, append(ancestors, o), &routingProfiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26802,7 +27929,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	bfd_value := o.Bfd.ValueStringPointer()
 	bgp_value := o.Bgp.ValueStringPointer()
@@ -26825,7 +27952,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) Co
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	addressGroups_value := o.AddressGroups.ValueStringPointer()
 	addresses_value := o.Addresses.ValueStringPointer()
@@ -26840,8 +27967,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			customObjects_entry = new(adminrole.RoleDeviceWebuiObjectsCustomObjects)
 		}
-
-		diags.Append(o.CustomObjects.CopyToPango(ctx, &customObjects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CustomObjects.CopyToPango(ctx, append(ancestors, o), &customObjects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26853,8 +27980,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			decryption_entry = new(adminrole.RoleDeviceWebuiObjectsDecryption)
 		}
-
-		diags.Append(o.Decryption.CopyToPango(ctx, &decryption_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Decryption.CopyToPango(ctx, append(ancestors, o), &decryption_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26869,8 +27996,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			globalProtect_entry = new(adminrole.RoleDeviceWebuiObjectsGlobalProtect)
 		}
-
-		diags.Append(o.GlobalProtect.CopyToPango(ctx, &globalProtect_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalProtect.CopyToPango(ctx, append(ancestors, o), &globalProtect_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26886,8 +28013,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			sdwan_entry = new(adminrole.RoleDeviceWebuiObjectsSdwan)
 		}
-
-		diags.Append(o.Sdwan.CopyToPango(ctx, &sdwan_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sdwan.CopyToPango(ctx, append(ancestors, o), &sdwan_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26900,8 +28027,8 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.
 		} else {
 			securityProfiles_entry = new(adminrole.RoleDeviceWebuiObjectsSecurityProfiles)
 		}
-
-		diags.Append(o.SecurityProfiles.CopyToPango(ctx, &securityProfiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SecurityProfiles.CopyToPango(ctx, append(ancestors, o), &securityProfiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -26938,7 +28065,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsCustomObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsCustomObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dataPatterns_value := o.DataPatterns.ValueStringPointer()
 	spyware_value := o.Spyware.ValueStringPointer()
@@ -26955,7 +28082,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyToPango
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsDecryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsDecryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	decryptionProfile_value := o.DecryptionProfile.ValueStringPointer()
 
@@ -26966,7 +28093,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hipObjects_value := o.HipObjects.ValueStringPointer()
 	hipProfiles_value := o.HipProfiles.ValueStringPointer()
@@ -26979,7 +28106,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyToPango
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsSdwan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsSdwan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	sdwanDistProfile_value := o.SdwanDistProfile.ValueStringPointer()
 	sdwanErrorCorrectionProfile_value := o.SdwanErrorCorrectionProfile.ValueStringPointer()
@@ -26996,7 +28123,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiObjectsSecurityProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiObjectsSecurityProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	antiSpyware_value := o.AntiSpyware.ValueStringPointer()
 	antivirus_value := o.Antivirus.ValueStringPointer()
@@ -27025,7 +28152,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyToPa
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiOperationsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiOperations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiOperationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiOperations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	downloadCoreFiles_value := o.DownloadCoreFiles.ValueStringPointer()
 	downloadPcapFiles_value := o.DownloadPcapFiles.ValueStringPointer()
@@ -27044,7 +28171,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiOperationsObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiPoliciesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiPoliciesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationOverrideRulebase_value := o.ApplicationOverrideRulebase.ValueStringPointer()
 	authenticationRulebase_value := o.AuthenticationRulebase.ValueStringPointer()
@@ -27077,7 +28204,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiPoliciesObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiPrivacyObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiPrivacy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiPrivacyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiPrivacy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	showFullIpAddresses_value := o.ShowFullIpAddresses.ValueStringPointer()
 	showUserNamesInLogsAndReports_value := o.ShowUserNamesInLogsAndReports.ValueStringPointer()
@@ -27092,22 +28219,22 @@ func (o *AdminRoleResourceRoleDeviceWebuiPrivacyObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceWebuiSaveObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceWebuiSave, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiSaveObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceWebuiSave, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
+	objectLevelChanges_value := o.ObjectLevelChanges.ValueStringPointer()
 	partialSave_value := o.PartialSave.ValueStringPointer()
 	saveForOtherAdmins_value := o.SaveForOtherAdmins.ValueStringPointer()
-	objectLevelChanges_value := o.ObjectLevelChanges.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleDeviceWebuiSave)
 	}
+	(*obj).ObjectLevelChanges = objectLevelChanges_value
 	(*obj).PartialSave = partialSave_value
 	(*obj).SaveForOtherAdmins = saveForOtherAdmins_value
-	(*obj).ObjectLevelChanges = objectLevelChanges_value
 
 	return diags
 }
-func (o *AdminRoleResourceRoleDeviceXmlapiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleDeviceXmlapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceXmlapiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleDeviceXmlapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	commit_value := o.Commit.ValueStringPointer()
 	config_value := o.Config.ValueStringPointer()
@@ -27134,7 +28261,7 @@ func (o *AdminRoleResourceRoleDeviceXmlapiObject) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	cli_value := o.Cli.ValueStringPointer()
 	var restapi_entry *adminrole.RoleVsysRestapi
@@ -27144,8 +28271,8 @@ func (o *AdminRoleResourceRoleVsysObject) CopyToPango(ctx context.Context, obj *
 		} else {
 			restapi_entry = new(adminrole.RoleVsysRestapi)
 		}
-
-		diags.Append(o.Restapi.CopyToPango(ctx, &restapi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Restapi.CopyToPango(ctx, append(ancestors, o), &restapi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27157,8 +28284,8 @@ func (o *AdminRoleResourceRoleVsysObject) CopyToPango(ctx context.Context, obj *
 		} else {
 			webui_entry = new(adminrole.RoleVsysWebui)
 		}
-
-		diags.Append(o.Webui.CopyToPango(ctx, &webui_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Webui.CopyToPango(ctx, append(ancestors, o), &webui_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27170,8 +28297,8 @@ func (o *AdminRoleResourceRoleVsysObject) CopyToPango(ctx context.Context, obj *
 		} else {
 			xmlapi_entry = new(adminrole.RoleVsysXmlapi)
 		}
-
-		diags.Append(o.Xmlapi.CopyToPango(ctx, &xmlapi_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Xmlapi.CopyToPango(ctx, append(ancestors, o), &xmlapi_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27187,7 +28314,7 @@ func (o *AdminRoleResourceRoleVsysObject) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysRestapiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_entry *adminrole.RoleVsysRestapiDevice
 	if o.Device != nil {
@@ -27196,8 +28323,8 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyToPango(ctx context.Context
 		} else {
 			device_entry = new(adminrole.RoleVsysRestapiDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27209,8 +28336,8 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyToPango(ctx context.Context
 		} else {
 			network_entry = new(adminrole.RoleVsysRestapiNetwork)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Network.CopyToPango(ctx, append(ancestors, o), &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27222,8 +28349,8 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyToPango(ctx context.Context
 		} else {
 			objects_entry = new(adminrole.RoleVsysRestapiObjects)
 		}
-
-		diags.Append(o.Objects.CopyToPango(ctx, &objects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Objects.CopyToPango(ctx, append(ancestors, o), &objects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27235,8 +28362,8 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyToPango(ctx context.Context
 		} else {
 			policies_entry = new(adminrole.RoleVsysRestapiPolicies)
 		}
-
-		diags.Append(o.Policies.CopyToPango(ctx, &policies_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Policies.CopyToPango(ctx, append(ancestors, o), &policies_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27248,8 +28375,8 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyToPango(ctx context.Context
 		} else {
 			system_entry = new(adminrole.RoleVsysRestapiSystem)
 		}
-
-		diags.Append(o.System.CopyToPango(ctx, &system_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.System.CopyToPango(ctx, append(ancestors, o), &system_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27266,7 +28393,7 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysRestapiDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	emailServerProfiles_value := o.EmailServerProfiles.ValueStringPointer()
 	httpServerProfiles_value := o.HttpServerProfiles.ValueStringPointer()
@@ -27289,15 +28416,15 @@ func (o *AdminRoleResourceRoleVsysRestapiDeviceObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysRestapiNetworkObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	globalprotectClientlessAppGroups_value := o.GlobalprotectClientlessAppGroups.ValueStringPointer()
 	globalprotectClientlessApps_value := o.GlobalprotectClientlessApps.ValueStringPointer()
 	globalprotectGateways_value := o.GlobalprotectGateways.ValueStringPointer()
 	globalprotectMdmServers_value := o.GlobalprotectMdmServers.ValueStringPointer()
 	globalprotectPortals_value := o.GlobalprotectPortals.ValueStringPointer()
-	zones_value := o.Zones.ValueStringPointer()
 	sdwanInterfaceProfiles_value := o.SdwanInterfaceProfiles.ValueStringPointer()
+	zones_value := o.Zones.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleVsysRestapiNetwork)
@@ -27307,12 +28434,12 @@ func (o *AdminRoleResourceRoleVsysRestapiNetworkObject) CopyToPango(ctx context.
 	(*obj).GlobalprotectGateways = globalprotectGateways_value
 	(*obj).GlobalprotectMdmServers = globalprotectMdmServers_value
 	(*obj).GlobalprotectPortals = globalprotectPortals_value
-	(*obj).Zones = zones_value
 	(*obj).SdwanInterfaceProfiles = sdwanInterfaceProfiles_value
+	(*obj).Zones = zones_value
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysRestapiObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	addressGroups_value := o.AddressGroups.ValueStringPointer()
 	addresses_value := o.Addresses.ValueStringPointer()
@@ -27397,7 +28524,7 @@ func (o *AdminRoleResourceRoleVsysRestapiObjectsObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysRestapiPoliciesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiPoliciesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationOverrideRules_value := o.ApplicationOverrideRules.ValueStringPointer()
 	authenticationRules_value := o.AuthenticationRules.ValueStringPointer()
@@ -27428,7 +28555,7 @@ func (o *AdminRoleResourceRoleVsysRestapiPoliciesObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysRestapiSystemObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysRestapiSystem, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiSystemObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysRestapiSystem, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	configuration_value := o.Configuration.ValueStringPointer()
 
@@ -27439,7 +28566,7 @@ func (o *AdminRoleResourceRoleVsysRestapiSystemObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebui, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebui, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	acc_value := o.Acc.ValueStringPointer()
 	var commit_entry *adminrole.RoleVsysWebuiCommit
@@ -27449,8 +28576,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 		} else {
 			commit_entry = new(adminrole.RoleVsysWebuiCommit)
 		}
-
-		diags.Append(o.Commit.CopyToPango(ctx, &commit_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Commit.CopyToPango(ctx, append(ancestors, o), &commit_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27463,8 +28590,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 		} else {
 			device_entry = new(adminrole.RoleVsysWebuiDevice)
 		}
-
-		diags.Append(o.Device.CopyToPango(ctx, &device_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Device.CopyToPango(ctx, append(ancestors, o), &device_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27476,8 +28603,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 		} else {
 			monitor_entry = new(adminrole.RoleVsysWebuiMonitor)
 		}
-
-		diags.Append(o.Monitor.CopyToPango(ctx, &monitor_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Monitor.CopyToPango(ctx, append(ancestors, o), &monitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27489,8 +28616,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 		} else {
 			network_entry = new(adminrole.RoleVsysWebuiNetwork)
 		}
-
-		diags.Append(o.Network.CopyToPango(ctx, &network_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Network.CopyToPango(ctx, append(ancestors, o), &network_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27502,8 +28629,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 		} else {
 			objects_entry = new(adminrole.RoleVsysWebuiObjects)
 		}
-
-		diags.Append(o.Objects.CopyToPango(ctx, &objects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Objects.CopyToPango(ctx, append(ancestors, o), &objects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27515,8 +28642,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 		} else {
 			operations_entry = new(adminrole.RoleVsysWebuiOperations)
 		}
-
-		diags.Append(o.Operations.CopyToPango(ctx, &operations_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Operations.CopyToPango(ctx, append(ancestors, o), &operations_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27528,8 +28655,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 		} else {
 			policies_entry = new(adminrole.RoleVsysWebuiPolicies)
 		}
-
-		diags.Append(o.Policies.CopyToPango(ctx, &policies_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Policies.CopyToPango(ctx, append(ancestors, o), &policies_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27541,8 +28668,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 		} else {
 			privacy_entry = new(adminrole.RoleVsysWebuiPrivacy)
 		}
-
-		diags.Append(o.Privacy.CopyToPango(ctx, &privacy_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Privacy.CopyToPango(ctx, append(ancestors, o), &privacy_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27554,8 +28681,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 		} else {
 			save_entry = new(adminrole.RoleVsysWebuiSave)
 		}
-
-		diags.Append(o.Save.CopyToPango(ctx, &save_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Save.CopyToPango(ctx, append(ancestors, o), &save_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27582,7 +28709,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiCommitObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiCommit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiCommitObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiCommit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	commitForOtherAdmins_value := o.CommitForOtherAdmins.ValueStringPointer()
 	virtualSystems_value := o.VirtualSystems.ValueStringPointer()
@@ -27595,7 +28722,7 @@ func (o *AdminRoleResourceRoleVsysWebuiCommitObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	administrators_value := o.Administrators.ValueStringPointer()
 	authenticationProfile_value := o.AuthenticationProfile.ValueStringPointer()
@@ -27608,14 +28735,15 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Con
 		} else {
 			certificateManagement_entry = new(adminrole.RoleVsysWebuiDeviceCertificateManagement)
 		}
-
-		diags.Append(o.CertificateManagement.CopyToPango(ctx, &certificateManagement_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CertificateManagement.CopyToPango(ctx, append(ancestors, o), &certificateManagement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	dataRedistribution_value := o.DataRedistribution.ValueStringPointer()
 	deviceQuarantine_value := o.DeviceQuarantine.ValueStringPointer()
+	dhcpSyslogServer_value := o.DhcpSyslogServer.ValueStringPointer()
 	var localUserDatabase_entry *adminrole.RoleVsysWebuiDeviceLocalUserDatabase
 	if o.LocalUserDatabase != nil {
 		if *obj != nil && (*obj).LocalUserDatabase != nil {
@@ -27623,8 +28751,8 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Con
 		} else {
 			localUserDatabase_entry = new(adminrole.RoleVsysWebuiDeviceLocalUserDatabase)
 		}
-
-		diags.Append(o.LocalUserDatabase.CopyToPango(ctx, &localUserDatabase_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalUserDatabase.CopyToPango(ctx, append(ancestors, o), &localUserDatabase_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27636,8 +28764,8 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Con
 		} else {
 			logSettings_entry = new(adminrole.RoleVsysWebuiDeviceLogSettings)
 		}
-
-		diags.Append(o.LogSettings.CopyToPango(ctx, &logSettings_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LogSettings.CopyToPango(ctx, append(ancestors, o), &logSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27649,8 +28777,8 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Con
 		} else {
 			policyRecommendations_entry = new(adminrole.RoleVsysWebuiDevicePolicyRecommendations)
 		}
-
-		diags.Append(o.PolicyRecommendations.CopyToPango(ctx, &policyRecommendations_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PolicyRecommendations.CopyToPango(ctx, append(ancestors, o), &policyRecommendations_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27662,8 +28790,8 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Con
 		} else {
 			serverProfile_entry = new(adminrole.RoleVsysWebuiDeviceServerProfile)
 		}
-
-		diags.Append(o.ServerProfile.CopyToPango(ctx, &serverProfile_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ServerProfile.CopyToPango(ctx, append(ancestors, o), &serverProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27675,8 +28803,8 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Con
 		} else {
 			setup_entry = new(adminrole.RoleVsysWebuiDeviceSetup)
 		}
-
-		diags.Append(o.Setup.CopyToPango(ctx, &setup_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Setup.CopyToPango(ctx, append(ancestors, o), &setup_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27684,7 +28812,6 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Con
 	troubleshooting_value := o.Troubleshooting.ValueStringPointer()
 	userIdentification_value := o.UserIdentification.ValueStringPointer()
 	vmInfoSource_value := o.VmInfoSource.ValueStringPointer()
-	dhcpSyslogServer_value := o.DhcpSyslogServer.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleVsysWebuiDevice)
@@ -27696,6 +28823,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Con
 	(*obj).CertificateManagement = certificateManagement_entry
 	(*obj).DataRedistribution = dataRedistribution_value
 	(*obj).DeviceQuarantine = deviceQuarantine_value
+	(*obj).DhcpSyslogServer = dhcpSyslogServer_value
 	(*obj).LocalUserDatabase = localUserDatabase_entry
 	(*obj).LogSettings = logSettings_entry
 	(*obj).PolicyRecommendations = policyRecommendations_entry
@@ -27704,11 +28832,10 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyToPango(ctx context.Con
 	(*obj).Troubleshooting = troubleshooting_value
 	(*obj).UserIdentification = userIdentification_value
 	(*obj).VmInfoSource = vmInfoSource_value
-	(*obj).DhcpSyslogServer = dhcpSyslogServer_value
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceCertificateManagement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceCertificateManagement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	certificates_value := o.Certificates.ValueStringPointer()
@@ -27731,7 +28858,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) CopyTo
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceLocalUserDatabase, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceLocalUserDatabase, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	userGroups_value := o.UserGroups.ValueStringPointer()
 	users_value := o.Users.ValueStringPointer()
@@ -27744,7 +28871,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyToPang
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceLogSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceLogSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	config_value := o.Config.ValueStringPointer()
 	correlation_value := o.Correlation.ValueStringPointer()
@@ -27767,7 +28894,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDevicePolicyRecommendations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDevicePolicyRecommendations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	iot_value := o.Iot.ValueStringPointer()
 	saas_value := o.Saas.ValueStringPointer()
@@ -27780,7 +28907,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyTo
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceServerProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceServerProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dns_value := o.Dns.ValueStringPointer()
 	email_value := o.Email.ValueStringPointer()
@@ -27815,7 +28942,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiDeviceSetupObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiDeviceSetup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceSetupObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiDeviceSetup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	contentId_value := o.ContentId.ValueStringPointer()
 	hsm_value := o.Hsm.ValueStringPointer()
@@ -27842,7 +28969,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceSetupObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	appScope_value := o.AppScope.ValueStringPointer()
 	var automatedCorrelationEngine_entry *adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine
@@ -27852,8 +28979,8 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.Co
 		} else {
 			automatedCorrelationEngine_entry = new(adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine)
 		}
-
-		diags.Append(o.AutomatedCorrelationEngine.CopyToPango(ctx, &automatedCorrelationEngine_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.AutomatedCorrelationEngine.CopyToPango(ctx, append(ancestors, o), &automatedCorrelationEngine_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27866,8 +28993,8 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.Co
 		} else {
 			customReports_entry = new(adminrole.RoleVsysWebuiMonitorCustomReports)
 		}
-
-		diags.Append(o.CustomReports.CopyToPango(ctx, &customReports_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CustomReports.CopyToPango(ctx, append(ancestors, o), &customReports_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27880,8 +29007,8 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.Co
 		} else {
 			logs_entry = new(adminrole.RoleVsysWebuiMonitorLogs)
 		}
-
-		diags.Append(o.Logs.CopyToPango(ctx, &logs_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Logs.CopyToPango(ctx, append(ancestors, o), &logs_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27893,8 +29020,8 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.Co
 		} else {
 			pdfReports_entry = new(adminrole.RoleVsysWebuiMonitorPdfReports)
 		}
-
-		diags.Append(o.PdfReports.CopyToPango(ctx, &pdfReports_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PdfReports.CopyToPango(ctx, append(ancestors, o), &pdfReports_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -27917,7 +29044,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	correlatedEvents_value := o.CorrelatedEvents.ValueStringPointer()
 	correlationObjects_value := o.CorrelationObjects.ValueStringPointer()
@@ -27930,7 +29057,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) 
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitorCustomReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitorCustomReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationStatistics_value := o.ApplicationStatistics.ValueStringPointer()
 	auth_value := o.Auth.ValueStringPointer()
@@ -27983,7 +29110,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) CopyToPango(c
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiMonitorLogsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitorLogs, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorLogsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitorLogs, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_value := o.Authentication.ValueStringPointer()
 	dataFiltering_value := o.DataFiltering.ValueStringPointer()
@@ -28020,7 +29147,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorLogsObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiMonitorPdfReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiMonitorPdfReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	emailScheduler_value := o.EmailScheduler.ValueStringPointer()
 	managePdfSummary_value := o.ManagePdfSummary.ValueStringPointer()
@@ -28041,7 +29168,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var globalProtect_entry *adminrole.RoleVsysWebuiNetworkGlobalProtect
 	if o.GlobalProtect != nil {
@@ -28050,8 +29177,8 @@ func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) CopyToPango(ctx context.Co
 		} else {
 			globalProtect_entry = new(adminrole.RoleVsysWebuiNetworkGlobalProtect)
 		}
-
-		diags.Append(o.GlobalProtect.CopyToPango(ctx, &globalProtect_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalProtect.CopyToPango(ctx, append(ancestors, o), &globalProtect_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28068,7 +29195,7 @@ func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiNetworkGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiNetworkGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	clientlessAppGroups_value := o.ClientlessAppGroups.ValueStringPointer()
 	clientlessApps_value := o.ClientlessApps.ValueStringPointer()
@@ -28087,7 +29214,7 @@ func (o *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) CopyToPango(c
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	addressGroups_value := o.AddressGroups.ValueStringPointer()
 	addresses_value := o.Addresses.ValueStringPointer()
@@ -28102,8 +29229,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Co
 		} else {
 			customObjects_entry = new(adminrole.RoleVsysWebuiObjectsCustomObjects)
 		}
-
-		diags.Append(o.CustomObjects.CopyToPango(ctx, &customObjects_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.CustomObjects.CopyToPango(ctx, append(ancestors, o), &customObjects_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28115,8 +29242,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Co
 		} else {
 			decryption_entry = new(adminrole.RoleVsysWebuiObjectsDecryption)
 		}
-
-		diags.Append(o.Decryption.CopyToPango(ctx, &decryption_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Decryption.CopyToPango(ctx, append(ancestors, o), &decryption_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28131,8 +29258,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Co
 		} else {
 			globalProtect_entry = new(adminrole.RoleVsysWebuiObjectsGlobalProtect)
 		}
-
-		diags.Append(o.GlobalProtect.CopyToPango(ctx, &globalProtect_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GlobalProtect.CopyToPango(ctx, append(ancestors, o), &globalProtect_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28148,8 +29275,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Co
 		} else {
 			sdwan_entry = new(adminrole.RoleVsysWebuiObjectsSdwan)
 		}
-
-		diags.Append(o.Sdwan.CopyToPango(ctx, &sdwan_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sdwan.CopyToPango(ctx, append(ancestors, o), &sdwan_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28162,8 +29289,8 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Co
 		} else {
 			securityProfiles_entry = new(adminrole.RoleVsysWebuiObjectsSecurityProfiles)
 		}
-
-		diags.Append(o.SecurityProfiles.CopyToPango(ctx, &securityProfiles_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.SecurityProfiles.CopyToPango(ctx, append(ancestors, o), &securityProfiles_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28200,7 +29327,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsCustomObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsCustomObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dataPatterns_value := o.DataPatterns.ValueStringPointer()
 	spyware_value := o.Spyware.ValueStringPointer()
@@ -28217,7 +29344,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) CopyToPango(c
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsDecryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsDecryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	decryptionProfile_value := o.DecryptionProfile.ValueStringPointer()
 
@@ -28228,7 +29355,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hipObjects_value := o.HipObjects.ValueStringPointer()
 	hipProfiles_value := o.HipProfiles.ValueStringPointer()
@@ -28241,7 +29368,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) CopyToPango(c
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsSdwan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsSdwan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	sdwanDistProfile_value := o.SdwanDistProfile.ValueStringPointer()
 	sdwanErrorCorrectionProfile_value := o.SdwanErrorCorrectionProfile.ValueStringPointer()
@@ -28258,7 +29385,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiObjectsSecurityProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiObjectsSecurityProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	antiSpyware_value := o.AntiSpyware.ValueStringPointer()
 	antivirus_value := o.Antivirus.ValueStringPointer()
@@ -28287,7 +29414,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyToPang
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiOperationsObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiOperations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiOperationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiOperations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	downloadCoreFiles_value := o.DownloadCoreFiles.ValueStringPointer()
 	downloadPcapFiles_value := o.DownloadPcapFiles.ValueStringPointer()
@@ -28306,7 +29433,7 @@ func (o *AdminRoleResourceRoleVsysWebuiOperationsObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiPoliciesObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiPoliciesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationOverrideRulebase_value := o.ApplicationOverrideRulebase.ValueStringPointer()
 	authenticationRulebase_value := o.AuthenticationRulebase.ValueStringPointer()
@@ -28339,7 +29466,7 @@ func (o *AdminRoleResourceRoleVsysWebuiPoliciesObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiPrivacyObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiPrivacy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiPrivacyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiPrivacy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	showFullIpAddresses_value := o.ShowFullIpAddresses.ValueStringPointer()
 	showUserNamesInLogsAndReports_value := o.ShowUserNamesInLogsAndReports.ValueStringPointer()
@@ -28354,22 +29481,22 @@ func (o *AdminRoleResourceRoleVsysWebuiPrivacyObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysWebuiSaveObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysWebuiSave, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiSaveObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysWebuiSave, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
+	objectLevelChanges_value := o.ObjectLevelChanges.ValueStringPointer()
 	partialSave_value := o.PartialSave.ValueStringPointer()
 	saveForOtherAdmins_value := o.SaveForOtherAdmins.ValueStringPointer()
-	objectLevelChanges_value := o.ObjectLevelChanges.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(adminrole.RoleVsysWebuiSave)
 	}
+	(*obj).ObjectLevelChanges = objectLevelChanges_value
 	(*obj).PartialSave = partialSave_value
 	(*obj).SaveForOtherAdmins = saveForOtherAdmins_value
-	(*obj).ObjectLevelChanges = objectLevelChanges_value
 
 	return diags
 }
-func (o *AdminRoleResourceRoleVsysXmlapiObject) CopyToPango(ctx context.Context, obj **adminrole.RoleVsysXmlapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysXmlapiObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **adminrole.RoleVsysXmlapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	commit_value := o.Commit.ValueStringPointer()
 	config_value := o.Config.ValueStringPointer()
@@ -28397,13 +29524,12 @@ func (o *AdminRoleResourceRoleVsysXmlapiObject) CopyToPango(ctx context.Context,
 	return diags
 }
 
-func (o *AdminRoleResourceModel) CopyFromPango(ctx context.Context, obj *adminrole.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var role_object *AdminRoleResourceRoleObject
 	if obj.Role != nil {
 		role_object = new(AdminRoleResourceRoleObject)
-
-		diags.Append(role_object.CopyFromPango(ctx, obj.Role, encrypted)...)
+		diags.Append(role_object.CopyFromPango(ctx, ancestors, obj.Role, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28420,13 +29546,12 @@ func (o *AdminRoleResourceModel) CopyFromPango(ctx context.Context, obj *adminro
 	return diags
 }
 
-func (o *AdminRoleResourceRoleObject) CopyFromPango(ctx context.Context, obj *adminrole.Role, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.Role, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_object *AdminRoleResourceRoleDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleResourceRoleDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28434,8 +29559,7 @@ func (o *AdminRoleResourceRoleObject) CopyFromPango(ctx context.Context, obj *ad
 	var vsys_object *AdminRoleResourceRoleVsysObject
 	if obj.Vsys != nil {
 		vsys_object = new(AdminRoleResourceRoleVsysObject)
-
-		diags.Append(vsys_object.CopyFromPango(ctx, obj.Vsys, encrypted)...)
+		diags.Append(vsys_object.CopyFromPango(ctx, append(ancestors, o), obj.Vsys, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28447,13 +29571,12 @@ func (o *AdminRoleResourceRoleObject) CopyFromPango(ctx context.Context, obj *ad
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var restapi_object *AdminRoleResourceRoleDeviceRestapiObject
 	if obj.Restapi != nil {
 		restapi_object = new(AdminRoleResourceRoleDeviceRestapiObject)
-
-		diags.Append(restapi_object.CopyFromPango(ctx, obj.Restapi, encrypted)...)
+		diags.Append(restapi_object.CopyFromPango(ctx, append(ancestors, o), obj.Restapi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28461,8 +29584,7 @@ func (o *AdminRoleResourceRoleDeviceObject) CopyFromPango(ctx context.Context, o
 	var webui_object *AdminRoleResourceRoleDeviceWebuiObject
 	if obj.Webui != nil {
 		webui_object = new(AdminRoleResourceRoleDeviceWebuiObject)
-
-		diags.Append(webui_object.CopyFromPango(ctx, obj.Webui, encrypted)...)
+		diags.Append(webui_object.CopyFromPango(ctx, append(ancestors, o), obj.Webui, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28470,8 +29592,7 @@ func (o *AdminRoleResourceRoleDeviceObject) CopyFromPango(ctx context.Context, o
 	var xmlapi_object *AdminRoleResourceRoleDeviceXmlapiObject
 	if obj.Xmlapi != nil {
 		xmlapi_object = new(AdminRoleResourceRoleDeviceXmlapiObject)
-
-		diags.Append(xmlapi_object.CopyFromPango(ctx, obj.Xmlapi, encrypted)...)
+		diags.Append(xmlapi_object.CopyFromPango(ctx, append(ancestors, o), obj.Xmlapi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28489,13 +29610,12 @@ func (o *AdminRoleResourceRoleDeviceObject) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_object *AdminRoleResourceRoleDeviceRestapiDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleResourceRoleDeviceRestapiDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28503,8 +29623,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyFromPango(ctx context.Con
 	var network_object *AdminRoleResourceRoleDeviceRestapiNetworkObject
 	if obj.Network != nil {
 		network_object = new(AdminRoleResourceRoleDeviceRestapiNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, append(ancestors, o), obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28512,8 +29631,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyFromPango(ctx context.Con
 	var objects_object *AdminRoleResourceRoleDeviceRestapiObjectsObject
 	if obj.Objects != nil {
 		objects_object = new(AdminRoleResourceRoleDeviceRestapiObjectsObject)
-
-		diags.Append(objects_object.CopyFromPango(ctx, obj.Objects, encrypted)...)
+		diags.Append(objects_object.CopyFromPango(ctx, append(ancestors, o), obj.Objects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28521,8 +29639,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyFromPango(ctx context.Con
 	var policies_object *AdminRoleResourceRoleDeviceRestapiPoliciesObject
 	if obj.Policies != nil {
 		policies_object = new(AdminRoleResourceRoleDeviceRestapiPoliciesObject)
-
-		diags.Append(policies_object.CopyFromPango(ctx, obj.Policies, encrypted)...)
+		diags.Append(policies_object.CopyFromPango(ctx, append(ancestors, o), obj.Policies, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28530,8 +29647,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyFromPango(ctx context.Con
 	var system_object *AdminRoleResourceRoleDeviceRestapiSystemObject
 	if obj.System != nil {
 		system_object = new(AdminRoleResourceRoleDeviceRestapiSystemObject)
-
-		diags.Append(system_object.CopyFromPango(ctx, obj.System, encrypted)...)
+		diags.Append(system_object.CopyFromPango(ctx, append(ancestors, o), obj.System, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -28546,7 +29662,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceRestapiDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var emailServerProfiles_value types.String
@@ -28588,7 +29704,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiDeviceObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceRestapiNetworkObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var aggregateEthernetInterfaces_value types.String
@@ -28770,7 +29886,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiNetworkObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceRestapiObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var addressGroups_value types.String
@@ -28967,7 +30083,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiObjectsObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceRestapiPoliciesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiPoliciesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationOverrideRules_value types.String
@@ -29029,7 +30145,7 @@ func (o *AdminRoleResourceRoleDeviceRestapiPoliciesObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceRestapiSystemObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceRestapiSystem, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceRestapiSystemObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceRestapiSystem, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var configuration_value types.String
@@ -29041,13 +30157,12 @@ func (o *AdminRoleResourceRoleDeviceRestapiSystemObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebui, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebui, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var commit_object *AdminRoleResourceRoleDeviceWebuiCommitObject
 	if obj.Commit != nil {
 		commit_object = new(AdminRoleResourceRoleDeviceWebuiCommitObject)
-
-		diags.Append(commit_object.CopyFromPango(ctx, obj.Commit, encrypted)...)
+		diags.Append(commit_object.CopyFromPango(ctx, append(ancestors, o), obj.Commit, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29055,8 +30170,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	var device_object *AdminRoleResourceRoleDeviceWebuiDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleResourceRoleDeviceWebuiDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29064,8 +30178,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	var global_object *AdminRoleResourceRoleDeviceWebuiGlobalObject
 	if obj.Global != nil {
 		global_object = new(AdminRoleResourceRoleDeviceWebuiGlobalObject)
-
-		diags.Append(global_object.CopyFromPango(ctx, obj.Global, encrypted)...)
+		diags.Append(global_object.CopyFromPango(ctx, append(ancestors, o), obj.Global, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29073,8 +30186,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	var monitor_object *AdminRoleResourceRoleDeviceWebuiMonitorObject
 	if obj.Monitor != nil {
 		monitor_object = new(AdminRoleResourceRoleDeviceWebuiMonitorObject)
-
-		diags.Append(monitor_object.CopyFromPango(ctx, obj.Monitor, encrypted)...)
+		diags.Append(monitor_object.CopyFromPango(ctx, append(ancestors, o), obj.Monitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29082,8 +30194,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	var network_object *AdminRoleResourceRoleDeviceWebuiNetworkObject
 	if obj.Network != nil {
 		network_object = new(AdminRoleResourceRoleDeviceWebuiNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, append(ancestors, o), obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29091,8 +30202,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	var objects_object *AdminRoleResourceRoleDeviceWebuiObjectsObject
 	if obj.Objects != nil {
 		objects_object = new(AdminRoleResourceRoleDeviceWebuiObjectsObject)
-
-		diags.Append(objects_object.CopyFromPango(ctx, obj.Objects, encrypted)...)
+		diags.Append(objects_object.CopyFromPango(ctx, append(ancestors, o), obj.Objects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29100,8 +30210,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	var operations_object *AdminRoleResourceRoleDeviceWebuiOperationsObject
 	if obj.Operations != nil {
 		operations_object = new(AdminRoleResourceRoleDeviceWebuiOperationsObject)
-
-		diags.Append(operations_object.CopyFromPango(ctx, obj.Operations, encrypted)...)
+		diags.Append(operations_object.CopyFromPango(ctx, append(ancestors, o), obj.Operations, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29109,8 +30218,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	var policies_object *AdminRoleResourceRoleDeviceWebuiPoliciesObject
 	if obj.Policies != nil {
 		policies_object = new(AdminRoleResourceRoleDeviceWebuiPoliciesObject)
-
-		diags.Append(policies_object.CopyFromPango(ctx, obj.Policies, encrypted)...)
+		diags.Append(policies_object.CopyFromPango(ctx, append(ancestors, o), obj.Policies, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29118,8 +30226,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	var privacy_object *AdminRoleResourceRoleDeviceWebuiPrivacyObject
 	if obj.Privacy != nil {
 		privacy_object = new(AdminRoleResourceRoleDeviceWebuiPrivacyObject)
-
-		diags.Append(privacy_object.CopyFromPango(ctx, obj.Privacy, encrypted)...)
+		diags.Append(privacy_object.CopyFromPango(ctx, append(ancestors, o), obj.Privacy, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29127,8 +30234,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	var save_object *AdminRoleResourceRoleDeviceWebuiSaveObject
 	if obj.Save != nil {
 		save_object = new(AdminRoleResourceRoleDeviceWebuiSaveObject)
-
-		diags.Append(save_object.CopyFromPango(ctx, obj.Save, encrypted)...)
+		diags.Append(save_object.CopyFromPango(ctx, append(ancestors, o), obj.Save, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29168,7 +30274,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiCommitObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiCommit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiCommitObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiCommit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var commitForOtherAdmins_value types.String
@@ -29190,13 +30296,12 @@ func (o *AdminRoleResourceRoleDeviceWebuiCommitObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificateManagement_object *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject
 	if obj.CertificateManagement != nil {
 		certificateManagement_object = new(AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject)
-
-		diags.Append(certificateManagement_object.CopyFromPango(ctx, obj.CertificateManagement, encrypted)...)
+		diags.Append(certificateManagement_object.CopyFromPango(ctx, append(ancestors, o), obj.CertificateManagement, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29204,8 +30309,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context
 	var localUserDatabase_object *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject
 	if obj.LocalUserDatabase != nil {
 		localUserDatabase_object = new(AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject)
-
-		diags.Append(localUserDatabase_object.CopyFromPango(ctx, obj.LocalUserDatabase, encrypted)...)
+		diags.Append(localUserDatabase_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalUserDatabase, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29213,8 +30317,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context
 	var logSettings_object *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject
 	if obj.LogSettings != nil {
 		logSettings_object = new(AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject)
-
-		diags.Append(logSettings_object.CopyFromPango(ctx, obj.LogSettings, encrypted)...)
+		diags.Append(logSettings_object.CopyFromPango(ctx, append(ancestors, o), obj.LogSettings, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29222,8 +30325,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context
 	var policyRecommendations_object *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject
 	if obj.PolicyRecommendations != nil {
 		policyRecommendations_object = new(AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject)
-
-		diags.Append(policyRecommendations_object.CopyFromPango(ctx, obj.PolicyRecommendations, encrypted)...)
+		diags.Append(policyRecommendations_object.CopyFromPango(ctx, append(ancestors, o), obj.PolicyRecommendations, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29231,8 +30333,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context
 	var serverProfile_object *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject
 	if obj.ServerProfile != nil {
 		serverProfile_object = new(AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject)
-
-		diags.Append(serverProfile_object.CopyFromPango(ctx, obj.ServerProfile, encrypted)...)
+		diags.Append(serverProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.ServerProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29240,8 +30341,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context
 	var setup_object *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject
 	if obj.Setup != nil {
 		setup_object = new(AdminRoleResourceRoleDeviceWebuiDeviceSetupObject)
-
-		diags.Append(setup_object.CopyFromPango(ctx, obj.Setup, encrypted)...)
+		diags.Append(setup_object.CopyFromPango(ctx, append(ancestors, o), obj.Setup, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29282,6 +30382,10 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context
 	var deviceQuarantine_value types.String
 	if obj.DeviceQuarantine != nil {
 		deviceQuarantine_value = types.StringValue(*obj.DeviceQuarantine)
+	}
+	var dhcpSyslogServer_value types.String
+	if obj.DhcpSyslogServer != nil {
+		dhcpSyslogServer_value = types.StringValue(*obj.DhcpSyslogServer)
 	}
 	var dynamicUpdates_value types.String
 	if obj.DynamicUpdates != nil {
@@ -29343,10 +30447,6 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context
 	if obj.VmInfoSource != nil {
 		vmInfoSource_value = types.StringValue(*obj.VmInfoSource)
 	}
-	var dhcpSyslogServer_value types.String
-	if obj.DhcpSyslogServer != nil {
-		dhcpSyslogServer_value = types.StringValue(*obj.DhcpSyslogServer)
-	}
 	o.AccessDomain = accessDomain_value
 	o.AdminRoles = adminRoles_value
 	o.Administrators = administrators_value
@@ -29357,6 +30457,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context
 	o.ConfigAudit = configAudit_value
 	o.DataRedistribution = dataRedistribution_value
 	o.DeviceQuarantine = deviceQuarantine_value
+	o.DhcpSyslogServer = dhcpSyslogServer_value
 	o.DynamicUpdates = dynamicUpdates_value
 	o.GlobalProtectClient = globalProtectClient_value
 	o.HighAvailability = highAvailability_value
@@ -29377,12 +30478,11 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceObject) CopyFromPango(ctx context
 	o.UserIdentification = userIdentification_value
 	o.VirtualSystems = virtualSystems_value
 	o.VmInfoSource = vmInfoSource_value
-	o.DhcpSyslogServer = dhcpSyslogServer_value
 
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceCertificateManagement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceCertificateManagement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var certificateProfile_value types.String
@@ -29424,7 +30524,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceCertificateManagementObject) Copy
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceLocalUserDatabase, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceLocalUserDatabase, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var userGroups_value types.String
@@ -29441,7 +30541,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceLocalUserDatabaseObject) CopyFrom
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceLogSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceLogSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ccAlarm_value types.String
@@ -29493,7 +30593,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceLogSettingsObject) CopyFromPango(
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDevicePolicyRecommendations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDevicePolicyRecommendations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var iot_value types.String
@@ -29510,7 +30610,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDevicePolicyRecommendationsObject) Copy
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceServerProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceServerProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var dns_value types.String
@@ -29582,7 +30682,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceServerProfileObject) CopyFromPang
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiDeviceSetup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiDeviceSetup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var contentId_value types.String
@@ -29634,7 +30734,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiDeviceSetupObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiGlobalObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiGlobal, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiGlobalObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiGlobal, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var systemAlarms_value types.String
@@ -29646,13 +30746,12 @@ func (o *AdminRoleResourceRoleDeviceWebuiGlobalObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var automatedCorrelationEngine_object *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject
 	if obj.AutomatedCorrelationEngine != nil {
 		automatedCorrelationEngine_object = new(AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject)
-
-		diags.Append(automatedCorrelationEngine_object.CopyFromPango(ctx, obj.AutomatedCorrelationEngine, encrypted)...)
+		diags.Append(automatedCorrelationEngine_object.CopyFromPango(ctx, append(ancestors, o), obj.AutomatedCorrelationEngine, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29660,8 +30759,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx contex
 	var customReports_object *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject
 	if obj.CustomReports != nil {
 		customReports_object = new(AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject)
-
-		diags.Append(customReports_object.CopyFromPango(ctx, obj.CustomReports, encrypted)...)
+		diags.Append(customReports_object.CopyFromPango(ctx, append(ancestors, o), obj.CustomReports, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29669,8 +30767,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx contex
 	var logs_object *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject
 	if obj.Logs != nil {
 		logs_object = new(AdminRoleResourceRoleDeviceWebuiMonitorLogsObject)
-
-		diags.Append(logs_object.CopyFromPango(ctx, obj.Logs, encrypted)...)
+		diags.Append(logs_object.CopyFromPango(ctx, append(ancestors, o), obj.Logs, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29678,8 +30775,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx contex
 	var pdfReports_object *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject
 	if obj.PdfReports != nil {
 		pdfReports_object = new(AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject)
-
-		diags.Append(pdfReports_object.CopyFromPango(ctx, obj.PdfReports, encrypted)...)
+		diags.Append(pdfReports_object.CopyFromPango(ctx, append(ancestors, o), obj.PdfReports, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -29758,7 +30854,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitorAutomatedCorrelationEngine, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var correlatedEvents_value types.String
@@ -29775,7 +30871,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorAutomatedCorrelationEngineObject
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitorCustomReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitorCustomReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationStatistics_value types.String
@@ -29892,7 +30988,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorCustomReportsObject) CopyFromPan
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitorLogs, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitorLogs, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var alarm_value types.String
@@ -29984,7 +31080,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorLogsObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiMonitorPdfReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiMonitorPdfReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var emailScheduler_value types.String
@@ -30021,13 +31117,12 @@ func (o *AdminRoleResourceRoleDeviceWebuiMonitorPdfReportsObject) CopyFromPango(
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var globalProtect_object *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject
 	if obj.GlobalProtect != nil {
 		globalProtect_object = new(AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject)
-
-		diags.Append(globalProtect_object.CopyFromPango(ctx, obj.GlobalProtect, encrypted)...)
+		diags.Append(globalProtect_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtect, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30035,8 +31130,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx contex
 	var networkProfiles_object *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject
 	if obj.NetworkProfiles != nil {
 		networkProfiles_object = new(AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject)
-
-		diags.Append(networkProfiles_object.CopyFromPango(ctx, obj.NetworkProfiles, encrypted)...)
+		diags.Append(networkProfiles_object.CopyFromPango(ctx, append(ancestors, o), obj.NetworkProfiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30044,8 +31138,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx contex
 	var routing_object *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject
 	if obj.Routing != nil {
 		routing_object = new(AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject)
-
-		diags.Append(routing_object.CopyFromPango(ctx, obj.Routing, encrypted)...)
+		diags.Append(routing_object.CopyFromPango(ctx, append(ancestors, o), obj.Routing, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30083,6 +31176,10 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx contex
 	if obj.SdwanInterfaceProfile != nil {
 		sdwanInterfaceProfile_value = types.StringValue(*obj.SdwanInterfaceProfile)
 	}
+	var secureWebGateway_value types.String
+	if obj.SecureWebGateway != nil {
+		secureWebGateway_value = types.StringValue(*obj.SecureWebGateway)
+	}
 	var virtualRouters_value types.String
 	if obj.VirtualRouters != nil {
 		virtualRouters_value = types.StringValue(*obj.VirtualRouters)
@@ -30099,10 +31196,6 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx contex
 	if obj.Zones != nil {
 		zones_value = types.StringValue(*obj.Zones)
 	}
-	var secureWebGateway_value types.String
-	if obj.SecureWebGateway != nil {
-		secureWebGateway_value = types.StringValue(*obj.SecureWebGateway)
-	}
 	o.Dhcp = dhcp_value
 	o.DnsProxy = dnsProxy_value
 	o.GlobalProtect = globalProtect_object
@@ -30114,16 +31207,16 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkObject) CopyFromPango(ctx contex
 	o.Qos = qos_value
 	o.Routing = routing_object
 	o.SdwanInterfaceProfile = sdwanInterfaceProfile_value
+	o.SecureWebGateway = secureWebGateway_value
 	o.VirtualRouters = virtualRouters_value
 	o.VirtualWires = virtualWires_value
 	o.Vlans = vlans_value
 	o.Zones = zones_value
-	o.SecureWebGateway = secureWebGateway_value
 
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetworkGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetworkGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var clientlessAppGroups_value types.String
@@ -30155,7 +31248,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkGlobalProtectObject) CopyFromPan
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetworkNetworkProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetworkNetworkProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var bfdProfile_value types.String
@@ -30212,13 +31305,12 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkNetworkProfilesObject) CopyFromP
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetworkRouting, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetworkRouting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var routingProfiles_object *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject
 	if obj.RoutingProfiles != nil {
 		routingProfiles_object = new(AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject)
-
-		diags.Append(routingProfiles_object.CopyFromPango(ctx, obj.RoutingProfiles, encrypted)...)
+		diags.Append(routingProfiles_object.CopyFromPango(ctx, append(ancestors, o), obj.RoutingProfiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30234,7 +31326,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiNetworkRoutingRoutingProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var bfd_value types.String
@@ -30276,13 +31368,12 @@ func (o *AdminRoleResourceRoleDeviceWebuiNetworkRoutingRoutingProfilesObject) Co
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var customObjects_object *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject
 	if obj.CustomObjects != nil {
 		customObjects_object = new(AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject)
-
-		diags.Append(customObjects_object.CopyFromPango(ctx, obj.CustomObjects, encrypted)...)
+		diags.Append(customObjects_object.CopyFromPango(ctx, append(ancestors, o), obj.CustomObjects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30290,8 +31381,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx contex
 	var decryption_object *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject
 	if obj.Decryption != nil {
 		decryption_object = new(AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject)
-
-		diags.Append(decryption_object.CopyFromPango(ctx, obj.Decryption, encrypted)...)
+		diags.Append(decryption_object.CopyFromPango(ctx, append(ancestors, o), obj.Decryption, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30299,8 +31389,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx contex
 	var globalProtect_object *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject
 	if obj.GlobalProtect != nil {
 		globalProtect_object = new(AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject)
-
-		diags.Append(globalProtect_object.CopyFromPango(ctx, obj.GlobalProtect, encrypted)...)
+		diags.Append(globalProtect_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtect, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30308,8 +31397,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx contex
 	var sdwan_object *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject
 	if obj.Sdwan != nil {
 		sdwan_object = new(AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject)
-
-		diags.Append(sdwan_object.CopyFromPango(ctx, obj.Sdwan, encrypted)...)
+		diags.Append(sdwan_object.CopyFromPango(ctx, append(ancestors, o), obj.Sdwan, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30317,8 +31405,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx contex
 	var securityProfiles_object *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject
 	if obj.SecurityProfiles != nil {
 		securityProfiles_object = new(AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject)
-
-		diags.Append(securityProfiles_object.CopyFromPango(ctx, obj.SecurityProfiles, encrypted)...)
+		diags.Append(securityProfiles_object.CopyFromPango(ctx, append(ancestors, o), obj.SecurityProfiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30418,7 +31505,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsCustomObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsCustomObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var dataPatterns_value types.String
@@ -30445,7 +31532,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsCustomObjectsObject) CopyFromPan
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsDecryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsDecryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var decryptionProfile_value types.String
@@ -30457,7 +31544,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsDecryptionObject) CopyFromPango(
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hipObjects_value types.String
@@ -30474,7 +31561,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsGlobalProtectObject) CopyFromPan
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsSdwan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsSdwan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var sdwanDistProfile_value types.String
@@ -30501,7 +31588,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsSdwanObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiObjectsSecurityProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiObjectsSecurityProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var antiSpyware_value types.String
@@ -30558,7 +31645,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiObjectsSecurityProfilesObject) CopyFrom
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiOperationsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiOperations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiOperationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiOperations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var downloadCoreFiles_value types.String
@@ -30590,7 +31677,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiOperationsObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiPoliciesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiPoliciesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationOverrideRulebase_value types.String
@@ -30657,7 +31744,7 @@ func (o *AdminRoleResourceRoleDeviceWebuiPoliciesObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiPrivacyObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiPrivacy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiPrivacyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiPrivacy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var showFullIpAddresses_value types.String
@@ -30679,9 +31766,13 @@ func (o *AdminRoleResourceRoleDeviceWebuiPrivacyObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceWebuiSaveObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceWebuiSave, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceWebuiSaveObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceWebuiSave, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var objectLevelChanges_value types.String
+	if obj.ObjectLevelChanges != nil {
+		objectLevelChanges_value = types.StringValue(*obj.ObjectLevelChanges)
+	}
 	var partialSave_value types.String
 	if obj.PartialSave != nil {
 		partialSave_value = types.StringValue(*obj.PartialSave)
@@ -30690,18 +31781,14 @@ func (o *AdminRoleResourceRoleDeviceWebuiSaveObject) CopyFromPango(ctx context.C
 	if obj.SaveForOtherAdmins != nil {
 		saveForOtherAdmins_value = types.StringValue(*obj.SaveForOtherAdmins)
 	}
-	var objectLevelChanges_value types.String
-	if obj.ObjectLevelChanges != nil {
-		objectLevelChanges_value = types.StringValue(*obj.ObjectLevelChanges)
-	}
+	o.ObjectLevelChanges = objectLevelChanges_value
 	o.PartialSave = partialSave_value
 	o.SaveForOtherAdmins = saveForOtherAdmins_value
-	o.ObjectLevelChanges = objectLevelChanges_value
 
 	return diags
 }
 
-func (o *AdminRoleResourceRoleDeviceXmlapiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleDeviceXmlapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleDeviceXmlapiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleDeviceXmlapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var commit_value types.String
@@ -30753,13 +31840,12 @@ func (o *AdminRoleResourceRoleDeviceXmlapiObject) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsys, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsys, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var restapi_object *AdminRoleResourceRoleVsysRestapiObject
 	if obj.Restapi != nil {
 		restapi_object = new(AdminRoleResourceRoleVsysRestapiObject)
-
-		diags.Append(restapi_object.CopyFromPango(ctx, obj.Restapi, encrypted)...)
+		diags.Append(restapi_object.CopyFromPango(ctx, append(ancestors, o), obj.Restapi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30767,8 +31853,7 @@ func (o *AdminRoleResourceRoleVsysObject) CopyFromPango(ctx context.Context, obj
 	var webui_object *AdminRoleResourceRoleVsysWebuiObject
 	if obj.Webui != nil {
 		webui_object = new(AdminRoleResourceRoleVsysWebuiObject)
-
-		diags.Append(webui_object.CopyFromPango(ctx, obj.Webui, encrypted)...)
+		diags.Append(webui_object.CopyFromPango(ctx, append(ancestors, o), obj.Webui, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30776,8 +31861,7 @@ func (o *AdminRoleResourceRoleVsysObject) CopyFromPango(ctx context.Context, obj
 	var xmlapi_object *AdminRoleResourceRoleVsysXmlapiObject
 	if obj.Xmlapi != nil {
 		xmlapi_object = new(AdminRoleResourceRoleVsysXmlapiObject)
-
-		diags.Append(xmlapi_object.CopyFromPango(ctx, obj.Xmlapi, encrypted)...)
+		diags.Append(xmlapi_object.CopyFromPango(ctx, append(ancestors, o), obj.Xmlapi, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30795,13 +31879,12 @@ func (o *AdminRoleResourceRoleVsysObject) CopyFromPango(ctx context.Context, obj
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysRestapiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var device_object *AdminRoleResourceRoleVsysRestapiDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleResourceRoleVsysRestapiDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30809,8 +31892,7 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyFromPango(ctx context.Conte
 	var network_object *AdminRoleResourceRoleVsysRestapiNetworkObject
 	if obj.Network != nil {
 		network_object = new(AdminRoleResourceRoleVsysRestapiNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, append(ancestors, o), obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30818,8 +31900,7 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyFromPango(ctx context.Conte
 	var objects_object *AdminRoleResourceRoleVsysRestapiObjectsObject
 	if obj.Objects != nil {
 		objects_object = new(AdminRoleResourceRoleVsysRestapiObjectsObject)
-
-		diags.Append(objects_object.CopyFromPango(ctx, obj.Objects, encrypted)...)
+		diags.Append(objects_object.CopyFromPango(ctx, append(ancestors, o), obj.Objects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30827,8 +31908,7 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyFromPango(ctx context.Conte
 	var policies_object *AdminRoleResourceRoleVsysRestapiPoliciesObject
 	if obj.Policies != nil {
 		policies_object = new(AdminRoleResourceRoleVsysRestapiPoliciesObject)
-
-		diags.Append(policies_object.CopyFromPango(ctx, obj.Policies, encrypted)...)
+		diags.Append(policies_object.CopyFromPango(ctx, append(ancestors, o), obj.Policies, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30836,8 +31916,7 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyFromPango(ctx context.Conte
 	var system_object *AdminRoleResourceRoleVsysRestapiSystemObject
 	if obj.System != nil {
 		system_object = new(AdminRoleResourceRoleVsysRestapiSystemObject)
-
-		diags.Append(system_object.CopyFromPango(ctx, obj.System, encrypted)...)
+		diags.Append(system_object.CopyFromPango(ctx, append(ancestors, o), obj.System, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -30852,7 +31931,7 @@ func (o *AdminRoleResourceRoleVsysRestapiObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysRestapiDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var emailServerProfiles_value types.String
@@ -30894,7 +31973,7 @@ func (o *AdminRoleResourceRoleVsysRestapiDeviceObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysRestapiNetworkObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var globalprotectClientlessAppGroups_value types.String
@@ -30917,26 +31996,26 @@ func (o *AdminRoleResourceRoleVsysRestapiNetworkObject) CopyFromPango(ctx contex
 	if obj.GlobalprotectPortals != nil {
 		globalprotectPortals_value = types.StringValue(*obj.GlobalprotectPortals)
 	}
-	var zones_value types.String
-	if obj.Zones != nil {
-		zones_value = types.StringValue(*obj.Zones)
-	}
 	var sdwanInterfaceProfiles_value types.String
 	if obj.SdwanInterfaceProfiles != nil {
 		sdwanInterfaceProfiles_value = types.StringValue(*obj.SdwanInterfaceProfiles)
+	}
+	var zones_value types.String
+	if obj.Zones != nil {
+		zones_value = types.StringValue(*obj.Zones)
 	}
 	o.GlobalprotectClientlessAppGroups = globalprotectClientlessAppGroups_value
 	o.GlobalprotectClientlessApps = globalprotectClientlessApps_value
 	o.GlobalprotectGateways = globalprotectGateways_value
 	o.GlobalprotectMdmServers = globalprotectMdmServers_value
 	o.GlobalprotectPortals = globalprotectPortals_value
-	o.Zones = zones_value
 	o.SdwanInterfaceProfiles = sdwanInterfaceProfiles_value
+	o.Zones = zones_value
 
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysRestapiObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var addressGroups_value types.String
@@ -31133,7 +32212,7 @@ func (o *AdminRoleResourceRoleVsysRestapiObjectsObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysRestapiPoliciesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiPoliciesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationOverrideRules_value types.String
@@ -31195,7 +32274,7 @@ func (o *AdminRoleResourceRoleVsysRestapiPoliciesObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysRestapiSystemObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysRestapiSystem, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysRestapiSystemObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysRestapiSystem, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var configuration_value types.String
@@ -31207,13 +32286,12 @@ func (o *AdminRoleResourceRoleVsysRestapiSystemObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebui, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebui, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var commit_object *AdminRoleResourceRoleVsysWebuiCommitObject
 	if obj.Commit != nil {
 		commit_object = new(AdminRoleResourceRoleVsysWebuiCommitObject)
-
-		diags.Append(commit_object.CopyFromPango(ctx, obj.Commit, encrypted)...)
+		diags.Append(commit_object.CopyFromPango(ctx, append(ancestors, o), obj.Commit, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31221,8 +32299,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context
 	var device_object *AdminRoleResourceRoleVsysWebuiDeviceObject
 	if obj.Device != nil {
 		device_object = new(AdminRoleResourceRoleVsysWebuiDeviceObject)
-
-		diags.Append(device_object.CopyFromPango(ctx, obj.Device, encrypted)...)
+		diags.Append(device_object.CopyFromPango(ctx, append(ancestors, o), obj.Device, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31230,8 +32307,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context
 	var monitor_object *AdminRoleResourceRoleVsysWebuiMonitorObject
 	if obj.Monitor != nil {
 		monitor_object = new(AdminRoleResourceRoleVsysWebuiMonitorObject)
-
-		diags.Append(monitor_object.CopyFromPango(ctx, obj.Monitor, encrypted)...)
+		diags.Append(monitor_object.CopyFromPango(ctx, append(ancestors, o), obj.Monitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31239,8 +32315,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context
 	var network_object *AdminRoleResourceRoleVsysWebuiNetworkObject
 	if obj.Network != nil {
 		network_object = new(AdminRoleResourceRoleVsysWebuiNetworkObject)
-
-		diags.Append(network_object.CopyFromPango(ctx, obj.Network, encrypted)...)
+		diags.Append(network_object.CopyFromPango(ctx, append(ancestors, o), obj.Network, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31248,8 +32323,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context
 	var objects_object *AdminRoleResourceRoleVsysWebuiObjectsObject
 	if obj.Objects != nil {
 		objects_object = new(AdminRoleResourceRoleVsysWebuiObjectsObject)
-
-		diags.Append(objects_object.CopyFromPango(ctx, obj.Objects, encrypted)...)
+		diags.Append(objects_object.CopyFromPango(ctx, append(ancestors, o), obj.Objects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31257,8 +32331,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context
 	var operations_object *AdminRoleResourceRoleVsysWebuiOperationsObject
 	if obj.Operations != nil {
 		operations_object = new(AdminRoleResourceRoleVsysWebuiOperationsObject)
-
-		diags.Append(operations_object.CopyFromPango(ctx, obj.Operations, encrypted)...)
+		diags.Append(operations_object.CopyFromPango(ctx, append(ancestors, o), obj.Operations, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31266,8 +32339,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context
 	var policies_object *AdminRoleResourceRoleVsysWebuiPoliciesObject
 	if obj.Policies != nil {
 		policies_object = new(AdminRoleResourceRoleVsysWebuiPoliciesObject)
-
-		diags.Append(policies_object.CopyFromPango(ctx, obj.Policies, encrypted)...)
+		diags.Append(policies_object.CopyFromPango(ctx, append(ancestors, o), obj.Policies, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31275,8 +32347,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context
 	var privacy_object *AdminRoleResourceRoleVsysWebuiPrivacyObject
 	if obj.Privacy != nil {
 		privacy_object = new(AdminRoleResourceRoleVsysWebuiPrivacyObject)
-
-		diags.Append(privacy_object.CopyFromPango(ctx, obj.Privacy, encrypted)...)
+		diags.Append(privacy_object.CopyFromPango(ctx, append(ancestors, o), obj.Privacy, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31284,8 +32355,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context
 	var save_object *AdminRoleResourceRoleVsysWebuiSaveObject
 	if obj.Save != nil {
 		save_object = new(AdminRoleResourceRoleVsysWebuiSaveObject)
-
-		diags.Append(save_object.CopyFromPango(ctx, obj.Save, encrypted)...)
+		diags.Append(save_object.CopyFromPango(ctx, append(ancestors, o), obj.Save, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31324,7 +32394,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiCommitObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiCommit, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiCommitObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiCommit, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var commitForOtherAdmins_value types.String
@@ -31341,13 +32411,12 @@ func (o *AdminRoleResourceRoleVsysWebuiCommitObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDevice, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDevice, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var certificateManagement_object *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject
 	if obj.CertificateManagement != nil {
 		certificateManagement_object = new(AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject)
-
-		diags.Append(certificateManagement_object.CopyFromPango(ctx, obj.CertificateManagement, encrypted)...)
+		diags.Append(certificateManagement_object.CopyFromPango(ctx, append(ancestors, o), obj.CertificateManagement, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31355,8 +32424,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.C
 	var localUserDatabase_object *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject
 	if obj.LocalUserDatabase != nil {
 		localUserDatabase_object = new(AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject)
-
-		diags.Append(localUserDatabase_object.CopyFromPango(ctx, obj.LocalUserDatabase, encrypted)...)
+		diags.Append(localUserDatabase_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalUserDatabase, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31364,8 +32432,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.C
 	var logSettings_object *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject
 	if obj.LogSettings != nil {
 		logSettings_object = new(AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject)
-
-		diags.Append(logSettings_object.CopyFromPango(ctx, obj.LogSettings, encrypted)...)
+		diags.Append(logSettings_object.CopyFromPango(ctx, append(ancestors, o), obj.LogSettings, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31373,8 +32440,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.C
 	var policyRecommendations_object *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject
 	if obj.PolicyRecommendations != nil {
 		policyRecommendations_object = new(AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject)
-
-		diags.Append(policyRecommendations_object.CopyFromPango(ctx, obj.PolicyRecommendations, encrypted)...)
+		diags.Append(policyRecommendations_object.CopyFromPango(ctx, append(ancestors, o), obj.PolicyRecommendations, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31382,8 +32448,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.C
 	var serverProfile_object *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject
 	if obj.ServerProfile != nil {
 		serverProfile_object = new(AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject)
-
-		diags.Append(serverProfile_object.CopyFromPango(ctx, obj.ServerProfile, encrypted)...)
+		diags.Append(serverProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.ServerProfile, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31391,8 +32456,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.C
 	var setup_object *AdminRoleResourceRoleVsysWebuiDeviceSetupObject
 	if obj.Setup != nil {
 		setup_object = new(AdminRoleResourceRoleVsysWebuiDeviceSetupObject)
-
-		diags.Append(setup_object.CopyFromPango(ctx, obj.Setup, encrypted)...)
+		diags.Append(setup_object.CopyFromPango(ctx, append(ancestors, o), obj.Setup, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31422,6 +32486,10 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.C
 	if obj.DeviceQuarantine != nil {
 		deviceQuarantine_value = types.StringValue(*obj.DeviceQuarantine)
 	}
+	var dhcpSyslogServer_value types.String
+	if obj.DhcpSyslogServer != nil {
+		dhcpSyslogServer_value = types.StringValue(*obj.DhcpSyslogServer)
+	}
 	var troubleshooting_value types.String
 	if obj.Troubleshooting != nil {
 		troubleshooting_value = types.StringValue(*obj.Troubleshooting)
@@ -31434,10 +32502,6 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.C
 	if obj.VmInfoSource != nil {
 		vmInfoSource_value = types.StringValue(*obj.VmInfoSource)
 	}
-	var dhcpSyslogServer_value types.String
-	if obj.DhcpSyslogServer != nil {
-		dhcpSyslogServer_value = types.StringValue(*obj.DhcpSyslogServer)
-	}
 	o.Administrators = administrators_value
 	o.AuthenticationProfile = authenticationProfile_value
 	o.AuthenticationSequence = authenticationSequence_value
@@ -31445,6 +32509,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.C
 	o.CertificateManagement = certificateManagement_object
 	o.DataRedistribution = dataRedistribution_value
 	o.DeviceQuarantine = deviceQuarantine_value
+	o.DhcpSyslogServer = dhcpSyslogServer_value
 	o.LocalUserDatabase = localUserDatabase_object
 	o.LogSettings = logSettings_object
 	o.PolicyRecommendations = policyRecommendations_object
@@ -31453,12 +32518,11 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceObject) CopyFromPango(ctx context.C
 	o.Troubleshooting = troubleshooting_value
 	o.UserIdentification = userIdentification_value
 	o.VmInfoSource = vmInfoSource_value
-	o.DhcpSyslogServer = dhcpSyslogServer_value
 
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceCertificateManagement, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceCertificateManagement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var certificateProfile_value types.String
@@ -31500,7 +32564,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceCertificateManagementObject) CopyFr
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceLocalUserDatabase, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceLocalUserDatabase, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var userGroups_value types.String
@@ -31517,7 +32581,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceLocalUserDatabaseObject) CopyFromPa
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceLogSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceLogSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var config_value types.String
@@ -31559,7 +32623,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceLogSettingsObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDevicePolicyRecommendations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDevicePolicyRecommendations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var iot_value types.String
@@ -31576,7 +32640,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDevicePolicyRecommendationsObject) CopyFr
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceServerProfile, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceServerProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var dns_value types.String
@@ -31648,7 +32712,7 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceServerProfileObject) CopyFromPango(
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiDeviceSetupObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiDeviceSetup, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiDeviceSetupObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiDeviceSetup, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var contentId_value types.String
@@ -31700,13 +32764,12 @@ func (o *AdminRoleResourceRoleVsysWebuiDeviceSetupObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var automatedCorrelationEngine_object *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject
 	if obj.AutomatedCorrelationEngine != nil {
 		automatedCorrelationEngine_object = new(AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject)
-
-		diags.Append(automatedCorrelationEngine_object.CopyFromPango(ctx, obj.AutomatedCorrelationEngine, encrypted)...)
+		diags.Append(automatedCorrelationEngine_object.CopyFromPango(ctx, append(ancestors, o), obj.AutomatedCorrelationEngine, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31714,8 +32777,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx context.
 	var customReports_object *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject
 	if obj.CustomReports != nil {
 		customReports_object = new(AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject)
-
-		diags.Append(customReports_object.CopyFromPango(ctx, obj.CustomReports, encrypted)...)
+		diags.Append(customReports_object.CopyFromPango(ctx, append(ancestors, o), obj.CustomReports, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31723,8 +32785,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx context.
 	var logs_object *AdminRoleResourceRoleVsysWebuiMonitorLogsObject
 	if obj.Logs != nil {
 		logs_object = new(AdminRoleResourceRoleVsysWebuiMonitorLogsObject)
-
-		diags.Append(logs_object.CopyFromPango(ctx, obj.Logs, encrypted)...)
+		diags.Append(logs_object.CopyFromPango(ctx, append(ancestors, o), obj.Logs, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31732,8 +32793,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx context.
 	var pdfReports_object *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject
 	if obj.PdfReports != nil {
 		pdfReports_object = new(AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject)
-
-		diags.Append(pdfReports_object.CopyFromPango(ctx, obj.PdfReports, encrypted)...)
+		diags.Append(pdfReports_object.CopyFromPango(ctx, append(ancestors, o), obj.PdfReports, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -31772,7 +32832,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitorAutomatedCorrelationEngine, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var correlatedEvents_value types.String
@@ -31789,7 +32849,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorAutomatedCorrelationEngineObject) 
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitorCustomReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitorCustomReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationStatistics_value types.String
@@ -31906,7 +32966,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorCustomReportsObject) CopyFromPango
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiMonitorLogsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitorLogs, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorLogsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitorLogs, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var authentication_value types.String
@@ -31983,7 +33043,7 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorLogsObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiMonitorPdfReports, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiMonitorPdfReports, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var emailScheduler_value types.String
@@ -32020,13 +33080,12 @@ func (o *AdminRoleResourceRoleVsysWebuiMonitorPdfReportsObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiNetwork, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiNetwork, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var globalProtect_object *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject
 	if obj.GlobalProtect != nil {
 		globalProtect_object = new(AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject)
-
-		diags.Append(globalProtect_object.CopyFromPango(ctx, obj.GlobalProtect, encrypted)...)
+		diags.Append(globalProtect_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtect, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32047,7 +33106,7 @@ func (o *AdminRoleResourceRoleVsysWebuiNetworkObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiNetworkGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiNetworkGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var clientlessAppGroups_value types.String
@@ -32079,13 +33138,12 @@ func (o *AdminRoleResourceRoleVsysWebuiNetworkGlobalProtectObject) CopyFromPango
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var customObjects_object *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject
 	if obj.CustomObjects != nil {
 		customObjects_object = new(AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject)
-
-		diags.Append(customObjects_object.CopyFromPango(ctx, obj.CustomObjects, encrypted)...)
+		diags.Append(customObjects_object.CopyFromPango(ctx, append(ancestors, o), obj.CustomObjects, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32093,8 +33151,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx context.
 	var decryption_object *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject
 	if obj.Decryption != nil {
 		decryption_object = new(AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject)
-
-		diags.Append(decryption_object.CopyFromPango(ctx, obj.Decryption, encrypted)...)
+		diags.Append(decryption_object.CopyFromPango(ctx, append(ancestors, o), obj.Decryption, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32102,8 +33159,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx context.
 	var globalProtect_object *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject
 	if obj.GlobalProtect != nil {
 		globalProtect_object = new(AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject)
-
-		diags.Append(globalProtect_object.CopyFromPango(ctx, obj.GlobalProtect, encrypted)...)
+		diags.Append(globalProtect_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtect, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32111,8 +33167,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx context.
 	var sdwan_object *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject
 	if obj.Sdwan != nil {
 		sdwan_object = new(AdminRoleResourceRoleVsysWebuiObjectsSdwanObject)
-
-		diags.Append(sdwan_object.CopyFromPango(ctx, obj.Sdwan, encrypted)...)
+		diags.Append(sdwan_object.CopyFromPango(ctx, append(ancestors, o), obj.Sdwan, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32120,8 +33175,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx context.
 	var securityProfiles_object *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject
 	if obj.SecurityProfiles != nil {
 		securityProfiles_object = new(AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject)
-
-		diags.Append(securityProfiles_object.CopyFromPango(ctx, obj.SecurityProfiles, encrypted)...)
+		diags.Append(securityProfiles_object.CopyFromPango(ctx, append(ancestors, o), obj.SecurityProfiles, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -32221,7 +33275,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsCustomObjects, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsCustomObjects, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var dataPatterns_value types.String
@@ -32248,7 +33302,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsCustomObjectsObject) CopyFromPango
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsDecryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsDecryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var decryptionProfile_value types.String
@@ -32260,7 +33314,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsDecryptionObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsGlobalProtect, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsGlobalProtect, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hipObjects_value types.String
@@ -32277,7 +33331,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsGlobalProtectObject) CopyFromPango
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsSdwan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsSdwan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var sdwanDistProfile_value types.String
@@ -32304,7 +33358,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsSdwanObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiObjectsSecurityProfiles, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiObjectsSecurityProfiles, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var antiSpyware_value types.String
@@ -32361,7 +33415,7 @@ func (o *AdminRoleResourceRoleVsysWebuiObjectsSecurityProfilesObject) CopyFromPa
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiOperationsObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiOperations, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiOperationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiOperations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var downloadCoreFiles_value types.String
@@ -32393,7 +33447,7 @@ func (o *AdminRoleResourceRoleVsysWebuiOperationsObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiPoliciesObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiPolicies, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiPoliciesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiPolicies, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationOverrideRulebase_value types.String
@@ -32460,7 +33514,7 @@ func (o *AdminRoleResourceRoleVsysWebuiPoliciesObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiPrivacyObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiPrivacy, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiPrivacyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiPrivacy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var showFullIpAddresses_value types.String
@@ -32482,9 +33536,13 @@ func (o *AdminRoleResourceRoleVsysWebuiPrivacyObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysWebuiSaveObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysWebuiSave, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysWebuiSaveObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysWebuiSave, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
+	var objectLevelChanges_value types.String
+	if obj.ObjectLevelChanges != nil {
+		objectLevelChanges_value = types.StringValue(*obj.ObjectLevelChanges)
+	}
 	var partialSave_value types.String
 	if obj.PartialSave != nil {
 		partialSave_value = types.StringValue(*obj.PartialSave)
@@ -32493,18 +33551,14 @@ func (o *AdminRoleResourceRoleVsysWebuiSaveObject) CopyFromPango(ctx context.Con
 	if obj.SaveForOtherAdmins != nil {
 		saveForOtherAdmins_value = types.StringValue(*obj.SaveForOtherAdmins)
 	}
-	var objectLevelChanges_value types.String
-	if obj.ObjectLevelChanges != nil {
-		objectLevelChanges_value = types.StringValue(*obj.ObjectLevelChanges)
-	}
+	o.ObjectLevelChanges = objectLevelChanges_value
 	o.PartialSave = partialSave_value
 	o.SaveForOtherAdmins = saveForOtherAdmins_value
-	o.ObjectLevelChanges = objectLevelChanges_value
 
 	return diags
 }
 
-func (o *AdminRoleResourceRoleVsysXmlapiObject) CopyFromPango(ctx context.Context, obj *adminrole.RoleVsysXmlapi, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *AdminRoleResourceRoleVsysXmlapiObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *adminrole.RoleVsysXmlapi, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var commit_value types.String
@@ -32556,6 +33610,11 @@ func (o *AdminRoleResourceRoleVsysXmlapiObject) CopyFromPango(ctx context.Contex
 	return diags
 }
 
+func (o *AdminRoleResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *AdminRoleResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state AdminRoleResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -32573,6 +33632,13 @@ func (r *AdminRoleResource) Create(ctx context.Context, req resource.CreateReque
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -32606,8 +33672,7 @@ func (r *AdminRoleResource) Create(ctx context.Context, req resource.CreateReque
 
 	// Load the desired config.
 	var obj *adminrole.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -32619,17 +33684,29 @@ func (r *AdminRoleResource) Create(ctx context.Context, req resource.CreateReque
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -32639,6 +33716,17 @@ func (o *AdminRoleResource) Read(ctx context.Context, req resource.ReadRequest, 
 	var savestate, state AdminRoleResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -32670,8 +33758,12 @@ func (o *AdminRoleResource) Read(ctx context.Context, req resource.ReadRequest, 
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -32681,7 +33773,7 @@ func (o *AdminRoleResource) Read(ctx context.Context, req resource.ReadRequest, 
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -32691,6 +33783,13 @@ func (o *AdminRoleResource) Read(ctx context.Context, req resource.ReadRequest, 
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -32702,6 +33801,17 @@ func (r *AdminRoleResource) Update(ctx context.Context, req resource.UpdateReque
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -32737,19 +33847,31 @@ func (r *AdminRoleResource) Update(ctx context.Context, req resource.UpdateReque
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -32763,11 +33885,18 @@ func (r *AdminRoleResource) Update(ctx context.Context, req resource.UpdateReque
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -32815,9 +33944,15 @@ func (r *AdminRoleResource) Delete(ctx context.Context, req resource.DeleteReque
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

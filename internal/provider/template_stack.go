@@ -82,6 +82,14 @@ func (o *TemplateStackDataSourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o TemplateStackDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o TemplateStackDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *TemplateStackDataSourceUserGroupSourceObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -89,7 +97,15 @@ func (o *TemplateStackDataSourceUserGroupSourceObject) AttributeTypes() map[stri
 	}
 }
 
-func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, obj **template_stack.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o TemplateStackDataSourceUserGroupSourceObject) AncestorName() string {
+	return "user-group-source"
+}
+
+func (o TemplateStackDataSourceUserGroupSourceObject) EntryName() *string {
+	return nil
+}
+
+func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
@@ -110,8 +126,8 @@ func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, obj **te
 		} else {
 			userGroupSource_entry = new(template_stack.UserGroupSource)
 		}
-
-		diags.Append(o.UserGroupSource.CopyToPango(ctx, &userGroupSource_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.UserGroupSource.CopyToPango(ctx, ancestors, &userGroupSource_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -129,7 +145,7 @@ func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, obj **te
 
 	return diags
 }
-func (o *TemplateStackDataSourceUserGroupSourceObject) CopyToPango(ctx context.Context, obj **template_stack.UserGroupSource, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateStackDataSourceUserGroupSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	masterDevice_value := o.MasterDevice.ValueStringPointer()
 
@@ -141,25 +157,30 @@ func (o *TemplateStackDataSourceUserGroupSourceObject) CopyToPango(ctx context.C
 	return diags
 }
 
-func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, obj *template_stack.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var templates_list types.List
 	{
 		var list_diags diag.Diagnostics
 		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var devices_list types.List
 	{
 		var list_diags diag.Diagnostics
 		devices_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Devices)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var userGroupSource_object *TemplateStackDataSourceUserGroupSourceObject
 	if obj.UserGroupSource != nil {
 		userGroupSource_object = new(TemplateStackDataSourceUserGroupSourceObject)
-
-		diags.Append(userGroupSource_object.CopyFromPango(ctx, obj.UserGroupSource, encrypted)...)
+		diags.Append(userGroupSource_object.CopyFromPango(ctx, ancestors, obj.UserGroupSource, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -183,7 +204,7 @@ func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, obj *t
 	return diags
 }
 
-func (o *TemplateStackDataSourceUserGroupSourceObject) CopyFromPango(ctx context.Context, obj *template_stack.UserGroupSource, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateStackDataSourceUserGroupSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var masterDevice_value types.String
@@ -193,6 +214,11 @@ func (o *TemplateStackDataSourceUserGroupSourceObject) CopyFromPango(ctx context
 	o.MasterDevice = masterDevice_value
 
 	return diags
+}
+
+func (o *TemplateStackDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func TemplateStackDataSourceSchema() dsschema.Schema {
@@ -332,13 +358,20 @@ func (d *TemplateStackDataSource) Configure(_ context.Context, req datasource.Co
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, template_stack.NewService(d.client), batchSize, specifier, template_stack.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*template_stack.Entry, template_stack.Location, *template_stack.Service](d.client, template_stack.NewService(d.client), batchSize, specifier, template_stack.SpecMatches)
 }
 func (o *TemplateStackDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state TemplateStackDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -369,8 +402,12 @@ func (o *TemplateStackDataSource) Read(ctx context.Context, req datasource.ReadR
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -380,7 +417,7 @@ func (o *TemplateStackDataSource) Read(ctx context.Context, req datasource.ReadR
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -572,7 +609,7 @@ func (r *TemplateStackResource) Configure(ctx context.Context, req resource.Conf
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, template_stack.NewService(r.client), batchSize, specifier, template_stack.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*template_stack.Entry, template_stack.Location, *template_stack.Service](r.client, template_stack.NewService(r.client), batchSize, specifier, template_stack.SpecMatches)
 }
 
 func (o *TemplateStackResourceModel) AttributeTypes() map[string]attr.Type {
@@ -594,6 +631,14 @@ func (o *TemplateStackResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o TemplateStackResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o TemplateStackResourceModel) EntryName() *string {
+	return nil
+}
 func (o *TemplateStackResourceUserGroupSourceObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -601,7 +646,15 @@ func (o *TemplateStackResourceUserGroupSourceObject) AttributeTypes() map[string
 	}
 }
 
-func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, obj **template_stack.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o TemplateStackResourceUserGroupSourceObject) AncestorName() string {
+	return "user-group-source"
+}
+
+func (o TemplateStackResourceUserGroupSourceObject) EntryName() *string {
+	return nil
+}
+
+func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
@@ -622,8 +675,8 @@ func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, obj **temp
 		} else {
 			userGroupSource_entry = new(template_stack.UserGroupSource)
 		}
-
-		diags.Append(o.UserGroupSource.CopyToPango(ctx, &userGroupSource_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.UserGroupSource.CopyToPango(ctx, ancestors, &userGroupSource_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -641,7 +694,7 @@ func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, obj **temp
 
 	return diags
 }
-func (o *TemplateStackResourceUserGroupSourceObject) CopyToPango(ctx context.Context, obj **template_stack.UserGroupSource, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateStackResourceUserGroupSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	masterDevice_value := o.MasterDevice.ValueStringPointer()
 
@@ -653,25 +706,30 @@ func (o *TemplateStackResourceUserGroupSourceObject) CopyToPango(ctx context.Con
 	return diags
 }
 
-func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, obj *template_stack.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var templates_list types.List
 	{
 		var list_diags diag.Diagnostics
 		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var devices_list types.List
 	{
 		var list_diags diag.Diagnostics
 		devices_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Devices)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var userGroupSource_object *TemplateStackResourceUserGroupSourceObject
 	if obj.UserGroupSource != nil {
 		userGroupSource_object = new(TemplateStackResourceUserGroupSourceObject)
-
-		diags.Append(userGroupSource_object.CopyFromPango(ctx, obj.UserGroupSource, encrypted)...)
+		diags.Append(userGroupSource_object.CopyFromPango(ctx, ancestors, obj.UserGroupSource, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -695,7 +753,7 @@ func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, obj *tem
 	return diags
 }
 
-func (o *TemplateStackResourceUserGroupSourceObject) CopyFromPango(ctx context.Context, obj *template_stack.UserGroupSource, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateStackResourceUserGroupSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var masterDevice_value types.String
@@ -705,6 +763,11 @@ func (o *TemplateStackResourceUserGroupSourceObject) CopyFromPango(ctx context.C
 	o.MasterDevice = masterDevice_value
 
 	return diags
+}
+
+func (o *TemplateStackResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -724,6 +787,13 @@ func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateR
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -756,8 +826,7 @@ func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateR
 
 	// Load the desired config.
 	var obj *template_stack.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -769,17 +838,29 @@ func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateR
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -789,6 +870,17 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 	var savestate, state TemplateStackResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -819,8 +911,12 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -830,7 +926,7 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -840,6 +936,13 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -851,6 +954,17 @@ func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateR
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -885,19 +999,31 @@ func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -911,11 +1037,18 @@ func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateR
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -962,9 +1095,15 @@ func (r *TemplateStackResource) Delete(ctx context.Context, req resource.DeleteR
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

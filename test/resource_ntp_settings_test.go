@@ -98,6 +98,25 @@ func TestAccNtpSettings(t *testing.T) {
 					),
 				},
 			},
+			{
+				Config: ntpSettingsConfig4,
+				ConfigVariables: map[string]config.Variable{
+					"location": location,
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_ntp_settings.settings",
+						tfjsonpath.New("ntp_servers").
+							AtMapKey("secondary_ntp_server").
+							AtMapKey("authentication_type").
+							AtMapKey("symmetric_key").
+							AtMapKey("algorithm").
+							AtMapKey("md5").
+							AtMapKey("authentication_key"),
+						knownvalue.StringExact("83d043db4fdfe6882fb7f01a09d92b11"),
+					),
+				},
+			},
 		},
 	})
 }
@@ -170,6 +189,44 @@ resource "panos_ntp_settings" "settings" {
           algorithm = {
             md5 = {
               authentication_key = "d41d8cd98f00b204e9800998ecf8427e"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`
+
+const ntpSettingsConfig4 = `
+variable "location" { type = map }
+
+resource "panos_ntp_settings" "settings" {
+  location = var.location
+
+  ntp_servers = {
+    primary_ntp_server = {
+      ntp_server_address = "172.16.0.1"
+      authentication_type = {
+        symmetric_key = {
+          key_id = 1
+          algorithm = {
+            sha1 = {
+              authentication_key = "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+            }
+          }
+        }
+      }
+    }
+
+    secondary_ntp_server = {
+      ntp_server_address = "172.16.0.2"
+      authentication_type = {
+        symmetric_key = {
+          key_id = 1
+          algorithm = {
+            md5 = {
+              authentication_key = "83d043db4fdfe6882fb7f01a09d92b11"
             }
           }
         }

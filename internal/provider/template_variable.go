@@ -13,6 +13,7 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/panorama/template_variable"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -88,6 +89,14 @@ func (o *TemplateVariableDataSourceModel) AttributeTypes() map[string]attr.Type 
 		},
 	}
 }
+
+func (o TemplateVariableDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o TemplateVariableDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *TemplateVariableDataSourceTypeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -105,7 +114,15 @@ func (o *TemplateVariableDataSourceTypeObject) AttributeTypes() map[string]attr.
 	}
 }
 
-func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, obj **template_variable.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o TemplateVariableDataSourceTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o TemplateVariableDataSourceTypeObject) EntryName() *string {
+	return nil
+}
+
+func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	var type_entry *template_variable.Type
@@ -115,8 +132,8 @@ func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			type_entry = new(template_variable.Type)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Type.CopyToPango(ctx, ancestors, &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -131,7 +148,7 @@ func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *TemplateVariableDataSourceTypeObject) CopyToPango(ctx context.Context, obj **template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateVariableDataSourceTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
@@ -163,13 +180,12 @@ func (o *TemplateVariableDataSourceTypeObject) CopyToPango(ctx context.Context, 
 	return diags
 }
 
-func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, obj *template_variable.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_object *TemplateVariableDataSourceTypeObject
 	if obj.Type != nil {
 		type_object = new(TemplateVariableDataSourceTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, ancestors, obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -186,7 +202,7 @@ func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, obj
 	return diags
 }
 
-func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context, obj *template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipNetmask_value types.String
@@ -246,6 +262,11 @@ func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context
 	o.LinkTag = linkTag_value
 
 	return diags
+}
+
+func (o *TemplateVariableDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func TemplateVariableDataSourceSchema() dsschema.Schema {
@@ -439,13 +460,20 @@ func (d *TemplateVariableDataSource) Configure(_ context.Context, req datasource
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, template_variable.NewService(d.client), batchSize, specifier, template_variable.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*template_variable.Entry, template_variable.Location, *template_variable.Service](d.client, template_variable.NewService(d.client), batchSize, specifier, template_variable.SpecMatches)
 }
 func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state TemplateVariableDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -468,6 +496,17 @@ func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.Re
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
 		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &template_variable.TemplateStackLocation{}
+			var innerLocation TemplateVariableTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
 	}
 
 	// Basic logging.
@@ -477,8 +516,12 @@ func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.Re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -488,7 +531,7 @@ func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.Re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -757,7 +800,7 @@ func (r *TemplateVariableResource) Configure(ctx context.Context, req resource.C
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, template_variable.NewService(r.client), batchSize, specifier, template_variable.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*template_variable.Entry, template_variable.Location, *template_variable.Service](r.client, template_variable.NewService(r.client), batchSize, specifier, template_variable.SpecMatches)
 }
 
 func (o *TemplateVariableResourceModel) AttributeTypes() map[string]attr.Type {
@@ -776,6 +819,14 @@ func (o *TemplateVariableResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o TemplateVariableResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o TemplateVariableResourceModel) EntryName() *string {
+	return nil
+}
 func (o *TemplateVariableResourceTypeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -793,7 +844,15 @@ func (o *TemplateVariableResourceTypeObject) AttributeTypes() map[string]attr.Ty
 	}
 }
 
-func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, obj **template_variable.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o TemplateVariableResourceTypeObject) AncestorName() string {
+	return "type"
+}
+
+func (o TemplateVariableResourceTypeObject) EntryName() *string {
+	return nil
+}
+
+func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	var type_entry *template_variable.Type
@@ -803,8 +862,8 @@ func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, obj **t
 		} else {
 			type_entry = new(template_variable.Type)
 		}
-
-		diags.Append(o.Type.CopyToPango(ctx, &type_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Type.CopyToPango(ctx, ancestors, &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -819,7 +878,7 @@ func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, obj **t
 
 	return diags
 }
-func (o *TemplateVariableResourceTypeObject) CopyToPango(ctx context.Context, obj **template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateVariableResourceTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
@@ -851,13 +910,12 @@ func (o *TemplateVariableResourceTypeObject) CopyToPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *TemplateVariableResourceModel) CopyFromPango(ctx context.Context, obj *template_variable.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateVariableResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_object *TemplateVariableResourceTypeObject
 	if obj.Type != nil {
 		type_object = new(TemplateVariableResourceTypeObject)
-
-		diags.Append(type_object.CopyFromPango(ctx, obj.Type, encrypted)...)
+		diags.Append(type_object.CopyFromPango(ctx, ancestors, obj.Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -874,7 +932,7 @@ func (o *TemplateVariableResourceModel) CopyFromPango(ctx context.Context, obj *
 	return diags
 }
 
-func (o *TemplateVariableResourceTypeObject) CopyFromPango(ctx context.Context, obj *template_variable.Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *TemplateVariableResourceTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipNetmask_value types.String
@@ -936,6 +994,11 @@ func (o *TemplateVariableResourceTypeObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
+func (o *TemplateVariableResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *TemplateVariableResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state TemplateVariableResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -953,6 +1016,13 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -977,6 +1047,17 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
 		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &template_variable.TemplateStackLocation{}
+			var innerLocation TemplateVariableTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
 	}
 
 	if err := location.IsValid(); err != nil {
@@ -986,8 +1067,7 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 
 	// Load the desired config.
 	var obj *template_variable.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -999,17 +1079,29 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1019,6 +1111,17 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 	var savestate, state TemplateVariableResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1041,6 +1144,17 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
 		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &template_variable.TemplateStackLocation{}
+			var innerLocation TemplateVariableTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
 	}
 
 	// Basic logging.
@@ -1050,8 +1164,12 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1061,7 +1179,7 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1071,6 +1189,13 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1082,6 +1207,17 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1104,6 +1240,17 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
 		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &template_variable.TemplateStackLocation{}
+			var innerLocation TemplateVariableTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
 	}
 
 	// Basic logging.
@@ -1117,19 +1264,31 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1143,11 +1302,18 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1193,11 +1359,28 @@ func (r *TemplateVariableResource) Delete(ctx context.Context, req resource.Dele
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
 		}
+
+		if !terraformLocation.TemplateStack.IsNull() {
+			location.TemplateStack = &template_variable.TemplateStackLocation{}
+			var innerLocation TemplateVariableTemplateStackLocation
+			resp.Diagnostics.Append(terraformLocation.TemplateStack.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
+			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }
@@ -1322,8 +1505,13 @@ type TemplateVariableTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
+type TemplateVariableTemplateStackLocation struct {
+	PanoramaDevice types.String `tfsdk:"panorama_device"`
+	Name           types.String `tfsdk:"name"`
+}
 type TemplateVariableLocation struct {
-	Template types.Object `tfsdk:"template"`
+	Template      types.Object `tfsdk:"template"`
+	TemplateStack types.Object `tfsdk:"template_stack"`
 }
 
 func TemplateVariableLocationSchema() rsschema.Attribute {
@@ -1346,6 +1534,40 @@ func TemplateVariableLocationSchema() rsschema.Attribute {
 					},
 					"name": rsschema.StringAttribute{
 						Description: "The template.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("template"),
+						path.MatchRelative().AtParent().AtName("template_stack"),
+					}...),
+				},
+			},
+			"template_stack": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific template stack.",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"panorama_device": rsschema.StringAttribute{
+						Description: "The panorama device.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "Specific Panorama Template Stack",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -1391,9 +1613,39 @@ func (o *TemplateVariableTemplateLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o TemplateVariableTemplateStackLocation) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
+		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
+		Name:           o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *TemplateVariableTemplateStackLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		PanoramaDevice *string `json:"panorama_device,omitempty"`
+		Name           *string `json:"name,omitempty"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
 func (o TemplateVariableLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Template *TemplateVariableTemplateLocation `json:"template,omitempty"`
+		Template      *TemplateVariableTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *TemplateVariableTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 	var template_object *TemplateVariableTemplateLocation
 	{
@@ -1402,9 +1654,17 @@ func (o TemplateVariableLocation) MarshalJSON() ([]byte, error) {
 			return nil, NewDiagnosticsError("Failed to marshal template into JSON document", diags.Errors())
 		}
 	}
+	var templateStack_object *TemplateVariableTemplateStackLocation
+	{
+		diags := o.TemplateStack.As(context.TODO(), &templateStack_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
+		}
+	}
 
 	obj := shadow{
-		Template: template_object,
+		Template:      template_object,
+		TemplateStack: templateStack_object,
 	}
 
 	return json.Marshal(obj)
@@ -1412,7 +1672,8 @@ func (o TemplateVariableLocation) MarshalJSON() ([]byte, error) {
 
 func (o *TemplateVariableLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Template *TemplateVariableTemplateLocation `json:"template,omitempty"`
+		Template      *TemplateVariableTemplateLocation      `json:"template,omitempty"`
+		TemplateStack *TemplateVariableTemplateStackLocation `json:"template_stack,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1427,7 +1688,16 @@ func (o *TemplateVariableLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into template", diags_tmp.Errors())
 		}
 	}
+	var templateStack_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		templateStack_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.TemplateStack.AttributeTypes(), shadow.TemplateStack)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
+		}
+	}
 	o.Template = template_object
+	o.TemplateStack = templateStack_object
 
 	return nil
 }
@@ -1438,11 +1708,21 @@ func (o *TemplateVariableTemplateLocation) AttributeTypes() map[string]attr.Type
 		"name":            types.StringType,
 	}
 }
+func (o *TemplateVariableTemplateStackLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"panorama_device": types.StringType,
+		"name":            types.StringType,
+	}
+}
 func (o *TemplateVariableLocation) AttributeTypes() map[string]attr.Type {
 	var templateObj TemplateVariableTemplateLocation
+	var templateStackObj TemplateVariableTemplateStackLocation
 	return map[string]attr.Type{
 		"template": types.ObjectType{
 			AttrTypes: templateObj.AttributeTypes(),
+		},
+		"template_stack": types.ObjectType{
+			AttrTypes: templateStackObj.AttributeTypes(),
 		},
 	}
 }

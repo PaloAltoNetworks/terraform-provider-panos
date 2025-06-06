@@ -197,6 +197,14 @@ func (o *ApplicationDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"virus_ident":              types.BoolType,
 	}
 }
+
+func (o ApplicationDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o ApplicationDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *ApplicationDataSourceDefaultObject) AttributeTypes() map[string]attr.Type {
 
 	var identByIcmpTypeObj *ApplicationDataSourceDefaultIdentByIcmpTypeObject
@@ -214,6 +222,14 @@ func (o *ApplicationDataSourceDefaultObject) AttributeTypes() map[string]attr.Ty
 		"port":                 types.ListType{},
 	}
 }
+
+func (o ApplicationDataSourceDefaultObject) AncestorName() string {
+	return "default"
+}
+
+func (o ApplicationDataSourceDefaultObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -221,12 +237,28 @@ func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) AttributeTypes() map
 		"type": types.StringType,
 	}
 }
+
+func (o ApplicationDataSourceDefaultIdentByIcmpTypeObject) AncestorName() string {
+	return "ident-by-icmp-type"
+}
+
+func (o ApplicationDataSourceDefaultIdentByIcmpTypeObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"code": types.StringType,
 		"type": types.StringType,
 	}
+}
+
+func (o ApplicationDataSourceDefaultIdentByIcmp6TypeObject) AncestorName() string {
+	return "ident-by-icmp6-type"
+}
+
+func (o ApplicationDataSourceDefaultIdentByIcmp6TypeObject) EntryName() *string {
+	return nil
 }
 func (o *ApplicationDataSourceSignatureObject) AttributeTypes() map[string]attr.Type {
 
@@ -238,12 +270,28 @@ func (o *ApplicationDataSourceSignatureObject) AttributeTypes() map[string]attr.
 		"and_condition": types.ListType{},
 	}
 }
+
+func (o ApplicationDataSourceSignatureObject) AncestorName() string {
+	return "signature"
+}
+
+func (o ApplicationDataSourceSignatureObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *ApplicationDataSourceSignatureAndConditionObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":         types.StringType,
 		"or_condition": types.ListType{},
 	}
+}
+
+func (o ApplicationDataSourceSignatureAndConditionObject) AncestorName() string {
+	return "and-condition"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) AttributeTypes() map[string]attr.Type {
 
@@ -254,6 +302,14 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) AttributeT
 			AttrTypes: operatorObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionObject) AncestorName() string {
+	return "or-condition"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) AttributeTypes() map[string]attr.Type {
 
@@ -279,6 +335,14 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) At
 		},
 	}
 }
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) AncestorName() string {
+	return "operator"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -287,12 +351,28 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMat
 		"qualifier": types.ListType{},
 	}
 }
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) AncestorName() string {
+	return "pattern-match"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":  types.StringType,
 		"value": types.StringType,
 	}
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) AncestorName() string {
+	return "qualifier"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject) AttributeTypes() map[string]attr.Type {
 
@@ -302,12 +382,28 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterTha
 		"qualifier": types.ListType{},
 	}
 }
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject) AncestorName() string {
+	return "greater-than"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":  types.StringType,
 		"value": types.StringType,
 	}
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) AncestorName() string {
+	return "qualifier"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject) AttributeTypes() map[string]attr.Type {
 
@@ -317,12 +413,28 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanOb
 		"qualifier": types.ListType{},
 	}
 }
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject) AncestorName() string {
+	return "less-than"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":  types.StringType,
 		"value": types.StringType,
 	}
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) AncestorName() string {
+	return "qualifier"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject) AttributeTypes() map[string]attr.Type {
 
@@ -334,7 +446,15 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObj
 	}
 }
 
-func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, obj **application.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject) AncestorName() string {
+	return "equal-to"
+}
+
+func (o ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject) EntryName() *string {
+	return nil
+}
+
+func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ableToTransferFile_value := o.AbleToTransferFile.ValueBoolPointer()
 	algDisableCapability_value := o.AlgDisableCapability.ValueStringPointer()
@@ -348,8 +468,8 @@ func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, obj **appl
 		} else {
 			default_entry = new(application.Default)
 		}
-
-		diags.Append(o.Default.CopyToPango(ctx, &default_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Default.CopyToPango(ctx, ancestors, &default_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -374,7 +494,7 @@ func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, obj **appl
 		}
 		for _, elt := range signature_tf_entries {
 			var entry *application.Signature
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -428,7 +548,7 @@ func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, obj **appl
 
 	return diags
 }
-func (o *ApplicationDataSourceDefaultObject) CopyToPango(ctx context.Context, obj **application.Default, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceDefaultObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.Default, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var identByIcmpType_entry *application.DefaultIdentByIcmpType
 	if o.IdentByIcmpType != nil {
@@ -437,8 +557,8 @@ func (o *ApplicationDataSourceDefaultObject) CopyToPango(ctx context.Context, ob
 		} else {
 			identByIcmpType_entry = new(application.DefaultIdentByIcmpType)
 		}
-
-		diags.Append(o.IdentByIcmpType.CopyToPango(ctx, &identByIcmpType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.IdentByIcmpType.CopyToPango(ctx, append(ancestors, o), &identByIcmpType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -450,8 +570,8 @@ func (o *ApplicationDataSourceDefaultObject) CopyToPango(ctx context.Context, ob
 		} else {
 			identByIcmp6Type_entry = new(application.DefaultIdentByIcmp6Type)
 		}
-
-		diags.Append(o.IdentByIcmp6Type.CopyToPango(ctx, &identByIcmp6Type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.IdentByIcmp6Type.CopyToPango(ctx, append(ancestors, o), &identByIcmp6Type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -473,7 +593,7 @@ func (o *ApplicationDataSourceDefaultObject) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.DefaultIdentByIcmpType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	code_value := o.Code.ValueStringPointer()
 	type_value := o.Type.ValueStringPointer()
@@ -486,7 +606,7 @@ func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.DefaultIdentByIcmp6Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	code_value := o.Code.ValueStringPointer()
 	type_value := o.Type.ValueStringPointer()
@@ -499,7 +619,7 @@ func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureObject) CopyToPango(ctx context.Context, obj **application.Signature, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.Signature, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	comment_value := o.Comment.ValueStringPointer()
 	scope_value := o.Scope.ValueStringPointer()
@@ -514,7 +634,7 @@ func (o *ApplicationDataSourceSignatureObject) CopyToPango(ctx context.Context, 
 		}
 		for _, elt := range andCondition_tf_entries {
 			var entry *application.SignatureAndCondition
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -533,7 +653,7 @@ func (o *ApplicationDataSourceSignatureObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionObject) CopyToPango(ctx context.Context, obj **application.SignatureAndCondition, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndCondition, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var orCondition_tf_entries []ApplicationDataSourceSignatureAndConditionOrConditionObject
 	var orCondition_pango_entries []application.SignatureAndConditionOrCondition
@@ -545,7 +665,7 @@ func (o *ApplicationDataSourceSignatureAndConditionObject) CopyToPango(ctx conte
 		}
 		for _, elt := range orCondition_tf_entries {
 			var entry *application.SignatureAndConditionOrCondition
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -561,7 +681,7 @@ func (o *ApplicationDataSourceSignatureAndConditionObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrCondition, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrCondition, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var operator_entry *application.SignatureAndConditionOrConditionOperator
 	if o.Operator != nil {
@@ -570,8 +690,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) CopyToPang
 		} else {
 			operator_entry = new(application.SignatureAndConditionOrConditionOperator)
 		}
-
-		diags.Append(o.Operator.CopyToPango(ctx, &operator_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Operator.CopyToPango(ctx, append(ancestors, o), &operator_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -585,7 +705,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) CopyToPang
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperator, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperator, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var patternMatch_entry *application.SignatureAndConditionOrConditionOperatorPatternMatch
 	if o.PatternMatch != nil {
@@ -594,8 +714,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 		} else {
 			patternMatch_entry = new(application.SignatureAndConditionOrConditionOperatorPatternMatch)
 		}
-
-		diags.Append(o.PatternMatch.CopyToPango(ctx, &patternMatch_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PatternMatch.CopyToPango(ctx, append(ancestors, o), &patternMatch_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -607,8 +727,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 		} else {
 			greaterThan_entry = new(application.SignatureAndConditionOrConditionOperatorGreaterThan)
 		}
-
-		diags.Append(o.GreaterThan.CopyToPango(ctx, &greaterThan_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GreaterThan.CopyToPango(ctx, append(ancestors, o), &greaterThan_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -620,8 +740,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 		} else {
 			lessThan_entry = new(application.SignatureAndConditionOrConditionOperatorLessThan)
 		}
-
-		diags.Append(o.LessThan.CopyToPango(ctx, &lessThan_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LessThan.CopyToPango(ctx, append(ancestors, o), &lessThan_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -633,8 +753,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 		} else {
 			equalTo_entry = new(application.SignatureAndConditionOrConditionOperatorEqualTo)
 		}
-
-		diags.Append(o.EqualTo.CopyToPango(ctx, &equalTo_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.EqualTo.CopyToPango(ctx, append(ancestors, o), &equalTo_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -650,7 +770,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorPatternMatch, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorPatternMatch, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	context_value := o.Context.ValueStringPointer()
 	pattern_value := o.Pattern.ValueStringPointer()
@@ -664,7 +784,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMat
 		}
 		for _, elt := range qualifier_tf_entries {
 			var entry *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -681,7 +801,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMat
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -693,7 +813,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMat
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorGreaterThan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorGreaterThan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	context_value := o.Context.ValueStringPointer()
 	value_value := o.Value.ValueInt64Pointer()
@@ -707,7 +827,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterTha
 		}
 		for _, elt := range qualifier_tf_entries {
 			var entry *application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -724,7 +844,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterTha
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -736,7 +856,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterTha
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorLessThan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorLessThan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	context_value := o.Context.ValueStringPointer()
 	value_value := o.Value.ValueInt64Pointer()
@@ -750,7 +870,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanOb
 		}
 		for _, elt := range qualifier_tf_entries {
 			var entry *application.SignatureAndConditionOrConditionOperatorLessThanQualifier
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -767,7 +887,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanOb
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorLessThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorLessThanQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -779,7 +899,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQu
 
 	return diags
 }
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorEqualTo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorEqualTo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	context_value := o.Context.ValueStringPointer()
 	position_value := o.Position.ValueStringPointer()
@@ -797,15 +917,19 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObj
 	return diags
 }
 
-func (o *ApplicationDataSourceModel) CopyFromPango(ctx context.Context, obj *application.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var signature_list types.List
 	{
 		var signature_tf_entries []ApplicationDataSourceSignatureObject
 		for _, elt := range obj.Signature {
-			var entry ApplicationDataSourceSignatureObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationDataSourceSignatureObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			signature_tf_entries = append(signature_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -816,8 +940,7 @@ func (o *ApplicationDataSourceModel) CopyFromPango(ctx context.Context, obj *app
 	var default_object *ApplicationDataSourceDefaultObject
 	if obj.Default != nil {
 		default_object = new(ApplicationDataSourceDefaultObject)
-
-		diags.Append(default_object.CopyFromPango(ctx, obj.Default, encrypted)...)
+		diags.Append(default_object.CopyFromPango(ctx, ancestors, obj.Default, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -960,19 +1083,21 @@ func (o *ApplicationDataSourceModel) CopyFromPango(ctx context.Context, obj *app
 	return diags
 }
 
-func (o *ApplicationDataSourceDefaultObject) CopyFromPango(ctx context.Context, obj *application.Default, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceDefaultObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.Default, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var port_list types.List
 	{
 		var list_diags diag.Diagnostics
 		port_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Port)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var identByIcmpType_object *ApplicationDataSourceDefaultIdentByIcmpTypeObject
 	if obj.IdentByIcmpType != nil {
 		identByIcmpType_object = new(ApplicationDataSourceDefaultIdentByIcmpTypeObject)
-
-		diags.Append(identByIcmpType_object.CopyFromPango(ctx, obj.IdentByIcmpType, encrypted)...)
+		diags.Append(identByIcmpType_object.CopyFromPango(ctx, append(ancestors, o), obj.IdentByIcmpType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -980,8 +1105,7 @@ func (o *ApplicationDataSourceDefaultObject) CopyFromPango(ctx context.Context, 
 	var identByIcmp6Type_object *ApplicationDataSourceDefaultIdentByIcmp6TypeObject
 	if obj.IdentByIcmp6Type != nil {
 		identByIcmp6Type_object = new(ApplicationDataSourceDefaultIdentByIcmp6TypeObject)
-
-		diags.Append(identByIcmp6Type_object.CopyFromPango(ctx, obj.IdentByIcmp6Type, encrypted)...)
+		diags.Append(identByIcmp6Type_object.CopyFromPango(ctx, append(ancestors, o), obj.IdentByIcmp6Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -999,7 +1123,7 @@ func (o *ApplicationDataSourceDefaultObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.DefaultIdentByIcmpType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var code_value types.String
@@ -1016,7 +1140,7 @@ func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.DefaultIdentByIcmp6Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var code_value types.String
@@ -1033,15 +1157,19 @@ func (o *ApplicationDataSourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureObject) CopyFromPango(ctx context.Context, obj *application.Signature, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.Signature, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var andCondition_list types.List
 	{
 		var andCondition_tf_entries []ApplicationDataSourceSignatureAndConditionObject
 		for _, elt := range obj.AndCondition {
-			var entry ApplicationDataSourceSignatureAndConditionObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationDataSourceSignatureAndConditionObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			andCondition_tf_entries = append(andCondition_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1071,15 +1199,19 @@ func (o *ApplicationDataSourceSignatureObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndCondition, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndCondition, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var orCondition_list types.List
 	{
 		var orCondition_tf_entries []ApplicationDataSourceSignatureAndConditionOrConditionObject
 		for _, elt := range obj.OrCondition {
-			var entry ApplicationDataSourceSignatureAndConditionOrConditionObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationDataSourceSignatureAndConditionOrConditionObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			orCondition_tf_entries = append(orCondition_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1094,13 +1226,12 @@ func (o *ApplicationDataSourceSignatureAndConditionObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrCondition, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrCondition, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var operator_object *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject
 	if obj.Operator != nil {
 		operator_object = new(ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject)
-
-		diags.Append(operator_object.CopyFromPango(ctx, obj.Operator, encrypted)...)
+		diags.Append(operator_object.CopyFromPango(ctx, append(ancestors, o), obj.Operator, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1112,13 +1243,12 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) CopyFromPa
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperator, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperator, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var patternMatch_object *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject
 	if obj.PatternMatch != nil {
 		patternMatch_object = new(ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject)
-
-		diags.Append(patternMatch_object.CopyFromPango(ctx, obj.PatternMatch, encrypted)...)
+		diags.Append(patternMatch_object.CopyFromPango(ctx, append(ancestors, o), obj.PatternMatch, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1126,8 +1256,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 	var greaterThan_object *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject
 	if obj.GreaterThan != nil {
 		greaterThan_object = new(ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject)
-
-		diags.Append(greaterThan_object.CopyFromPango(ctx, obj.GreaterThan, encrypted)...)
+		diags.Append(greaterThan_object.CopyFromPango(ctx, append(ancestors, o), obj.GreaterThan, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1135,8 +1264,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 	var lessThan_object *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject
 	if obj.LessThan != nil {
 		lessThan_object = new(ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject)
-
-		diags.Append(lessThan_object.CopyFromPango(ctx, obj.LessThan, encrypted)...)
+		diags.Append(lessThan_object.CopyFromPango(ctx, append(ancestors, o), obj.LessThan, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1144,8 +1272,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 	var equalTo_object *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject
 	if obj.EqualTo != nil {
 		equalTo_object = new(ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject)
-
-		diags.Append(equalTo_object.CopyFromPango(ctx, obj.EqualTo, encrypted)...)
+		diags.Append(equalTo_object.CopyFromPango(ctx, append(ancestors, o), obj.EqualTo, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1159,15 +1286,19 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) Co
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorPatternMatch, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorPatternMatch, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var qualifier_list types.List
 	{
 		var qualifier_tf_entries []ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject
 		for _, elt := range obj.Qualifier {
-			var entry ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			qualifier_tf_entries = append(qualifier_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1191,7 +1322,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMat
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -1204,15 +1335,19 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMat
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorGreaterThan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorGreaterThan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var qualifier_list types.List
 	{
 		var qualifier_tf_entries []ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject
 		for _, elt := range obj.Qualifier {
-			var entry ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			qualifier_tf_entries = append(qualifier_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1236,7 +1371,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterTha
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -1249,15 +1384,19 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterTha
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorLessThan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorLessThan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var qualifier_list types.List
 	{
 		var qualifier_tf_entries []ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
 		for _, elt := range obj.Qualifier {
-			var entry ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			qualifier_tf_entries = append(qualifier_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1281,7 +1420,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanOb
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorLessThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorLessThanQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -1294,7 +1433,7 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQu
 	return diags
 }
 
-func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorEqualTo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorEqualTo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var context_value types.String
@@ -1319,6 +1458,11 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToObj
 	o.Value = value_value
 
 	return diags
+}
+
+func (o *ApplicationDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func ApplicationDataSourceSchema() dsschema.Schema {
@@ -2331,13 +2475,20 @@ func (d *ApplicationDataSource) Configure(_ context.Context, req datasource.Conf
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, application.NewService(d.client), batchSize, specifier, application.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*application.Entry, application.Location, *application.Service](d.client, application.NewService(d.client), batchSize, specifier, application.SpecMatches)
 }
 func (o *ApplicationDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state ApplicationDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -2389,8 +2540,12 @@ func (o *ApplicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -2400,7 +2555,7 @@ func (o *ApplicationDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -3561,7 +3716,7 @@ func (r *ApplicationResource) Configure(ctx context.Context, req resource.Config
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, application.NewService(r.client), batchSize, specifier, application.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*application.Entry, application.Location, *application.Service](r.client, application.NewService(r.client), batchSize, specifier, application.SpecMatches)
 }
 
 func (o *ApplicationResourceModel) AttributeTypes() map[string]attr.Type {
@@ -3607,6 +3762,14 @@ func (o *ApplicationResourceModel) AttributeTypes() map[string]attr.Type {
 		"virus_ident":              types.BoolType,
 	}
 }
+
+func (o ApplicationResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o ApplicationResourceModel) EntryName() *string {
+	return nil
+}
 func (o *ApplicationResourceDefaultObject) AttributeTypes() map[string]attr.Type {
 
 	var identByIcmpTypeObj *ApplicationResourceDefaultIdentByIcmpTypeObject
@@ -3624,6 +3787,14 @@ func (o *ApplicationResourceDefaultObject) AttributeTypes() map[string]attr.Type
 		"port":                 types.ListType{},
 	}
 }
+
+func (o ApplicationResourceDefaultObject) AncestorName() string {
+	return "default"
+}
+
+func (o ApplicationResourceDefaultObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -3631,12 +3802,28 @@ func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) AttributeTypes() map[s
 		"type": types.StringType,
 	}
 }
+
+func (o ApplicationResourceDefaultIdentByIcmpTypeObject) AncestorName() string {
+	return "ident-by-icmp-type"
+}
+
+func (o ApplicationResourceDefaultIdentByIcmpTypeObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"code": types.StringType,
 		"type": types.StringType,
 	}
+}
+
+func (o ApplicationResourceDefaultIdentByIcmp6TypeObject) AncestorName() string {
+	return "ident-by-icmp6-type"
+}
+
+func (o ApplicationResourceDefaultIdentByIcmp6TypeObject) EntryName() *string {
+	return nil
 }
 func (o *ApplicationResourceSignatureObject) AttributeTypes() map[string]attr.Type {
 
@@ -3648,12 +3835,28 @@ func (o *ApplicationResourceSignatureObject) AttributeTypes() map[string]attr.Ty
 		"and_condition": types.ListType{},
 	}
 }
+
+func (o ApplicationResourceSignatureObject) AncestorName() string {
+	return "signature"
+}
+
+func (o ApplicationResourceSignatureObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *ApplicationResourceSignatureAndConditionObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":         types.StringType,
 		"or_condition": types.ListType{},
 	}
+}
+
+func (o ApplicationResourceSignatureAndConditionObject) AncestorName() string {
+	return "and-condition"
+}
+
+func (o ApplicationResourceSignatureAndConditionObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationResourceSignatureAndConditionOrConditionObject) AttributeTypes() map[string]attr.Type {
 
@@ -3664,6 +3867,14 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionObject) AttributeTyp
 			AttrTypes: operatorObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionObject) AncestorName() string {
+	return "or-condition"
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) AttributeTypes() map[string]attr.Type {
 
@@ -3689,6 +3900,14 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Attr
 		},
 	}
 }
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorObject) AncestorName() string {
+	return "operator"
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -3697,12 +3916,28 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatch
 		"qualifier": types.ListType{},
 	}
 }
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) AncestorName() string {
+	return "pattern-match"
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":  types.StringType,
 		"value": types.StringType,
 	}
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) AncestorName() string {
+	return "qualifier"
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) AttributeTypes() map[string]attr.Type {
 
@@ -3712,12 +3947,28 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanO
 		"qualifier": types.ListType{},
 	}
 }
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) AncestorName() string {
+	return "greater-than"
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":  types.StringType,
 		"value": types.StringType,
 	}
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) AncestorName() string {
+	return "qualifier"
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) AttributeTypes() map[string]attr.Type {
 
@@ -3727,12 +3978,28 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObje
 		"qualifier": types.ListType{},
 	}
 }
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) AncestorName() string {
+	return "less-than"
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) EntryName() *string {
+	return nil
+}
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name":  types.StringType,
 		"value": types.StringType,
 	}
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) AncestorName() string {
+	return "qualifier"
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) AttributeTypes() map[string]attr.Type {
 
@@ -3744,7 +4011,15 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObjec
 	}
 }
 
-func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, obj **application.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) AncestorName() string {
+	return "equal-to"
+}
+
+func (o ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) EntryName() *string {
+	return nil
+}
+
+func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ableToTransferFile_value := o.AbleToTransferFile.ValueBoolPointer()
 	algDisableCapability_value := o.AlgDisableCapability.ValueStringPointer()
@@ -3758,8 +4033,8 @@ func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, obj **applic
 		} else {
 			default_entry = new(application.Default)
 		}
-
-		diags.Append(o.Default.CopyToPango(ctx, &default_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Default.CopyToPango(ctx, ancestors, &default_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3784,7 +4059,7 @@ func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, obj **applic
 		}
 		for _, elt := range signature_tf_entries {
 			var entry *application.Signature
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3838,7 +4113,7 @@ func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, obj **applic
 
 	return diags
 }
-func (o *ApplicationResourceDefaultObject) CopyToPango(ctx context.Context, obj **application.Default, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceDefaultObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.Default, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var identByIcmpType_entry *application.DefaultIdentByIcmpType
 	if o.IdentByIcmpType != nil {
@@ -3847,8 +4122,8 @@ func (o *ApplicationResourceDefaultObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			identByIcmpType_entry = new(application.DefaultIdentByIcmpType)
 		}
-
-		diags.Append(o.IdentByIcmpType.CopyToPango(ctx, &identByIcmpType_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.IdentByIcmpType.CopyToPango(ctx, append(ancestors, o), &identByIcmpType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3860,8 +4135,8 @@ func (o *ApplicationResourceDefaultObject) CopyToPango(ctx context.Context, obj 
 		} else {
 			identByIcmp6Type_entry = new(application.DefaultIdentByIcmp6Type)
 		}
-
-		diags.Append(o.IdentByIcmp6Type.CopyToPango(ctx, &identByIcmp6Type_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.IdentByIcmp6Type.CopyToPango(ctx, append(ancestors, o), &identByIcmp6Type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3883,7 +4158,7 @@ func (o *ApplicationResourceDefaultObject) CopyToPango(ctx context.Context, obj 
 
 	return diags
 }
-func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.DefaultIdentByIcmpType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	code_value := o.Code.ValueStringPointer()
 	type_value := o.Type.ValueStringPointer()
@@ -3896,7 +4171,7 @@ func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyToPango(ctx context.Context, obj **application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.DefaultIdentByIcmp6Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	code_value := o.Code.ValueStringPointer()
 	type_value := o.Type.ValueStringPointer()
@@ -3909,7 +4184,7 @@ func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *ApplicationResourceSignatureObject) CopyToPango(ctx context.Context, obj **application.Signature, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.Signature, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	comment_value := o.Comment.ValueStringPointer()
 	scope_value := o.Scope.ValueStringPointer()
@@ -3924,7 +4199,7 @@ func (o *ApplicationResourceSignatureObject) CopyToPango(ctx context.Context, ob
 		}
 		for _, elt := range andCondition_tf_entries {
 			var entry *application.SignatureAndCondition
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3943,7 +4218,7 @@ func (o *ApplicationResourceSignatureObject) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionObject) CopyToPango(ctx context.Context, obj **application.SignatureAndCondition, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndCondition, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var orCondition_tf_entries []ApplicationResourceSignatureAndConditionOrConditionObject
 	var orCondition_pango_entries []application.SignatureAndConditionOrCondition
@@ -3955,7 +4230,7 @@ func (o *ApplicationResourceSignatureAndConditionObject) CopyToPango(ctx context
 		}
 		for _, elt := range orCondition_tf_entries {
 			var entry *application.SignatureAndConditionOrCondition
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3971,7 +4246,7 @@ func (o *ApplicationResourceSignatureAndConditionObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrCondition, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrCondition, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var operator_entry *application.SignatureAndConditionOrConditionOperator
 	if o.Operator != nil {
@@ -3980,8 +4255,8 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionObject) CopyToPango(
 		} else {
 			operator_entry = new(application.SignatureAndConditionOrConditionOperator)
 		}
-
-		diags.Append(o.Operator.CopyToPango(ctx, &operator_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Operator.CopyToPango(ctx, append(ancestors, o), &operator_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3995,7 +4270,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionObject) CopyToPango(
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperator, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperator, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var patternMatch_entry *application.SignatureAndConditionOrConditionOperatorPatternMatch
 	if o.PatternMatch != nil {
@@ -4004,8 +4279,8 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 		} else {
 			patternMatch_entry = new(application.SignatureAndConditionOrConditionOperatorPatternMatch)
 		}
-
-		diags.Append(o.PatternMatch.CopyToPango(ctx, &patternMatch_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PatternMatch.CopyToPango(ctx, append(ancestors, o), &patternMatch_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4017,8 +4292,8 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 		} else {
 			greaterThan_entry = new(application.SignatureAndConditionOrConditionOperatorGreaterThan)
 		}
-
-		diags.Append(o.GreaterThan.CopyToPango(ctx, &greaterThan_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.GreaterThan.CopyToPango(ctx, append(ancestors, o), &greaterThan_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4030,8 +4305,8 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 		} else {
 			lessThan_entry = new(application.SignatureAndConditionOrConditionOperatorLessThan)
 		}
-
-		diags.Append(o.LessThan.CopyToPango(ctx, &lessThan_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LessThan.CopyToPango(ctx, append(ancestors, o), &lessThan_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4043,8 +4318,8 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 		} else {
 			equalTo_entry = new(application.SignatureAndConditionOrConditionOperatorEqualTo)
 		}
-
-		diags.Append(o.EqualTo.CopyToPango(ctx, &equalTo_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.EqualTo.CopyToPango(ctx, append(ancestors, o), &equalTo_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4060,7 +4335,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorPatternMatch, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorPatternMatch, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	context_value := o.Context.ValueStringPointer()
 	pattern_value := o.Pattern.ValueStringPointer()
@@ -4074,7 +4349,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatch
 		}
 		for _, elt := range qualifier_tf_entries {
 			var entry *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4091,7 +4366,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatch
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -4103,7 +4378,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatch
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorGreaterThan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorGreaterThan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	context_value := o.Context.ValueStringPointer()
 	value_value := o.Value.ValueInt64Pointer()
@@ -4117,7 +4392,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanO
 		}
 		for _, elt := range qualifier_tf_entries {
 			var entry *application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4134,7 +4409,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanO
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -4146,7 +4421,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQ
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorLessThan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorLessThan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	context_value := o.Context.ValueStringPointer()
 	value_value := o.Value.ValueInt64Pointer()
@@ -4160,7 +4435,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObje
 		}
 		for _, elt := range qualifier_tf_entries {
 			var entry *application.SignatureAndConditionOrConditionOperatorLessThanQualifier
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -4177,7 +4452,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObje
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorLessThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorLessThanQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -4189,7 +4464,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQual
 
 	return diags
 }
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyToPango(ctx context.Context, obj **application.SignatureAndConditionOrConditionOperatorEqualTo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **application.SignatureAndConditionOrConditionOperatorEqualTo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	context_value := o.Context.ValueStringPointer()
 	position_value := o.Position.ValueStringPointer()
@@ -4207,15 +4482,19 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObjec
 	return diags
 }
 
-func (o *ApplicationResourceModel) CopyFromPango(ctx context.Context, obj *application.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var signature_list types.List
 	{
 		var signature_tf_entries []ApplicationResourceSignatureObject
 		for _, elt := range obj.Signature {
-			var entry ApplicationResourceSignatureObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationResourceSignatureObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			signature_tf_entries = append(signature_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4226,8 +4505,7 @@ func (o *ApplicationResourceModel) CopyFromPango(ctx context.Context, obj *appli
 	var default_object *ApplicationResourceDefaultObject
 	if obj.Default != nil {
 		default_object = new(ApplicationResourceDefaultObject)
-
-		diags.Append(default_object.CopyFromPango(ctx, obj.Default, encrypted)...)
+		diags.Append(default_object.CopyFromPango(ctx, ancestors, obj.Default, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4370,19 +4648,21 @@ func (o *ApplicationResourceModel) CopyFromPango(ctx context.Context, obj *appli
 	return diags
 }
 
-func (o *ApplicationResourceDefaultObject) CopyFromPango(ctx context.Context, obj *application.Default, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceDefaultObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.Default, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var port_list types.List
 	{
 		var list_diags diag.Diagnostics
 		port_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Port)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var identByIcmpType_object *ApplicationResourceDefaultIdentByIcmpTypeObject
 	if obj.IdentByIcmpType != nil {
 		identByIcmpType_object = new(ApplicationResourceDefaultIdentByIcmpTypeObject)
-
-		diags.Append(identByIcmpType_object.CopyFromPango(ctx, obj.IdentByIcmpType, encrypted)...)
+		diags.Append(identByIcmpType_object.CopyFromPango(ctx, append(ancestors, o), obj.IdentByIcmpType, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4390,8 +4670,7 @@ func (o *ApplicationResourceDefaultObject) CopyFromPango(ctx context.Context, ob
 	var identByIcmp6Type_object *ApplicationResourceDefaultIdentByIcmp6TypeObject
 	if obj.IdentByIcmp6Type != nil {
 		identByIcmp6Type_object = new(ApplicationResourceDefaultIdentByIcmp6TypeObject)
-
-		diags.Append(identByIcmp6Type_object.CopyFromPango(ctx, obj.IdentByIcmp6Type, encrypted)...)
+		diags.Append(identByIcmp6Type_object.CopyFromPango(ctx, append(ancestors, o), obj.IdentByIcmp6Type, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4409,7 +4688,7 @@ func (o *ApplicationResourceDefaultObject) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmpType, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.DefaultIdentByIcmpType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var code_value types.String
@@ -4426,7 +4705,7 @@ func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx context.Context, obj *application.DefaultIdentByIcmp6Type, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.DefaultIdentByIcmp6Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var code_value types.String
@@ -4443,15 +4722,19 @@ func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *ApplicationResourceSignatureObject) CopyFromPango(ctx context.Context, obj *application.Signature, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.Signature, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var andCondition_list types.List
 	{
 		var andCondition_tf_entries []ApplicationResourceSignatureAndConditionObject
 		for _, elt := range obj.AndCondition {
-			var entry ApplicationResourceSignatureAndConditionObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationResourceSignatureAndConditionObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			andCondition_tf_entries = append(andCondition_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4481,15 +4764,19 @@ func (o *ApplicationResourceSignatureObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndCondition, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndCondition, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var orCondition_list types.List
 	{
 		var orCondition_tf_entries []ApplicationResourceSignatureAndConditionOrConditionObject
 		for _, elt := range obj.OrCondition {
-			var entry ApplicationResourceSignatureAndConditionOrConditionObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationResourceSignatureAndConditionOrConditionObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			orCondition_tf_entries = append(orCondition_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4504,13 +4791,12 @@ func (o *ApplicationResourceSignatureAndConditionObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionOrConditionObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrCondition, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrCondition, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var operator_object *ApplicationResourceSignatureAndConditionOrConditionOperatorObject
 	if obj.Operator != nil {
 		operator_object = new(ApplicationResourceSignatureAndConditionOrConditionOperatorObject)
-
-		diags.Append(operator_object.CopyFromPango(ctx, obj.Operator, encrypted)...)
+		diags.Append(operator_object.CopyFromPango(ctx, append(ancestors, o), obj.Operator, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4522,13 +4808,12 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionObject) CopyFromPang
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperator, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperator, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var patternMatch_object *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject
 	if obj.PatternMatch != nil {
 		patternMatch_object = new(ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject)
-
-		diags.Append(patternMatch_object.CopyFromPango(ctx, obj.PatternMatch, encrypted)...)
+		diags.Append(patternMatch_object.CopyFromPango(ctx, append(ancestors, o), obj.PatternMatch, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4536,8 +4821,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 	var greaterThan_object *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject
 	if obj.GreaterThan != nil {
 		greaterThan_object = new(ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject)
-
-		diags.Append(greaterThan_object.CopyFromPango(ctx, obj.GreaterThan, encrypted)...)
+		diags.Append(greaterThan_object.CopyFromPango(ctx, append(ancestors, o), obj.GreaterThan, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4545,8 +4829,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 	var lessThan_object *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject
 	if obj.LessThan != nil {
 		lessThan_object = new(ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject)
-
-		diags.Append(lessThan_object.CopyFromPango(ctx, obj.LessThan, encrypted)...)
+		diags.Append(lessThan_object.CopyFromPango(ctx, append(ancestors, o), obj.LessThan, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4554,8 +4837,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 	var equalTo_object *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject
 	if obj.EqualTo != nil {
 		equalTo_object = new(ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject)
-
-		diags.Append(equalTo_object.CopyFromPango(ctx, obj.EqualTo, encrypted)...)
+		diags.Append(equalTo_object.CopyFromPango(ctx, append(ancestors, o), obj.EqualTo, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4569,15 +4851,19 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) Copy
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorPatternMatch, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorPatternMatch, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var qualifier_list types.List
 	{
 		var qualifier_tf_entries []ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject
 		for _, elt := range obj.Qualifier {
-			var entry ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			qualifier_tf_entries = append(qualifier_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4601,7 +4887,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatch
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -4614,15 +4900,19 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatch
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorGreaterThan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorGreaterThan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var qualifier_list types.List
 	{
 		var qualifier_tf_entries []ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject
 		for _, elt := range obj.Qualifier {
-			var entry ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			qualifier_tf_entries = append(qualifier_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4646,7 +4936,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanO
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -4659,15 +4949,19 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQ
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorLessThan, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorLessThan, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var qualifier_list types.List
 	{
 		var qualifier_tf_entries []ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
 		for _, elt := range obj.Qualifier {
-			var entry ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			qualifier_tf_entries = append(qualifier_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -4691,7 +4985,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObje
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorLessThanQualifier, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorLessThanQualifier, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -4704,7 +4998,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQual
 	return diags
 }
 
-func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyFromPango(ctx context.Context, obj *application.SignatureAndConditionOrConditionOperatorEqualTo, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *application.SignatureAndConditionOrConditionOperatorEqualTo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var context_value types.String
@@ -4731,6 +5025,11 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObjec
 	return diags
 }
 
+func (o *ApplicationResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state ApplicationResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -4748,6 +5047,13 @@ func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateReq
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -4801,8 +5107,7 @@ func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Load the desired config.
 	var obj *application.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -4814,17 +5119,29 @@ func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -4834,6 +5151,17 @@ func (o *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 	var savestate, state ApplicationResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -4885,8 +5213,12 @@ func (o *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -4896,7 +5228,7 @@ func (o *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -4906,6 +5238,13 @@ func (o *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -4917,6 +5256,17 @@ func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateReq
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -4972,19 +5322,31 @@ func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -4998,11 +5360,18 @@ func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateReq
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -5070,9 +5439,15 @@ func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteReq
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

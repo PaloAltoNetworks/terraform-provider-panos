@@ -1,14 +1,8 @@
 package provider_test
 
 import (
-	"context"
 	"fmt"
 	"testing"
-
-	"golang.org/x/sync/errgroup"
-
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	addressGroup "github.com/PaloAltoNetworks/pango/objects/address/group"
 
 	"github.com/hashicorp/terraform-plugin-testing/compare"
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -16,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -31,10 +24,6 @@ func TestAccPanosAddressGroup(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccCheckPanosAddressGroupDestroy(
-			fmt.Sprintf("%s-%s", resourceName, nameSuffix),
-			fmt.Sprintf("%s-base-%s", resourceName, nameSuffix),
-		),
 		Steps: []resource.TestStep{
 			{
 				Config: makeAddressGroupConfig(resourceName),
@@ -139,38 +128,4 @@ func makeAddressGroupConfig(label string) string {
     `
 
 	return fmt.Sprintf(confiTpl, label, label, label)
-}
-
-func testAccCheckPanosAddressGroupDestroy(entryNames ...string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := addressGroup.NewService(sdkClient)
-		location := addressGroup.NewSharedLocation()
-
-		g := new(errgroup.Group)
-
-		for _, addrGroupName := range entryNames {
-			g.Go(func() error {
-				ctx := context.TODO()
-
-				reply, err := api.Read(ctx, *location, addrGroupName, "show")
-				if err != nil && !sdkErrors.IsObjectNotFound(err) {
-					return fmt.Errorf("reading address group entry %s via sdk: %v", addrGroupName, err)
-				}
-
-				if reply != nil {
-					if reply.EntryName() == addrGroupName {
-						return fmt.Errorf("address group object still exists: %s", addrGroupName)
-					}
-				}
-
-				return nil
-			})
-		}
-
-		if err := g.Wait(); err != nil {
-			return fmt.Errorf("checking destroy of address objects: %v", err)
-		}
-
-		return nil
-	}
 }

@@ -78,6 +78,14 @@ func (o *DeviceGroupDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"authorization_code": types.StringType,
 	}
 }
+
+func (o DeviceGroupDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o DeviceGroupDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *DeviceGroupDataSourceDevicesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -86,7 +94,15 @@ func (o *DeviceGroupDataSourceDevicesObject) AttributeTypes() map[string]attr.Ty
 	}
 }
 
-func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o DeviceGroupDataSourceDevicesObject) AncestorName() string {
+	return "devices"
+}
+
+func (o DeviceGroupDataSourceDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **devicegroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
@@ -104,7 +120,7 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devi
 		}
 		for _, elt := range devices_tf_entries {
 			var entry *devicegroup.Devices
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -124,7 +140,7 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, obj **devi
 
 	return diags
 }
-func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, obj **devicegroup.Devices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **devicegroup.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	vsys_pango_entries := make([]string, 0)
 	diags.Append(o.Vsys.ElementsAs(ctx, &vsys_pango_entries, false)...)
@@ -141,21 +157,28 @@ func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *devicegroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var templates_list types.List
 	{
 		var list_diags diag.Diagnostics
 		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var devices_list types.List
 	{
 		var devices_tf_entries []DeviceGroupDataSourceDevicesObject
 		for _, elt := range obj.Devices {
-			var entry DeviceGroupDataSourceDevicesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := DeviceGroupDataSourceDevicesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			devices_tf_entries = append(devices_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -181,19 +204,27 @@ func (o *DeviceGroupDataSourceModel) CopyFromPango(ctx context.Context, obj *dev
 	return diags
 }
 
-func (o *DeviceGroupDataSourceDevicesObject) CopyFromPango(ctx context.Context, obj *devicegroup.Devices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupDataSourceDevicesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *devicegroup.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
 		var list_diags diag.Diagnostics
 		vsys_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vsys)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.Name = types.StringValue(obj.Name)
 	o.Vsys = vsys_list
 
 	return diags
+}
+
+func (o *DeviceGroupDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func DeviceGroupDataSourceSchema() dsschema.Schema {
@@ -335,13 +366,20 @@ func (d *DeviceGroupDataSource) Configure(_ context.Context, req datasource.Conf
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, devicegroup.NewService(d.client), batchSize, specifier, devicegroup.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*devicegroup.Entry, devicegroup.Location, *devicegroup.Service](d.client, devicegroup.NewService(d.client), batchSize, specifier, devicegroup.SpecMatches)
 }
 func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state DeviceGroupDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -372,8 +410,12 @@ func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadReq
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -383,7 +425,7 @@ func (o *DeviceGroupDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -577,7 +619,7 @@ func (r *DeviceGroupResource) Configure(ctx context.Context, req resource.Config
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, devicegroup.NewService(r.client), batchSize, specifier, devicegroup.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*devicegroup.Entry, devicegroup.Location, *devicegroup.Service](r.client, devicegroup.NewService(r.client), batchSize, specifier, devicegroup.SpecMatches)
 }
 
 func (o *DeviceGroupResourceModel) AttributeTypes() map[string]attr.Type {
@@ -595,6 +637,14 @@ func (o *DeviceGroupResourceModel) AttributeTypes() map[string]attr.Type {
 		"authorization_code": types.StringType,
 	}
 }
+
+func (o DeviceGroupResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o DeviceGroupResourceModel) EntryName() *string {
+	return nil
+}
 func (o *DeviceGroupResourceDevicesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -603,7 +653,15 @@ func (o *DeviceGroupResourceDevicesObject) AttributeTypes() map[string]attr.Type
 	}
 }
 
-func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o DeviceGroupResourceDevicesObject) AncestorName() string {
+	return "devices"
+}
+
+func (o DeviceGroupResourceDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **devicegroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	templates_pango_entries := make([]string, 0)
@@ -621,7 +679,7 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **device
 		}
 		for _, elt := range devices_tf_entries {
 			var entry *devicegroup.Devices
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -641,7 +699,7 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, obj **device
 
 	return diags
 }
-func (o *DeviceGroupResourceDevicesObject) CopyToPango(ctx context.Context, obj **devicegroup.Devices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupResourceDevicesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **devicegroup.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	vsys_pango_entries := make([]string, 0)
 	diags.Append(o.Vsys.ElementsAs(ctx, &vsys_pango_entries, false)...)
@@ -658,21 +716,28 @@ func (o *DeviceGroupResourceDevicesObject) CopyToPango(ctx context.Context, obj 
 	return diags
 }
 
-func (o *DeviceGroupResourceModel) CopyFromPango(ctx context.Context, obj *devicegroup.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *devicegroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var templates_list types.List
 	{
 		var list_diags diag.Diagnostics
 		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var devices_list types.List
 	{
 		var devices_tf_entries []DeviceGroupResourceDevicesObject
 		for _, elt := range obj.Devices {
-			var entry DeviceGroupResourceDevicesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := DeviceGroupResourceDevicesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			devices_tf_entries = append(devices_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -698,19 +763,27 @@ func (o *DeviceGroupResourceModel) CopyFromPango(ctx context.Context, obj *devic
 	return diags
 }
 
-func (o *DeviceGroupResourceDevicesObject) CopyFromPango(ctx context.Context, obj *devicegroup.Devices, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *DeviceGroupResourceDevicesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *devicegroup.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
 		var list_diags diag.Diagnostics
 		vsys_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vsys)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.Name = types.StringValue(obj.Name)
 	o.Vsys = vsys_list
 
 	return diags
+}
+
+func (o *DeviceGroupResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -730,6 +803,13 @@ func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateReq
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -762,8 +842,7 @@ func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Load the desired config.
 	var obj *devicegroup.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -775,17 +854,29 @@ func (r *DeviceGroupResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -795,6 +886,17 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 	var savestate, state DeviceGroupResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -825,8 +927,12 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -836,7 +942,7 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -846,6 +952,13 @@ func (o *DeviceGroupResource) Read(ctx context.Context, req resource.ReadRequest
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -857,6 +970,17 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -891,19 +1015,31 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -917,11 +1053,18 @@ func (r *DeviceGroupResource) Update(ctx context.Context, req resource.UpdateReq
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -968,9 +1111,15 @@ func (r *DeviceGroupResource) Delete(ctx context.Context, req resource.DeleteReq
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

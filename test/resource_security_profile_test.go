@@ -2,7 +2,6 @@ package provider_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -15,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -28,7 +26,6 @@ func TestAccSecurityProfileGroup(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccSecurityProfileGroupDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: securityProfileGroupTmpl,
@@ -176,37 +173,5 @@ func (o *securityProfileGroupExpectNoEntriesInLocation) CheckState(ctx context.C
 
 	if len(dangling) > 0 {
 		resp.Error = fmt.Errorf("delete of the resource didn't remove it from the server")
-	}
-}
-
-func testAccSecurityProfileGroupDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		service := secgroup.NewService(sdkClient)
-
-		location := secgroup.NewDeviceGroupLocation()
-		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg1", prefix)
-
-		ctx := context.TODO()
-		entries, err := service.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkerrors.IsObjectNotFound(err) {
-			return fmt.Errorf("failed to list existing entries via sdk: %w", err)
-		}
-
-		var leftEntries []string
-		for _, elt := range entries {
-			if strings.HasPrefix(elt.Name, prefix) {
-				leftEntries = append(leftEntries, elt.Name)
-			}
-		}
-
-		if len(leftEntries) > 0 {
-			err := fmt.Errorf("terraform failed to remove entries from the server")
-			delErr := service.Delete(ctx, *location, leftEntries...)
-			if delErr != nil {
-				return errors.Join(err, delErr)
-			}
-		}
-
-		return nil
 	}
 }

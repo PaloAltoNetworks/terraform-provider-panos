@@ -1,20 +1,14 @@
 package provider_test
 
 import (
-	"context"
-	"errors"
 	"fmt"
 	"testing"
-
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/objects/profiles/ipseccrypto"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -27,7 +21,6 @@ func TestAccIpsecCryptoProfile_1(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccIpsecCryptoProfileDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: ipsecCryptoProfile1,
@@ -227,30 +220,3 @@ resource "panos_ipsec_crypto_profile" "profile4" {
   }
 }
 `
-
-func testAccIpsecCryptoProfileDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		entry := fmt.Sprintf("%s-profile", prefix)
-		api := ipseccrypto.NewService(sdkClient)
-		ctx := context.TODO()
-
-		location := ipseccrypto.NewTemplateLocation()
-		location.Template.Template = fmt.Sprintf("%s-tmpl", prefix)
-
-		reply, err := api.Read(ctx, *location, entry, "show")
-		if err != nil && !sdkErrors.IsObjectNotFound(err) {
-			return fmt.Errorf("reading ethernet entry via sdk: %v", err)
-		}
-
-		if reply != nil {
-			err := fmt.Errorf("terraform didn't delete the server entry properly")
-			delErr := api.Delete(ctx, *location, entry)
-			if delErr != nil {
-				return errors.Join(err, delErr)
-			}
-			return err
-		}
-
-		return nil
-	}
-}

@@ -14,8 +14,8 @@ var _ = Expect
 var _ = Describe("Entry", func() {
 	existing := []*MockEntryObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
 	var client *MockEntryClient[*MockEntryObject]
-	var service manager.SDKEntryService[*MockEntryObject, MockLocation]
-	var sdk *manager.EntryObjectManager[*MockEntryObject, MockLocation, manager.SDKEntryService[*MockEntryObject, MockLocation]]
+	var service *MockEntryService[*MockEntryObject, MockLocation]
+	var sdk *manager.EntryObjectManager[*MockEntryObject, MockLocation, *MockEntryService[*MockEntryObject, MockLocation]]
 	var batchSize int
 
 	location := MockLocation{}
@@ -26,13 +26,14 @@ var _ = Describe("Entry", func() {
 		batchSize = 500
 		client = NewMockEntryClient(existing)
 		service = NewMockEntryService[*MockEntryObject, MockLocation](client)
-		sdk = manager.NewEntryObjectManager(client, service, batchSize, MockEntrySpecifier, MockEntryMatcher)
+		sdk = manager.NewEntryObjectManager[*MockEntryObject, MockLocation, *MockEntryService[*MockEntryObject, MockLocation]](client, service, batchSize, MockEntrySpecifier, MockEntryMatcher)
 	})
 
 	Context("Read()", func() {
 		When("reading entry that does not exist", func() {
 			It("should return nil object and ErrObjectNotFound error", func() {
-				object, err := sdk.Read(ctx, location, "4")
+				object, err := sdk.Read(ctx, location, []string{}, "4")
+
 				Expect(err).To(HaveOccurred())
 				Expect(err).To(MatchError(MatchRegexp("Object not found")))
 				Expect(object).To(BeNil())
@@ -40,7 +41,7 @@ var _ = Describe("Entry", func() {
 		})
 		When("reading entry that exists", func() {
 			It("should return nil error and the existing entry", func() {
-				object, err := sdk.Read(ctx, location, "1")
+				object, err := sdk.Read(ctx, location, []string{}, "1")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(object.Name).To(Equal("1"))
 			})
@@ -51,7 +52,7 @@ var _ = Describe("Entry", func() {
 		When("no entries are in the state", func() {
 			It("should return an empty list of entries", func() {
 				entries := []*MockEntryObject{}
-				processed, err := sdk.ReadMany(ctx, location, entries)
+				processed, err := sdk.ReadMany(ctx, location, []string{}, entries)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(0))
 			})
@@ -59,7 +60,7 @@ var _ = Describe("Entry", func() {
 		When("there are entries in the state", func() {
 			It("should return a list of entries from the server that match state entries", func() {
 				entries := []*MockEntryObject{{Name: "1"}, {Name: "2"}}
-				processed, err := sdk.ReadMany(ctx, location, entries)
+				processed, err := sdk.ReadMany(ctx, location, []string{}, entries)
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(2))
 
@@ -74,7 +75,7 @@ var _ = Describe("Entry", func() {
 			Context("when the entry already exists on the server", func() {
 				It("should return an error back to the caller", func() {
 					entry := &MockEntryObject{Name: "1", Value: "A"}
-					processed, err := sdk.Create(ctx, location, entry)
+					processed, err := sdk.Create(ctx, location, []string{entry.EntryName()}, entry)
 					Expect(err).To(MatchError(MatchRegexp("already exists")))
 					Expect(processed).To(BeNil())
 
@@ -83,7 +84,7 @@ var _ = Describe("Entry", func() {
 			Context("when there is no conflict between plan and remote state", func() {
 				It("should return a pointer to the created object", func() {
 					entry := &MockEntryObject{Name: "4", Value: "D"}
-					processed, err := sdk.Create(ctx, location, entry)
+					processed, err := sdk.Create(ctx, location, []string{entry.EntryName()}, entry)
 					Expect(err).ToNot(HaveOccurred())
 					Expect(processed).ToNot(BeNil())
 					Expect(processed.EntryName()).To(Equal(entry.Name))
@@ -98,7 +99,7 @@ var _ = Describe("Entry", func() {
 			Context("and some entries already exist on the server", func() {
 				It("should return an error about conflict", func() {
 					entries := []*MockEntryObject{{Name: "1", Value: "A"}, {Name: "4", Value: "D"}}
-					processed, err := sdk.CreateMany(ctx, location, entries)
+					processed, err := sdk.CreateMany(ctx, location, []string{}, entries)
 
 					Expect(err).To(MatchError(manager.ErrConflict))
 					Expect(processed).To(BeNil())
@@ -111,7 +112,7 @@ var _ = Describe("Entry", func() {
 			Context("and the list of entries is empty", func() {
 				It("should not make any changes", func() {
 					entries := []*MockEntryObject{}
-					processed, err := sdk.CreateMany(ctx, location, entries)
+					processed, err := sdk.CreateMany(ctx, location, []string{}, entries)
 
 					Expect(err).ToNot(HaveOccurred())
 					Expect(processed).To(BeEmpty())
@@ -124,7 +125,7 @@ var _ = Describe("Entry", func() {
 			Context("and there are new entries on the list", func() {
 				It("should add those entries to the server and return only those new entries", func() {
 					entries := []*MockEntryObject{{Name: "4", Value: "D"}, {Name: "5", Value: "E"}}
-					processed, err := sdk.CreateMany(ctx, location, entries)
+					processed, err := sdk.CreateMany(ctx, location, []string{}, entries)
 
 					Expect(err).ToNot(HaveOccurred())
 					Expect(processed).To(HaveExactElements(entries))
@@ -144,7 +145,7 @@ var _ = Describe("Entry", func() {
 		Context("when entries from the plan are missing from the server", func() {
 			It("should recreate them, and return back list of all managed entries", func() {
 				expected := append(existing, &MockEntryObject{Name: "4", Value: "D"})
-				processed, err := sdk.UpdateMany(ctx, location, existing, expected)
+				processed, err := sdk.UpdateMany(ctx, location, []string{}, existing, expected)
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveExactElements(expected))
@@ -157,7 +158,7 @@ var _ = Describe("Entry", func() {
 			It("should properly remove deleted entries from the server and return back updated list", func() {
 				stateEntries := []*MockEntryObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
 				planEntries := []*MockEntryObject{{Name: "1", Value: "A"}, {Name: "3", Value: "C"}}
-				processed, err := sdk.UpdateMany(ctx, location, stateEntries, planEntries)
+				processed, err := sdk.UpdateMany(ctx, location, []string{}, stateEntries, planEntries)
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveExactElements(planEntries))
@@ -170,7 +171,7 @@ var _ = Describe("Entry", func() {
 		Context("when entries from the plan are missing from the server", func() {
 			It("should not delete anything from the server", func() {
 				entries := []string{"4"}
-				err := sdk.Delete(ctx, location, entries)
+				err := sdk.Delete(ctx, location, []string{}, entries)
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(client.list()).To(HaveExactElements(existing))

@@ -113,6 +113,11 @@ func (r *ApiKeyResource) Configure(ctx context.Context, req ephemeral.ConfigureR
 	r.client = providerData.Client
 }
 
+func (o *ApiKeyResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *ApiKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest, resp *ephemeral.OpenResponse) {
 
 	var data ApiKeyResourceModel

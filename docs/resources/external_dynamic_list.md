@@ -25,10 +25,6 @@ description: |-
 - `disable_override` (String) disable object override in child device groups
 - `type` (Attributes) (see [below for nested schema](#nestedatt--type))
 
-### Read-Only
-
-- `encrypted_values` (Map of String, Sensitive)
-
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
 
@@ -36,6 +32,7 @@ Optional:
 
 - `device_group` (Attributes) Located in a specific Device Group (see [below for nested schema](#nestedatt--location--device_group))
 - `shared` (Attributes) Panorama shared object (see [below for nested schema](#nestedatt--location--shared))
+- `vsys` (Attributes) Located in a specific Virtual System (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--device_group"></a>
 ### Nested Schema for `location.device_group`
@@ -48,6 +45,15 @@ Optional:
 
 <a id="nestedatt--location--shared"></a>
 ### Nested Schema for `location.shared`
+
+
+<a id="nestedatt--location--vsys"></a>
+### Nested Schema for `location.vsys`
+
+Optional:
+
+- `name` (String) The Virtual System name
+- `ngfw_device` (String) The NGFW device name
 
 
 

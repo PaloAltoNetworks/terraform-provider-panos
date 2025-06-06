@@ -2,7 +2,6 @@ package provider_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -10,13 +9,11 @@ import (
 	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/objects/application/group"
 
-	//	"github.com/hashicorp/terraform-plugin-testing/compare"
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -61,7 +58,6 @@ func TestAccPanosApplicationGroup(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccCheckPanosApplicationGroupDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: applicationGroupTmpl,
@@ -130,35 +126,3 @@ resource "panos_device_group" "dg" {
   name = format("%s-dg1", var.prefix)
 }
 `
-
-func testAccCheckPanosApplicationGroupDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := group.NewService(sdkClient)
-		location := group.NewDeviceGroupLocation()
-		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg1", prefix)
-
-		ctx := context.TODO()
-		existing, err := api.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkerrors.IsObjectNotFound(err) {
-			return err
-		}
-
-		var dangling []string
-		for _, elt := range existing {
-			if strings.HasPrefix(elt.Name, prefix) {
-				dangling = append(dangling, elt.Name)
-			}
-		}
-
-		if len(dangling) > 0 {
-			err = fmt.Errorf("Some entries were left after terraform teardown")
-			deleteErr := api.Delete(ctx, *location, dangling...)
-			if deleteErr != nil {
-				err = errors.Join(err, deleteErr)
-			}
-			return err
-		}
-
-		return nil
-	}
-}

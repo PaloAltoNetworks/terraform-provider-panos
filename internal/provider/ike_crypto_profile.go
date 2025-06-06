@@ -89,6 +89,14 @@ func (o *IkeCryptoProfileDataSourceModel) AttributeTypes() map[string]attr.Type 
 		},
 	}
 }
+
+func (o IkeCryptoProfileDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o IkeCryptoProfileDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *IkeCryptoProfileDataSourceLifetimeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -99,7 +107,15 @@ func (o *IkeCryptoProfileDataSourceLifetimeObject) AttributeTypes() map[string]a
 	}
 }
 
-func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj **ikecrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o IkeCryptoProfileDataSourceLifetimeObject) AncestorName() string {
+	return "lifetime"
+}
+
+func (o IkeCryptoProfileDataSourceLifetimeObject) EntryName() *string {
+	return nil
+}
+
+func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authenticationMultiple_value := o.AuthenticationMultiple.ValueInt64Pointer()
 	dhGroup_pango_entries := make([]string, 0)
@@ -124,8 +140,8 @@ func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			lifetime_entry = new(ikecrypto.Lifetime)
 		}
-
-		diags.Append(o.Lifetime.CopyToPango(ctx, &lifetime_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Lifetime.CopyToPango(ctx, ancestors, &lifetime_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -143,7 +159,7 @@ func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Context, obj **ikecrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	days_value := o.Days.ValueInt64Pointer()
 	hours_value := o.Hours.ValueInt64Pointer()
@@ -161,31 +177,39 @@ func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Conte
 	return diags
 }
 
-func (o *IkeCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *ikecrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhGroup_list types.List
 	{
 		var list_diags diag.Diagnostics
 		dhGroup_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DhGroup)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var encryption_list types.List
 	{
 		var list_diags diag.Diagnostics
 		encryption_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Encryption)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var hash_list types.List
 	{
 		var list_diags diag.Diagnostics
 		hash_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Hash)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var lifetime_object *IkeCryptoProfileDataSourceLifetimeObject
 	if obj.Lifetime != nil {
 		lifetime_object = new(IkeCryptoProfileDataSourceLifetimeObject)
-
-		diags.Append(lifetime_object.CopyFromPango(ctx, obj.Lifetime, encrypted)...)
+		diags.Append(lifetime_object.CopyFromPango(ctx, ancestors, obj.Lifetime, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -205,7 +229,7 @@ func (o *IkeCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, obj
 	return diags
 }
 
-func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyFromPango(ctx context.Context, obj *ikecrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var days_value types.Int64
@@ -230,6 +254,11 @@ func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyFromPango(ctx context.Con
 	o.Seconds = seconds_value
 
 	return diags
+}
+
+func (o *IkeCryptoProfileDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func IkeCryptoProfileDataSourceSchema() dsschema.Schema {
@@ -394,13 +423,20 @@ func (d *IkeCryptoProfileDataSource) Configure(_ context.Context, req datasource
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, ikecrypto.NewService(d.client), batchSize, specifier, ikecrypto.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*ikecrypto.Entry, ikecrypto.Location, *ikecrypto.Service](d.client, ikecrypto.NewService(d.client), batchSize, specifier, ikecrypto.SpecMatches)
 }
 func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state IkeCryptoProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -455,8 +491,12 @@ func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.Re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -466,7 +506,7 @@ func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.Re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -696,7 +736,7 @@ func (r *IkeCryptoProfileResource) Configure(ctx context.Context, req resource.C
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, ikecrypto.NewService(r.client), batchSize, specifier, ikecrypto.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*ikecrypto.Entry, ikecrypto.Location, *ikecrypto.Service](r.client, ikecrypto.NewService(r.client), batchSize, specifier, ikecrypto.SpecMatches)
 }
 
 func (o *IkeCryptoProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -718,6 +758,14 @@ func (o *IkeCryptoProfileResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o IkeCryptoProfileResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o IkeCryptoProfileResourceModel) EntryName() *string {
+	return nil
+}
 func (o *IkeCryptoProfileResourceLifetimeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -728,7 +776,15 @@ func (o *IkeCryptoProfileResourceLifetimeObject) AttributeTypes() map[string]att
 	}
 }
 
-func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj **ikecrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o IkeCryptoProfileResourceLifetimeObject) AncestorName() string {
+	return "lifetime"
+}
+
+func (o IkeCryptoProfileResourceLifetimeObject) EntryName() *string {
+	return nil
+}
+
+func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authenticationMultiple_value := o.AuthenticationMultiple.ValueInt64Pointer()
 	dhGroup_pango_entries := make([]string, 0)
@@ -753,8 +809,8 @@ func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj **i
 		} else {
 			lifetime_entry = new(ikecrypto.Lifetime)
 		}
-
-		diags.Append(o.Lifetime.CopyToPango(ctx, &lifetime_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Lifetime.CopyToPango(ctx, ancestors, &lifetime_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -772,7 +828,7 @@ func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj **i
 
 	return diags
 }
-func (o *IkeCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Context, obj **ikecrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	days_value := o.Days.ValueInt64Pointer()
 	hours_value := o.Hours.ValueInt64Pointer()
@@ -790,31 +846,39 @@ func (o *IkeCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Context
 	return diags
 }
 
-func (o *IkeCryptoProfileResourceModel) CopyFromPango(ctx context.Context, obj *ikecrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeCryptoProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhGroup_list types.List
 	{
 		var list_diags diag.Diagnostics
 		dhGroup_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DhGroup)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var encryption_list types.List
 	{
 		var list_diags diag.Diagnostics
 		encryption_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Encryption)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var hash_list types.List
 	{
 		var list_diags diag.Diagnostics
 		hash_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Hash)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var lifetime_object *IkeCryptoProfileResourceLifetimeObject
 	if obj.Lifetime != nil {
 		lifetime_object = new(IkeCryptoProfileResourceLifetimeObject)
-
-		diags.Append(lifetime_object.CopyFromPango(ctx, obj.Lifetime, encrypted)...)
+		diags.Append(lifetime_object.CopyFromPango(ctx, ancestors, obj.Lifetime, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -834,7 +898,7 @@ func (o *IkeCryptoProfileResourceModel) CopyFromPango(ctx context.Context, obj *
 	return diags
 }
 
-func (o *IkeCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Context, obj *ikecrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IkeCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var days_value types.Int64
@@ -861,6 +925,11 @@ func (o *IkeCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
+func (o *IkeCryptoProfileResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state IkeCryptoProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -878,6 +947,13 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -934,8 +1010,7 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 
 	// Load the desired config.
 	var obj *ikecrypto.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -947,17 +1022,29 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -967,6 +1054,17 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 	var savestate, state IkeCryptoProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1021,8 +1119,12 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1032,7 +1134,7 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1042,6 +1144,13 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1053,6 +1162,17 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1111,19 +1231,31 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1137,11 +1269,18 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1212,9 +1351,15 @@ func (r *IkeCryptoProfileResource) Delete(ctx context.Context, req resource.Dele
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

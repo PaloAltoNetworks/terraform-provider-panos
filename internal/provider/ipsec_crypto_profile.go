@@ -114,6 +114,14 @@ func (o *IpsecCryptoProfileDataSourceModel) AttributeTypes() map[string]attr.Typ
 		},
 	}
 }
+
+func (o IpsecCryptoProfileDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o IpsecCryptoProfileDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *IpsecCryptoProfileDataSourceLifesizeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -122,6 +130,14 @@ func (o *IpsecCryptoProfileDataSourceLifesizeObject) AttributeTypes() map[string
 		"mb": types.Int64Type,
 		"tb": types.Int64Type,
 	}
+}
+
+func (o IpsecCryptoProfileDataSourceLifesizeObject) AncestorName() string {
+	return "lifesize"
+}
+
+func (o IpsecCryptoProfileDataSourceLifesizeObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecCryptoProfileDataSourceLifetimeObject) AttributeTypes() map[string]attr.Type {
 
@@ -132,11 +148,27 @@ func (o *IpsecCryptoProfileDataSourceLifetimeObject) AttributeTypes() map[string
 		"seconds": types.Int64Type,
 	}
 }
+
+func (o IpsecCryptoProfileDataSourceLifetimeObject) AncestorName() string {
+	return "lifetime"
+}
+
+func (o IpsecCryptoProfileDataSourceLifetimeObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecCryptoProfileDataSourceAhObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"authentication": types.ListType{},
 	}
+}
+
+func (o IpsecCryptoProfileDataSourceAhObject) AncestorName() string {
+	return "ah"
+}
+
+func (o IpsecCryptoProfileDataSourceAhObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecCryptoProfileDataSourceEspObject) AttributeTypes() map[string]attr.Type {
 
@@ -146,7 +178,15 @@ func (o *IpsecCryptoProfileDataSourceEspObject) AttributeTypes() map[string]attr
 	}
 }
 
-func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj **ipseccrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o IpsecCryptoProfileDataSourceEspObject) AncestorName() string {
+	return "esp"
+}
+
+func (o IpsecCryptoProfileDataSourceEspObject) EntryName() *string {
+	return nil
+}
+
+func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dhGroup_value := o.DhGroup.ValueStringPointer()
 	var lifesize_entry *ipseccrypto.Lifesize
@@ -156,8 +196,8 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			lifesize_entry = new(ipseccrypto.Lifesize)
 		}
-
-		diags.Append(o.Lifesize.CopyToPango(ctx, &lifesize_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Lifesize.CopyToPango(ctx, ancestors, &lifesize_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -169,8 +209,8 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			lifetime_entry = new(ipseccrypto.Lifetime)
 		}
-
-		diags.Append(o.Lifetime.CopyToPango(ctx, &lifetime_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Lifetime.CopyToPango(ctx, ancestors, &lifetime_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -182,8 +222,8 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			ah_entry = new(ipseccrypto.Ah)
 		}
-
-		diags.Append(o.Ah.CopyToPango(ctx, &ah_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Ah.CopyToPango(ctx, ancestors, &ah_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -195,8 +235,8 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			esp_entry = new(ipseccrypto.Esp)
 		}
-
-		diags.Append(o.Esp.CopyToPango(ctx, &esp_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Esp.CopyToPango(ctx, ancestors, &esp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -214,7 +254,7 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *IpsecCryptoProfileDataSourceLifesizeObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Lifesize, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileDataSourceLifesizeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Lifesize, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	gb_value := o.Gb.ValueInt64Pointer()
 	kb_value := o.Kb.ValueInt64Pointer()
@@ -231,7 +271,7 @@ func (o *IpsecCryptoProfileDataSourceLifesizeObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IpsecCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	days_value := o.Days.ValueInt64Pointer()
 	hours_value := o.Hours.ValueInt64Pointer()
@@ -248,7 +288,7 @@ func (o *IpsecCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IpsecCryptoProfileDataSourceAhObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Ah, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileDataSourceAhObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Ah, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_pango_entries := make([]string, 0)
 	diags.Append(o.Authentication.ElementsAs(ctx, &authentication_pango_entries, false)...)
@@ -263,7 +303,7 @@ func (o *IpsecCryptoProfileDataSourceAhObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *IpsecCryptoProfileDataSourceEspObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Esp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileDataSourceEspObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Esp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_pango_entries := make([]string, 0)
 	diags.Append(o.Authentication.ElementsAs(ctx, &authentication_pango_entries, false)...)
@@ -285,13 +325,12 @@ func (o *IpsecCryptoProfileDataSourceEspObject) CopyToPango(ctx context.Context,
 	return diags
 }
 
-func (o *IpsecCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *ipseccrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lifesize_object *IpsecCryptoProfileDataSourceLifesizeObject
 	if obj.Lifesize != nil {
 		lifesize_object = new(IpsecCryptoProfileDataSourceLifesizeObject)
-
-		diags.Append(lifesize_object.CopyFromPango(ctx, obj.Lifesize, encrypted)...)
+		diags.Append(lifesize_object.CopyFromPango(ctx, ancestors, obj.Lifesize, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -299,8 +338,7 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 	var lifetime_object *IpsecCryptoProfileDataSourceLifetimeObject
 	if obj.Lifetime != nil {
 		lifetime_object = new(IpsecCryptoProfileDataSourceLifetimeObject)
-
-		diags.Append(lifetime_object.CopyFromPango(ctx, obj.Lifetime, encrypted)...)
+		diags.Append(lifetime_object.CopyFromPango(ctx, ancestors, obj.Lifetime, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -308,8 +346,7 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 	var ah_object *IpsecCryptoProfileDataSourceAhObject
 	if obj.Ah != nil {
 		ah_object = new(IpsecCryptoProfileDataSourceAhObject)
-
-		diags.Append(ah_object.CopyFromPango(ctx, obj.Ah, encrypted)...)
+		diags.Append(ah_object.CopyFromPango(ctx, ancestors, obj.Ah, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -317,8 +354,7 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 	var esp_object *IpsecCryptoProfileDataSourceEspObject
 	if obj.Esp != nil {
 		esp_object = new(IpsecCryptoProfileDataSourceEspObject)
-
-		diags.Append(esp_object.CopyFromPango(ctx, obj.Esp, encrypted)...)
+		diags.Append(esp_object.CopyFromPango(ctx, ancestors, obj.Esp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -338,7 +374,7 @@ func (o *IpsecCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *IpsecCryptoProfileDataSourceLifesizeObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Lifesize, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileDataSourceLifesizeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Lifesize, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var gb_value types.Int64
@@ -365,7 +401,7 @@ func (o *IpsecCryptoProfileDataSourceLifesizeObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *IpsecCryptoProfileDataSourceLifetimeObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileDataSourceLifetimeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var days_value types.Int64
@@ -392,13 +428,16 @@ func (o *IpsecCryptoProfileDataSourceLifetimeObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *IpsecCryptoProfileDataSourceAhObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Ah, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileDataSourceAhObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Ah, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_list types.List
 	{
 		var list_diags diag.Diagnostics
 		authentication_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Authentication)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.Authentication = authentication_list
@@ -406,25 +445,36 @@ func (o *IpsecCryptoProfileDataSourceAhObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *IpsecCryptoProfileDataSourceEspObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Esp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileDataSourceEspObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Esp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_list types.List
 	{
 		var list_diags diag.Diagnostics
 		authentication_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Authentication)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var encryption_list types.List
 	{
 		var list_diags diag.Diagnostics
 		encryption_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Encryption)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.Authentication = authentication_list
 	o.Encryption = encryption_list
 
 	return diags
+}
+
+func (o *IpsecCryptoProfileDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func IpsecCryptoProfileDataSourceSchema() dsschema.Schema {
@@ -717,13 +767,20 @@ func (d *IpsecCryptoProfileDataSource) Configure(_ context.Context, req datasour
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, ipseccrypto.NewService(d.client), batchSize, specifier, ipseccrypto.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*ipseccrypto.Entry, ipseccrypto.Location, *ipseccrypto.Service](d.client, ipseccrypto.NewService(d.client), batchSize, specifier, ipseccrypto.SpecMatches)
 }
 func (o *IpsecCryptoProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state IpsecCryptoProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -778,8 +835,12 @@ func (o *IpsecCryptoProfileDataSource) Read(ctx context.Context, req datasource.
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -789,7 +850,7 @@ func (o *IpsecCryptoProfileDataSource) Read(ctx context.Context, req datasource.
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1191,7 +1252,7 @@ func (r *IpsecCryptoProfileResource) Configure(ctx context.Context, req resource
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, ipseccrypto.NewService(r.client), batchSize, specifier, ipseccrypto.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*ipseccrypto.Entry, ipseccrypto.Location, *ipseccrypto.Service](r.client, ipseccrypto.NewService(r.client), batchSize, specifier, ipseccrypto.SpecMatches)
 }
 
 func (o *IpsecCryptoProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -1225,6 +1286,14 @@ func (o *IpsecCryptoProfileResourceModel) AttributeTypes() map[string]attr.Type 
 		},
 	}
 }
+
+func (o IpsecCryptoProfileResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o IpsecCryptoProfileResourceModel) EntryName() *string {
+	return nil
+}
 func (o *IpsecCryptoProfileResourceLifesizeObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1233,6 +1302,14 @@ func (o *IpsecCryptoProfileResourceLifesizeObject) AttributeTypes() map[string]a
 		"mb": types.Int64Type,
 		"tb": types.Int64Type,
 	}
+}
+
+func (o IpsecCryptoProfileResourceLifesizeObject) AncestorName() string {
+	return "lifesize"
+}
+
+func (o IpsecCryptoProfileResourceLifesizeObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecCryptoProfileResourceLifetimeObject) AttributeTypes() map[string]attr.Type {
 
@@ -1243,11 +1320,27 @@ func (o *IpsecCryptoProfileResourceLifetimeObject) AttributeTypes() map[string]a
 		"seconds": types.Int64Type,
 	}
 }
+
+func (o IpsecCryptoProfileResourceLifetimeObject) AncestorName() string {
+	return "lifetime"
+}
+
+func (o IpsecCryptoProfileResourceLifetimeObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecCryptoProfileResourceAhObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"authentication": types.ListType{},
 	}
+}
+
+func (o IpsecCryptoProfileResourceAhObject) AncestorName() string {
+	return "ah"
+}
+
+func (o IpsecCryptoProfileResourceAhObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecCryptoProfileResourceEspObject) AttributeTypes() map[string]attr.Type {
 
@@ -1257,7 +1350,15 @@ func (o *IpsecCryptoProfileResourceEspObject) AttributeTypes() map[string]attr.T
 	}
 }
 
-func (o *IpsecCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj **ipseccrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o IpsecCryptoProfileResourceEspObject) AncestorName() string {
+	return "esp"
+}
+
+func (o IpsecCryptoProfileResourceEspObject) EntryName() *string {
+	return nil
+}
+
+func (o *IpsecCryptoProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dhGroup_value := o.DhGroup.ValueStringPointer()
 	var lifesize_entry *ipseccrypto.Lifesize
@@ -1267,8 +1368,8 @@ func (o *IpsecCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			lifesize_entry = new(ipseccrypto.Lifesize)
 		}
-
-		diags.Append(o.Lifesize.CopyToPango(ctx, &lifesize_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Lifesize.CopyToPango(ctx, ancestors, &lifesize_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1280,8 +1381,8 @@ func (o *IpsecCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			lifetime_entry = new(ipseccrypto.Lifetime)
 		}
-
-		diags.Append(o.Lifetime.CopyToPango(ctx, &lifetime_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Lifetime.CopyToPango(ctx, ancestors, &lifetime_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1293,8 +1394,8 @@ func (o *IpsecCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			ah_entry = new(ipseccrypto.Ah)
 		}
-
-		diags.Append(o.Ah.CopyToPango(ctx, &ah_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Ah.CopyToPango(ctx, ancestors, &ah_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1306,8 +1407,8 @@ func (o *IpsecCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj *
 		} else {
 			esp_entry = new(ipseccrypto.Esp)
 		}
-
-		diags.Append(o.Esp.CopyToPango(ctx, &esp_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Esp.CopyToPango(ctx, ancestors, &esp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1325,7 +1426,7 @@ func (o *IpsecCryptoProfileResourceModel) CopyToPango(ctx context.Context, obj *
 
 	return diags
 }
-func (o *IpsecCryptoProfileResourceLifesizeObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Lifesize, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileResourceLifesizeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Lifesize, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	gb_value := o.Gb.ValueInt64Pointer()
 	kb_value := o.Kb.ValueInt64Pointer()
@@ -1342,7 +1443,7 @@ func (o *IpsecCryptoProfileResourceLifesizeObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *IpsecCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	days_value := o.Days.ValueInt64Pointer()
 	hours_value := o.Hours.ValueInt64Pointer()
@@ -1359,7 +1460,7 @@ func (o *IpsecCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *IpsecCryptoProfileResourceAhObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Ah, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileResourceAhObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Ah, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_pango_entries := make([]string, 0)
 	diags.Append(o.Authentication.ElementsAs(ctx, &authentication_pango_entries, false)...)
@@ -1374,7 +1475,7 @@ func (o *IpsecCryptoProfileResourceAhObject) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *IpsecCryptoProfileResourceEspObject) CopyToPango(ctx context.Context, obj **ipseccrypto.Esp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileResourceEspObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipseccrypto.Esp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authentication_pango_entries := make([]string, 0)
 	diags.Append(o.Authentication.ElementsAs(ctx, &authentication_pango_entries, false)...)
@@ -1396,13 +1497,12 @@ func (o *IpsecCryptoProfileResourceEspObject) CopyToPango(ctx context.Context, o
 	return diags
 }
 
-func (o *IpsecCryptoProfileResourceModel) CopyFromPango(ctx context.Context, obj *ipseccrypto.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var lifesize_object *IpsecCryptoProfileResourceLifesizeObject
 	if obj.Lifesize != nil {
 		lifesize_object = new(IpsecCryptoProfileResourceLifesizeObject)
-
-		diags.Append(lifesize_object.CopyFromPango(ctx, obj.Lifesize, encrypted)...)
+		diags.Append(lifesize_object.CopyFromPango(ctx, ancestors, obj.Lifesize, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1410,8 +1510,7 @@ func (o *IpsecCryptoProfileResourceModel) CopyFromPango(ctx context.Context, obj
 	var lifetime_object *IpsecCryptoProfileResourceLifetimeObject
 	if obj.Lifetime != nil {
 		lifetime_object = new(IpsecCryptoProfileResourceLifetimeObject)
-
-		diags.Append(lifetime_object.CopyFromPango(ctx, obj.Lifetime, encrypted)...)
+		diags.Append(lifetime_object.CopyFromPango(ctx, ancestors, obj.Lifetime, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1419,8 +1518,7 @@ func (o *IpsecCryptoProfileResourceModel) CopyFromPango(ctx context.Context, obj
 	var ah_object *IpsecCryptoProfileResourceAhObject
 	if obj.Ah != nil {
 		ah_object = new(IpsecCryptoProfileResourceAhObject)
-
-		diags.Append(ah_object.CopyFromPango(ctx, obj.Ah, encrypted)...)
+		diags.Append(ah_object.CopyFromPango(ctx, ancestors, obj.Ah, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1428,8 +1526,7 @@ func (o *IpsecCryptoProfileResourceModel) CopyFromPango(ctx context.Context, obj
 	var esp_object *IpsecCryptoProfileResourceEspObject
 	if obj.Esp != nil {
 		esp_object = new(IpsecCryptoProfileResourceEspObject)
-
-		diags.Append(esp_object.CopyFromPango(ctx, obj.Esp, encrypted)...)
+		diags.Append(esp_object.CopyFromPango(ctx, ancestors, obj.Esp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1449,7 +1546,7 @@ func (o *IpsecCryptoProfileResourceModel) CopyFromPango(ctx context.Context, obj
 	return diags
 }
 
-func (o *IpsecCryptoProfileResourceLifesizeObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Lifesize, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileResourceLifesizeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Lifesize, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var gb_value types.Int64
@@ -1476,7 +1573,7 @@ func (o *IpsecCryptoProfileResourceLifesizeObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *IpsecCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Lifetime, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var days_value types.Int64
@@ -1503,13 +1600,16 @@ func (o *IpsecCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *IpsecCryptoProfileResourceAhObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Ah, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileResourceAhObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Ah, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_list types.List
 	{
 		var list_diags diag.Diagnostics
 		authentication_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Authentication)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.Authentication = authentication_list
@@ -1517,25 +1617,36 @@ func (o *IpsecCryptoProfileResourceAhObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *IpsecCryptoProfileResourceEspObject) CopyFromPango(ctx context.Context, obj *ipseccrypto.Esp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecCryptoProfileResourceEspObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipseccrypto.Esp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_list types.List
 	{
 		var list_diags diag.Diagnostics
 		authentication_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Authentication)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var encryption_list types.List
 	{
 		var list_diags diag.Diagnostics
 		encryption_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Encryption)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	o.Authentication = authentication_list
 	o.Encryption = encryption_list
 
 	return diags
+}
+
+func (o *IpsecCryptoProfileResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *IpsecCryptoProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -1555,6 +1666,13 @@ func (r *IpsecCryptoProfileResource) Create(ctx context.Context, req resource.Cr
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1611,8 +1729,7 @@ func (r *IpsecCryptoProfileResource) Create(ctx context.Context, req resource.Cr
 
 	// Load the desired config.
 	var obj *ipseccrypto.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1624,17 +1741,29 @@ func (r *IpsecCryptoProfileResource) Create(ctx context.Context, req resource.Cr
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1644,6 +1773,17 @@ func (o *IpsecCryptoProfileResource) Read(ctx context.Context, req resource.Read
 	var savestate, state IpsecCryptoProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1698,8 +1838,12 @@ func (o *IpsecCryptoProfileResource) Read(ctx context.Context, req resource.Read
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1709,7 +1853,7 @@ func (o *IpsecCryptoProfileResource) Read(ctx context.Context, req resource.Read
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1719,6 +1863,13 @@ func (o *IpsecCryptoProfileResource) Read(ctx context.Context, req resource.Read
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1730,6 +1881,17 @@ func (r *IpsecCryptoProfileResource) Update(ctx context.Context, req resource.Up
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1788,19 +1950,31 @@ func (r *IpsecCryptoProfileResource) Update(ctx context.Context, req resource.Up
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1814,11 +1988,18 @@ func (r *IpsecCryptoProfileResource) Update(ctx context.Context, req resource.Up
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1889,9 +2070,15 @@ func (r *IpsecCryptoProfileResource) Delete(ctx context.Context, req resource.De
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

@@ -2,12 +2,10 @@ package provider_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 	"testing"
 
-	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/policies/rules/decryption"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -16,7 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -226,7 +223,6 @@ func TestAccDecryptionPolicyExtended(t *testing.T) {
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             decryptionPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: decryptionPolicyExtendedResource1Tmpl,
@@ -336,7 +332,6 @@ func TestAccPanosDecryptionPolicyOrdering(t *testing.T) {
 	resource.ParallelTest(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             decryptionPolicyCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: decryptionPolicyOrderTmpl,
@@ -422,37 +417,3 @@ resource "panos_decryption_policy" "rules" {
   ]
 }
 `
-
-func decryptionPolicyCheckDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		service := decryption.NewService(sdkClient)
-		ctx := context.TODO()
-
-		location := decryption.NewDeviceGroupLocation()
-		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
-
-		rules, err := service.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkerrors.IsObjectNotFound(err) {
-			return err
-		}
-
-		var danglingNames []string
-		for _, elt := range rules {
-			if strings.HasPrefix(elt.Name, prefix) {
-				danglingNames = append(danglingNames, elt.Name)
-			}
-		}
-
-		if len(danglingNames) > 0 {
-			err := DanglingObjectsError
-			delErr := service.Delete(ctx, *location, danglingNames...)
-			if delErr != nil {
-				err = errors.Join(err, delErr)
-			}
-
-			return err
-		}
-
-		return nil
-	}
-}

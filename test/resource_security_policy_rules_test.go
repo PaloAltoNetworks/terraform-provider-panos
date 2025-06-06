@@ -4,22 +4,17 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"regexp"
 	"strings"
 	"testing"
 
-	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/policies/rules/security"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
-	//"github.com/hashicorp/terraform-plugin-testing/plancheck"
-	//"github.com/PaloAltoNetworks/terraform-provider-panos/internal/provider"
-	//"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
@@ -90,7 +85,6 @@ func TestAccSecurityPolicyRulesImport(t *testing.T) {
 			testAccPreCheck(t)
 		},
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             securityPolicyRulesCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: securityPolicyRulesImportInitial,
@@ -334,7 +328,6 @@ func TestAccSecurityPolicyRulesPositioning(t *testing.T) {
 
 		},
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             securityPolicyRulesCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: securityPolicyRulesPositionFirst,
@@ -704,7 +697,6 @@ func TestAccSecurityPolicyRulesPositionAsVariable(t *testing.T) {
 
 		},
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             securityPolicyRulesCheckDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: securityPolicyRulesPositionAsVariableTmpl,
@@ -812,53 +804,6 @@ func securityPolicyRulesPreCheck(prefix string) {
 			panic(fmt.Sprintf("natPolicyPreCheck failed: %s", err))
 		}
 
-	}
-}
-
-func securityPolicyRulesCheckDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-
-		location := security.NewDeviceGroupLocation()
-		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
-
-		service := security.NewService(sdkClient)
-		ctx := context.TODO()
-
-		rules, err := service.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkerrors.IsObjectNotFound(err) {
-			return err
-		}
-
-		var danglingNames []string
-
-		seededRule := func(name string) bool {
-			seeded := []string{"rule-0", "rule-1", "rule-99"}
-			for _, elt := range seeded {
-				if strings.HasSuffix(name, elt) {
-					return true
-				}
-			}
-
-			return false
-		}
-
-		for _, elt := range rules {
-			if strings.HasPrefix(elt.Name, prefix) && !seededRule(elt.Name) {
-				danglingNames = append(danglingNames, elt.Name)
-			}
-		}
-
-		if len(danglingNames) > 0 {
-			err := fmt.Errorf("%w: %s", DanglingObjectsError, strings.Join(danglingNames, ", "))
-			delErr := service.Delete(ctx, *location, danglingNames...)
-			if delErr != nil {
-				err = errors.Join(err, delErr)
-			}
-
-			return err
-		}
-
-		return nil
 	}
 }
 

@@ -78,7 +78,15 @@ func (o *CustomUrlCategoryDataSourceModel) AttributeTypes() map[string]attr.Type
 	}
 }
 
-func (o *CustomUrlCategoryDataSourceModel) CopyToPango(ctx context.Context, obj **customurlcategory.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o CustomUrlCategoryDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o CustomUrlCategoryDataSourceModel) EntryName() *string {
+	return nil
+}
+
+func (o *CustomUrlCategoryDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **customurlcategory.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -101,13 +109,16 @@ func (o *CustomUrlCategoryDataSourceModel) CopyToPango(ctx context.Context, obj 
 	return diags
 }
 
-func (o *CustomUrlCategoryDataSourceModel) CopyFromPango(ctx context.Context, obj *customurlcategory.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CustomUrlCategoryDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *customurlcategory.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var list_list types.List
 	{
 		var list_diags diag.Diagnostics
 		list_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.List)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var description_value types.String
@@ -129,6 +140,11 @@ func (o *CustomUrlCategoryDataSourceModel) CopyFromPango(ctx context.Context, ob
 	o.Type = type_value
 
 	return diags
+}
+
+func (o *CustomUrlCategoryDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func CustomUrlCategoryDataSourceSchema() dsschema.Schema {
@@ -227,13 +243,20 @@ func (d *CustomUrlCategoryDataSource) Configure(_ context.Context, req datasourc
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, customurlcategory.NewService(d.client), batchSize, specifier, customurlcategory.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*customurlcategory.Entry, customurlcategory.Location, *customurlcategory.Service](d.client, customurlcategory.NewService(d.client), batchSize, specifier, customurlcategory.SpecMatches)
 }
 func (o *CustomUrlCategoryDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state CustomUrlCategoryDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -285,8 +308,12 @@ func (o *CustomUrlCategoryDataSource) Read(ctx context.Context, req datasource.R
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -296,7 +323,7 @@ func (o *CustomUrlCategoryDataSource) Read(ctx context.Context, req datasource.R
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -450,7 +477,7 @@ func (r *CustomUrlCategoryResource) Configure(ctx context.Context, req resource.
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, customurlcategory.NewService(r.client), batchSize, specifier, customurlcategory.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*customurlcategory.Entry, customurlcategory.Location, *customurlcategory.Service](r.client, customurlcategory.NewService(r.client), batchSize, specifier, customurlcategory.SpecMatches)
 }
 
 func (o *CustomUrlCategoryResourceModel) AttributeTypes() map[string]attr.Type {
@@ -469,7 +496,15 @@ func (o *CustomUrlCategoryResourceModel) AttributeTypes() map[string]attr.Type {
 	}
 }
 
-func (o *CustomUrlCategoryResourceModel) CopyToPango(ctx context.Context, obj **customurlcategory.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o CustomUrlCategoryResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o CustomUrlCategoryResourceModel) EntryName() *string {
+	return nil
+}
+
+func (o *CustomUrlCategoryResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **customurlcategory.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -492,13 +527,16 @@ func (o *CustomUrlCategoryResourceModel) CopyToPango(ctx context.Context, obj **
 	return diags
 }
 
-func (o *CustomUrlCategoryResourceModel) CopyFromPango(ctx context.Context, obj *customurlcategory.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *CustomUrlCategoryResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *customurlcategory.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var list_list types.List
 	{
 		var list_diags diag.Diagnostics
 		list_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.List)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var description_value types.String
@@ -522,6 +560,11 @@ func (o *CustomUrlCategoryResourceModel) CopyFromPango(ctx context.Context, obj 
 	return diags
 }
 
+func (o *CustomUrlCategoryResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *CustomUrlCategoryResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state CustomUrlCategoryResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -539,6 +582,13 @@ func (r *CustomUrlCategoryResource) Create(ctx context.Context, req resource.Cre
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -592,8 +642,7 @@ func (r *CustomUrlCategoryResource) Create(ctx context.Context, req resource.Cre
 
 	// Load the desired config.
 	var obj *customurlcategory.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -605,17 +654,29 @@ func (r *CustomUrlCategoryResource) Create(ctx context.Context, req resource.Cre
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -625,6 +686,17 @@ func (o *CustomUrlCategoryResource) Read(ctx context.Context, req resource.ReadR
 	var savestate, state CustomUrlCategoryResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -676,8 +748,12 @@ func (o *CustomUrlCategoryResource) Read(ctx context.Context, req resource.ReadR
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -687,7 +763,7 @@ func (o *CustomUrlCategoryResource) Read(ctx context.Context, req resource.ReadR
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -697,6 +773,13 @@ func (o *CustomUrlCategoryResource) Read(ctx context.Context, req resource.ReadR
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -708,6 +791,17 @@ func (r *CustomUrlCategoryResource) Update(ctx context.Context, req resource.Upd
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -763,19 +857,31 @@ func (r *CustomUrlCategoryResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -789,11 +895,18 @@ func (r *CustomUrlCategoryResource) Update(ctx context.Context, req resource.Upd
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -861,9 +974,15 @@ func (r *CustomUrlCategoryResource) Delete(ctx context.Context, req resource.Del
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

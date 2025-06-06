@@ -1,21 +1,14 @@
 package provider_test
 
 import (
-	"context"
-	"errors"
 	"fmt"
-	"strings"
 	"testing"
-
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/objects/application"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
@@ -28,7 +21,6 @@ func TestAccApplication(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy:             testAccApplicationDestroy(prefix),
 		Steps: []resource.TestStep{
 			{
 				Config: testApplicationTmpl,
@@ -316,34 +308,3 @@ resource "panos_application" "app4" {
 }
 
 `
-
-func testAccApplicationDestroy(prefix string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := application.NewService(sdkClient)
-		ctx := context.TODO()
-
-		location := application.NewSharedLocation()
-
-		entries, err := api.List(ctx, *location, "get", "", "")
-		if err != nil && !sdkErrors.IsObjectNotFound(err) {
-			return fmt.Errorf("listing interface management entries via sdk: %v", err)
-		}
-
-		var leftEntries []string
-		for _, elt := range entries {
-			if strings.HasPrefix(elt.Name, prefix) {
-				leftEntries = append(leftEntries, elt.Name)
-			}
-		}
-
-		if len(leftEntries) > 0 {
-			err := fmt.Errorf("terraform failed to remove entries from the server")
-			delErr := api.Delete(ctx, *location, leftEntries...)
-			if delErr != nil {
-				return errors.Join(err, delErr)
-			}
-		}
-
-		return nil
-	}
-}

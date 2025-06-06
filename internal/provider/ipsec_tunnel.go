@@ -65,10 +65,10 @@ type IpsecTunnelDataSourceModel struct {
 	CopyTos                types.Bool                                         `tfsdk:"copy_tos"`
 	Disabled               types.Bool                                         `tfsdk:"disabled"`
 	EnableGreEncapsulation types.Bool                                         `tfsdk:"enable_gre_encapsulation"`
+	IpsecMode              types.String                                       `tfsdk:"ipsec_mode"`
 	Ipv6                   types.Bool                                         `tfsdk:"ipv6"`
 	TunnelInterface        types.String                                       `tfsdk:"tunnel_interface"`
 	TunnelMonitor          *IpsecTunnelDataSourceTunnelMonitorObject          `tfsdk:"tunnel_monitor"`
-	IpsecMode              types.String                                       `tfsdk:"ipsec_mode"`
 	AutoKey                *IpsecTunnelDataSourceAutoKeyObject                `tfsdk:"auto_key"`
 	GlobalProtectSatellite *IpsecTunnelDataSourceGlobalProtectSatelliteObject `tfsdk:"global_protect_satellite"`
 	ManualKey              *IpsecTunnelDataSourceManualKeyObject              `tfsdk:"manual_key"`
@@ -255,12 +255,12 @@ func (o *IpsecTunnelDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"copy_tos":                 types.BoolType,
 		"disabled":                 types.BoolType,
 		"enable_gre_encapsulation": types.BoolType,
+		"ipsec_mode":               types.StringType,
 		"ipv6":                     types.BoolType,
 		"tunnel_interface":         types.StringType,
 		"tunnel_monitor": types.ObjectType{
 			AttrTypes: tunnelMonitorObj.AttributeTypes(),
 		},
-		"ipsec_mode": types.StringType,
 		"auto_key": types.ObjectType{
 			AttrTypes: autoKeyObj.AttributeTypes(),
 		},
@@ -272,6 +272,14 @@ func (o *IpsecTunnelDataSourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o IpsecTunnelDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o IpsecTunnelDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceTunnelMonitorObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -280,6 +288,14 @@ func (o *IpsecTunnelDataSourceTunnelMonitorObject) AttributeTypes() map[string]a
 		"proxy_id":               types.StringType,
 		"tunnel_monitor_profile": types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceTunnelMonitorObject) AncestorName() string {
+	return "tunnel-monitor"
+}
+
+func (o IpsecTunnelDataSourceTunnelMonitorObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceAutoKeyObject) AttributeTypes() map[string]attr.Type {
 
@@ -290,11 +306,27 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) AttributeTypes() map[string]attr.Ty
 		"proxy_id_v6":          types.ListType{},
 	}
 }
+
+func (o IpsecTunnelDataSourceAutoKeyObject) AncestorName() string {
+	return "auto-key"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceAutoKeyIkeGatewayObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name": types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceAutoKeyIkeGatewayObject) AncestorName() string {
+	return "ike-gateway"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyIkeGatewayObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) AttributeTypes() map[string]attr.Type {
 
@@ -307,6 +339,14 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) AttributeTypes() map[string]
 			AttrTypes: protocolObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdObject) AncestorName() string {
+	return "proxy-id"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) AttributeTypes() map[string]attr.Type {
 
@@ -328,8 +368,24 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) AttributeTypes() map
 		},
 	}
 }
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) AncestorName() string {
+	return "protocol"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) AncestorName() string {
+	return "any"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) AttributeTypes() map[string]attr.Type {
 
@@ -338,12 +394,28 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) AttributeTypes() 
 		"remote_port": types.Int64Type,
 	}
 }
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) AncestorName() string {
+	return "tcp"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"local_port":  types.Int64Type,
 		"remote_port": types.Int64Type,
 	}
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) AncestorName() string {
+	return "udp"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) AttributeTypes() map[string]attr.Type {
 
@@ -356,6 +428,14 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) AttributeTypes() map[strin
 			AttrTypes: protocolObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6Object) AncestorName() string {
+	return "proxy-id-v6"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6Object) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) AttributeTypes() map[string]attr.Type {
 
@@ -377,8 +457,24 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) AttributeTypes() m
 		},
 	}
 }
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) AncestorName() string {
+	return "protocol"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) AncestorName() string {
+	return "any"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) AttributeTypes() map[string]attr.Type {
 
@@ -387,12 +483,28 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) AttributeTypes(
 		"remote_port": types.Int64Type,
 	}
 }
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) AncestorName() string {
+	return "tcp"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"local_port":  types.Int64Type,
 		"remote_port": types.Int64Type,
 	}
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) AncestorName() string {
+	return "udp"
+}
+
+func (o IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) AttributeTypes() map[string]attr.Type {
 
@@ -417,12 +529,28 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) AttributeTypes() map
 		"publish_routes": types.ListType{},
 	}
 }
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteObject) AncestorName() string {
+	return "global-protect-satellite"
+}
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"certificate_profile": types.StringType,
 		"local_certificate":   types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) AncestorName() string {
+	return "external-ca"
+}
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -439,12 +567,28 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) Attribut
 		},
 	}
 }
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ipv4": types.StringType,
 		"ipv6": types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject) AncestorName() string {
+	return "floating-ip"
+}
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) AttributeTypes() map[string]attr.Type {
 
@@ -453,11 +597,27 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) Attrib
 		"ipv6": types.StringType,
 	}
 }
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enable": types.BoolType,
 	}
+}
+
+func (o IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) AncestorName() string {
+	return "publish-connected-routes"
+}
+
+func (o IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceManualKeyObject) AttributeTypes() map[string]attr.Type {
 
@@ -485,6 +645,14 @@ func (o *IpsecTunnelDataSourceManualKeyObject) AttributeTypes() map[string]attr.
 		},
 	}
 }
+
+func (o IpsecTunnelDataSourceManualKeyObject) AncestorName() string {
+	return "manual-key"
+}
+
+func (o IpsecTunnelDataSourceManualKeyObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -493,11 +661,27 @@ func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) AttributeTypes() map[
 		"ip":          types.StringType,
 	}
 }
+
+func (o IpsecTunnelDataSourceManualKeyLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o IpsecTunnelDataSourceManualKeyLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ip": types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceManualKeyPeerAddressObject) AncestorName() string {
+	return "peer-address"
+}
+
+func (o IpsecTunnelDataSourceManualKeyPeerAddressObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceManualKeyAhObject) AttributeTypes() map[string]attr.Type {
 
@@ -528,11 +712,27 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) AttributeTypes() map[string]att
 		},
 	}
 }
+
+func (o IpsecTunnelDataSourceManualKeyAhObject) AncestorName() string {
+	return "ah"
+}
+
+func (o IpsecTunnelDataSourceManualKeyAhObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceManualKeyAhMd5Object) AncestorName() string {
+	return "md5"
+}
+
+func (o IpsecTunnelDataSourceManualKeyAhMd5Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) AttributeTypes() map[string]attr.Type {
 
@@ -540,11 +740,27 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) AttributeTypes() map[string
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelDataSourceManualKeyAhSha1Object) AncestorName() string {
+	return "sha1"
+}
+
+func (o IpsecTunnelDataSourceManualKeyAhSha1Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceManualKeyAhSha256Object) AncestorName() string {
+	return "sha256"
+}
+
+func (o IpsecTunnelDataSourceManualKeyAhSha256Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) AttributeTypes() map[string]attr.Type {
 
@@ -552,11 +768,27 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) AttributeTypes() map[stri
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelDataSourceManualKeyAhSha384Object) AncestorName() string {
+	return "sha384"
+}
+
+func (o IpsecTunnelDataSourceManualKeyAhSha384Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceManualKeyAhSha512Object) AncestorName() string {
+	return "sha512"
+}
+
+func (o IpsecTunnelDataSourceManualKeyAhSha512Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceManualKeyEspObject) AttributeTypes() map[string]attr.Type {
 
@@ -571,6 +803,14 @@ func (o *IpsecTunnelDataSourceManualKeyEspObject) AttributeTypes() map[string]at
 			AttrTypes: encryptionObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspObject) AncestorName() string {
+	return "esp"
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) AttributeTypes() map[string]attr.Type {
 
@@ -606,14 +846,38 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) AttributeTypes()
 		},
 	}
 }
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationObject) AncestorName() string {
+	return "authentication"
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) AncestorName() string {
+	return "md5"
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) AncestorName() string {
+	return "none"
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) AttributeTypes() map[string]attr.Type {
 
@@ -621,11 +885,27 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) AttributeTyp
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) AncestorName() string {
+	return "sha1"
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) AncestorName() string {
+	return "sha256"
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) AttributeTypes() map[string]attr.Type {
 
@@ -633,11 +913,27 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) AttributeT
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) AncestorName() string {
+	return "sha384"
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) AncestorName() string {
+	return "sha512"
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) AttributeTypes() map[string]attr.Type {
 
@@ -647,7 +943,15 @@ func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) AttributeTypes() map
 	}
 }
 
-func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipsec.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o IpsecTunnelDataSourceManualKeyEspEncryptionObject) AncestorName() string {
+	return "encryption"
+}
+
+func (o IpsecTunnelDataSourceManualKeyEspEncryptionObject) EntryName() *string {
+	return nil
+}
+
+func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	antiReplay_value := o.AntiReplay.ValueBoolPointer()
 	antiReplayWindow_value := o.AntiReplayWindow.ValueStringPointer()
@@ -656,6 +960,7 @@ func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipse
 	copyTos_value := o.CopyTos.ValueBoolPointer()
 	disabled_value := o.Disabled.ValueBoolPointer()
 	enableGreEncapsulation_value := o.EnableGreEncapsulation.ValueBoolPointer()
+	ipsecMode_value := o.IpsecMode.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueBoolPointer()
 	tunnelInterface_value := o.TunnelInterface.ValueStringPointer()
 	var tunnelMonitor_entry *ipsec.TunnelMonitor
@@ -665,13 +970,12 @@ func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipse
 		} else {
 			tunnelMonitor_entry = new(ipsec.TunnelMonitor)
 		}
-
-		diags.Append(o.TunnelMonitor.CopyToPango(ctx, &tunnelMonitor_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.TunnelMonitor.CopyToPango(ctx, ancestors, &tunnelMonitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	ipsecMode_value := o.IpsecMode.ValueStringPointer()
 	var autoKey_entry *ipsec.AutoKey
 	if o.AutoKey != nil {
 		if *obj != nil && (*obj).AutoKey != nil {
@@ -679,8 +983,8 @@ func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipse
 		} else {
 			autoKey_entry = new(ipsec.AutoKey)
 		}
-
-		diags.Append(o.AutoKey.CopyToPango(ctx, &autoKey_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.AutoKey.CopyToPango(ctx, ancestors, &autoKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -692,8 +996,8 @@ func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipse
 		} else {
 			globalProtectSatellite_entry = new(ipsec.GlobalProtectSatellite)
 		}
-
-		diags.Append(o.GlobalProtectSatellite.CopyToPango(ctx, &globalProtectSatellite_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.GlobalProtectSatellite.CopyToPango(ctx, ancestors, &globalProtectSatellite_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -705,8 +1009,8 @@ func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipse
 		} else {
 			manualKey_entry = new(ipsec.ManualKey)
 		}
-
-		diags.Append(o.ManualKey.CopyToPango(ctx, &manualKey_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.ManualKey.CopyToPango(ctx, ancestors, &manualKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -723,17 +1027,17 @@ func (o *IpsecTunnelDataSourceModel) CopyToPango(ctx context.Context, obj **ipse
 	(*obj).CopyTos = copyTos_value
 	(*obj).Disabled = disabled_value
 	(*obj).EnableGreEncapsulation = enableGreEncapsulation_value
+	(*obj).IpsecMode = ipsecMode_value
 	(*obj).Ipv6 = ipv6_value
 	(*obj).TunnelInterface = tunnelInterface_value
 	(*obj).TunnelMonitor = tunnelMonitor_entry
-	(*obj).IpsecMode = ipsecMode_value
 	(*obj).AutoKey = autoKey_entry
 	(*obj).GlobalProtectSatellite = globalProtectSatellite_entry
 	(*obj).ManualKey = manualKey_entry
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceTunnelMonitorObject) CopyToPango(ctx context.Context, obj **ipsec.TunnelMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceTunnelMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.TunnelMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	destinationIp_value := o.DestinationIp.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
@@ -750,7 +1054,7 @@ func (o *IpsecTunnelDataSourceTunnelMonitorObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ikeGateway_tf_entries []IpsecTunnelDataSourceAutoKeyIkeGatewayObject
 	var ikeGateway_pango_entries []ipsec.AutoKeyIkeGateway
@@ -762,7 +1066,7 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, ob
 		}
 		for _, elt := range ikeGateway_tf_entries {
 			var entry *ipsec.AutoKeyIkeGateway
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -780,7 +1084,7 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, ob
 		}
 		for _, elt := range proxyId_tf_entries {
 			var entry *ipsec.AutoKeyProxyId
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -797,7 +1101,7 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, ob
 		}
 		for _, elt := range proxyIdV6_tf_entries {
 			var entry *ipsec.AutoKeyProxyIdV6
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -815,7 +1119,7 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyIkeGatewayObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyIkeGateway, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyIkeGatewayObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyIkeGateway, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -825,7 +1129,7 @@ func (o *IpsecTunnelDataSourceAutoKeyIkeGatewayObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	local_value := o.Local.ValueStringPointer()
 	remote_value := o.Remote.ValueStringPointer()
@@ -836,8 +1140,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) CopyToPango(ctx context.Cont
 		} else {
 			protocol_entry = new(ipsec.AutoKeyProxyIdProtocol)
 		}
-
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Protocol.CopyToPango(ctx, append(ancestors, o), &protocol_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -853,7 +1157,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdProtocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	number_value := o.Number.ValueInt64Pointer()
 	var any_entry *ipsec.AutoKeyProxyIdProtocolAny
@@ -863,8 +1167,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx cont
 		} else {
 			any_entry = new(ipsec.AutoKeyProxyIdProtocolAny)
 		}
-
-		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Any.CopyToPango(ctx, append(ancestors, o), &any_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -876,8 +1180,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx cont
 		} else {
 			tcp_entry = new(ipsec.AutoKeyProxyIdProtocolTcp)
 		}
-
-		diags.Append(o.Tcp.CopyToPango(ctx, &tcp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tcp.CopyToPango(ctx, append(ancestors, o), &tcp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -889,8 +1193,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx cont
 		} else {
 			udp_entry = new(ipsec.AutoKeyProxyIdProtocolUdp)
 		}
-
-		diags.Append(o.Udp.CopyToPango(ctx, &udp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Udp.CopyToPango(ctx, append(ancestors, o), &udp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -906,7 +1210,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdProtocolAny, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -915,7 +1219,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	localPort_value := o.LocalPort.ValueInt64Pointer()
 	remotePort_value := o.RemotePort.ValueInt64Pointer()
@@ -928,7 +1232,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	localPort_value := o.LocalPort.ValueInt64Pointer()
 	remotePort_value := o.RemotePort.ValueInt64Pointer()
@@ -941,7 +1245,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	local_value := o.Local.ValueStringPointer()
 	remote_value := o.Remote.ValueStringPointer()
@@ -952,8 +1256,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Co
 		} else {
 			protocol_entry = new(ipsec.AutoKeyProxyIdV6Protocol)
 		}
-
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Protocol.CopyToPango(ctx, append(ancestors, o), &protocol_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -969,7 +1273,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	number_value := o.Number.ValueInt64Pointer()
 	var any_entry *ipsec.AutoKeyProxyIdV6ProtocolAny
@@ -979,8 +1283,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx co
 		} else {
 			any_entry = new(ipsec.AutoKeyProxyIdV6ProtocolAny)
 		}
-
-		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Any.CopyToPango(ctx, append(ancestors, o), &any_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -992,8 +1296,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx co
 		} else {
 			tcp_entry = new(ipsec.AutoKeyProxyIdV6ProtocolTcp)
 		}
-
-		diags.Append(o.Tcp.CopyToPango(ctx, &tcp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tcp.CopyToPango(ctx, append(ancestors, o), &tcp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1005,8 +1309,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx co
 		} else {
 			udp_entry = new(ipsec.AutoKeyProxyIdV6ProtocolUdp)
 		}
-
-		diags.Append(o.Udp.CopyToPango(ctx, &udp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Udp.CopyToPango(ctx, append(ancestors, o), &udp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1022,7 +1326,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6ProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6ProtocolAny, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1031,7 +1335,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6ProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	localPort_value := o.LocalPort.ValueInt64Pointer()
 	remotePort_value := o.RemotePort.ValueInt64Pointer()
@@ -1044,7 +1348,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6ProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	localPort_value := o.LocalPort.ValueInt64Pointer()
 	remotePort_value := o.RemotePort.ValueInt64Pointer()
@@ -1057,7 +1361,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatellite, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatellite, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var externalCa_entry *ipsec.GlobalProtectSatelliteExternalCa
 	if o.ExternalCa != nil {
@@ -1066,8 +1370,8 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyToPango(ctx cont
 		} else {
 			externalCa_entry = new(ipsec.GlobalProtectSatelliteExternalCa)
 		}
-
-		diags.Append(o.ExternalCa.CopyToPango(ctx, &externalCa_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ExternalCa.CopyToPango(ctx, append(ancestors, o), &externalCa_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1080,8 +1384,8 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyToPango(ctx cont
 		} else {
 			localAddress_entry = new(ipsec.GlobalProtectSatelliteLocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalAddress.CopyToPango(ctx, append(ancestors, o), &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1094,8 +1398,8 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyToPango(ctx cont
 		} else {
 			publishConnectedRoutes_entry = new(ipsec.GlobalProtectSatellitePublishConnectedRoutes)
 		}
-
-		diags.Append(o.PublishConnectedRoutes.CopyToPango(ctx, &publishConnectedRoutes_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PublishConnectedRoutes.CopyToPango(ctx, append(ancestors, o), &publishConnectedRoutes_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1118,7 +1422,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteExternalCa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatelliteExternalCa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	localCertificate_value := o.LocalCertificate.ValueStringPointer()
@@ -1131,7 +1435,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) CopyToPang
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatelliteLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	var floatingIp_entry *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp
@@ -1141,8 +1445,8 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyToPa
 		} else {
 			floatingIp_entry = new(ipsec.GlobalProtectSatelliteLocalAddressFloatingIp)
 		}
-
-		diags.Append(o.FloatingIp.CopyToPango(ctx, &floatingIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FloatingIp.CopyToPango(ctx, append(ancestors, o), &floatingIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1154,8 +1458,8 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyToPa
 		} else {
 			ip_entry = new(ipsec.GlobalProtectSatelliteLocalAddressIp)
 		}
-
-		diags.Append(o.Ip.CopyToPango(ctx, &ip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ip.CopyToPango(ctx, append(ancestors, o), &ip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1170,7 +1474,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyToPa
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -1183,7 +1487,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddressIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatelliteLocalAddressIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -1196,7 +1500,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) CopyTo
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatellitePublishConnectedRoutes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatellitePublishConnectedRoutes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 
@@ -1207,7 +1511,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localAddress_entry *ipsec.ManualKeyLocalAddress
 	if o.LocalAddress != nil {
@@ -1216,8 +1520,8 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyToPango(ctx context.Context, 
 		} else {
 			localAddress_entry = new(ipsec.ManualKeyLocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalAddress.CopyToPango(ctx, append(ancestors, o), &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1230,8 +1534,8 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyToPango(ctx context.Context, 
 		} else {
 			peerAddress_entry = new(ipsec.ManualKeyPeerAddress)
 		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PeerAddress.CopyToPango(ctx, append(ancestors, o), &peerAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1244,8 +1548,8 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyToPango(ctx context.Context, 
 		} else {
 			ah_entry = new(ipsec.ManualKeyAh)
 		}
-
-		diags.Append(o.Ah.CopyToPango(ctx, &ah_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ah.CopyToPango(ctx, append(ancestors, o), &ah_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1257,8 +1561,8 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyToPango(ctx context.Context, 
 		} else {
 			esp_entry = new(ipsec.ManualKeyEsp)
 		}
-
-		diags.Append(o.Esp.CopyToPango(ctx, &esp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Esp.CopyToPango(ctx, append(ancestors, o), &esp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1276,7 +1580,7 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	floatingIp_value := o.FloatingIp.ValueStringPointer()
@@ -1291,7 +1595,7 @@ func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ip_value := o.Ip.ValueStringPointer()
 
@@ -1302,7 +1606,7 @@ func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAh, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAh, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_entry *ipsec.ManualKeyAhMd5
 	if o.Md5 != nil {
@@ -1311,8 +1615,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context
 		} else {
 			md5_entry = new(ipsec.ManualKeyAhMd5)
 		}
-
-		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Md5.CopyToPango(ctx, append(ancestors, o), &md5_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1324,8 +1628,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context
 		} else {
 			sha1_entry = new(ipsec.ManualKeyAhSha1)
 		}
-
-		diags.Append(o.Sha1.CopyToPango(ctx, &sha1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha1.CopyToPango(ctx, append(ancestors, o), &sha1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1337,8 +1641,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context
 		} else {
 			sha256_entry = new(ipsec.ManualKeyAhSha256)
 		}
-
-		diags.Append(o.Sha256.CopyToPango(ctx, &sha256_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha256.CopyToPango(ctx, append(ancestors, o), &sha256_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1350,8 +1654,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context
 		} else {
 			sha384_entry = new(ipsec.ManualKeyAhSha384)
 		}
-
-		diags.Append(o.Sha384.CopyToPango(ctx, &sha384_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha384.CopyToPango(ctx, append(ancestors, o), &sha384_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1363,8 +1667,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context
 		} else {
 			sha512_entry = new(ipsec.ManualKeyAhSha512)
 		}
-
-		diags.Append(o.Sha512.CopyToPango(ctx, &sha512_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha512.CopyToPango(ctx, append(ancestors, o), &sha512_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1381,7 +1685,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1392,7 +1696,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1403,7 +1707,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha256, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1414,7 +1718,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha384, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1425,7 +1729,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha512, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1436,7 +1740,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEsp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEsp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_entry *ipsec.ManualKeyEspAuthentication
 	if o.Authentication != nil {
@@ -1445,8 +1749,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyToPango(ctx context.Contex
 		} else {
 			authentication_entry = new(ipsec.ManualKeyEspAuthentication)
 		}
-
-		diags.Append(o.Authentication.CopyToPango(ctx, &authentication_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Authentication.CopyToPango(ctx, append(ancestors, o), &authentication_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1458,8 +1762,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyToPango(ctx context.Contex
 		} else {
 			encryption_entry = new(ipsec.ManualKeyEspEncryption)
 		}
-
-		diags.Append(o.Encryption.CopyToPango(ctx, &encryption_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Encryption.CopyToPango(ctx, append(ancestors, o), &encryption_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1473,7 +1777,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthentication, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthentication, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_entry *ipsec.ManualKeyEspAuthenticationMd5
 	if o.Md5 != nil {
@@ -1482,8 +1786,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx 
 		} else {
 			md5_entry = new(ipsec.ManualKeyEspAuthenticationMd5)
 		}
-
-		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Md5.CopyToPango(ctx, append(ancestors, o), &md5_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1495,8 +1799,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx 
 		} else {
 			none_entry = new(ipsec.ManualKeyEspAuthenticationNone)
 		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1508,8 +1812,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx 
 		} else {
 			sha1_entry = new(ipsec.ManualKeyEspAuthenticationSha1)
 		}
-
-		diags.Append(o.Sha1.CopyToPango(ctx, &sha1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha1.CopyToPango(ctx, append(ancestors, o), &sha1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1521,8 +1825,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx 
 		} else {
 			sha256_entry = new(ipsec.ManualKeyEspAuthenticationSha256)
 		}
-
-		diags.Append(o.Sha256.CopyToPango(ctx, &sha256_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha256.CopyToPango(ctx, append(ancestors, o), &sha256_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1534,8 +1838,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx 
 		} else {
 			sha384_entry = new(ipsec.ManualKeyEspAuthenticationSha384)
 		}
-
-		diags.Append(o.Sha384.CopyToPango(ctx, &sha384_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha384.CopyToPango(ctx, append(ancestors, o), &sha384_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1547,8 +1851,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx 
 		} else {
 			sha512_entry = new(ipsec.ManualKeyEspAuthenticationSha512)
 		}
-
-		diags.Append(o.Sha512.CopyToPango(ctx, &sha512_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha512.CopyToPango(ctx, append(ancestors, o), &sha512_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1566,7 +1870,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1577,7 +1881,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyToPango(c
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1586,7 +1890,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyToPango(
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1597,7 +1901,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyToPango(
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha256, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1608,7 +1912,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyToPang
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha384, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1619,7 +1923,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyToPang
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha512, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -1630,7 +1934,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyToPang
 
 	return diags
 }
-func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspEncryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspEncryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	algorithm_value := o.Algorithm.ValueStringPointer()
 	key_value := o.Key.ValueStringPointer()
@@ -1644,13 +1948,12 @@ func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyToPango(ctx cont
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ipsec.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tunnelMonitor_object *IpsecTunnelDataSourceTunnelMonitorObject
 	if obj.TunnelMonitor != nil {
 		tunnelMonitor_object = new(IpsecTunnelDataSourceTunnelMonitorObject)
-
-		diags.Append(tunnelMonitor_object.CopyFromPango(ctx, obj.TunnelMonitor, encrypted)...)
+		diags.Append(tunnelMonitor_object.CopyFromPango(ctx, ancestors, obj.TunnelMonitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1658,8 +1961,7 @@ func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ips
 	var autoKey_object *IpsecTunnelDataSourceAutoKeyObject
 	if obj.AutoKey != nil {
 		autoKey_object = new(IpsecTunnelDataSourceAutoKeyObject)
-
-		diags.Append(autoKey_object.CopyFromPango(ctx, obj.AutoKey, encrypted)...)
+		diags.Append(autoKey_object.CopyFromPango(ctx, ancestors, obj.AutoKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1667,8 +1969,7 @@ func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ips
 	var globalProtectSatellite_object *IpsecTunnelDataSourceGlobalProtectSatelliteObject
 	if obj.GlobalProtectSatellite != nil {
 		globalProtectSatellite_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteObject)
-
-		diags.Append(globalProtectSatellite_object.CopyFromPango(ctx, obj.GlobalProtectSatellite, encrypted)...)
+		diags.Append(globalProtectSatellite_object.CopyFromPango(ctx, ancestors, obj.GlobalProtectSatellite, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1676,8 +1977,7 @@ func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ips
 	var manualKey_object *IpsecTunnelDataSourceManualKeyObject
 	if obj.ManualKey != nil {
 		manualKey_object = new(IpsecTunnelDataSourceManualKeyObject)
-
-		diags.Append(manualKey_object.CopyFromPango(ctx, obj.ManualKey, encrypted)...)
+		diags.Append(manualKey_object.CopyFromPango(ctx, ancestors, obj.ManualKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1711,6 +2011,10 @@ func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ips
 	if obj.EnableGreEncapsulation != nil {
 		enableGreEncapsulation_value = types.BoolValue(*obj.EnableGreEncapsulation)
 	}
+	var ipsecMode_value types.String
+	if obj.IpsecMode != nil {
+		ipsecMode_value = types.StringValue(*obj.IpsecMode)
+	}
 	var ipv6_value types.Bool
 	if obj.Ipv6 != nil {
 		ipv6_value = types.BoolValue(*obj.Ipv6)
@@ -1718,10 +2022,6 @@ func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ips
 	var tunnelInterface_value types.String
 	if obj.TunnelInterface != nil {
 		tunnelInterface_value = types.StringValue(*obj.TunnelInterface)
-	}
-	var ipsecMode_value types.String
-	if obj.IpsecMode != nil {
-		ipsecMode_value = types.StringValue(*obj.IpsecMode)
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.AntiReplay = antiReplay_value
@@ -1731,10 +2031,10 @@ func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ips
 	o.CopyTos = copyTos_value
 	o.Disabled = disabled_value
 	o.EnableGreEncapsulation = enableGreEncapsulation_value
+	o.IpsecMode = ipsecMode_value
 	o.Ipv6 = ipv6_value
 	o.TunnelInterface = tunnelInterface_value
 	o.TunnelMonitor = tunnelMonitor_object
-	o.IpsecMode = ipsecMode_value
 	o.AutoKey = autoKey_object
 	o.GlobalProtectSatellite = globalProtectSatellite_object
 	o.ManualKey = manualKey_object
@@ -1742,7 +2042,7 @@ func (o *IpsecTunnelDataSourceModel) CopyFromPango(ctx context.Context, obj *ips
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceTunnelMonitorObject) CopyFromPango(ctx context.Context, obj *ipsec.TunnelMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceTunnelMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.TunnelMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var destinationIp_value types.String
@@ -1769,15 +2069,19 @@ func (o *IpsecTunnelDataSourceTunnelMonitorObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ikeGateway_list types.List
 	{
 		var ikeGateway_tf_entries []IpsecTunnelDataSourceAutoKeyIkeGatewayObject
 		for _, elt := range obj.IkeGateway {
-			var entry IpsecTunnelDataSourceAutoKeyIkeGatewayObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := IpsecTunnelDataSourceAutoKeyIkeGatewayObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			ikeGateway_tf_entries = append(ikeGateway_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1789,9 +2093,13 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyFromPango(ctx context.Context, 
 	{
 		var proxyId_tf_entries []IpsecTunnelDataSourceAutoKeyProxyIdObject
 		for _, elt := range obj.ProxyId {
-			var entry IpsecTunnelDataSourceAutoKeyProxyIdObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := IpsecTunnelDataSourceAutoKeyProxyIdObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			proxyId_tf_entries = append(proxyId_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1803,9 +2111,13 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyFromPango(ctx context.Context, 
 	{
 		var proxyIdV6_tf_entries []IpsecTunnelDataSourceAutoKeyProxyIdV6Object
 		for _, elt := range obj.ProxyIdV6 {
-			var entry IpsecTunnelDataSourceAutoKeyProxyIdV6Object
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := IpsecTunnelDataSourceAutoKeyProxyIdV6Object{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			proxyIdV6_tf_entries = append(proxyIdV6_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1826,20 +2138,19 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyIkeGatewayObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyIkeGateway, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyIkeGatewayObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyIkeGateway, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var protocol_object *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject
 	if obj.Protocol != nil {
 		protocol_object = new(IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject)
-
-		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
+		diags.Append(protocol_object.CopyFromPango(ctx, append(ancestors, o), obj.Protocol, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1861,13 +2172,12 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdProtocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var any_object *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject
 	if obj.Any != nil {
 		any_object = new(IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject)
-
-		diags.Append(any_object.CopyFromPango(ctx, obj.Any, encrypted)...)
+		diags.Append(any_object.CopyFromPango(ctx, append(ancestors, o), obj.Any, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1875,8 +2185,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx co
 	var tcp_object *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject
 	if obj.Tcp != nil {
 		tcp_object = new(IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject)
-
-		diags.Append(tcp_object.CopyFromPango(ctx, obj.Tcp, encrypted)...)
+		diags.Append(tcp_object.CopyFromPango(ctx, append(ancestors, o), obj.Tcp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1884,8 +2193,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx co
 	var udp_object *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject
 	if obj.Udp != nil {
 		udp_object = new(IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject)
-
-		diags.Append(udp_object.CopyFromPango(ctx, obj.Udp, encrypted)...)
+		diags.Append(udp_object.CopyFromPango(ctx, append(ancestors, o), obj.Udp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1903,30 +2211,13 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdProtocolAny, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var localPort_value types.Int64
-	if obj.LocalPort != nil {
-		localPort_value = types.Int64Value(*obj.LocalPort)
-	}
-	var remotePort_value types.Int64
-	if obj.RemotePort != nil {
-		remotePort_value = types.Int64Value(*obj.RemotePort)
-	}
-	o.LocalPort = localPort_value
-	o.RemotePort = remotePort_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var localPort_value types.Int64
@@ -1943,13 +2234,29 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var localPort_value types.Int64
+	if obj.LocalPort != nil {
+		localPort_value = types.Int64Value(*obj.LocalPort)
+	}
+	var remotePort_value types.Int64
+	if obj.RemotePort != nil {
+		remotePort_value = types.Int64Value(*obj.RemotePort)
+	}
+	o.LocalPort = localPort_value
+	o.RemotePort = remotePort_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var protocol_object *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject
 	if obj.Protocol != nil {
 		protocol_object = new(IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject)
-
-		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
+		diags.Append(protocol_object.CopyFromPango(ctx, append(ancestors, o), obj.Protocol, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1971,13 +2278,12 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var any_object *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject
 	if obj.Any != nil {
 		any_object = new(IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject)
-
-		diags.Append(any_object.CopyFromPango(ctx, obj.Any, encrypted)...)
+		diags.Append(any_object.CopyFromPango(ctx, append(ancestors, o), obj.Any, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1985,8 +2291,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx 
 	var tcp_object *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject
 	if obj.Tcp != nil {
 		tcp_object = new(IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject)
-
-		diags.Append(tcp_object.CopyFromPango(ctx, obj.Tcp, encrypted)...)
+		diags.Append(tcp_object.CopyFromPango(ctx, append(ancestors, o), obj.Tcp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1994,8 +2299,7 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx 
 	var udp_object *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject
 	if obj.Udp != nil {
 		udp_object = new(IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject)
-
-		diags.Append(udp_object.CopyFromPango(ctx, obj.Udp, encrypted)...)
+		diags.Append(udp_object.CopyFromPango(ctx, append(ancestors, o), obj.Udp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2013,30 +2317,13 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6ProtocolAny, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var localPort_value types.Int64
-	if obj.LocalPort != nil {
-		localPort_value = types.Int64Value(*obj.LocalPort)
-	}
-	var remotePort_value types.Int64
-	if obj.RemotePort != nil {
-		remotePort_value = types.Int64Value(*obj.RemotePort)
-	}
-	o.LocalPort = localPort_value
-	o.RemotePort = remotePort_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6ProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var localPort_value types.Int64
@@ -2053,19 +2340,38 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) CopyFromPango(c
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatellite, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6ProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var localPort_value types.Int64
+	if obj.LocalPort != nil {
+		localPort_value = types.Int64Value(*obj.LocalPort)
+	}
+	var remotePort_value types.Int64
+	if obj.RemotePort != nil {
+		remotePort_value = types.Int64Value(*obj.RemotePort)
+	}
+	o.LocalPort = localPort_value
+	o.RemotePort = remotePort_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatellite, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var publishRoutes_list types.List
 	{
 		var list_diags diag.Diagnostics
 		publishRoutes_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.PublishRoutes)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var externalCa_object *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject
 	if obj.ExternalCa != nil {
 		externalCa_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject)
-
-		diags.Append(externalCa_object.CopyFromPango(ctx, obj.ExternalCa, encrypted)...)
+		diags.Append(externalCa_object.CopyFromPango(ctx, append(ancestors, o), obj.ExternalCa, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2073,8 +2379,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyFromPango(ctx co
 	var localAddress_object *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2082,8 +2387,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyFromPango(ctx co
 	var publishConnectedRoutes_object *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject
 	if obj.PublishConnectedRoutes != nil {
 		publishConnectedRoutes_object = new(IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject)
-
-		diags.Append(publishConnectedRoutes_object.CopyFromPango(ctx, obj.PublishConnectedRoutes, encrypted)...)
+		diags.Append(publishConnectedRoutes_object.CopyFromPango(ctx, append(ancestors, o), obj.PublishConnectedRoutes, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2107,7 +2411,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteExternalCa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatelliteExternalCa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var certificateProfile_value types.String
@@ -2124,13 +2428,12 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) CopyFromPa
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatelliteLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var floatingIp_object *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject
 	if obj.FloatingIp != nil {
 		floatingIp_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject)
-
-		diags.Append(floatingIp_object.CopyFromPango(ctx, obj.FloatingIp, encrypted)...)
+		diags.Append(floatingIp_object.CopyFromPango(ctx, append(ancestors, o), obj.FloatingIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2138,8 +2441,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyFrom
 	var ip_object *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject
 	if obj.Ip != nil {
 		ip_object = new(IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject)
-
-		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
+		diags.Append(ip_object.CopyFromPango(ctx, append(ancestors, o), obj.Ip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2156,7 +2458,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) CopyFrom
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -2173,7 +2475,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddressIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatelliteLocalAddressIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -2190,7 +2492,7 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) CopyFr
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatellitePublishConnectedRoutes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatellitePublishConnectedRoutes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -2202,13 +2504,12 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localAddress_object *IpsecTunnelDataSourceManualKeyLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(IpsecTunnelDataSourceManualKeyLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2216,8 +2517,7 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyFromPango(ctx context.Context
 	var peerAddress_object *IpsecTunnelDataSourceManualKeyPeerAddressObject
 	if obj.PeerAddress != nil {
 		peerAddress_object = new(IpsecTunnelDataSourceManualKeyPeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		diags.Append(peerAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.PeerAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2225,8 +2525,7 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyFromPango(ctx context.Context
 	var ah_object *IpsecTunnelDataSourceManualKeyAhObject
 	if obj.Ah != nil {
 		ah_object = new(IpsecTunnelDataSourceManualKeyAhObject)
-
-		diags.Append(ah_object.CopyFromPango(ctx, obj.Ah, encrypted)...)
+		diags.Append(ah_object.CopyFromPango(ctx, append(ancestors, o), obj.Ah, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2234,8 +2533,7 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyFromPango(ctx context.Context
 	var esp_object *IpsecTunnelDataSourceManualKeyEspObject
 	if obj.Esp != nil {
 		esp_object = new(IpsecTunnelDataSourceManualKeyEspObject)
-
-		diags.Append(esp_object.CopyFromPango(ctx, obj.Esp, encrypted)...)
+		diags.Append(esp_object.CopyFromPango(ctx, append(ancestors, o), obj.Esp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2259,7 +2557,7 @@ func (o *IpsecTunnelDataSourceManualKeyObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -2281,7 +2579,7 @@ func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ip_value types.String
@@ -2293,13 +2591,12 @@ func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAh, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAh, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_object *IpsecTunnelDataSourceManualKeyAhMd5Object
 	if obj.Md5 != nil {
 		md5_object = new(IpsecTunnelDataSourceManualKeyAhMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		diags.Append(md5_object.CopyFromPango(ctx, append(ancestors, o), obj.Md5, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2307,8 +2604,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyFromPango(ctx context.Conte
 	var sha1_object *IpsecTunnelDataSourceManualKeyAhSha1Object
 	if obj.Sha1 != nil {
 		sha1_object = new(IpsecTunnelDataSourceManualKeyAhSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		diags.Append(sha1_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2316,8 +2612,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyFromPango(ctx context.Conte
 	var sha256_object *IpsecTunnelDataSourceManualKeyAhSha256Object
 	if obj.Sha256 != nil {
 		sha256_object = new(IpsecTunnelDataSourceManualKeyAhSha256Object)
-
-		diags.Append(sha256_object.CopyFromPango(ctx, obj.Sha256, encrypted)...)
+		diags.Append(sha256_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha256, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2325,8 +2620,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyFromPango(ctx context.Conte
 	var sha384_object *IpsecTunnelDataSourceManualKeyAhSha384Object
 	if obj.Sha384 != nil {
 		sha384_object = new(IpsecTunnelDataSourceManualKeyAhSha384Object)
-
-		diags.Append(sha384_object.CopyFromPango(ctx, obj.Sha384, encrypted)...)
+		diags.Append(sha384_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha384, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2334,8 +2628,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyFromPango(ctx context.Conte
 	var sha512_object *IpsecTunnelDataSourceManualKeyAhSha512Object
 	if obj.Sha512 != nil {
 		sha512_object = new(IpsecTunnelDataSourceManualKeyAhSha512Object)
-
-		diags.Append(sha512_object.CopyFromPango(ctx, obj.Sha512, encrypted)...)
+		diags.Append(sha512_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha512, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2350,7 +2643,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -2362,7 +2655,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -2374,7 +2667,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha256, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -2386,7 +2679,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha384, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -2398,7 +2691,7 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha512, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -2410,13 +2703,12 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEsp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEsp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_object *IpsecTunnelDataSourceManualKeyEspAuthenticationObject
 	if obj.Authentication != nil {
 		authentication_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationObject)
-
-		diags.Append(authentication_object.CopyFromPango(ctx, obj.Authentication, encrypted)...)
+		diags.Append(authentication_object.CopyFromPango(ctx, append(ancestors, o), obj.Authentication, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2424,8 +2716,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyFromPango(ctx context.Cont
 	var encryption_object *IpsecTunnelDataSourceManualKeyEspEncryptionObject
 	if obj.Encryption != nil {
 		encryption_object = new(IpsecTunnelDataSourceManualKeyEspEncryptionObject)
-
-		diags.Append(encryption_object.CopyFromPango(ctx, obj.Encryption, encrypted)...)
+		diags.Append(encryption_object.CopyFromPango(ctx, append(ancestors, o), obj.Encryption, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2437,13 +2728,12 @@ func (o *IpsecTunnelDataSourceManualKeyEspObject) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthentication, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthentication, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_object *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object
 	if obj.Md5 != nil {
 		md5_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		diags.Append(md5_object.CopyFromPango(ctx, append(ancestors, o), obj.Md5, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2451,8 +2741,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ct
 	var none_object *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject
 	if obj.None != nil {
 		none_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2460,8 +2749,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ct
 	var sha1_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object
 	if obj.Sha1 != nil {
 		sha1_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		diags.Append(sha1_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2469,8 +2757,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ct
 	var sha256_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object
 	if obj.Sha256 != nil {
 		sha256_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object)
-
-		diags.Append(sha256_object.CopyFromPango(ctx, obj.Sha256, encrypted)...)
+		diags.Append(sha256_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha256, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2478,8 +2765,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ct
 	var sha384_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object
 	if obj.Sha384 != nil {
 		sha384_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object)
-
-		diags.Append(sha384_object.CopyFromPango(ctx, obj.Sha384, encrypted)...)
+		diags.Append(sha384_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha384, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2487,8 +2773,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ct
 	var sha512_object *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object
 	if obj.Sha512 != nil {
 		sha512_object = new(IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object)
-
-		diags.Append(sha512_object.CopyFromPango(ctx, obj.Sha512, encrypted)...)
+		diags.Append(sha512_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha512, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2504,7 +2789,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -2516,25 +2801,13 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyFromPango
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha1, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha256, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -2546,7 +2819,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyFromPa
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha384, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -2558,7 +2831,7 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyFromPa
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha512, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -2570,7 +2843,19 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyFromPa
 	return diags
 }
 
-func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspEncryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationSha512, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspEncryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var algorithm_value types.String
@@ -2585,6 +2870,11 @@ func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyFromPango(ctx co
 	o.Key = key_value
 
 	return diags
+}
+
+func (o *IpsecTunnelDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func IpsecTunnelDataSourceSchema() dsschema.Schema {
@@ -2657,6 +2947,14 @@ func IpsecTunnelDataSourceSchema() dsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"ipsec_mode": dsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"ipv6": dsschema.BoolAttribute{
 				Description: "use IPv6 for the IPSec tunnel",
 				Computed:    true,
@@ -2674,14 +2972,6 @@ func IpsecTunnelDataSourceSchema() dsschema.Schema {
 			},
 
 			"tunnel_monitor": IpsecTunnelDataSourceTunnelMonitorSchema(),
-
-			"ipsec_mode": dsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
 
 			"auto_key": IpsecTunnelDataSourceAutoKeySchema(),
 
@@ -4524,13 +4814,20 @@ func (d *IpsecTunnelDataSource) Configure(_ context.Context, req datasource.Conf
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, ipsec.NewService(d.client), batchSize, specifier, ipsec.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*ipsec.Entry, ipsec.Location, *ipsec.Service](d.client, ipsec.NewService(d.client), batchSize, specifier, ipsec.SpecMatches)
 }
 func (o *IpsecTunnelDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state IpsecTunnelDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -4575,8 +4872,12 @@ func (o *IpsecTunnelDataSource) Read(ctx context.Context, req datasource.ReadReq
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -4586,7 +4887,7 @@ func (o *IpsecTunnelDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -4637,10 +4938,10 @@ type IpsecTunnelResourceModel struct {
 	CopyTos                types.Bool                                       `tfsdk:"copy_tos"`
 	Disabled               types.Bool                                       `tfsdk:"disabled"`
 	EnableGreEncapsulation types.Bool                                       `tfsdk:"enable_gre_encapsulation"`
+	IpsecMode              types.String                                     `tfsdk:"ipsec_mode"`
 	Ipv6                   types.Bool                                       `tfsdk:"ipv6"`
 	TunnelInterface        types.String                                     `tfsdk:"tunnel_interface"`
 	TunnelMonitor          *IpsecTunnelResourceTunnelMonitorObject          `tfsdk:"tunnel_monitor"`
-	IpsecMode              types.String                                     `tfsdk:"ipsec_mode"`
 	AutoKey                *IpsecTunnelResourceAutoKeyObject                `tfsdk:"auto_key"`
 	GlobalProtectSatellite *IpsecTunnelResourceGlobalProtectSatelliteObject `tfsdk:"global_protect_satellite"`
 	ManualKey              *IpsecTunnelResourceManualKeyObject              `tfsdk:"manual_key"`
@@ -4892,6 +5193,22 @@ func IpsecTunnelResourceSchema() rsschema.Schema {
 				Sensitive:   false,
 			},
 
+			"ipsec_mode": rsschema.StringAttribute{
+				Description: "",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+				Default:     stringdefault.StaticString("tunnel"),
+
+				Validators: []validator.String{
+					stringvalidator.OneOf([]string{
+						"tunnel",
+						"transport",
+					}...),
+				},
+			},
+
 			"ipv6": rsschema.BoolAttribute{
 				Description: "use IPv6 for the IPSec tunnel",
 				Computed:    false,
@@ -4909,22 +5226,6 @@ func IpsecTunnelResourceSchema() rsschema.Schema {
 			},
 
 			"tunnel_monitor": IpsecTunnelResourceTunnelMonitorSchema(),
-
-			"ipsec_mode": rsschema.StringAttribute{
-				Description: "",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-				Default:     stringdefault.StaticString("tunnel"),
-
-				Validators: []validator.String{
-					stringvalidator.OneOf([]string{
-						"tunnel",
-						"transport",
-					}...),
-				},
-			},
 
 			"auto_key": IpsecTunnelResourceAutoKeySchema(),
 
@@ -6806,7 +7107,7 @@ func (r *IpsecTunnelResource) Configure(ctx context.Context, req resource.Config
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, ipsec.NewService(r.client), batchSize, specifier, ipsec.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*ipsec.Entry, ipsec.Location, *ipsec.Service](r.client, ipsec.NewService(r.client), batchSize, specifier, ipsec.SpecMatches)
 }
 
 func (o *IpsecTunnelResourceModel) AttributeTypes() map[string]attr.Type {
@@ -6832,12 +7133,12 @@ func (o *IpsecTunnelResourceModel) AttributeTypes() map[string]attr.Type {
 		"copy_tos":                 types.BoolType,
 		"disabled":                 types.BoolType,
 		"enable_gre_encapsulation": types.BoolType,
+		"ipsec_mode":               types.StringType,
 		"ipv6":                     types.BoolType,
 		"tunnel_interface":         types.StringType,
 		"tunnel_monitor": types.ObjectType{
 			AttrTypes: tunnelMonitorObj.AttributeTypes(),
 		},
-		"ipsec_mode": types.StringType,
 		"auto_key": types.ObjectType{
 			AttrTypes: autoKeyObj.AttributeTypes(),
 		},
@@ -6849,6 +7150,14 @@ func (o *IpsecTunnelResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 	}
 }
+
+func (o IpsecTunnelResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o IpsecTunnelResourceModel) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceTunnelMonitorObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -6857,6 +7166,14 @@ func (o *IpsecTunnelResourceTunnelMonitorObject) AttributeTypes() map[string]att
 		"proxy_id":               types.StringType,
 		"tunnel_monitor_profile": types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceTunnelMonitorObject) AncestorName() string {
+	return "tunnel-monitor"
+}
+
+func (o IpsecTunnelResourceTunnelMonitorObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceAutoKeyObject) AttributeTypes() map[string]attr.Type {
 
@@ -6867,11 +7184,27 @@ func (o *IpsecTunnelResourceAutoKeyObject) AttributeTypes() map[string]attr.Type
 		"proxy_id_v6":          types.ListType{},
 	}
 }
+
+func (o IpsecTunnelResourceAutoKeyObject) AncestorName() string {
+	return "auto-key"
+}
+
+func (o IpsecTunnelResourceAutoKeyObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name": types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceAutoKeyIkeGatewayObject) AncestorName() string {
+	return "ike-gateway"
+}
+
+func (o IpsecTunnelResourceAutoKeyIkeGatewayObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *IpsecTunnelResourceAutoKeyProxyIdObject) AttributeTypes() map[string]attr.Type {
 
@@ -6884,6 +7217,14 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdObject) AttributeTypes() map[string]at
 			AttrTypes: protocolObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdObject) AncestorName() string {
+	return "proxy-id"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) AttributeTypes() map[string]attr.Type {
 
@@ -6905,8 +7246,24 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) AttributeTypes() map[s
 		},
 	}
 }
+
+func (o IpsecTunnelResourceAutoKeyProxyIdProtocolObject) AncestorName() string {
+	return "protocol"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdProtocolObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) AncestorName() string {
+	return "any"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) AttributeTypes() map[string]attr.Type {
 
@@ -6915,12 +7272,28 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) AttributeTypes() ma
 		"remote_port": types.Int64Type,
 	}
 }
+
+func (o IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) AncestorName() string {
+	return "tcp"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"local_port":  types.Int64Type,
 		"remote_port": types.Int64Type,
 	}
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) AncestorName() string {
+	return "udp"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) AttributeTypes() map[string]attr.Type {
 
@@ -6933,6 +7306,14 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) AttributeTypes() map[string]
 			AttrTypes: protocolObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6Object) AncestorName() string {
+	return "proxy-id-v6"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6Object) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) AttributeTypes() map[string]attr.Type {
 
@@ -6954,8 +7335,24 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) AttributeTypes() map
 		},
 	}
 }
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) AncestorName() string {
+	return "protocol"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) AncestorName() string {
+	return "any"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) AttributeTypes() map[string]attr.Type {
 
@@ -6964,12 +7361,28 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) AttributeTypes() 
 		"remote_port": types.Int64Type,
 	}
 }
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) AncestorName() string {
+	return "tcp"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"local_port":  types.Int64Type,
 		"remote_port": types.Int64Type,
 	}
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) AncestorName() string {
+	return "udp"
+}
+
+func (o IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) AttributeTypes() map[string]attr.Type {
 
@@ -6994,12 +7407,28 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) AttributeTypes() map[s
 		"publish_routes": types.ListType{},
 	}
 }
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteObject) AncestorName() string {
+	return "global-protect-satellite"
+}
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"certificate_profile": types.StringType,
 		"local_certificate":   types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) AncestorName() string {
+	return "external-ca"
+}
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -7016,12 +7445,28 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) AttributeT
 		},
 	}
 }
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ipv4": types.StringType,
 		"ipv6": types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) AncestorName() string {
+	return "floating-ip"
+}
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) AttributeTypes() map[string]attr.Type {
 
@@ -7030,11 +7475,27 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) Attribut
 		"ipv6": types.StringType,
 	}
 }
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enable": types.BoolType,
 	}
+}
+
+func (o IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) AncestorName() string {
+	return "publish-connected-routes"
+}
+
+func (o IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceManualKeyObject) AttributeTypes() map[string]attr.Type {
 
@@ -7062,6 +7523,14 @@ func (o *IpsecTunnelResourceManualKeyObject) AttributeTypes() map[string]attr.Ty
 		},
 	}
 }
+
+func (o IpsecTunnelResourceManualKeyObject) AncestorName() string {
+	return "manual-key"
+}
+
+func (o IpsecTunnelResourceManualKeyObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceManualKeyLocalAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -7070,11 +7539,27 @@ func (o *IpsecTunnelResourceManualKeyLocalAddressObject) AttributeTypes() map[st
 		"ip":          types.StringType,
 	}
 }
+
+func (o IpsecTunnelResourceManualKeyLocalAddressObject) AncestorName() string {
+	return "local-address"
+}
+
+func (o IpsecTunnelResourceManualKeyLocalAddressObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceManualKeyPeerAddressObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"ip": types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceManualKeyPeerAddressObject) AncestorName() string {
+	return "peer-address"
+}
+
+func (o IpsecTunnelResourceManualKeyPeerAddressObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceManualKeyAhObject) AttributeTypes() map[string]attr.Type {
 
@@ -7105,11 +7590,27 @@ func (o *IpsecTunnelResourceManualKeyAhObject) AttributeTypes() map[string]attr.
 		},
 	}
 }
+
+func (o IpsecTunnelResourceManualKeyAhObject) AncestorName() string {
+	return "ah"
+}
+
+func (o IpsecTunnelResourceManualKeyAhObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceManualKeyAhMd5Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceManualKeyAhMd5Object) AncestorName() string {
+	return "md5"
+}
+
+func (o IpsecTunnelResourceManualKeyAhMd5Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceManualKeyAhSha1Object) AttributeTypes() map[string]attr.Type {
 
@@ -7117,11 +7618,27 @@ func (o *IpsecTunnelResourceManualKeyAhSha1Object) AttributeTypes() map[string]a
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelResourceManualKeyAhSha1Object) AncestorName() string {
+	return "sha1"
+}
+
+func (o IpsecTunnelResourceManualKeyAhSha1Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceManualKeyAhSha256Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceManualKeyAhSha256Object) AncestorName() string {
+	return "sha256"
+}
+
+func (o IpsecTunnelResourceManualKeyAhSha256Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceManualKeyAhSha384Object) AttributeTypes() map[string]attr.Type {
 
@@ -7129,11 +7646,27 @@ func (o *IpsecTunnelResourceManualKeyAhSha384Object) AttributeTypes() map[string
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelResourceManualKeyAhSha384Object) AncestorName() string {
+	return "sha384"
+}
+
+func (o IpsecTunnelResourceManualKeyAhSha384Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceManualKeyAhSha512Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceManualKeyAhSha512Object) AncestorName() string {
+	return "sha512"
+}
+
+func (o IpsecTunnelResourceManualKeyAhSha512Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceManualKeyEspObject) AttributeTypes() map[string]attr.Type {
 
@@ -7148,6 +7681,14 @@ func (o *IpsecTunnelResourceManualKeyEspObject) AttributeTypes() map[string]attr
 			AttrTypes: encryptionObj.AttributeTypes(),
 		},
 	}
+}
+
+func (o IpsecTunnelResourceManualKeyEspObject) AncestorName() string {
+	return "esp"
+}
+
+func (o IpsecTunnelResourceManualKeyEspObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) AttributeTypes() map[string]attr.Type {
 
@@ -7183,14 +7724,38 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) AttributeTypes() m
 		},
 	}
 }
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationObject) AncestorName() string {
+	return "authentication"
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationObject) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) AncestorName() string {
+	return "md5"
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) AncestorName() string {
+	return "none"
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) AttributeTypes() map[string]attr.Type {
 
@@ -7198,11 +7763,27 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) AttributeTypes
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) AncestorName() string {
+	return "sha1"
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) AncestorName() string {
+	return "sha256"
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) AttributeTypes() map[string]attr.Type {
 
@@ -7210,11 +7791,27 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) AttributeTyp
 		"key": types.StringType,
 	}
 }
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) AncestorName() string {
+	return "sha384"
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) EntryName() *string {
+	return nil
+}
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"key": types.StringType,
 	}
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) AncestorName() string {
+	return "sha512"
+}
+
+func (o IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) EntryName() *string {
+	return nil
 }
 func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) AttributeTypes() map[string]attr.Type {
 
@@ -7224,7 +7821,15 @@ func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) AttributeTypes() map[s
 	}
 }
 
-func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o IpsecTunnelResourceManualKeyEspEncryptionObject) AncestorName() string {
+	return "encryption"
+}
+
+func (o IpsecTunnelResourceManualKeyEspEncryptionObject) EntryName() *string {
+	return nil
+}
+
+func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	antiReplay_value := o.AntiReplay.ValueBoolPointer()
 	antiReplayWindow_value := o.AntiReplayWindow.ValueStringPointer()
@@ -7233,6 +7838,7 @@ func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.
 	copyTos_value := o.CopyTos.ValueBoolPointer()
 	disabled_value := o.Disabled.ValueBoolPointer()
 	enableGreEncapsulation_value := o.EnableGreEncapsulation.ValueBoolPointer()
+	ipsecMode_value := o.IpsecMode.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueBoolPointer()
 	tunnelInterface_value := o.TunnelInterface.ValueStringPointer()
 	var tunnelMonitor_entry *ipsec.TunnelMonitor
@@ -7242,13 +7848,12 @@ func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.
 		} else {
 			tunnelMonitor_entry = new(ipsec.TunnelMonitor)
 		}
-
-		diags.Append(o.TunnelMonitor.CopyToPango(ctx, &tunnelMonitor_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.TunnelMonitor.CopyToPango(ctx, ancestors, &tunnelMonitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	ipsecMode_value := o.IpsecMode.ValueStringPointer()
 	var autoKey_entry *ipsec.AutoKey
 	if o.AutoKey != nil {
 		if *obj != nil && (*obj).AutoKey != nil {
@@ -7256,8 +7861,8 @@ func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.
 		} else {
 			autoKey_entry = new(ipsec.AutoKey)
 		}
-
-		diags.Append(o.AutoKey.CopyToPango(ctx, &autoKey_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.AutoKey.CopyToPango(ctx, ancestors, &autoKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7269,8 +7874,8 @@ func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.
 		} else {
 			globalProtectSatellite_entry = new(ipsec.GlobalProtectSatellite)
 		}
-
-		diags.Append(o.GlobalProtectSatellite.CopyToPango(ctx, &globalProtectSatellite_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.GlobalProtectSatellite.CopyToPango(ctx, ancestors, &globalProtectSatellite_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7282,8 +7887,8 @@ func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.
 		} else {
 			manualKey_entry = new(ipsec.ManualKey)
 		}
-
-		diags.Append(o.ManualKey.CopyToPango(ctx, &manualKey_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.ManualKey.CopyToPango(ctx, ancestors, &manualKey_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7300,17 +7905,17 @@ func (o *IpsecTunnelResourceModel) CopyToPango(ctx context.Context, obj **ipsec.
 	(*obj).CopyTos = copyTos_value
 	(*obj).Disabled = disabled_value
 	(*obj).EnableGreEncapsulation = enableGreEncapsulation_value
+	(*obj).IpsecMode = ipsecMode_value
 	(*obj).Ipv6 = ipv6_value
 	(*obj).TunnelInterface = tunnelInterface_value
 	(*obj).TunnelMonitor = tunnelMonitor_entry
-	(*obj).IpsecMode = ipsecMode_value
 	(*obj).AutoKey = autoKey_entry
 	(*obj).GlobalProtectSatellite = globalProtectSatellite_entry
 	(*obj).ManualKey = manualKey_entry
 
 	return diags
 }
-func (o *IpsecTunnelResourceTunnelMonitorObject) CopyToPango(ctx context.Context, obj **ipsec.TunnelMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceTunnelMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.TunnelMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	destinationIp_value := o.DestinationIp.ValueStringPointer()
 	enable_value := o.Enable.ValueBoolPointer()
@@ -7327,7 +7932,7 @@ func (o *IpsecTunnelResourceTunnelMonitorObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ikeGateway_tf_entries []IpsecTunnelResourceAutoKeyIkeGatewayObject
 	var ikeGateway_pango_entries []ipsec.AutoKeyIkeGateway
@@ -7339,7 +7944,7 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, obj 
 		}
 		for _, elt := range ikeGateway_tf_entries {
 			var entry *ipsec.AutoKeyIkeGateway
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -7357,7 +7962,7 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, obj 
 		}
 		for _, elt := range proxyId_tf_entries {
 			var entry *ipsec.AutoKeyProxyId
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -7374,7 +7979,7 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, obj 
 		}
 		for _, elt := range proxyIdV6_tf_entries {
 			var entry *ipsec.AutoKeyProxyIdV6
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -7392,7 +7997,7 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, obj 
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyIkeGateway, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyIkeGateway, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7402,7 +8007,7 @@ func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	local_value := o.Local.ValueStringPointer()
 	remote_value := o.Remote.ValueStringPointer()
@@ -7413,8 +8018,8 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyToPango(ctx context.Contex
 		} else {
 			protocol_entry = new(ipsec.AutoKeyProxyIdProtocol)
 		}
-
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Protocol.CopyToPango(ctx, append(ancestors, o), &protocol_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7430,7 +8035,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdProtocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	number_value := o.Number.ValueInt64Pointer()
 	var any_entry *ipsec.AutoKeyProxyIdProtocolAny
@@ -7440,8 +8045,8 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx contex
 		} else {
 			any_entry = new(ipsec.AutoKeyProxyIdProtocolAny)
 		}
-
-		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Any.CopyToPango(ctx, append(ancestors, o), &any_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7453,8 +8058,8 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx contex
 		} else {
 			tcp_entry = new(ipsec.AutoKeyProxyIdProtocolTcp)
 		}
-
-		diags.Append(o.Tcp.CopyToPango(ctx, &tcp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tcp.CopyToPango(ctx, append(ancestors, o), &tcp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7466,8 +8071,8 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx contex
 		} else {
 			udp_entry = new(ipsec.AutoKeyProxyIdProtocolUdp)
 		}
-
-		diags.Append(o.Udp.CopyToPango(ctx, &udp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Udp.CopyToPango(ctx, append(ancestors, o), &udp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7483,7 +8088,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdProtocolAny, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7492,7 +8097,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	localPort_value := o.LocalPort.ValueInt64Pointer()
 	remotePort_value := o.RemotePort.ValueInt64Pointer()
@@ -7505,7 +8110,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	localPort_value := o.LocalPort.ValueInt64Pointer()
 	remotePort_value := o.RemotePort.ValueInt64Pointer()
@@ -7518,7 +8123,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	local_value := o.Local.ValueStringPointer()
 	remote_value := o.Remote.ValueStringPointer()
@@ -7529,8 +8134,8 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Cont
 		} else {
 			protocol_entry = new(ipsec.AutoKeyProxyIdV6Protocol)
 		}
-
-		diags.Append(o.Protocol.CopyToPango(ctx, &protocol_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Protocol.CopyToPango(ctx, append(ancestors, o), &protocol_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7546,7 +8151,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	number_value := o.Number.ValueInt64Pointer()
 	var any_entry *ipsec.AutoKeyProxyIdV6ProtocolAny
@@ -7556,8 +8161,8 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx cont
 		} else {
 			any_entry = new(ipsec.AutoKeyProxyIdV6ProtocolAny)
 		}
-
-		diags.Append(o.Any.CopyToPango(ctx, &any_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Any.CopyToPango(ctx, append(ancestors, o), &any_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7569,8 +8174,8 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx cont
 		} else {
 			tcp_entry = new(ipsec.AutoKeyProxyIdV6ProtocolTcp)
 		}
-
-		diags.Append(o.Tcp.CopyToPango(ctx, &tcp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Tcp.CopyToPango(ctx, append(ancestors, o), &tcp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7582,8 +8187,8 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx cont
 		} else {
 			udp_entry = new(ipsec.AutoKeyProxyIdV6ProtocolUdp)
 		}
-
-		diags.Append(o.Udp.CopyToPango(ctx, &udp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Udp.CopyToPango(ctx, append(ancestors, o), &udp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7599,7 +8204,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6ProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6ProtocolAny, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7608,7 +8213,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6ProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	localPort_value := o.LocalPort.ValueInt64Pointer()
 	remotePort_value := o.RemotePort.ValueInt64Pointer()
@@ -7621,7 +8226,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) CopyToPango(ctx context.Context, obj **ipsec.AutoKeyProxyIdV6ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.AutoKeyProxyIdV6ProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	localPort_value := o.LocalPort.ValueInt64Pointer()
 	remotePort_value := o.RemotePort.ValueInt64Pointer()
@@ -7634,7 +8239,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatellite, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatellite, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var externalCa_entry *ipsec.GlobalProtectSatelliteExternalCa
 	if o.ExternalCa != nil {
@@ -7643,8 +8248,8 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyToPango(ctx contex
 		} else {
 			externalCa_entry = new(ipsec.GlobalProtectSatelliteExternalCa)
 		}
-
-		diags.Append(o.ExternalCa.CopyToPango(ctx, &externalCa_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.ExternalCa.CopyToPango(ctx, append(ancestors, o), &externalCa_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7657,8 +8262,8 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyToPango(ctx contex
 		} else {
 			localAddress_entry = new(ipsec.GlobalProtectSatelliteLocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalAddress.CopyToPango(ctx, append(ancestors, o), &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7671,8 +8276,8 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyToPango(ctx contex
 		} else {
 			publishConnectedRoutes_entry = new(ipsec.GlobalProtectSatellitePublishConnectedRoutes)
 		}
-
-		diags.Append(o.PublishConnectedRoutes.CopyToPango(ctx, &publishConnectedRoutes_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PublishConnectedRoutes.CopyToPango(ctx, append(ancestors, o), &publishConnectedRoutes_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7695,7 +8300,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteExternalCa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatelliteExternalCa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	certificateProfile_value := o.CertificateProfile.ValueStringPointer()
 	localCertificate_value := o.LocalCertificate.ValueStringPointer()
@@ -7708,7 +8313,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) CopyToPango(
 
 	return diags
 }
-func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatelliteLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	var floatingIp_entry *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp
@@ -7718,8 +8323,8 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyToPang
 		} else {
 			floatingIp_entry = new(ipsec.GlobalProtectSatelliteLocalAddressFloatingIp)
 		}
-
-		diags.Append(o.FloatingIp.CopyToPango(ctx, &floatingIp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.FloatingIp.CopyToPango(ctx, append(ancestors, o), &floatingIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7731,8 +8336,8 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyToPang
 		} else {
 			ip_entry = new(ipsec.GlobalProtectSatelliteLocalAddressIp)
 		}
-
-		diags.Append(o.Ip.CopyToPango(ctx, &ip_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ip.CopyToPango(ctx, append(ancestors, o), &ip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7747,7 +8352,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyToPang
 
 	return diags
 }
-func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -7760,7 +8365,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) 
 
 	return diags
 }
-func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatelliteLocalAddressIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatelliteLocalAddressIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4_value := o.Ipv4.ValueStringPointer()
 	ipv6_value := o.Ipv6.ValueStringPointer()
@@ -7773,7 +8378,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) CopyToPa
 
 	return diags
 }
-func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyToPango(ctx context.Context, obj **ipsec.GlobalProtectSatellitePublishConnectedRoutes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.GlobalProtectSatellitePublishConnectedRoutes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 
@@ -7784,7 +8389,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) 
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localAddress_entry *ipsec.ManualKeyLocalAddress
 	if o.LocalAddress != nil {
@@ -7793,8 +8398,8 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, ob
 		} else {
 			localAddress_entry = new(ipsec.ManualKeyLocalAddress)
 		}
-
-		diags.Append(o.LocalAddress.CopyToPango(ctx, &localAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.LocalAddress.CopyToPango(ctx, append(ancestors, o), &localAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7807,8 +8412,8 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, ob
 		} else {
 			peerAddress_entry = new(ipsec.ManualKeyPeerAddress)
 		}
-
-		diags.Append(o.PeerAddress.CopyToPango(ctx, &peerAddress_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.PeerAddress.CopyToPango(ctx, append(ancestors, o), &peerAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7821,8 +8426,8 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, ob
 		} else {
 			ah_entry = new(ipsec.ManualKeyAh)
 		}
-
-		diags.Append(o.Ah.CopyToPango(ctx, &ah_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Ah.CopyToPango(ctx, append(ancestors, o), &ah_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7834,8 +8439,8 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, ob
 		} else {
 			esp_entry = new(ipsec.ManualKeyEsp)
 		}
-
-		diags.Append(o.Esp.CopyToPango(ctx, &esp_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Esp.CopyToPango(ctx, append(ancestors, o), &esp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7853,7 +8458,7 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyToPango(ctx context.Context, ob
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyLocalAddressObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyLocalAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 	floatingIp_value := o.FloatingIp.ValueStringPointer()
@@ -7868,7 +8473,7 @@ func (o *IpsecTunnelResourceManualKeyLocalAddressObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyPeerAddressObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyPeerAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ip_value := o.Ip.ValueStringPointer()
 
@@ -7879,7 +8484,7 @@ func (o *IpsecTunnelResourceManualKeyPeerAddressObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAh, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAh, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_entry *ipsec.ManualKeyAhMd5
 	if o.Md5 != nil {
@@ -7888,8 +8493,8 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, 
 		} else {
 			md5_entry = new(ipsec.ManualKeyAhMd5)
 		}
-
-		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Md5.CopyToPango(ctx, append(ancestors, o), &md5_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7901,8 +8506,8 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, 
 		} else {
 			sha1_entry = new(ipsec.ManualKeyAhSha1)
 		}
-
-		diags.Append(o.Sha1.CopyToPango(ctx, &sha1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha1.CopyToPango(ctx, append(ancestors, o), &sha1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7914,8 +8519,8 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, 
 		} else {
 			sha256_entry = new(ipsec.ManualKeyAhSha256)
 		}
-
-		diags.Append(o.Sha256.CopyToPango(ctx, &sha256_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha256.CopyToPango(ctx, append(ancestors, o), &sha256_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7927,8 +8532,8 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, 
 		} else {
 			sha384_entry = new(ipsec.ManualKeyAhSha384)
 		}
-
-		diags.Append(o.Sha384.CopyToPango(ctx, &sha384_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha384.CopyToPango(ctx, append(ancestors, o), &sha384_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7940,8 +8545,8 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, 
 		} else {
 			sha512_entry = new(ipsec.ManualKeyAhSha512)
 		}
-
-		diags.Append(o.Sha512.CopyToPango(ctx, &sha512_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha512.CopyToPango(ctx, append(ancestors, o), &sha512_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7958,7 +8563,7 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -7969,7 +8574,7 @@ func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -7980,7 +8585,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha256, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -7991,7 +8596,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha384, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -8002,7 +8607,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyAhSha512, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -8013,7 +8618,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyEspObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEsp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEsp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_entry *ipsec.ManualKeyEspAuthentication
 	if o.Authentication != nil {
@@ -8022,8 +8627,8 @@ func (o *IpsecTunnelResourceManualKeyEspObject) CopyToPango(ctx context.Context,
 		} else {
 			authentication_entry = new(ipsec.ManualKeyEspAuthentication)
 		}
-
-		diags.Append(o.Authentication.CopyToPango(ctx, &authentication_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Authentication.CopyToPango(ctx, append(ancestors, o), &authentication_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8035,8 +8640,8 @@ func (o *IpsecTunnelResourceManualKeyEspObject) CopyToPango(ctx context.Context,
 		} else {
 			encryption_entry = new(ipsec.ManualKeyEspEncryption)
 		}
-
-		diags.Append(o.Encryption.CopyToPango(ctx, &encryption_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Encryption.CopyToPango(ctx, append(ancestors, o), &encryption_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8050,7 +8655,7 @@ func (o *IpsecTunnelResourceManualKeyEspObject) CopyToPango(ctx context.Context,
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthentication, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthentication, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_entry *ipsec.ManualKeyEspAuthenticationMd5
 	if o.Md5 != nil {
@@ -8059,8 +8664,8 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx co
 		} else {
 			md5_entry = new(ipsec.ManualKeyEspAuthenticationMd5)
 		}
-
-		diags.Append(o.Md5.CopyToPango(ctx, &md5_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Md5.CopyToPango(ctx, append(ancestors, o), &md5_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8072,8 +8677,8 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx co
 		} else {
 			none_entry = new(ipsec.ManualKeyEspAuthenticationNone)
 		}
-
-		diags.Append(o.None.CopyToPango(ctx, &none_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8085,8 +8690,8 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx co
 		} else {
 			sha1_entry = new(ipsec.ManualKeyEspAuthenticationSha1)
 		}
-
-		diags.Append(o.Sha1.CopyToPango(ctx, &sha1_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha1.CopyToPango(ctx, append(ancestors, o), &sha1_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8098,8 +8703,8 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx co
 		} else {
 			sha256_entry = new(ipsec.ManualKeyEspAuthenticationSha256)
 		}
-
-		diags.Append(o.Sha256.CopyToPango(ctx, &sha256_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha256.CopyToPango(ctx, append(ancestors, o), &sha256_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8111,8 +8716,8 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx co
 		} else {
 			sha384_entry = new(ipsec.ManualKeyEspAuthenticationSha384)
 		}
-
-		diags.Append(o.Sha384.CopyToPango(ctx, &sha384_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha384.CopyToPango(ctx, append(ancestors, o), &sha384_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8124,8 +8729,8 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx co
 		} else {
 			sha512_entry = new(ipsec.ManualKeyEspAuthenticationSha512)
 		}
-
-		diags.Append(o.Sha512.CopyToPango(ctx, &sha512_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Sha512.CopyToPango(ctx, append(ancestors, o), &sha512_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8143,7 +8748,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -8154,7 +8759,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyToPango(ctx
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -8163,7 +8768,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) CopyToPango(ct
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -8174,7 +8779,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) CopyToPango(ct
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha256, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -8185,7 +8790,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) CopyToPango(
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha384, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -8196,7 +8801,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) CopyToPango(
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspAuthenticationSha512, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	key_value := o.Key.ValueStringPointer()
 
@@ -8207,7 +8812,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyToPango(
 
 	return diags
 }
-func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyToPango(ctx context.Context, obj **ipsec.ManualKeyEspEncryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ipsec.ManualKeyEspEncryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	algorithm_value := o.Algorithm.ValueStringPointer()
 	key_value := o.Key.ValueStringPointer()
@@ -8221,13 +8826,12 @@ func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyToPango(ctx contex
 	return diags
 }
 
-func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tunnelMonitor_object *IpsecTunnelResourceTunnelMonitorObject
 	if obj.TunnelMonitor != nil {
 		tunnelMonitor_object = new(IpsecTunnelResourceTunnelMonitorObject)
-
-		diags.Append(tunnelMonitor_object.CopyFromPango(ctx, obj.TunnelMonitor, encrypted)...)
+		diags.Append(tunnelMonitor_object.CopyFromPango(ctx, ancestors, obj.TunnelMonitor, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8235,8 +8839,7 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 	var autoKey_object *IpsecTunnelResourceAutoKeyObject
 	if obj.AutoKey != nil {
 		autoKey_object = new(IpsecTunnelResourceAutoKeyObject)
-
-		diags.Append(autoKey_object.CopyFromPango(ctx, obj.AutoKey, encrypted)...)
+		diags.Append(autoKey_object.CopyFromPango(ctx, ancestors, obj.AutoKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8244,8 +8847,7 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 	var globalProtectSatellite_object *IpsecTunnelResourceGlobalProtectSatelliteObject
 	if obj.GlobalProtectSatellite != nil {
 		globalProtectSatellite_object = new(IpsecTunnelResourceGlobalProtectSatelliteObject)
-
-		diags.Append(globalProtectSatellite_object.CopyFromPango(ctx, obj.GlobalProtectSatellite, encrypted)...)
+		diags.Append(globalProtectSatellite_object.CopyFromPango(ctx, ancestors, obj.GlobalProtectSatellite, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8253,8 +8855,7 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 	var manualKey_object *IpsecTunnelResourceManualKeyObject
 	if obj.ManualKey != nil {
 		manualKey_object = new(IpsecTunnelResourceManualKeyObject)
-
-		diags.Append(manualKey_object.CopyFromPango(ctx, obj.ManualKey, encrypted)...)
+		diags.Append(manualKey_object.CopyFromPango(ctx, ancestors, obj.ManualKey, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8288,6 +8889,10 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 	if obj.EnableGreEncapsulation != nil {
 		enableGreEncapsulation_value = types.BoolValue(*obj.EnableGreEncapsulation)
 	}
+	var ipsecMode_value types.String
+	if obj.IpsecMode != nil {
+		ipsecMode_value = types.StringValue(*obj.IpsecMode)
+	}
 	var ipv6_value types.Bool
 	if obj.Ipv6 != nil {
 		ipv6_value = types.BoolValue(*obj.Ipv6)
@@ -8295,10 +8900,6 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 	var tunnelInterface_value types.String
 	if obj.TunnelInterface != nil {
 		tunnelInterface_value = types.StringValue(*obj.TunnelInterface)
-	}
-	var ipsecMode_value types.String
-	if obj.IpsecMode != nil {
-		ipsecMode_value = types.StringValue(*obj.IpsecMode)
 	}
 	o.Name = types.StringValue(obj.Name)
 	o.AntiReplay = antiReplay_value
@@ -8308,10 +8909,10 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 	o.CopyTos = copyTos_value
 	o.Disabled = disabled_value
 	o.EnableGreEncapsulation = enableGreEncapsulation_value
+	o.IpsecMode = ipsecMode_value
 	o.Ipv6 = ipv6_value
 	o.TunnelInterface = tunnelInterface_value
 	o.TunnelMonitor = tunnelMonitor_object
-	o.IpsecMode = ipsecMode_value
 	o.AutoKey = autoKey_object
 	o.GlobalProtectSatellite = globalProtectSatellite_object
 	o.ManualKey = manualKey_object
@@ -8319,7 +8920,7 @@ func (o *IpsecTunnelResourceModel) CopyFromPango(ctx context.Context, obj *ipsec
 	return diags
 }
 
-func (o *IpsecTunnelResourceTunnelMonitorObject) CopyFromPango(ctx context.Context, obj *ipsec.TunnelMonitor, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceTunnelMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.TunnelMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var destinationIp_value types.String
@@ -8346,15 +8947,19 @@ func (o *IpsecTunnelResourceTunnelMonitorObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ikeGateway_list types.List
 	{
 		var ikeGateway_tf_entries []IpsecTunnelResourceAutoKeyIkeGatewayObject
 		for _, elt := range obj.IkeGateway {
-			var entry IpsecTunnelResourceAutoKeyIkeGatewayObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := IpsecTunnelResourceAutoKeyIkeGatewayObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			ikeGateway_tf_entries = append(ikeGateway_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8366,9 +8971,13 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyFromPango(ctx context.Context, ob
 	{
 		var proxyId_tf_entries []IpsecTunnelResourceAutoKeyProxyIdObject
 		for _, elt := range obj.ProxyId {
-			var entry IpsecTunnelResourceAutoKeyProxyIdObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := IpsecTunnelResourceAutoKeyProxyIdObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			proxyId_tf_entries = append(proxyId_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8380,9 +8989,13 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyFromPango(ctx context.Context, ob
 	{
 		var proxyIdV6_tf_entries []IpsecTunnelResourceAutoKeyProxyIdV6Object
 		for _, elt := range obj.ProxyIdV6 {
-			var entry IpsecTunnelResourceAutoKeyProxyIdV6Object
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := IpsecTunnelResourceAutoKeyProxyIdV6Object{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			proxyIdV6_tf_entries = append(proxyIdV6_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -8403,20 +9016,19 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyIkeGateway, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyIkeGateway, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyId, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var protocol_object *IpsecTunnelResourceAutoKeyProxyIdProtocolObject
 	if obj.Protocol != nil {
 		protocol_object = new(IpsecTunnelResourceAutoKeyProxyIdProtocolObject)
-
-		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
+		diags.Append(protocol_object.CopyFromPango(ctx, append(ancestors, o), obj.Protocol, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8438,13 +9050,12 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdObject) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdProtocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var any_object *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject
 	if obj.Any != nil {
 		any_object = new(IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject)
-
-		diags.Append(any_object.CopyFromPango(ctx, obj.Any, encrypted)...)
+		diags.Append(any_object.CopyFromPango(ctx, append(ancestors, o), obj.Any, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8452,8 +9063,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx cont
 	var tcp_object *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject
 	if obj.Tcp != nil {
 		tcp_object = new(IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject)
-
-		diags.Append(tcp_object.CopyFromPango(ctx, obj.Tcp, encrypted)...)
+		diags.Append(tcp_object.CopyFromPango(ctx, append(ancestors, o), obj.Tcp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8461,8 +9071,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx cont
 	var udp_object *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject
 	if obj.Udp != nil {
 		udp_object = new(IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject)
-
-		diags.Append(udp_object.CopyFromPango(ctx, obj.Udp, encrypted)...)
+		diags.Append(udp_object.CopyFromPango(ctx, append(ancestors, o), obj.Udp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8480,30 +9089,13 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdProtocolAny, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var localPort_value types.Int64
-	if obj.LocalPort != nil {
-		localPort_value = types.Int64Value(*obj.LocalPort)
-	}
-	var remotePort_value types.Int64
-	if obj.RemotePort != nil {
-		remotePort_value = types.Int64Value(*obj.RemotePort)
-	}
-	o.LocalPort = localPort_value
-	o.RemotePort = remotePort_value
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var localPort_value types.Int64
@@ -8520,13 +9112,29 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var localPort_value types.Int64
+	if obj.LocalPort != nil {
+		localPort_value = types.Int64Value(*obj.LocalPort)
+	}
+	var remotePort_value types.Int64
+	if obj.RemotePort != nil {
+		remotePort_value = types.Int64Value(*obj.RemotePort)
+	}
+	o.LocalPort = localPort_value
+	o.RemotePort = remotePort_value
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var protocol_object *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject
 	if obj.Protocol != nil {
 		protocol_object = new(IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject)
-
-		diags.Append(protocol_object.CopyFromPango(ctx, obj.Protocol, encrypted)...)
+		diags.Append(protocol_object.CopyFromPango(ctx, append(ancestors, o), obj.Protocol, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8548,13 +9156,12 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6Protocol, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6Protocol, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var any_object *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject
 	if obj.Any != nil {
 		any_object = new(IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject)
-
-		diags.Append(any_object.CopyFromPango(ctx, obj.Any, encrypted)...)
+		diags.Append(any_object.CopyFromPango(ctx, append(ancestors, o), obj.Any, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8562,8 +9169,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx co
 	var tcp_object *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject
 	if obj.Tcp != nil {
 		tcp_object = new(IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject)
-
-		diags.Append(tcp_object.CopyFromPango(ctx, obj.Tcp, encrypted)...)
+		diags.Append(tcp_object.CopyFromPango(ctx, append(ancestors, o), obj.Tcp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8571,8 +9177,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx co
 	var udp_object *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject
 	if obj.Udp != nil {
 		udp_object = new(IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject)
-
-		diags.Append(udp_object.CopyFromPango(ctx, obj.Udp, encrypted)...)
+		diags.Append(udp_object.CopyFromPango(ctx, append(ancestors, o), obj.Udp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8590,30 +9195,13 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolAny, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6ProtocolAny, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolTcp, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var localPort_value types.Int64
-	if obj.LocalPort != nil {
-		localPort_value = types.Int64Value(*obj.LocalPort)
-	}
-	var remotePort_value types.Int64
-	if obj.RemotePort != nil {
-		remotePort_value = types.Int64Value(*obj.RemotePort)
-	}
-	o.LocalPort = localPort_value
-	o.RemotePort = remotePort_value
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) CopyFromPango(ctx context.Context, obj *ipsec.AutoKeyProxyIdV6ProtocolUdp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6ProtocolTcp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var localPort_value types.Int64
@@ -8630,19 +9218,38 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatellite, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.AutoKeyProxyIdV6ProtocolUdp, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var localPort_value types.Int64
+	if obj.LocalPort != nil {
+		localPort_value = types.Int64Value(*obj.LocalPort)
+	}
+	var remotePort_value types.Int64
+	if obj.RemotePort != nil {
+		remotePort_value = types.Int64Value(*obj.RemotePort)
+	}
+	o.LocalPort = localPort_value
+	o.RemotePort = remotePort_value
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatellite, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var publishRoutes_list types.List
 	{
 		var list_diags diag.Diagnostics
 		publishRoutes_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.PublishRoutes)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var externalCa_object *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject
 	if obj.ExternalCa != nil {
 		externalCa_object = new(IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject)
-
-		diags.Append(externalCa_object.CopyFromPango(ctx, obj.ExternalCa, encrypted)...)
+		diags.Append(externalCa_object.CopyFromPango(ctx, append(ancestors, o), obj.ExternalCa, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8650,8 +9257,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyFromPango(ctx cont
 	var localAddress_object *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8659,8 +9265,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyFromPango(ctx cont
 	var publishConnectedRoutes_object *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject
 	if obj.PublishConnectedRoutes != nil {
 		publishConnectedRoutes_object = new(IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject)
-
-		diags.Append(publishConnectedRoutes_object.CopyFromPango(ctx, obj.PublishConnectedRoutes, encrypted)...)
+		diags.Append(publishConnectedRoutes_object.CopyFromPango(ctx, append(ancestors, o), obj.PublishConnectedRoutes, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8684,7 +9289,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteExternalCa, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatelliteExternalCa, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var certificateProfile_value types.String
@@ -8701,13 +9306,12 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) CopyFromPang
 	return diags
 }
 
-func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatelliteLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var floatingIp_object *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject
 	if obj.FloatingIp != nil {
 		floatingIp_object = new(IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject)
-
-		diags.Append(floatingIp_object.CopyFromPango(ctx, obj.FloatingIp, encrypted)...)
+		diags.Append(floatingIp_object.CopyFromPango(ctx, append(ancestors, o), obj.FloatingIp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8715,8 +9319,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyFromPa
 	var ip_object *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject
 	if obj.Ip != nil {
 		ip_object = new(IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject)
-
-		diags.Append(ip_object.CopyFromPango(ctx, obj.Ip, encrypted)...)
+		diags.Append(ip_object.CopyFromPango(ctx, append(ancestors, o), obj.Ip, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8733,7 +9336,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) CopyFromPa
 	return diags
 }
 
-func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatelliteLocalAddressFloatingIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -8750,7 +9353,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) 
 	return diags
 }
 
-func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatelliteLocalAddressIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatelliteLocalAddressIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4_value types.String
@@ -8767,7 +9370,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) CopyFrom
 	return diags
 }
 
-func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyFromPango(ctx context.Context, obj *ipsec.GlobalProtectSatellitePublishConnectedRoutes, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.GlobalProtectSatellitePublishConnectedRoutes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -8779,13 +9382,12 @@ func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) 
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKey, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKey, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var localAddress_object *IpsecTunnelResourceManualKeyLocalAddressObject
 	if obj.LocalAddress != nil {
 		localAddress_object = new(IpsecTunnelResourceManualKeyLocalAddressObject)
-
-		diags.Append(localAddress_object.CopyFromPango(ctx, obj.LocalAddress, encrypted)...)
+		diags.Append(localAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.LocalAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8793,8 +9395,7 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyFromPango(ctx context.Context, 
 	var peerAddress_object *IpsecTunnelResourceManualKeyPeerAddressObject
 	if obj.PeerAddress != nil {
 		peerAddress_object = new(IpsecTunnelResourceManualKeyPeerAddressObject)
-
-		diags.Append(peerAddress_object.CopyFromPango(ctx, obj.PeerAddress, encrypted)...)
+		diags.Append(peerAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.PeerAddress, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8802,8 +9403,7 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyFromPango(ctx context.Context, 
 	var ah_object *IpsecTunnelResourceManualKeyAhObject
 	if obj.Ah != nil {
 		ah_object = new(IpsecTunnelResourceManualKeyAhObject)
-
-		diags.Append(ah_object.CopyFromPango(ctx, obj.Ah, encrypted)...)
+		diags.Append(ah_object.CopyFromPango(ctx, append(ancestors, o), obj.Ah, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8811,8 +9411,7 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyFromPango(ctx context.Context, 
 	var esp_object *IpsecTunnelResourceManualKeyEspObject
 	if obj.Esp != nil {
 		esp_object = new(IpsecTunnelResourceManualKeyEspObject)
-
-		diags.Append(esp_object.CopyFromPango(ctx, obj.Esp, encrypted)...)
+		diags.Append(esp_object.CopyFromPango(ctx, append(ancestors, o), obj.Esp, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8836,7 +9435,7 @@ func (o *IpsecTunnelResourceManualKeyObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyLocalAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyLocalAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyLocalAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyLocalAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -8858,7 +9457,7 @@ func (o *IpsecTunnelResourceManualKeyLocalAddressObject) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyPeerAddressObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyPeerAddress, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyPeerAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyPeerAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ip_value types.String
@@ -8870,13 +9469,12 @@ func (o *IpsecTunnelResourceManualKeyPeerAddressObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyAhObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAh, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAh, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_object *IpsecTunnelResourceManualKeyAhMd5Object
 	if obj.Md5 != nil {
 		md5_object = new(IpsecTunnelResourceManualKeyAhMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		diags.Append(md5_object.CopyFromPango(ctx, append(ancestors, o), obj.Md5, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8884,8 +9482,7 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyFromPango(ctx context.Context
 	var sha1_object *IpsecTunnelResourceManualKeyAhSha1Object
 	if obj.Sha1 != nil {
 		sha1_object = new(IpsecTunnelResourceManualKeyAhSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		diags.Append(sha1_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8893,8 +9490,7 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyFromPango(ctx context.Context
 	var sha256_object *IpsecTunnelResourceManualKeyAhSha256Object
 	if obj.Sha256 != nil {
 		sha256_object = new(IpsecTunnelResourceManualKeyAhSha256Object)
-
-		diags.Append(sha256_object.CopyFromPango(ctx, obj.Sha256, encrypted)...)
+		diags.Append(sha256_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha256, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8902,8 +9498,7 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyFromPango(ctx context.Context
 	var sha384_object *IpsecTunnelResourceManualKeyAhSha384Object
 	if obj.Sha384 != nil {
 		sha384_object = new(IpsecTunnelResourceManualKeyAhSha384Object)
-
-		diags.Append(sha384_object.CopyFromPango(ctx, obj.Sha384, encrypted)...)
+		diags.Append(sha384_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha384, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8911,8 +9506,7 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyFromPango(ctx context.Context
 	var sha512_object *IpsecTunnelResourceManualKeyAhSha512Object
 	if obj.Sha512 != nil {
 		sha512_object = new(IpsecTunnelResourceManualKeyAhSha512Object)
-
-		diags.Append(sha512_object.CopyFromPango(ctx, obj.Sha512, encrypted)...)
+		diags.Append(sha512_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha512, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8927,7 +9521,7 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -8939,7 +9533,7 @@ func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha1, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -8951,7 +9545,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha256, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -8963,7 +9557,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha384, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -8975,7 +9569,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyAhSha512, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyAhSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -8987,13 +9581,12 @@ func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyEspObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEsp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEsp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var authentication_object *IpsecTunnelResourceManualKeyEspAuthenticationObject
 	if obj.Authentication != nil {
 		authentication_object = new(IpsecTunnelResourceManualKeyEspAuthenticationObject)
-
-		diags.Append(authentication_object.CopyFromPango(ctx, obj.Authentication, encrypted)...)
+		diags.Append(authentication_object.CopyFromPango(ctx, append(ancestors, o), obj.Authentication, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9001,8 +9594,7 @@ func (o *IpsecTunnelResourceManualKeyEspObject) CopyFromPango(ctx context.Contex
 	var encryption_object *IpsecTunnelResourceManualKeyEspEncryptionObject
 	if obj.Encryption != nil {
 		encryption_object = new(IpsecTunnelResourceManualKeyEspEncryptionObject)
-
-		diags.Append(encryption_object.CopyFromPango(ctx, obj.Encryption, encrypted)...)
+		diags.Append(encryption_object.CopyFromPango(ctx, append(ancestors, o), obj.Encryption, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9014,13 +9606,12 @@ func (o *IpsecTunnelResourceManualKeyEspObject) CopyFromPango(ctx context.Contex
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthentication, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthentication, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var md5_object *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object
 	if obj.Md5 != nil {
 		md5_object = new(IpsecTunnelResourceManualKeyEspAuthenticationMd5Object)
-
-		diags.Append(md5_object.CopyFromPango(ctx, obj.Md5, encrypted)...)
+		diags.Append(md5_object.CopyFromPango(ctx, append(ancestors, o), obj.Md5, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9028,8 +9619,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx 
 	var none_object *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject
 	if obj.None != nil {
 		none_object = new(IpsecTunnelResourceManualKeyEspAuthenticationNoneObject)
-
-		diags.Append(none_object.CopyFromPango(ctx, obj.None, encrypted)...)
+		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9037,8 +9627,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx 
 	var sha1_object *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object
 	if obj.Sha1 != nil {
 		sha1_object = new(IpsecTunnelResourceManualKeyEspAuthenticationSha1Object)
-
-		diags.Append(sha1_object.CopyFromPango(ctx, obj.Sha1, encrypted)...)
+		diags.Append(sha1_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha1, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9046,8 +9635,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx 
 	var sha256_object *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object
 	if obj.Sha256 != nil {
 		sha256_object = new(IpsecTunnelResourceManualKeyEspAuthenticationSha256Object)
-
-		diags.Append(sha256_object.CopyFromPango(ctx, obj.Sha256, encrypted)...)
+		diags.Append(sha256_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha256, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9055,8 +9643,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx 
 	var sha384_object *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object
 	if obj.Sha384 != nil {
 		sha384_object = new(IpsecTunnelResourceManualKeyEspAuthenticationSha384Object)
-
-		diags.Append(sha384_object.CopyFromPango(ctx, obj.Sha384, encrypted)...)
+		diags.Append(sha384_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha384, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9064,8 +9651,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx 
 	var sha512_object *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object
 	if obj.Sha512 != nil {
 		sha512_object = new(IpsecTunnelResourceManualKeyEspAuthenticationSha512Object)
-
-		diags.Append(sha512_object.CopyFromPango(ctx, obj.Sha512, encrypted)...)
+		diags.Append(sha512_object.CopyFromPango(ctx, append(ancestors, o), obj.Sha512, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9081,7 +9667,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationMd5, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -9093,25 +9679,13 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyFromPango(c
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationNone, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha1, encrypted *map[string]types.String) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var key_value types.String
-	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
-	}
-	o.Key = key_value
-
-	return diags
-}
-
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha256, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -9123,7 +9697,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) CopyFromPang
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha384, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -9135,7 +9709,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) CopyFromPang
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspAuthenticationSha512, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var key_value types.String
@@ -9147,7 +9721,19 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyFromPang
 	return diags
 }
 
-func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyFromPango(ctx context.Context, obj *ipsec.ManualKeyEspEncryption, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspAuthenticationSha512, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var key_value types.String
+	if obj.Key != nil {
+		key_value = types.StringValue(*obj.Key)
+	}
+	o.Key = key_value
+
+	return diags
+}
+
+func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ipsec.ManualKeyEspEncryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var algorithm_value types.String
@@ -9162,6 +9748,11 @@ func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyFromPango(ctx cont
 	o.Key = key_value
 
 	return diags
+}
+
+func (o *IpsecTunnelResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *IpsecTunnelResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -9181,6 +9772,13 @@ func (r *IpsecTunnelResource) Create(ctx context.Context, req resource.CreateReq
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -9227,8 +9825,7 @@ func (r *IpsecTunnelResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Load the desired config.
 	var obj *ipsec.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -9240,17 +9837,29 @@ func (r *IpsecTunnelResource) Create(ctx context.Context, req resource.CreateReq
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -9260,6 +9869,17 @@ func (o *IpsecTunnelResource) Read(ctx context.Context, req resource.ReadRequest
 	var savestate, state IpsecTunnelResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -9304,8 +9924,12 @@ func (o *IpsecTunnelResource) Read(ctx context.Context, req resource.ReadRequest
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -9315,7 +9939,7 @@ func (o *IpsecTunnelResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -9325,6 +9949,13 @@ func (o *IpsecTunnelResource) Read(ctx context.Context, req resource.ReadRequest
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -9336,6 +9967,17 @@ func (r *IpsecTunnelResource) Update(ctx context.Context, req resource.UpdateReq
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -9384,19 +10026,31 @@ func (r *IpsecTunnelResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -9410,11 +10064,18 @@ func (r *IpsecTunnelResource) Update(ctx context.Context, req resource.UpdateReq
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -9475,9 +10136,15 @@ func (r *IpsecTunnelResource) Delete(ctx context.Context, req resource.DeleteReq
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

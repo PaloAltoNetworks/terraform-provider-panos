@@ -22,8 +22,8 @@ func (o MockLocation) IsValid() error {
 	panic("unimplemented")
 }
 
-func (o MockLocation) XpathWithEntryName(version version.Number, name string) ([]string, error) {
-	return []string{"some", "location", name}, nil
+func (o MockLocation) XpathWithComponents(version version.Number, components ...string) ([]string, error) {
+	return []string{"some", "location", components[0]}, nil
 }
 
 func (o MockLocation) XpathWithUuid(version version.Number, uuid string) ([]string, error) {
@@ -116,12 +116,16 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 	for _, oper := range updates.Operations {
 		xpathParts := strings.Split(oper.Xpath, "/")
 		entryName := xpathParts[len(xpathParts)-1]
+		entryName = strings.TrimPrefix(entryName, "entry[@name='")
+		entryName = strings.TrimSuffix(entryName, "']")
 		op := oper.XMLName.Local
 
 		operEntry := MultiConfigOper{
 			Operation: MultiConfigOperType(op),
 			EntryName: entryName,
 		}
+
+		slog.Debug("MultiConfig", "operEntry", operEntry)
 
 		switch MultiConfigOperType(op) {
 		case MultiConfigOperSet, MultiConfigOperEdit:
@@ -147,7 +151,12 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 				idx += 1
 			}
 		case MultiConfigOperDelete:
-			fixIndices(entriesByName[entryName].Idx)
+			entry, found := entriesByName[entryName]
+			if !found {
+				continue
+			}
+
+			fixIndices(entry.Idx)
 			delete(entriesByName, entryName)
 			idx -= 1
 		case MultiConfigOperMove:
@@ -229,45 +238,33 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 			panic(fmt.Sprintf("UNKNOWN OPERATION: %s", op))
 		}
 
-		for idx := range entries {
-			entries[idx] = nil
-		}
-
-		for _, elt := range entriesByName {
-			if elt.State == entryOk {
-				if entries[elt.Idx] != nil {
-					var formattedEntries []string
-					idx := 1
-					for _, elt := range entriesByName {
-						formattedEntries = append(
-							formattedEntries,
-							fmt.Sprintf("%d:{Entry:%s State:%s Idx:%d}", idx, elt.Entry.EntryName(), elt.State, elt.Idx),
-						)
-						idx += 1
-					}
-					formattedString := fmt.Sprintf("map[%s]", strings.Join(formattedEntries, " "))
-					slog.Debug("Seen elements with duplicated indices", "entries", formattedString)
-					panic(fmt.Sprintf("element with idx %d already seen, problem with movement logic", elt.Idx))
-				}
-				entries[elt.Idx] = &elt
-			}
-		}
-
-		var orderedEntryNames []string
-		transformed := list.New()
-		for _, elt := range entries {
-			if elt == nil {
-				continue
-			}
-
-			orderedEntryNames = append(orderedEntryNames, elt.Entry.EntryName())
-			transformed.PushBack(elt.Entry)
-
-		}
-
-		slog.Debug("MultiConfig", "orderedEntryNames", orderedEntryNames)
-
 		opers = append(opers, operEntry)
+	}
+
+	for idx := range entries {
+		entries[idx] = nil
+	}
+
+	for _, elt := range entriesByName {
+		if elt.State != entryOk {
+			continue
+		}
+
+		if entries[elt.Idx] != nil {
+			var formattedEntries []string
+			idx := 1
+			for _, elt := range entriesByName {
+				formattedEntries = append(
+					formattedEntries,
+					fmt.Sprintf("%d:{Entry:%s State:%s Idx:%d}", idx, elt.Entry.EntryName(), elt.State, elt.Idx),
+				)
+				idx += 1
+			}
+			formattedString := fmt.Sprintf("map[%s]", strings.Join(formattedEntries, " "))
+			slog.Debug("Seen elements with duplicated indices", "entries", formattedString)
+			panic(fmt.Sprintf("element with idx %d already seen, problem with movement logic", elt.Idx))
+		}
+		entries[elt.Idx] = &elt
 	}
 
 	transformed := list.New()

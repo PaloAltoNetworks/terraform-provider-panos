@@ -59,18 +59,18 @@ type SslTlsServiceProfileDataSourceModel struct {
 	ProtocolSettings *SslTlsServiceProfileDataSourceProtocolSettingsObject `tfsdk:"protocol_settings"`
 }
 type SslTlsServiceProfileDataSourceProtocolSettingsObject struct {
-	AllowAuthenticationSha1   types.Bool   `tfsdk:"allow_authentication_sha1"`
-	AllowAuthenticationSha256 types.Bool   `tfsdk:"allow_authentication_sha256"`
-	AllowAuthenticationSha384 types.Bool   `tfsdk:"allow_authentication_sha384"`
 	AllowAlgorithm3des        types.Bool   `tfsdk:"allow_algorithm_3des"`
 	AllowAlgorithmAes128Cbc   types.Bool   `tfsdk:"allow_algorithm_aes_128_cbc"`
 	AllowAlgorithmAes128Gcm   types.Bool   `tfsdk:"allow_algorithm_aes_128_gcm"`
 	AllowAlgorithmAes256Cbc   types.Bool   `tfsdk:"allow_algorithm_aes_256_cbc"`
 	AllowAlgorithmAes256Gcm   types.Bool   `tfsdk:"allow_algorithm_aes_256_gcm"`
-	AllowAlgorithmRc4         types.Bool   `tfsdk:"allow_algorithm_rc4"`
 	AllowAlgorithmDhe         types.Bool   `tfsdk:"allow_algorithm_dhe"`
 	AllowAlgorithmEcdhe       types.Bool   `tfsdk:"allow_algorithm_ecdhe"`
+	AllowAlgorithmRc4         types.Bool   `tfsdk:"allow_algorithm_rc4"`
 	AllowAlgorithmRsa         types.Bool   `tfsdk:"allow_algorithm_rsa"`
+	AllowAuthenticationSha1   types.Bool   `tfsdk:"allow_authentication_sha1"`
+	AllowAuthenticationSha256 types.Bool   `tfsdk:"allow_authentication_sha256"`
+	AllowAuthenticationSha384 types.Bool   `tfsdk:"allow_authentication_sha384"`
 	MaxVersion                types.String `tfsdk:"max_version"`
 	MinVersion                types.String `tfsdk:"min_version"`
 }
@@ -91,27 +91,43 @@ func (o *SslTlsServiceProfileDataSourceModel) AttributeTypes() map[string]attr.T
 		},
 	}
 }
+
+func (o SslTlsServiceProfileDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o SslTlsServiceProfileDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
-		"allow_authentication_sha1":   types.BoolType,
-		"allow_authentication_sha256": types.BoolType,
-		"allow_authentication_sha384": types.BoolType,
 		"allow_algorithm_3des":        types.BoolType,
 		"allow_algorithm_aes_128_cbc": types.BoolType,
 		"allow_algorithm_aes_128_gcm": types.BoolType,
 		"allow_algorithm_aes_256_cbc": types.BoolType,
 		"allow_algorithm_aes_256_gcm": types.BoolType,
-		"allow_algorithm_rc4":         types.BoolType,
 		"allow_algorithm_dhe":         types.BoolType,
 		"allow_algorithm_ecdhe":       types.BoolType,
+		"allow_algorithm_rc4":         types.BoolType,
 		"allow_algorithm_rsa":         types.BoolType,
+		"allow_authentication_sha1":   types.BoolType,
+		"allow_authentication_sha256": types.BoolType,
+		"allow_authentication_sha384": types.BoolType,
 		"max_version":                 types.StringType,
 		"min_version":                 types.StringType,
 	}
 }
 
-func (o *SslTlsServiceProfileDataSourceModel) CopyToPango(ctx context.Context, obj **ssltls.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o SslTlsServiceProfileDataSourceProtocolSettingsObject) AncestorName() string {
+	return "protocol-settings"
+}
+
+func (o SslTlsServiceProfileDataSourceProtocolSettingsObject) EntryName() *string {
+	return nil
+}
+
+func (o *SslTlsServiceProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ssltls.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	certificate_value := o.Certificate.ValueStringPointer()
 	var protocolSettings_entry *ssltls.ProtocolSettings
@@ -121,8 +137,8 @@ func (o *SslTlsServiceProfileDataSourceModel) CopyToPango(ctx context.Context, o
 		} else {
 			protocolSettings_entry = new(ssltls.ProtocolSettings)
 		}
-
-		diags.Append(o.ProtocolSettings.CopyToPango(ctx, &protocolSettings_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.ProtocolSettings.CopyToPango(ctx, ancestors, &protocolSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -137,51 +153,50 @@ func (o *SslTlsServiceProfileDataSourceModel) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) CopyToPango(ctx context.Context, obj **ssltls.ProtocolSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ssltls.ProtocolSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	allowAuthenticationSha1_value := o.AllowAuthenticationSha1.ValueBoolPointer()
-	allowAuthenticationSha256_value := o.AllowAuthenticationSha256.ValueBoolPointer()
-	allowAuthenticationSha384_value := o.AllowAuthenticationSha384.ValueBoolPointer()
 	allowAlgorithm3des_value := o.AllowAlgorithm3des.ValueBoolPointer()
 	allowAlgorithmAes128Cbc_value := o.AllowAlgorithmAes128Cbc.ValueBoolPointer()
 	allowAlgorithmAes128Gcm_value := o.AllowAlgorithmAes128Gcm.ValueBoolPointer()
 	allowAlgorithmAes256Cbc_value := o.AllowAlgorithmAes256Cbc.ValueBoolPointer()
 	allowAlgorithmAes256Gcm_value := o.AllowAlgorithmAes256Gcm.ValueBoolPointer()
-	allowAlgorithmRc4_value := o.AllowAlgorithmRc4.ValueBoolPointer()
 	allowAlgorithmDhe_value := o.AllowAlgorithmDhe.ValueBoolPointer()
 	allowAlgorithmEcdhe_value := o.AllowAlgorithmEcdhe.ValueBoolPointer()
+	allowAlgorithmRc4_value := o.AllowAlgorithmRc4.ValueBoolPointer()
 	allowAlgorithmRsa_value := o.AllowAlgorithmRsa.ValueBoolPointer()
+	allowAuthenticationSha1_value := o.AllowAuthenticationSha1.ValueBoolPointer()
+	allowAuthenticationSha256_value := o.AllowAuthenticationSha256.ValueBoolPointer()
+	allowAuthenticationSha384_value := o.AllowAuthenticationSha384.ValueBoolPointer()
 	maxVersion_value := o.MaxVersion.ValueStringPointer()
 	minVersion_value := o.MinVersion.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ssltls.ProtocolSettings)
 	}
-	(*obj).AllowAuthenticationSha1 = allowAuthenticationSha1_value
-	(*obj).AllowAuthenticationSha256 = allowAuthenticationSha256_value
-	(*obj).AllowAuthenticationSha384 = allowAuthenticationSha384_value
 	(*obj).AllowAlgorithm3des = allowAlgorithm3des_value
 	(*obj).AllowAlgorithmAes128Cbc = allowAlgorithmAes128Cbc_value
 	(*obj).AllowAlgorithmAes128Gcm = allowAlgorithmAes128Gcm_value
 	(*obj).AllowAlgorithmAes256Cbc = allowAlgorithmAes256Cbc_value
 	(*obj).AllowAlgorithmAes256Gcm = allowAlgorithmAes256Gcm_value
-	(*obj).AllowAlgorithmRc4 = allowAlgorithmRc4_value
 	(*obj).AllowAlgorithmDhe = allowAlgorithmDhe_value
 	(*obj).AllowAlgorithmEcdhe = allowAlgorithmEcdhe_value
+	(*obj).AllowAlgorithmRc4 = allowAlgorithmRc4_value
 	(*obj).AllowAlgorithmRsa = allowAlgorithmRsa_value
+	(*obj).AllowAuthenticationSha1 = allowAuthenticationSha1_value
+	(*obj).AllowAuthenticationSha256 = allowAuthenticationSha256_value
+	(*obj).AllowAuthenticationSha384 = allowAuthenticationSha384_value
 	(*obj).MaxVersion = maxVersion_value
 	(*obj).MinVersion = minVersion_value
 
 	return diags
 }
 
-func (o *SslTlsServiceProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *ssltls.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SslTlsServiceProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ssltls.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var protocolSettings_object *SslTlsServiceProfileDataSourceProtocolSettingsObject
 	if obj.ProtocolSettings != nil {
 		protocolSettings_object = new(SslTlsServiceProfileDataSourceProtocolSettingsObject)
-
-		diags.Append(protocolSettings_object.CopyFromPango(ctx, obj.ProtocolSettings, encrypted)...)
+		diags.Append(protocolSettings_object.CopyFromPango(ctx, ancestors, obj.ProtocolSettings, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -198,21 +213,9 @@ func (o *SslTlsServiceProfileDataSourceModel) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) CopyFromPango(ctx context.Context, obj *ssltls.ProtocolSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ssltls.ProtocolSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var allowAuthenticationSha1_value types.Bool
-	if obj.AllowAuthenticationSha1 != nil {
-		allowAuthenticationSha1_value = types.BoolValue(*obj.AllowAuthenticationSha1)
-	}
-	var allowAuthenticationSha256_value types.Bool
-	if obj.AllowAuthenticationSha256 != nil {
-		allowAuthenticationSha256_value = types.BoolValue(*obj.AllowAuthenticationSha256)
-	}
-	var allowAuthenticationSha384_value types.Bool
-	if obj.AllowAuthenticationSha384 != nil {
-		allowAuthenticationSha384_value = types.BoolValue(*obj.AllowAuthenticationSha384)
-	}
 	var allowAlgorithm3des_value types.Bool
 	if obj.AllowAlgorithm3des != nil {
 		allowAlgorithm3des_value = types.BoolValue(*obj.AllowAlgorithm3des)
@@ -233,10 +236,6 @@ func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) CopyFromPango(ctx
 	if obj.AllowAlgorithmAes256Gcm != nil {
 		allowAlgorithmAes256Gcm_value = types.BoolValue(*obj.AllowAlgorithmAes256Gcm)
 	}
-	var allowAlgorithmRc4_value types.Bool
-	if obj.AllowAlgorithmRc4 != nil {
-		allowAlgorithmRc4_value = types.BoolValue(*obj.AllowAlgorithmRc4)
-	}
 	var allowAlgorithmDhe_value types.Bool
 	if obj.AllowAlgorithmDhe != nil {
 		allowAlgorithmDhe_value = types.BoolValue(*obj.AllowAlgorithmDhe)
@@ -245,9 +244,25 @@ func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) CopyFromPango(ctx
 	if obj.AllowAlgorithmEcdhe != nil {
 		allowAlgorithmEcdhe_value = types.BoolValue(*obj.AllowAlgorithmEcdhe)
 	}
+	var allowAlgorithmRc4_value types.Bool
+	if obj.AllowAlgorithmRc4 != nil {
+		allowAlgorithmRc4_value = types.BoolValue(*obj.AllowAlgorithmRc4)
+	}
 	var allowAlgorithmRsa_value types.Bool
 	if obj.AllowAlgorithmRsa != nil {
 		allowAlgorithmRsa_value = types.BoolValue(*obj.AllowAlgorithmRsa)
+	}
+	var allowAuthenticationSha1_value types.Bool
+	if obj.AllowAuthenticationSha1 != nil {
+		allowAuthenticationSha1_value = types.BoolValue(*obj.AllowAuthenticationSha1)
+	}
+	var allowAuthenticationSha256_value types.Bool
+	if obj.AllowAuthenticationSha256 != nil {
+		allowAuthenticationSha256_value = types.BoolValue(*obj.AllowAuthenticationSha256)
+	}
+	var allowAuthenticationSha384_value types.Bool
+	if obj.AllowAuthenticationSha384 != nil {
+		allowAuthenticationSha384_value = types.BoolValue(*obj.AllowAuthenticationSha384)
 	}
 	var maxVersion_value types.String
 	if obj.MaxVersion != nil {
@@ -257,22 +272,27 @@ func (o *SslTlsServiceProfileDataSourceProtocolSettingsObject) CopyFromPango(ctx
 	if obj.MinVersion != nil {
 		minVersion_value = types.StringValue(*obj.MinVersion)
 	}
-	o.AllowAuthenticationSha1 = allowAuthenticationSha1_value
-	o.AllowAuthenticationSha256 = allowAuthenticationSha256_value
-	o.AllowAuthenticationSha384 = allowAuthenticationSha384_value
 	o.AllowAlgorithm3des = allowAlgorithm3des_value
 	o.AllowAlgorithmAes128Cbc = allowAlgorithmAes128Cbc_value
 	o.AllowAlgorithmAes128Gcm = allowAlgorithmAes128Gcm_value
 	o.AllowAlgorithmAes256Cbc = allowAlgorithmAes256Cbc_value
 	o.AllowAlgorithmAes256Gcm = allowAlgorithmAes256Gcm_value
-	o.AllowAlgorithmRc4 = allowAlgorithmRc4_value
 	o.AllowAlgorithmDhe = allowAlgorithmDhe_value
 	o.AllowAlgorithmEcdhe = allowAlgorithmEcdhe_value
+	o.AllowAlgorithmRc4 = allowAlgorithmRc4_value
 	o.AllowAlgorithmRsa = allowAlgorithmRsa_value
+	o.AllowAuthenticationSha1 = allowAuthenticationSha1_value
+	o.AllowAuthenticationSha256 = allowAuthenticationSha256_value
+	o.AllowAuthenticationSha384 = allowAuthenticationSha384_value
 	o.MaxVersion = maxVersion_value
 	o.MinVersion = minVersion_value
 
 	return diags
+}
+
+func (o *SslTlsServiceProfileDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func SslTlsServiceProfileDataSourceSchema() dsschema.Schema {
@@ -329,30 +349,6 @@ func SslTlsServiceProfileDataSourceProtocolSettingsSchema() dsschema.SingleNeste
 		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
-			"allow_authentication_sha1": dsschema.BoolAttribute{
-				Description: "Allow authentication SHA1",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_authentication_sha256": dsschema.BoolAttribute{
-				Description: "Allow authentication SHA256",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_authentication_sha384": dsschema.BoolAttribute{
-				Description: "Allow authentication SHA384",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"allow_algorithm_3des": dsschema.BoolAttribute{
 				Description: "Allow algorithm 3DES",
 				Computed:    true,
@@ -393,14 +389,6 @@ func SslTlsServiceProfileDataSourceProtocolSettingsSchema() dsschema.SingleNeste
 				Sensitive:   false,
 			},
 
-			"allow_algorithm_rc4": dsschema.BoolAttribute{
-				Description: "Allow algorithm RC4",
-				Computed:    true,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"allow_algorithm_dhe": dsschema.BoolAttribute{
 				Description: "Allow algorithm DHE",
 				Computed:    true,
@@ -417,8 +405,40 @@ func SslTlsServiceProfileDataSourceProtocolSettingsSchema() dsschema.SingleNeste
 				Sensitive:   false,
 			},
 
+			"allow_algorithm_rc4": dsschema.BoolAttribute{
+				Description: "Allow algorithm RC4",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"allow_algorithm_rsa": dsschema.BoolAttribute{
 				Description: "Allow algorithm RSA",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"allow_authentication_sha1": dsschema.BoolAttribute{
+				Description: "Allow authentication SHA1",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"allow_authentication_sha256": dsschema.BoolAttribute{
+				Description: "Allow authentication SHA256",
+				Computed:    true,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"allow_authentication_sha384": dsschema.BoolAttribute{
+				Description: "Allow authentication SHA384",
 				Computed:    true,
 				Required:    false,
 				Optional:    true,
@@ -490,13 +510,20 @@ func (d *SslTlsServiceProfileDataSource) Configure(_ context.Context, req dataso
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, ssltls.NewService(d.client), batchSize, specifier, ssltls.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*ssltls.Entry, ssltls.Location, *ssltls.Service](d.client, ssltls.NewService(d.client), batchSize, specifier, ssltls.SpecMatches)
 }
 func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state SslTlsServiceProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -536,6 +563,7 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 			}
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
@@ -560,6 +588,7 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 			}
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
@@ -583,8 +612,12 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -594,7 +627,7 @@ func (o *SslTlsServiceProfileDataSource) Read(ctx context.Context, req datasourc
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -642,18 +675,18 @@ type SslTlsServiceProfileResourceModel struct {
 	ProtocolSettings *SslTlsServiceProfileResourceProtocolSettingsObject `tfsdk:"protocol_settings"`
 }
 type SslTlsServiceProfileResourceProtocolSettingsObject struct {
-	AllowAuthenticationSha1   types.Bool   `tfsdk:"allow_authentication_sha1"`
-	AllowAuthenticationSha256 types.Bool   `tfsdk:"allow_authentication_sha256"`
-	AllowAuthenticationSha384 types.Bool   `tfsdk:"allow_authentication_sha384"`
 	AllowAlgorithm3des        types.Bool   `tfsdk:"allow_algorithm_3des"`
 	AllowAlgorithmAes128Cbc   types.Bool   `tfsdk:"allow_algorithm_aes_128_cbc"`
 	AllowAlgorithmAes128Gcm   types.Bool   `tfsdk:"allow_algorithm_aes_128_gcm"`
 	AllowAlgorithmAes256Cbc   types.Bool   `tfsdk:"allow_algorithm_aes_256_cbc"`
 	AllowAlgorithmAes256Gcm   types.Bool   `tfsdk:"allow_algorithm_aes_256_gcm"`
-	AllowAlgorithmRc4         types.Bool   `tfsdk:"allow_algorithm_rc4"`
 	AllowAlgorithmDhe         types.Bool   `tfsdk:"allow_algorithm_dhe"`
 	AllowAlgorithmEcdhe       types.Bool   `tfsdk:"allow_algorithm_ecdhe"`
+	AllowAlgorithmRc4         types.Bool   `tfsdk:"allow_algorithm_rc4"`
 	AllowAlgorithmRsa         types.Bool   `tfsdk:"allow_algorithm_rsa"`
+	AllowAuthenticationSha1   types.Bool   `tfsdk:"allow_authentication_sha1"`
+	AllowAuthenticationSha256 types.Bool   `tfsdk:"allow_authentication_sha256"`
+	AllowAuthenticationSha384 types.Bool   `tfsdk:"allow_authentication_sha384"`
 	MaxVersion                types.String `tfsdk:"max_version"`
 	MinVersion                types.String `tfsdk:"min_version"`
 }
@@ -717,30 +750,6 @@ func SslTlsServiceProfileResourceProtocolSettingsSchema() rsschema.SingleNestedA
 		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
-			"allow_authentication_sha1": rsschema.BoolAttribute{
-				Description: "Allow authentication SHA1",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_authentication_sha256": rsschema.BoolAttribute{
-				Description: "Allow authentication SHA256",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
-			"allow_authentication_sha384": rsschema.BoolAttribute{
-				Description: "Allow authentication SHA384",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"allow_algorithm_3des": rsschema.BoolAttribute{
 				Description: "Allow algorithm 3DES",
 				Computed:    false,
@@ -781,14 +790,6 @@ func SslTlsServiceProfileResourceProtocolSettingsSchema() rsschema.SingleNestedA
 				Sensitive:   false,
 			},
 
-			"allow_algorithm_rc4": rsschema.BoolAttribute{
-				Description: "Allow algorithm RC4",
-				Computed:    false,
-				Required:    false,
-				Optional:    true,
-				Sensitive:   false,
-			},
-
 			"allow_algorithm_dhe": rsschema.BoolAttribute{
 				Description: "Allow algorithm DHE",
 				Computed:    false,
@@ -805,8 +806,40 @@ func SslTlsServiceProfileResourceProtocolSettingsSchema() rsschema.SingleNestedA
 				Sensitive:   false,
 			},
 
+			"allow_algorithm_rc4": rsschema.BoolAttribute{
+				Description: "Allow algorithm RC4",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
 			"allow_algorithm_rsa": rsschema.BoolAttribute{
 				Description: "Allow algorithm RSA",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"allow_authentication_sha1": rsschema.BoolAttribute{
+				Description: "Allow authentication SHA1",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"allow_authentication_sha256": rsschema.BoolAttribute{
+				Description: "Allow authentication SHA256",
+				Computed:    false,
+				Required:    false,
+				Optional:    true,
+				Sensitive:   false,
+			},
+
+			"allow_authentication_sha384": rsschema.BoolAttribute{
+				Description: "Allow authentication SHA384",
 				Computed:    false,
 				Required:    false,
 				Optional:    true,
@@ -876,7 +909,7 @@ func (r *SslTlsServiceProfileResource) Configure(ctx context.Context, req resour
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, ssltls.NewService(r.client), batchSize, specifier, ssltls.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*ssltls.Entry, ssltls.Location, *ssltls.Service](r.client, ssltls.NewService(r.client), batchSize, specifier, ssltls.SpecMatches)
 }
 
 func (o *SslTlsServiceProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -895,27 +928,43 @@ func (o *SslTlsServiceProfileResourceModel) AttributeTypes() map[string]attr.Typ
 		},
 	}
 }
+
+func (o SslTlsServiceProfileResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o SslTlsServiceProfileResourceModel) EntryName() *string {
+	return nil
+}
 func (o *SslTlsServiceProfileResourceProtocolSettingsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
-		"allow_authentication_sha1":   types.BoolType,
-		"allow_authentication_sha256": types.BoolType,
-		"allow_authentication_sha384": types.BoolType,
 		"allow_algorithm_3des":        types.BoolType,
 		"allow_algorithm_aes_128_cbc": types.BoolType,
 		"allow_algorithm_aes_128_gcm": types.BoolType,
 		"allow_algorithm_aes_256_cbc": types.BoolType,
 		"allow_algorithm_aes_256_gcm": types.BoolType,
-		"allow_algorithm_rc4":         types.BoolType,
 		"allow_algorithm_dhe":         types.BoolType,
 		"allow_algorithm_ecdhe":       types.BoolType,
+		"allow_algorithm_rc4":         types.BoolType,
 		"allow_algorithm_rsa":         types.BoolType,
+		"allow_authentication_sha1":   types.BoolType,
+		"allow_authentication_sha256": types.BoolType,
+		"allow_authentication_sha384": types.BoolType,
 		"max_version":                 types.StringType,
 		"min_version":                 types.StringType,
 	}
 }
 
-func (o *SslTlsServiceProfileResourceModel) CopyToPango(ctx context.Context, obj **ssltls.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o SslTlsServiceProfileResourceProtocolSettingsObject) AncestorName() string {
+	return "protocol-settings"
+}
+
+func (o SslTlsServiceProfileResourceProtocolSettingsObject) EntryName() *string {
+	return nil
+}
+
+func (o *SslTlsServiceProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ssltls.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	certificate_value := o.Certificate.ValueStringPointer()
 	var protocolSettings_entry *ssltls.ProtocolSettings
@@ -925,8 +974,8 @@ func (o *SslTlsServiceProfileResourceModel) CopyToPango(ctx context.Context, obj
 		} else {
 			protocolSettings_entry = new(ssltls.ProtocolSettings)
 		}
-
-		diags.Append(o.ProtocolSettings.CopyToPango(ctx, &protocolSettings_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.ProtocolSettings.CopyToPango(ctx, ancestors, &protocolSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -941,51 +990,50 @@ func (o *SslTlsServiceProfileResourceModel) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *SslTlsServiceProfileResourceProtocolSettingsObject) CopyToPango(ctx context.Context, obj **ssltls.ProtocolSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SslTlsServiceProfileResourceProtocolSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ssltls.ProtocolSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	allowAuthenticationSha1_value := o.AllowAuthenticationSha1.ValueBoolPointer()
-	allowAuthenticationSha256_value := o.AllowAuthenticationSha256.ValueBoolPointer()
-	allowAuthenticationSha384_value := o.AllowAuthenticationSha384.ValueBoolPointer()
 	allowAlgorithm3des_value := o.AllowAlgorithm3des.ValueBoolPointer()
 	allowAlgorithmAes128Cbc_value := o.AllowAlgorithmAes128Cbc.ValueBoolPointer()
 	allowAlgorithmAes128Gcm_value := o.AllowAlgorithmAes128Gcm.ValueBoolPointer()
 	allowAlgorithmAes256Cbc_value := o.AllowAlgorithmAes256Cbc.ValueBoolPointer()
 	allowAlgorithmAes256Gcm_value := o.AllowAlgorithmAes256Gcm.ValueBoolPointer()
-	allowAlgorithmRc4_value := o.AllowAlgorithmRc4.ValueBoolPointer()
 	allowAlgorithmDhe_value := o.AllowAlgorithmDhe.ValueBoolPointer()
 	allowAlgorithmEcdhe_value := o.AllowAlgorithmEcdhe.ValueBoolPointer()
+	allowAlgorithmRc4_value := o.AllowAlgorithmRc4.ValueBoolPointer()
 	allowAlgorithmRsa_value := o.AllowAlgorithmRsa.ValueBoolPointer()
+	allowAuthenticationSha1_value := o.AllowAuthenticationSha1.ValueBoolPointer()
+	allowAuthenticationSha256_value := o.AllowAuthenticationSha256.ValueBoolPointer()
+	allowAuthenticationSha384_value := o.AllowAuthenticationSha384.ValueBoolPointer()
 	maxVersion_value := o.MaxVersion.ValueStringPointer()
 	minVersion_value := o.MinVersion.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(ssltls.ProtocolSettings)
 	}
-	(*obj).AllowAuthenticationSha1 = allowAuthenticationSha1_value
-	(*obj).AllowAuthenticationSha256 = allowAuthenticationSha256_value
-	(*obj).AllowAuthenticationSha384 = allowAuthenticationSha384_value
 	(*obj).AllowAlgorithm3des = allowAlgorithm3des_value
 	(*obj).AllowAlgorithmAes128Cbc = allowAlgorithmAes128Cbc_value
 	(*obj).AllowAlgorithmAes128Gcm = allowAlgorithmAes128Gcm_value
 	(*obj).AllowAlgorithmAes256Cbc = allowAlgorithmAes256Cbc_value
 	(*obj).AllowAlgorithmAes256Gcm = allowAlgorithmAes256Gcm_value
-	(*obj).AllowAlgorithmRc4 = allowAlgorithmRc4_value
 	(*obj).AllowAlgorithmDhe = allowAlgorithmDhe_value
 	(*obj).AllowAlgorithmEcdhe = allowAlgorithmEcdhe_value
+	(*obj).AllowAlgorithmRc4 = allowAlgorithmRc4_value
 	(*obj).AllowAlgorithmRsa = allowAlgorithmRsa_value
+	(*obj).AllowAuthenticationSha1 = allowAuthenticationSha1_value
+	(*obj).AllowAuthenticationSha256 = allowAuthenticationSha256_value
+	(*obj).AllowAuthenticationSha384 = allowAuthenticationSha384_value
 	(*obj).MaxVersion = maxVersion_value
 	(*obj).MinVersion = minVersion_value
 
 	return diags
 }
 
-func (o *SslTlsServiceProfileResourceModel) CopyFromPango(ctx context.Context, obj *ssltls.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SslTlsServiceProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ssltls.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var protocolSettings_object *SslTlsServiceProfileResourceProtocolSettingsObject
 	if obj.ProtocolSettings != nil {
 		protocolSettings_object = new(SslTlsServiceProfileResourceProtocolSettingsObject)
-
-		diags.Append(protocolSettings_object.CopyFromPango(ctx, obj.ProtocolSettings, encrypted)...)
+		diags.Append(protocolSettings_object.CopyFromPango(ctx, ancestors, obj.ProtocolSettings, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1002,21 +1050,9 @@ func (o *SslTlsServiceProfileResourceModel) CopyFromPango(ctx context.Context, o
 	return diags
 }
 
-func (o *SslTlsServiceProfileResourceProtocolSettingsObject) CopyFromPango(ctx context.Context, obj *ssltls.ProtocolSettings, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *SslTlsServiceProfileResourceProtocolSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ssltls.ProtocolSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
-	var allowAuthenticationSha1_value types.Bool
-	if obj.AllowAuthenticationSha1 != nil {
-		allowAuthenticationSha1_value = types.BoolValue(*obj.AllowAuthenticationSha1)
-	}
-	var allowAuthenticationSha256_value types.Bool
-	if obj.AllowAuthenticationSha256 != nil {
-		allowAuthenticationSha256_value = types.BoolValue(*obj.AllowAuthenticationSha256)
-	}
-	var allowAuthenticationSha384_value types.Bool
-	if obj.AllowAuthenticationSha384 != nil {
-		allowAuthenticationSha384_value = types.BoolValue(*obj.AllowAuthenticationSha384)
-	}
 	var allowAlgorithm3des_value types.Bool
 	if obj.AllowAlgorithm3des != nil {
 		allowAlgorithm3des_value = types.BoolValue(*obj.AllowAlgorithm3des)
@@ -1037,10 +1073,6 @@ func (o *SslTlsServiceProfileResourceProtocolSettingsObject) CopyFromPango(ctx c
 	if obj.AllowAlgorithmAes256Gcm != nil {
 		allowAlgorithmAes256Gcm_value = types.BoolValue(*obj.AllowAlgorithmAes256Gcm)
 	}
-	var allowAlgorithmRc4_value types.Bool
-	if obj.AllowAlgorithmRc4 != nil {
-		allowAlgorithmRc4_value = types.BoolValue(*obj.AllowAlgorithmRc4)
-	}
 	var allowAlgorithmDhe_value types.Bool
 	if obj.AllowAlgorithmDhe != nil {
 		allowAlgorithmDhe_value = types.BoolValue(*obj.AllowAlgorithmDhe)
@@ -1049,9 +1081,25 @@ func (o *SslTlsServiceProfileResourceProtocolSettingsObject) CopyFromPango(ctx c
 	if obj.AllowAlgorithmEcdhe != nil {
 		allowAlgorithmEcdhe_value = types.BoolValue(*obj.AllowAlgorithmEcdhe)
 	}
+	var allowAlgorithmRc4_value types.Bool
+	if obj.AllowAlgorithmRc4 != nil {
+		allowAlgorithmRc4_value = types.BoolValue(*obj.AllowAlgorithmRc4)
+	}
 	var allowAlgorithmRsa_value types.Bool
 	if obj.AllowAlgorithmRsa != nil {
 		allowAlgorithmRsa_value = types.BoolValue(*obj.AllowAlgorithmRsa)
+	}
+	var allowAuthenticationSha1_value types.Bool
+	if obj.AllowAuthenticationSha1 != nil {
+		allowAuthenticationSha1_value = types.BoolValue(*obj.AllowAuthenticationSha1)
+	}
+	var allowAuthenticationSha256_value types.Bool
+	if obj.AllowAuthenticationSha256 != nil {
+		allowAuthenticationSha256_value = types.BoolValue(*obj.AllowAuthenticationSha256)
+	}
+	var allowAuthenticationSha384_value types.Bool
+	if obj.AllowAuthenticationSha384 != nil {
+		allowAuthenticationSha384_value = types.BoolValue(*obj.AllowAuthenticationSha384)
 	}
 	var maxVersion_value types.String
 	if obj.MaxVersion != nil {
@@ -1061,22 +1109,27 @@ func (o *SslTlsServiceProfileResourceProtocolSettingsObject) CopyFromPango(ctx c
 	if obj.MinVersion != nil {
 		minVersion_value = types.StringValue(*obj.MinVersion)
 	}
-	o.AllowAuthenticationSha1 = allowAuthenticationSha1_value
-	o.AllowAuthenticationSha256 = allowAuthenticationSha256_value
-	o.AllowAuthenticationSha384 = allowAuthenticationSha384_value
 	o.AllowAlgorithm3des = allowAlgorithm3des_value
 	o.AllowAlgorithmAes128Cbc = allowAlgorithmAes128Cbc_value
 	o.AllowAlgorithmAes128Gcm = allowAlgorithmAes128Gcm_value
 	o.AllowAlgorithmAes256Cbc = allowAlgorithmAes256Cbc_value
 	o.AllowAlgorithmAes256Gcm = allowAlgorithmAes256Gcm_value
-	o.AllowAlgorithmRc4 = allowAlgorithmRc4_value
 	o.AllowAlgorithmDhe = allowAlgorithmDhe_value
 	o.AllowAlgorithmEcdhe = allowAlgorithmEcdhe_value
+	o.AllowAlgorithmRc4 = allowAlgorithmRc4_value
 	o.AllowAlgorithmRsa = allowAlgorithmRsa_value
+	o.AllowAuthenticationSha1 = allowAuthenticationSha1_value
+	o.AllowAuthenticationSha256 = allowAuthenticationSha256_value
+	o.AllowAuthenticationSha384 = allowAuthenticationSha384_value
 	o.MaxVersion = maxVersion_value
 	o.MinVersion = minVersion_value
 
 	return diags
+}
+
+func (o *SslTlsServiceProfileResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -1096,6 +1149,13 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1137,6 +1197,7 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 			}
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
@@ -1161,6 +1222,7 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 			}
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
@@ -1184,8 +1246,7 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 
 	// Load the desired config.
 	var obj *ssltls.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1197,17 +1258,29 @@ func (r *SslTlsServiceProfileResource) Create(ctx context.Context, req resource.
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1217,6 +1290,17 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 	var savestate, state SslTlsServiceProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1256,6 +1340,7 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 			}
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
@@ -1280,6 +1365,7 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 			}
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
@@ -1303,8 +1389,12 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1314,7 +1404,7 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1324,6 +1414,13 @@ func (o *SslTlsServiceProfileResource) Read(ctx context.Context, req resource.Re
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1335,6 +1432,17 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1374,6 +1482,7 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 			}
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
@@ -1398,6 +1507,7 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 			}
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
@@ -1425,19 +1535,31 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1451,11 +1573,18 @@ func (r *SslTlsServiceProfileResource) Update(ctx context.Context, req resource.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1518,6 +1647,7 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 			}
 			location.Template.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.Template.Template = innerLocation.Name.ValueString()
+			location.Template.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateVsys.IsNull() {
@@ -1542,6 +1672,7 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 			}
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
+			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.TemplateStackVsys.IsNull() {
@@ -1558,9 +1689,15 @@ func (r *SslTlsServiceProfileResource) Delete(ctx context.Context, req resource.
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }
@@ -1688,6 +1825,7 @@ type SslTlsServiceProfilePanoramaLocation struct {
 type SslTlsServiceProfileTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type SslTlsServiceProfileTemplateVsysLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
@@ -1698,6 +1836,7 @@ type SslTlsServiceProfileTemplateVsysLocation struct {
 type SslTlsServiceProfileTemplateStackLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
+	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type SslTlsServiceProfileTemplateStackVsysLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
@@ -1766,6 +1905,15 @@ func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
@@ -1817,7 +1965,7 @@ func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
 				},
 			},
 			"template_stack": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template",
+				Description: "Located in a specific template stack",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
@@ -1830,10 +1978,19 @@ func SslTlsServiceProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The template stack",
+						Description: "Specific Panorama template stack",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -1936,11 +2093,13 @@ func (o SslTlsServiceProfileTemplateLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -1950,6 +2109,7 @@ func (o *SslTlsServiceProfileTemplateLocation) UnmarshalJSON(data []byte) error 
 	var shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1958,6 +2118,7 @@ func (o *SslTlsServiceProfileTemplateLocation) UnmarshalJSON(data []byte) error 
 	}
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 
 	return nil
 }
@@ -2002,11 +2163,13 @@ func (o SslTlsServiceProfileTemplateStackLocation) MarshalJSON() ([]byte, error)
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
+		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -2016,6 +2179,7 @@ func (o *SslTlsServiceProfileTemplateStackLocation) UnmarshalJSON(data []byte) e
 	var shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
+		NgfwDevice     *string `json:"ngfw_device,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2024,6 +2188,7 @@ func (o *SslTlsServiceProfileTemplateStackLocation) UnmarshalJSON(data []byte) e
 	}
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
 
 	return nil
 }
@@ -2210,6 +2375,7 @@ func (o *SslTlsServiceProfileTemplateLocation) AttributeTypes() map[string]attr.
 	return map[string]attr.Type{
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
 	}
 }
 func (o *SslTlsServiceProfileTemplateVsysLocation) AttributeTypes() map[string]attr.Type {
@@ -2224,6 +2390,7 @@ func (o *SslTlsServiceProfileTemplateStackLocation) AttributeTypes() map[string]
 	return map[string]attr.Type{
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
+		"ngfw_device":     types.StringType,
 	}
 }
 func (o *SslTlsServiceProfileTemplateStackVsysLocation) AttributeTypes() map[string]attr.Type {

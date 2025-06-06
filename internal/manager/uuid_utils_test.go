@@ -212,7 +212,7 @@ func (o *MockUuidService[E, T]) MoveGroup(ctx context.Context, location MockLoca
 
 	updates := xmlapi.NewMultiConfig(len(movements))
 	for _, elt := range movements {
-		path, err := location.XpathWithEntryName(o.client.Versioning(), elt.Movable.EntryName())
+		path, err := location.XpathWithComponents(o.client.Versioning(), elt.Movable.EntryName())
 		if err != nil {
 			return err
 		}

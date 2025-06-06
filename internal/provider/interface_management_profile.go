@@ -95,6 +95,14 @@ func (o *InterfaceManagementProfileDataSourceModel) AttributeTypes() map[string]
 		"userid_syslog_listener_udp": types.BoolType,
 	}
 }
+
+func (o InterfaceManagementProfileDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o InterfaceManagementProfileDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -102,7 +110,15 @@ func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) AttributeTypes(
 	}
 }
 
-func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Context, obj **interface_management.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o InterfaceManagementProfileDataSourcePermittedIpsObject) AncestorName() string {
+	return "permitted-ips"
+}
+
+func (o InterfaceManagementProfileDataSourcePermittedIpsObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	http_value := o.Http.ValueBoolPointer()
 	httpOcsp_value := o.HttpOcsp.ValueBoolPointer()
@@ -117,7 +133,7 @@ func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Cont
 		}
 		for _, elt := range permittedIps_tf_entries {
 			var entry *interface_management.PermittedIp
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -152,7 +168,7 @@ func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyToPango(ctx context.Context, obj **interface_management.PermittedIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -163,15 +179,19 @@ func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyToPango(ctx
 	return diags
 }
 
-func (o *InterfaceManagementProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *interface_management.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *InterfaceManagementProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var permittedIps_list types.List
 	{
 		var permittedIps_tf_entries []InterfaceManagementProfileDataSourcePermittedIpsObject
 		for _, elt := range obj.PermittedIp {
-			var entry InterfaceManagementProfileDataSourcePermittedIpsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := InterfaceManagementProfileDataSourcePermittedIpsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			permittedIps_tf_entries = append(permittedIps_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -241,11 +261,16 @@ func (o *InterfaceManagementProfileDataSourceModel) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyFromPango(ctx context.Context, obj *interface_management.PermittedIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
+}
+
+func (o *InterfaceManagementProfileDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func InterfaceManagementProfileDataSourceSchema() dsschema.Schema {
@@ -441,13 +466,20 @@ func (d *InterfaceManagementProfileDataSource) Configure(_ context.Context, req 
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, interface_management.NewService(d.client), batchSize, specifier, interface_management.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*interface_management.Entry, interface_management.Location, *interface_management.Service](d.client, interface_management.NewService(d.client), batchSize, specifier, interface_management.SpecMatches)
 }
 func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state InterfaceManagementProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -502,8 +534,12 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -513,7 +549,7 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -768,7 +804,7 @@ func (r *InterfaceManagementProfileResource) Configure(ctx context.Context, req 
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, interface_management.NewService(r.client), batchSize, specifier, interface_management.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*interface_management.Entry, interface_management.Location, *interface_management.Service](r.client, interface_management.NewService(r.client), batchSize, specifier, interface_management.SpecMatches)
 }
 
 func (o *InterfaceManagementProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -794,6 +830,14 @@ func (o *InterfaceManagementProfileResourceModel) AttributeTypes() map[string]at
 		"userid_syslog_listener_udp": types.BoolType,
 	}
 }
+
+func (o InterfaceManagementProfileResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o InterfaceManagementProfileResourceModel) EntryName() *string {
+	return nil
+}
 func (o *InterfaceManagementProfileResourcePermittedIpsObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -801,7 +845,15 @@ func (o *InterfaceManagementProfileResourcePermittedIpsObject) AttributeTypes() 
 	}
 }
 
-func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Context, obj **interface_management.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o InterfaceManagementProfileResourcePermittedIpsObject) AncestorName() string {
+	return "permitted-ips"
+}
+
+func (o InterfaceManagementProfileResourcePermittedIpsObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	http_value := o.Http.ValueBoolPointer()
 	httpOcsp_value := o.HttpOcsp.ValueBoolPointer()
@@ -816,7 +868,7 @@ func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Contex
 		}
 		for _, elt := range permittedIps_tf_entries {
 			var entry *interface_management.PermittedIp
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -851,7 +903,7 @@ func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyToPango(ctx context.Context, obj **interface_management.PermittedIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -862,15 +914,19 @@ func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyToPango(ctx c
 	return diags
 }
 
-func (o *InterfaceManagementProfileResourceModel) CopyFromPango(ctx context.Context, obj *interface_management.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *InterfaceManagementProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var permittedIps_list types.List
 	{
 		var permittedIps_tf_entries []InterfaceManagementProfileResourcePermittedIpsObject
 		for _, elt := range obj.PermittedIp {
-			var entry InterfaceManagementProfileResourcePermittedIpsObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := InterfaceManagementProfileResourcePermittedIpsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			permittedIps_tf_entries = append(permittedIps_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -940,11 +996,16 @@ func (o *InterfaceManagementProfileResourceModel) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyFromPango(ctx context.Context, obj *interface_management.PermittedIp, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
+}
+
+func (o *InterfaceManagementProfileResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -964,6 +1025,13 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1020,8 +1088,7 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 
 	// Load the desired config.
 	var obj *interface_management.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1033,17 +1100,29 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1053,6 +1132,17 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 	var savestate, state InterfaceManagementProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1107,8 +1197,12 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1118,7 +1212,7 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1128,6 +1222,13 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1139,6 +1240,17 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1197,19 +1309,31 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1223,11 +1347,18 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1298,9 +1429,15 @@ func (r *InterfaceManagementProfileResource) Delete(ctx context.Context, req res
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

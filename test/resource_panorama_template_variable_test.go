@@ -1,23 +1,19 @@
 package provider_test
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
-	sdkErrors "github.com/PaloAltoNetworks/pango/errors"
-	"github.com/PaloAltoNetworks/pango/panorama/template_variable"
 	"github.com/hashicorp/terraform-plugin-testing/compare"
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
-	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
-func TestAccPanosPanoramaTemplateVariable(t *testing.T) {
+func TestAccPanosPanoramaTemplateVariable_Basic(t *testing.T) {
 	t.Parallel()
 
 	testData := []struct {
@@ -37,7 +33,6 @@ func TestAccPanosPanoramaTemplateVariable(t *testing.T) {
 		{variableType: "ip_range", value: "127.0.0.1-127.0.0.255"},
 	}
 
-	resourceName := "acc_test_template"
 	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
 	compareValuesDiffer := statecheck.CompareValue(compare.ValuesDiffer())
 	templateName := "acc_codegen"
@@ -47,7 +42,7 @@ func TestAccPanosPanoramaTemplateVariable(t *testing.T) {
 		templateVariableTypeEntries = append(
 			templateVariableTypeEntries,
 			resource.TestStep{
-				Config: makePanoramaTemplateVariableConfig(resourceName),
+				Config: templateVariable_Basic_Tmpl,
 				ConfigVariables: map[string]config.Variable{
 					"name_suffix":     config.StringVariable(nameSuffix),
 					"templ_var_type":  config.StringVariable(testEntry.variableType),
@@ -56,17 +51,17 @@ func TestAccPanosPanoramaTemplateVariable(t *testing.T) {
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
-						"panos_template_variable."+resourceName,
+						"panos_template_variable.example",
 						tfjsonpath.New("type").AtMapKey(testEntry.variableType),
 						knownvalue.StringExact(testEntry.value),
 					),
 					statecheck.ExpectKnownValue(
-						"panos_template_variable."+resourceName,
+						"panos_template_variable.example",
 						tfjsonpath.New("name"),
 						knownvalue.StringExact("$tempvar-"+nameSuffix),
 					),
 					compareValuesDiffer.AddStateValue(
-						"panos_template_variable."+resourceName,
+						"panos_template_variable.example",
 						tfjsonpath.New("type"),
 					),
 				},
@@ -77,68 +72,97 @@ func TestAccPanosPanoramaTemplateVariable(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
-		CheckDestroy: testAccPanosPanoramaTemplateVariableDestroy(
-			"$tempvar-"+nameSuffix,
-			fmt.Sprintf("%s_%s", templateName, nameSuffix),
-		),
-		Steps: templateVariableTypeEntries,
+		Steps:                    templateVariableTypeEntries,
 	})
 }
 
-func makePanoramaTemplateVariableConfig(label string) string {
-	configTpl := `
-    variable "name_suffix" { type = string }
-    variable "templ_var_type" { type = string }
-    variable "templ_var_value" { type = string }
-    variable "templ_name" { type = string }
+func TestAccPanosPanoramaTemplateVariable_Override(t *testing.T) {
+	t.Parallel()
 
-    resource "panos_template" "%s" {
-      name = "${var.templ_name}_${var.name_suffix}"
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
 
-      location = {
-        panorama = {
-          panorama_device = "localhost.localdomain"
-        }
-      }
-    }
-
-    resource "panos_template_variable" "%s" {
-      location = {
-        template = {
-          name = panos_template.%s.name
-        }
-      }
-
-      name        = "$tempvar-${var.name_suffix}"
-      description = "Temp variable description"
-      type        = {
-        "${var.templ_var_type}": var.templ_var_value
-      }
-    }
-    `
-
-	return fmt.Sprintf(configTpl, label, label, label)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: templateVariable_Stack_Override_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_template_variable.tmpl-var",
+						tfjsonpath.New("type").AtMapKey("interface"),
+						knownvalue.StringExact("None"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_template_variable.stack-var",
+						tfjsonpath.New("type").AtMapKey("interface"),
+						knownvalue.StringExact("ethernet1/1"),
+					),
+				},
+			},
+		},
+	})
 }
 
-func testAccPanosPanoramaTemplateVariableDestroy(entryName, templateName string) func(s *terraform.State) error {
-	return func(s *terraform.State) error {
-		api := template_variable.NewService(sdkClient)
-		ctx := context.TODO()
+const templateVariable_Basic_Tmpl = `
+variable "name_suffix" { type = string }
+variable "templ_var_type" { type = string }
+variable "templ_var_value" { type = string }
+variable "templ_name" { type = string }
 
-		location := template_variable.NewTemplateLocation()
-		location.Template.Template = templateName
+resource "panos_template" "example" {
+  location = { panorama = {} }
 
-		reply, err := api.Read(ctx, *location, entryName, "show")
-		if err != nil && !sdkErrors.IsObjectNotFound(err) {
-			return fmt.Errorf("reading template variable entry via sdk: %v", err)
-		}
-
-		if reply != nil {
-			if reply.EntryName() == entryName {
-				return fmt.Errorf("template object still exists: %s", entryName)
-			}
-		}
-
-		return nil
-	}
+  name = "${var.templ_name}_${var.name_suffix}"
 }
+
+resource "panos_template_variable" "example" {
+  location = {
+    template = {
+      name = panos_template.example.name
+    }
+  }
+
+  name        = "$tempvar-${var.name_suffix}"
+  description = "Temp variable description"
+  type        = {
+    "${var.templ_var_type}": var.templ_var_value
+  }
+}
+`
+
+const templateVariable_Stack_Override_Tmpl = `
+variable "prefix" { type = string }
+
+resource "panos_template" "example" {
+  location = { panorama = {} }
+
+  name = var.prefix
+}
+
+resource "panos_template_stack" "example" {
+  location = { panorama = {} }
+
+  templates = [panos_template.example.name]
+
+  name = "${var.prefix}-stack"
+}
+
+resource "panos_template_variable" "tmpl-var" {
+  location = { template = { name = panos_template.example.name } }
+
+  name = format("$%s", var.prefix)
+  type = { interface = "None" }
+}
+
+resource "panos_template_variable" "stack-var" {
+  location = { template = { name = panos_template_stack.example.name } }
+
+  name = format("$%s", var.prefix)
+  type = { interface = "ethernet1/1" }
+}
+`

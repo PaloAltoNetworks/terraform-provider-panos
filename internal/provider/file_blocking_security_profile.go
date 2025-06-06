@@ -82,6 +82,14 @@ func (o *FileBlockingSecurityProfileDataSourceModel) AttributeTypes() map[string
 		"rules":            types.ListType{},
 	}
 }
+
+func (o FileBlockingSecurityProfileDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o FileBlockingSecurityProfileDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *FileBlockingSecurityProfileDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -93,7 +101,15 @@ func (o *FileBlockingSecurityProfileDataSourceRulesObject) AttributeTypes() map[
 	}
 }
 
-func (o *FileBlockingSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, obj **fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o FileBlockingSecurityProfileDataSourceRulesObject) AncestorName() string {
+	return "rules"
+}
+
+func (o FileBlockingSecurityProfileDataSourceRulesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *FileBlockingSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **fileblocking.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -107,7 +123,7 @@ func (o *FileBlockingSecurityProfileDataSourceModel) CopyToPango(ctx context.Con
 		}
 		for _, elt := range rules_tf_entries {
 			var entry *fileblocking.Rules
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -125,7 +141,7 @@ func (o *FileBlockingSecurityProfileDataSourceModel) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, obj **fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **fileblocking.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applications_pango_entries := make([]string, 0)
 	diags.Append(o.Applications.ElementsAs(ctx, &applications_pango_entries, false)...)
@@ -152,15 +168,19 @@ func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyToPango(ctx conte
 	return diags
 }
 
-func (o *FileBlockingSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, obj *fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *fileblocking.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var rules_list types.List
 	{
 		var rules_tf_entries []FileBlockingSecurityProfileDataSourceRulesObject
 		for _, elt := range obj.Rules {
-			var entry FileBlockingSecurityProfileDataSourceRulesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := FileBlockingSecurityProfileDataSourceRulesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			rules_tf_entries = append(rules_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -185,19 +205,25 @@ func (o *FileBlockingSecurityProfileDataSourceModel) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, obj *fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *fileblocking.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var applications_list types.List
 	{
 		var list_diags diag.Diagnostics
 		applications_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var fileTypes_list types.List
 	{
 		var list_diags diag.Diagnostics
 		fileTypes_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var direction_value types.String
@@ -215,6 +241,11 @@ func (o *FileBlockingSecurityProfileDataSourceRulesObject) CopyFromPango(ctx con
 	o.Action = action_value
 
 	return diags
+}
+
+func (o *FileBlockingSecurityProfileDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func FileBlockingSecurityProfileDataSourceSchema() dsschema.Schema {
@@ -372,13 +403,20 @@ func (d *FileBlockingSecurityProfileDataSource) Configure(_ context.Context, req
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, fileblocking.NewService(d.client), batchSize, specifier, fileblocking.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*fileblocking.Entry, fileblocking.Location, *fileblocking.Service](d.client, fileblocking.NewService(d.client), batchSize, specifier, fileblocking.SpecMatches)
 }
 func (o *FileBlockingSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state FileBlockingSecurityProfileDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -430,8 +468,12 @@ func (o *FileBlockingSecurityProfileDataSource) Read(ctx context.Context, req da
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -441,7 +483,7 @@ func (o *FileBlockingSecurityProfileDataSource) Read(ctx context.Context, req da
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -661,7 +703,7 @@ func (r *FileBlockingSecurityProfileResource) Configure(ctx context.Context, req
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, fileblocking.NewService(r.client), batchSize, specifier, fileblocking.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*fileblocking.Entry, fileblocking.Location, *fileblocking.Service](r.client, fileblocking.NewService(r.client), batchSize, specifier, fileblocking.SpecMatches)
 }
 
 func (o *FileBlockingSecurityProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -678,6 +720,14 @@ func (o *FileBlockingSecurityProfileResourceModel) AttributeTypes() map[string]a
 		"rules":            types.ListType{},
 	}
 }
+
+func (o FileBlockingSecurityProfileResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o FileBlockingSecurityProfileResourceModel) EntryName() *string {
+	return nil
+}
 func (o *FileBlockingSecurityProfileResourceRulesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -689,7 +739,15 @@ func (o *FileBlockingSecurityProfileResourceRulesObject) AttributeTypes() map[st
 	}
 }
 
-func (o *FileBlockingSecurityProfileResourceModel) CopyToPango(ctx context.Context, obj **fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o FileBlockingSecurityProfileResourceRulesObject) AncestorName() string {
+	return "rules"
+}
+
+func (o FileBlockingSecurityProfileResourceRulesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+
+func (o *FileBlockingSecurityProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **fileblocking.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -703,7 +761,7 @@ func (o *FileBlockingSecurityProfileResourceModel) CopyToPango(ctx context.Conte
 		}
 		for _, elt := range rules_tf_entries {
 			var entry *fileblocking.Rules
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -721,7 +779,7 @@ func (o *FileBlockingSecurityProfileResourceModel) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *FileBlockingSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, obj **fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **fileblocking.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applications_pango_entries := make([]string, 0)
 	diags.Append(o.Applications.ElementsAs(ctx, &applications_pango_entries, false)...)
@@ -748,15 +806,19 @@ func (o *FileBlockingSecurityProfileResourceRulesObject) CopyToPango(ctx context
 	return diags
 }
 
-func (o *FileBlockingSecurityProfileResourceModel) CopyFromPango(ctx context.Context, obj *fileblocking.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *fileblocking.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var rules_list types.List
 	{
 		var rules_tf_entries []FileBlockingSecurityProfileResourceRulesObject
 		for _, elt := range obj.Rules {
-			var entry FileBlockingSecurityProfileResourceRulesObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := FileBlockingSecurityProfileResourceRulesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			rules_tf_entries = append(rules_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -781,19 +843,25 @@ func (o *FileBlockingSecurityProfileResourceModel) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *FileBlockingSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, obj *fileblocking.Rules, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *FileBlockingSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *fileblocking.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var applications_list types.List
 	{
 		var list_diags diag.Diagnostics
 		applications_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 	var fileTypes_list types.List
 	{
 		var list_diags diag.Diagnostics
 		fileTypes_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
 		diags.Append(list_diags...)
+		if diags.HasError() {
+			return diags
+		}
 	}
 
 	var direction_value types.String
@@ -813,6 +881,11 @@ func (o *FileBlockingSecurityProfileResourceRulesObject) CopyFromPango(ctx conte
 	return diags
 }
 
+func (o *FileBlockingSecurityProfileResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
+}
+
 func (r *FileBlockingSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state FileBlockingSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -830,6 +903,13 @@ func (r *FileBlockingSecurityProfileResource) Create(ctx context.Context, req re
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -883,8 +963,7 @@ func (r *FileBlockingSecurityProfileResource) Create(ctx context.Context, req re
 
 	// Load the desired config.
 	var obj *fileblocking.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -896,17 +975,29 @@ func (r *FileBlockingSecurityProfileResource) Create(ctx context.Context, req re
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -916,6 +1007,17 @@ func (o *FileBlockingSecurityProfileResource) Read(ctx context.Context, req reso
 	var savestate, state FileBlockingSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -967,8 +1069,12 @@ func (o *FileBlockingSecurityProfileResource) Read(ctx context.Context, req reso
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -978,7 +1084,7 @@ func (o *FileBlockingSecurityProfileResource) Read(ctx context.Context, req reso
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -988,6 +1094,13 @@ func (o *FileBlockingSecurityProfileResource) Read(ctx context.Context, req reso
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -999,6 +1112,17 @@ func (r *FileBlockingSecurityProfileResource) Update(ctx context.Context, req re
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1054,19 +1178,31 @@ func (r *FileBlockingSecurityProfileResource) Update(ctx context.Context, req re
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -1080,11 +1216,18 @@ func (r *FileBlockingSecurityProfileResource) Update(ctx context.Context, req re
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1152,9 +1295,15 @@ func (r *FileBlockingSecurityProfileResource) Delete(ctx context.Context, req re
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }

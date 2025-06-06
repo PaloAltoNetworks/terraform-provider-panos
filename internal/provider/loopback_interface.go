@@ -114,6 +114,14 @@ func (o *LoopbackInterfaceDataSourceModel) AttributeTypes() map[string]attr.Type
 		"netflow_profile": types.StringType,
 	}
 }
+
+func (o LoopbackInterfaceDataSourceModel) AncestorName() string {
+	return ""
+}
+
+func (o LoopbackInterfaceDataSourceModel) EntryName() *string {
+	return nil
+}
 func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -122,11 +130,27 @@ func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) AttributeTypes() map[str
 		"ipv6_mss_adjustment": types.Int64Type,
 	}
 }
+
+func (o LoopbackInterfaceDataSourceAdjustTcpMssObject) AncestorName() string {
+	return "adjust-tcp-mss"
+}
+
+func (o LoopbackInterfaceDataSourceAdjustTcpMssObject) EntryName() *string {
+	return nil
+}
 func (o *LoopbackInterfaceDataSourceIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name": types.StringType,
 	}
+}
+
+func (o LoopbackInterfaceDataSourceIpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o LoopbackInterfaceDataSourceIpObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LoopbackInterfaceDataSourceIpv6Object) AttributeTypes() map[string]attr.Type {
 
@@ -135,6 +159,14 @@ func (o *LoopbackInterfaceDataSourceIpv6Object) AttributeTypes() map[string]attr
 		"enabled":      types.BoolType,
 		"interface_id": types.StringType,
 	}
+}
+
+func (o LoopbackInterfaceDataSourceIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LoopbackInterfaceDataSourceIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LoopbackInterfaceDataSourceIpv6AddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -152,14 +184,38 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressObject) AttributeTypes() map[stri
 		},
 	}
 }
+
+func (o LoopbackInterfaceDataSourceIpv6AddressObject) AncestorName() string {
+	return "address"
+}
+
+func (o LoopbackInterfaceDataSourceIpv6AddressObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LoopbackInterfaceDataSourceIpv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LoopbackInterfaceDataSourceIpv6AddressPrefixObject) AncestorName() string {
+	return "prefix"
+}
+
+func (o LoopbackInterfaceDataSourceIpv6AddressPrefixObject) EntryName() *string {
+	return nil
 }
 func (o *LoopbackInterfaceDataSourceIpv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
 
-func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj **loopback.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o LoopbackInterfaceDataSourceIpv6AddressAnycastObject) AncestorName() string {
+	return "anycast"
+}
+
+func (o LoopbackInterfaceDataSourceIpv6AddressAnycastObject) EntryName() *string {
+	return nil
+}
+
+func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var adjustTcpMss_entry *loopback.AdjustTcpMss
 	if o.AdjustTcpMss != nil {
@@ -168,8 +224,8 @@ func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj 
 		} else {
 			adjustTcpMss_entry = new(loopback.AdjustTcpMss)
 		}
-
-		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, &adjustTcpMss_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, ancestors, &adjustTcpMss_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -186,7 +242,7 @@ func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj 
 		}
 		for _, elt := range ip_tf_entries {
 			var entry *loopback.Ip
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -200,8 +256,8 @@ func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj 
 		} else {
 			ipv6_entry = new(loopback.Ipv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Ipv6.CopyToPango(ctx, ancestors, &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -223,7 +279,7 @@ func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, obj 
 
 	return diags
 }
-func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx context.Context, obj **loopback.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
@@ -238,7 +294,7 @@ func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *LoopbackInterfaceDataSourceIpObject) CopyToPango(ctx context.Context, obj **loopback.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -248,7 +304,7 @@ func (o *LoopbackInterfaceDataSourceIpObject) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *LoopbackInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, obj **loopback.Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []LoopbackInterfaceDataSourceIpv6AddressObject
 	var address_pango_entries []loopback.Ipv6Address
@@ -260,7 +316,7 @@ func (o *LoopbackInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context,
 		}
 		for _, elt := range address_tf_entries {
 			var entry *loopback.Ipv6Address
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -279,7 +335,7 @@ func (o *LoopbackInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context,
 
 	return diags
 }
-func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *loopback.Ipv6AddressPrefix
@@ -289,8 +345,8 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.C
 		} else {
 			prefix_entry = new(loopback.Ipv6AddressPrefix)
 		}
-
-		diags.Append(o.Prefix.CopyToPango(ctx, &prefix_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Prefix.CopyToPango(ctx, append(ancestors, o), &prefix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -302,8 +358,8 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.C
 		} else {
 			anycast_entry = new(loopback.Ipv6AddressAnycast)
 		}
-
-		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Anycast.CopyToPango(ctx, append(ancestors, o), &anycast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -319,7 +375,7 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *LoopbackInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -328,7 +384,7 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *LoopbackInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -338,15 +394,19 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx co
 	return diags
 }
 
-func (o *LoopbackInterfaceDataSourceModel) CopyFromPango(ctx context.Context, obj *loopback.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_list types.List
 	{
 		var ip_tf_entries []LoopbackInterfaceDataSourceIpObject
 		for _, elt := range obj.Ip {
-			var entry LoopbackInterfaceDataSourceIpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LoopbackInterfaceDataSourceIpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			ip_tf_entries = append(ip_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -357,8 +417,7 @@ func (o *LoopbackInterfaceDataSourceModel) CopyFromPango(ctx context.Context, ob
 	var adjustTcpMss_object *LoopbackInterfaceDataSourceAdjustTcpMssObject
 	if obj.AdjustTcpMss != nil {
 		adjustTcpMss_object = new(LoopbackInterfaceDataSourceAdjustTcpMssObject)
-
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
+		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, ancestors, obj.AdjustTcpMss, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -366,8 +425,7 @@ func (o *LoopbackInterfaceDataSourceModel) CopyFromPango(ctx context.Context, ob
 	var ipv6_object *LoopbackInterfaceDataSourceIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LoopbackInterfaceDataSourceIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, ancestors, obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -401,7 +459,7 @@ func (o *LoopbackInterfaceDataSourceModel) CopyFromPango(ctx context.Context, ob
 	return diags
 }
 
-func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *loopback.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -423,22 +481,26 @@ func (o *LoopbackInterfaceDataSourceAdjustTcpMssObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *LoopbackInterfaceDataSourceIpObject) CopyFromPango(ctx context.Context, obj *loopback.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *LoopbackInterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context, obj *loopback.Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []LoopbackInterfaceDataSourceIpv6AddressObject
 		for _, elt := range obj.Address {
-			var entry LoopbackInterfaceDataSourceIpv6AddressObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LoopbackInterfaceDataSourceIpv6AddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			address_tf_entries = append(address_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -462,13 +524,12 @@ func (o *LoopbackInterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Contex
 	return diags
 }
 
-func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context.Context, obj *loopback.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var prefix_object *LoopbackInterfaceDataSourceIpv6AddressPrefixObject
 	if obj.Prefix != nil {
 		prefix_object = new(LoopbackInterfaceDataSourceIpv6AddressPrefixObject)
-
-		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
+		diags.Append(prefix_object.CopyFromPango(ctx, append(ancestors, o), obj.Prefix, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -476,8 +537,7 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context
 	var anycast_object *LoopbackInterfaceDataSourceIpv6AddressAnycastObject
 	if obj.Anycast != nil {
 		anycast_object = new(LoopbackInterfaceDataSourceIpv6AddressAnycastObject)
-
-		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
+		diags.Append(anycast_object.CopyFromPango(ctx, append(ancestors, o), obj.Anycast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -495,16 +555,21 @@ func (o *LoopbackInterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *LoopbackInterfaceDataSourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *loopback.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LoopbackInterfaceDataSourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *loopback.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceDataSourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
+}
+
+func (o *LoopbackInterfaceDataSourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func LoopbackInterfaceDataSourceSchema() dsschema.Schema {
@@ -860,13 +925,20 @@ func (d *LoopbackInterfaceDataSource) Configure(_ context.Context, req datasourc
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager(d.client, loopback.NewService(d.client), batchSize, specifier, loopback.SpecMatches)
+	d.manager = sdkmanager.NewEntryObjectManager[*loopback.Entry, loopback.Location, *loopback.Service](d.client, loopback.NewService(d.client), batchSize, specifier, loopback.SpecMatches)
 }
 func (o *LoopbackInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
 	var savestate, state LoopbackInterfaceDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -921,8 +993,12 @@ func (o *LoopbackInterfaceDataSource) Read(ctx context.Context, req datasource.R
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -932,7 +1008,7 @@ func (o *LoopbackInterfaceDataSource) Read(ctx context.Context, req datasource.R
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1365,7 +1441,7 @@ func (r *LoopbackInterfaceResource) Configure(ctx context.Context, req resource.
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager(r.client, loopback.NewService(r.client), batchSize, specifier, loopback.SpecMatches)
+	r.manager = sdkmanager.NewEntryObjectManager[*loopback.Entry, loopback.Location, *loopback.Service](r.client, loopback.NewService(r.client), batchSize, specifier, loopback.SpecMatches)
 }
 
 func (o *LoopbackInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
@@ -1394,6 +1470,14 @@ func (o *LoopbackInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
 		"netflow_profile": types.StringType,
 	}
 }
+
+func (o LoopbackInterfaceResourceModel) AncestorName() string {
+	return ""
+}
+
+func (o LoopbackInterfaceResourceModel) EntryName() *string {
+	return nil
+}
 func (o *LoopbackInterfaceResourceAdjustTcpMssObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
@@ -1402,11 +1486,27 @@ func (o *LoopbackInterfaceResourceAdjustTcpMssObject) AttributeTypes() map[strin
 		"ipv6_mss_adjustment": types.Int64Type,
 	}
 }
+
+func (o LoopbackInterfaceResourceAdjustTcpMssObject) AncestorName() string {
+	return "adjust-tcp-mss"
+}
+
+func (o LoopbackInterfaceResourceAdjustTcpMssObject) EntryName() *string {
+	return nil
+}
 func (o *LoopbackInterfaceResourceIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"name": types.StringType,
 	}
+}
+
+func (o LoopbackInterfaceResourceIpObject) AncestorName() string {
+	return "ip"
+}
+
+func (o LoopbackInterfaceResourceIpObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *LoopbackInterfaceResourceIpv6Object) AttributeTypes() map[string]attr.Type {
 
@@ -1415,6 +1515,14 @@ func (o *LoopbackInterfaceResourceIpv6Object) AttributeTypes() map[string]attr.T
 		"enabled":      types.BoolType,
 		"interface_id": types.StringType,
 	}
+}
+
+func (o LoopbackInterfaceResourceIpv6Object) AncestorName() string {
+	return "ipv6"
+}
+
+func (o LoopbackInterfaceResourceIpv6Object) EntryName() *string {
+	return nil
 }
 func (o *LoopbackInterfaceResourceIpv6AddressObject) AttributeTypes() map[string]attr.Type {
 
@@ -1432,14 +1540,38 @@ func (o *LoopbackInterfaceResourceIpv6AddressObject) AttributeTypes() map[string
 		},
 	}
 }
+
+func (o LoopbackInterfaceResourceIpv6AddressObject) AncestorName() string {
+	return "address"
+}
+
+func (o LoopbackInterfaceResourceIpv6AddressObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
 func (o *LoopbackInterfaceResourceIpv6AddressPrefixObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
+}
+
+func (o LoopbackInterfaceResourceIpv6AddressPrefixObject) AncestorName() string {
+	return "prefix"
+}
+
+func (o LoopbackInterfaceResourceIpv6AddressPrefixObject) EntryName() *string {
+	return nil
 }
 func (o *LoopbackInterfaceResourceIpv6AddressAnycastObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
 
-func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, obj **loopback.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o LoopbackInterfaceResourceIpv6AddressAnycastObject) AncestorName() string {
+	return "anycast"
+}
+
+func (o LoopbackInterfaceResourceIpv6AddressAnycastObject) EntryName() *string {
+	return nil
+}
+
+func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var adjustTcpMss_entry *loopback.AdjustTcpMss
 	if o.AdjustTcpMss != nil {
@@ -1448,8 +1580,8 @@ func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, obj **
 		} else {
 			adjustTcpMss_entry = new(loopback.AdjustTcpMss)
 		}
-
-		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, &adjustTcpMss_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, ancestors, &adjustTcpMss_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1466,7 +1598,7 @@ func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, obj **
 		}
 		for _, elt := range ip_tf_entries {
 			var entry *loopback.Ip
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1480,8 +1612,8 @@ func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, obj **
 		} else {
 			ipv6_entry = new(loopback.Ipv6)
 		}
-
-		diags.Append(o.Ipv6.CopyToPango(ctx, &ipv6_entry, encrypted)...)
+		// ModelOrObject: Model
+		diags.Append(o.Ipv6.CopyToPango(ctx, ancestors, &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1503,7 +1635,7 @@ func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, obj **
 
 	return diags
 }
-func (o *LoopbackInterfaceResourceAdjustTcpMssObject) CopyToPango(ctx context.Context, obj **loopback.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceAdjustTcpMssObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
@@ -1518,7 +1650,7 @@ func (o *LoopbackInterfaceResourceAdjustTcpMssObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *LoopbackInterfaceResourceIpObject) CopyToPango(ctx context.Context, obj **loopback.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1528,7 +1660,7 @@ func (o *LoopbackInterfaceResourceIpObject) CopyToPango(ctx context.Context, obj
 
 	return diags
 }
-func (o *LoopbackInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, obj **loopback.Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []LoopbackInterfaceResourceIpv6AddressObject
 	var address_pango_entries []loopback.Ipv6Address
@@ -1540,7 +1672,7 @@ func (o *LoopbackInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, o
 		}
 		for _, elt := range address_tf_entries {
 			var entry *loopback.Ipv6Address
-			diags.Append(elt.CopyToPango(ctx, &entry, encrypted)...)
+			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1559,7 +1691,7 @@ func (o *LoopbackInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, o
 
 	return diags
 }
-func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *loopback.Ipv6AddressPrefix
@@ -1569,8 +1701,8 @@ func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Con
 		} else {
 			prefix_entry = new(loopback.Ipv6AddressPrefix)
 		}
-
-		diags.Append(o.Prefix.CopyToPango(ctx, &prefix_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Prefix.CopyToPango(ctx, append(ancestors, o), &prefix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1582,8 +1714,8 @@ func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Con
 		} else {
 			anycast_entry = new(loopback.Ipv6AddressAnycast)
 		}
-
-		diags.Append(o.Anycast.CopyToPango(ctx, &anycast_entry, encrypted)...)
+		// ModelOrObject: Object
+		diags.Append(o.Anycast.CopyToPango(ctx, append(ancestors, o), &anycast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1599,7 +1731,7 @@ func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *LoopbackInterfaceResourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1608,7 +1740,7 @@ func (o *LoopbackInterfaceResourceIpv6AddressPrefixObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *LoopbackInterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, obj **loopback.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **loopback.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1618,15 +1750,19 @@ func (o *LoopbackInterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx cont
 	return diags
 }
 
-func (o *LoopbackInterfaceResourceModel) CopyFromPango(ctx context.Context, obj *loopback.Entry, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_list types.List
 	{
 		var ip_tf_entries []LoopbackInterfaceResourceIpObject
 		for _, elt := range obj.Ip {
-			var entry LoopbackInterfaceResourceIpObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LoopbackInterfaceResourceIpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			ip_tf_entries = append(ip_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1637,8 +1773,7 @@ func (o *LoopbackInterfaceResourceModel) CopyFromPango(ctx context.Context, obj 
 	var adjustTcpMss_object *LoopbackInterfaceResourceAdjustTcpMssObject
 	if obj.AdjustTcpMss != nil {
 		adjustTcpMss_object = new(LoopbackInterfaceResourceAdjustTcpMssObject)
-
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, obj.AdjustTcpMss, encrypted)...)
+		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, ancestors, obj.AdjustTcpMss, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1646,8 +1781,7 @@ func (o *LoopbackInterfaceResourceModel) CopyFromPango(ctx context.Context, obj 
 	var ipv6_object *LoopbackInterfaceResourceIpv6Object
 	if obj.Ipv6 != nil {
 		ipv6_object = new(LoopbackInterfaceResourceIpv6Object)
-
-		diags.Append(ipv6_object.CopyFromPango(ctx, obj.Ipv6, encrypted)...)
+		diags.Append(ipv6_object.CopyFromPango(ctx, ancestors, obj.Ipv6, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1681,7 +1815,7 @@ func (o *LoopbackInterfaceResourceModel) CopyFromPango(ctx context.Context, obj 
 	return diags
 }
 
-func (o *LoopbackInterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, obj *loopback.AdjustTcpMss, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -1703,22 +1837,26 @@ func (o *LoopbackInterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *LoopbackInterfaceResourceIpObject) CopyFromPango(ctx context.Context, obj *loopback.Ip, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *LoopbackInterfaceResourceIpv6Object) CopyFromPango(ctx context.Context, obj *loopback.Ipv6, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []LoopbackInterfaceResourceIpv6AddressObject
 		for _, elt := range obj.Address {
-			var entry LoopbackInterfaceResourceIpv6AddressObject
-			entry_diags := entry.CopyFromPango(ctx, &elt, encrypted)
-			diags.Append(entry_diags...)
+			entry := LoopbackInterfaceResourceIpv6AddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
 			address_tf_entries = append(address_tf_entries, entry)
 		}
 		var list_diags diag.Diagnostics
@@ -1742,13 +1880,12 @@ func (o *LoopbackInterfaceResourceIpv6Object) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.Context, obj *loopback.Ipv6Address, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var prefix_object *LoopbackInterfaceResourceIpv6AddressPrefixObject
 	if obj.Prefix != nil {
 		prefix_object = new(LoopbackInterfaceResourceIpv6AddressPrefixObject)
-
-		diags.Append(prefix_object.CopyFromPango(ctx, obj.Prefix, encrypted)...)
+		diags.Append(prefix_object.CopyFromPango(ctx, append(ancestors, o), obj.Prefix, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1756,8 +1893,7 @@ func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.C
 	var anycast_object *LoopbackInterfaceResourceIpv6AddressAnycastObject
 	if obj.Anycast != nil {
 		anycast_object = new(LoopbackInterfaceResourceIpv6AddressAnycastObject)
-
-		diags.Append(anycast_object.CopyFromPango(ctx, obj.Anycast, encrypted)...)
+		diags.Append(anycast_object.CopyFromPango(ctx, append(ancestors, o), obj.Anycast, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1775,16 +1911,21 @@ func (o *LoopbackInterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *LoopbackInterfaceResourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, obj *loopback.Ipv6AddressPrefix, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *LoopbackInterfaceResourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, obj *loopback.Ipv6AddressAnycast, encrypted *map[string]types.String) diag.Diagnostics {
+func (o *LoopbackInterfaceResourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *loopback.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
+}
+
+func (o *LoopbackInterfaceResourceModel) resourceXpathParentComponents() ([]string, error) {
+	var components []string
+	return components, nil
 }
 
 func (r *LoopbackInterfaceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -1804,6 +1945,13 @@ func (r *LoopbackInterfaceResource) Create(ctx context.Context, req resource.Cre
 	// Verify mode.
 	if r.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
+		return
+	}
+
+	var encryptedValues []byte
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1860,8 +2008,7 @@ func (r *LoopbackInterfaceResource) Create(ctx context.Context, req resource.Cre
 
 	// Load the desired config.
 	var obj *loopback.Entry
-
-	resp.Diagnostics.Append(state.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1873,17 +2020,29 @@ func (r *LoopbackInterfaceResource) Create(ctx context.Context, req resource.Cre
 	*/
 
 	// Perform the operation.
-	created, err := r.manager.Create(ctx, location, obj)
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	created, err := r.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, created, nil)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	state.Name = types.StringValue(created.Name)
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1893,6 +2052,17 @@ func (o *LoopbackInterfaceResource) Read(ctx context.Context, req resource.ReadR
 	var savestate, state LoopbackInterfaceResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, true)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -1947,8 +2117,12 @@ func (o *LoopbackInterfaceResource) Read(ctx context.Context, req resource.ReadR
 		"name":          savestate.Name.ValueString(),
 	})
 
-	// Perform the operation.
-	object, err := o.manager.Read(ctx, location, savestate.Name.ValueString())
+	components, err := savestate.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1958,7 +2132,7 @@ func (o *LoopbackInterfaceResource) Read(ctx context.Context, req resource.ReadR
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, object, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
@@ -1968,6 +2142,13 @@ func (o *LoopbackInterfaceResource) Read(ctx context.Context, req resource.ReadR
 	*/
 
 	state.Location = savestate.Location
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1979,6 +2160,17 @@ func (r *LoopbackInterfaceResource) Update(ctx context.Context, req resource.Upd
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
 	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	encryptedValues, diags := req.Private.GetKey(ctx, "encrypted_values")
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	ev, err := NewEncryptedValuesManager(encryptedValues, false)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to read encrypted values from private state", err.Error())
 		return
 	}
 
@@ -2037,19 +2229,31 @@ func (r *LoopbackInterfaceResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, plan.Name.ValueString())
+
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, &obj, nil)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	// Perform the operation.
-	updated, err := r.manager.Update(ctx, location, obj, obj.Name)
+	components, err = plan.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+
+	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
@@ -2063,11 +2267,18 @@ func (r *LoopbackInterfaceResource) Update(ctx context.Context, req resource.Upd
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, updated, nil)
+	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	payload, err := json.Marshal(ev)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to marshal encrypted values state", err.Error())
+		return
+	}
+	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -2138,9 +2349,15 @@ func (r *LoopbackInterfaceResource) Delete(ctx context.Context, req resource.Del
 		}
 	}
 
-	err := r.manager.Delete(ctx, location, []string{state.Name.ValueString()})
+	components, err := state.resourceXpathParentComponents()
+	if err != nil {
+		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
+		return
+	}
+	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
+		return
 	}
 
 }
