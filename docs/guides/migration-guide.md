@@ -30,6 +30,12 @@ The import ID of a resource is the base64-encoded version of the Terraform resou
     }
    ```
 
+For shared objects, set location to this both for the import and resource:
+
+   ```hcl
+    location = { shared = {} }
+   ```
+
 3. Add the `import` block
    ```hcl
     import {

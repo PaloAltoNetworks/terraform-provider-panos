@@ -132,3 +132,11 @@ provider "panos" {
 - `skip_verify_certificate` (Boolean) (For https protocol) Skip verifying the HTTPS certificate. Environment variable: `PANOS_SKIP_VERIFY_CERTIFICATE`. JSON config file variable: `skip_verify_certificate`.
 - `target` (String) Target setting (NGFW serial number). Environment variable: `PANOS_TARGET`. JSON config file variable: `target`.
 - `username` (String) The username.  This is required if api_key is not configured. Environment variable: `PANOS_USERNAME`. JSON config file variable: `username`.
+
+### Location requirement
+
+Objects typically has a requirement to set location with panorama_device and device group name. For shared objects you can skip that and simply set location like this on both resource and import:
+
+   ```hcl
+    location = { shared = {} }
+   ```
