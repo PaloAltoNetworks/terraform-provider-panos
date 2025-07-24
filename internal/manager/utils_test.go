@@ -16,7 +16,9 @@ import (
 
 var _ = slog.Debug
 
-type MockLocation struct{}
+type MockLocation struct {
+	Filter string
+}
 
 func (o MockLocation) IsValid() error {
 	panic("unimplemented")
@@ -32,6 +34,14 @@ func (o MockLocation) XpathWithUuid(version version.Number, uuid string) ([]stri
 
 func (o MockLocation) Xpath(version version.Number) ([]string, error) {
 	panic("unimplemented")
+}
+
+func (o MockLocation) LocationFilter() *string {
+	if o.Filter == "" {
+		return nil
+	}
+
+	return &o.Filter
 }
 
 type multiConfigType string
@@ -296,7 +306,25 @@ func MatchEntries(expected any) types.GomegaMatcher {
 func (o *equalEntries) Match(actual any) (bool, error) {
 	switch entries := actual.(type) {
 	case []*MockEntryObject:
-		panic("unimplemented 1")
+		if typed, ok := o.expected.([]*MockEntryObject); !ok {
+			return false, fmt.Errorf("Expected %T to match %T", o.expected, actual)
+		} else {
+			if len(entries) != len(typed) {
+				return false, nil
+			}
+
+			for idx, elt := range typed {
+				if elt.Name != entries[idx].Name {
+					return false, nil
+				}
+				if elt.Value != entries[idx].Value {
+					return false, nil
+				}
+				if elt.Location != "" && elt.Location != entries[idx].Location {
+					return false, nil
+				}
+			}
+		}
 	case []*MockUuidObject:
 		if typed, ok := o.expected.([]*MockUuidObject); !ok {
 			return false, fmt.Errorf("Expected %T to match %T", o.expected, actual)
@@ -309,6 +337,9 @@ func (o *equalEntries) Match(actual any) (bool, error) {
 					return false, nil
 				}
 				if elt.Value != entries[idx].Value {
+					return false, nil
+				}
+				if elt.Location != entries[idx].Location {
 					return false, nil
 				}
 			}

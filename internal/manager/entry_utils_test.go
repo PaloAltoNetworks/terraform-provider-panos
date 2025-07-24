@@ -3,6 +3,7 @@ package manager_test
 import (
 	"container/list"
 	"context"
+	"encoding/xml"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -16,8 +17,9 @@ import (
 )
 
 type MockEntryObject struct {
-	Name  string
-	Value string
+	Location string
+	Name     string
+	Value    string
 }
 
 func (o *MockEntryObject) EntryUuid() *string {
@@ -36,10 +38,27 @@ func (o *MockEntryObject) SetEntryName(name string) {
 	o.Name = name
 }
 
+func (o *MockEntryObject) GetMiscAttributes() []xml.Attr {
+	slog.Debug("GetMiscAttributes()", "location", o.Location)
+	if o.Location == "" {
+		return nil
+	}
+
+	return []xml.Attr{
+		{
+			Name: xml.Name{
+				Local: "loc",
+			},
+			Value: o.Location,
+		},
+	}
+}
+
 func (o *MockEntryObject) DeepCopy() any {
 	return &MockEntryObject{
-		Name:  o.Name,
-		Value: o.Value,
+		Location: o.Location,
+		Name:     o.Name,
+		Value:    o.Value,
 	}
 }
 

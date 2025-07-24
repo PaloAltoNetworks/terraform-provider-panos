@@ -272,3 +272,98 @@ resource "panos_addresses" "addresses" {
   }}
 }
 `
+
+const testAccAddresses_Hierarchy_Initial_Tmpl = `
+variable prefix { type = string }
+
+resource "panos_device_group" "parent" {
+  location = { panorama = {} }
+
+  name = format("%s-parent", var.prefix)
+}
+
+resource "panos_device_group" "child" {
+  location = { panorama = {} }
+
+  name = format("%s-child", var.prefix)
+}
+
+resource "panos_device_group_parent" "relation" {
+  location = { panorama = {} }
+
+  device_group = panos_device_group.child.name
+  parent       = panos_device_group.parent.name
+}
+`
+
+const testAccAddresses_Hierarchy_Parent_Entries_Tmpl = `
+resource "panos_addresses" "parent" {
+  location = { device_group = { name = panos_device_group.parent.name } }
+
+  addresses = {
+    "addr-1" = {
+      ip_netmask = "10.0.0.1/32"
+    },
+    "addr-2" = {
+      ip_netmask = "10.1.0.1/32"
+    }
+  }
+}
+`
+
+const testAccAddresses_Hierarchy_Child_Entries_Tmpl = `
+resource "panos_addresses" "child" {
+  location = { device_group = { name = panos_device_group.child.name} }
+
+  addresses = {
+    "addr-1" = {
+      ip_netmask = "10.2.0.1/32"
+    },
+    "addr-2" = {
+      ip_netmask = "10.3.0.1/32"
+    }
+  }
+}
+`
+
+func TestAccAddresses_Hierarchy(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	configStep1 := testAccAddresses_Hierarchy_Initial_Tmpl
+	configStep2 := mergeConfigs(
+		testAccAddresses_Hierarchy_Initial_Tmpl,
+		testAccAddresses_Hierarchy_Parent_Entries_Tmpl,
+	)
+	configStep3 := mergeConfigs(
+		testAccAddresses_Hierarchy_Initial_Tmpl,
+		testAccAddresses_Hierarchy_Parent_Entries_Tmpl,
+		testAccAddresses_Hierarchy_Child_Entries_Tmpl,
+	)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: configStep1,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+			{
+				Config: configStep2,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+			{
+				Config: configStep3,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+		},
+	})
+}

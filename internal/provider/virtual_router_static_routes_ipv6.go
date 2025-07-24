@@ -1439,7 +1439,7 @@ func (o *VirtualRouterStaticRoutesIpv6DataSource) Read(ctx context.Context, req 
 		return
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, components, entries)
+	readEntries, err := o.manager.ReadMany(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -3027,7 +3027,7 @@ func (o *VirtualRouterStaticRoutesIpv6Resource) Read(ctx context.Context, req re
 		return
 	}
 
-	readEntries, err := o.manager.ReadMany(ctx, location, components, entries)
+	readEntries, err := o.manager.ReadMany(ctx, location, components)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -3162,20 +3162,32 @@ func (r *VirtualRouterStaticRoutesIpv6Resource) Update(ctx context.Context, req 
 		stateEntries[idx] = entry
 	}
 
+	stateEntriesByName := make(map[string]*staticroute.Entry, len(stateEntries))
+	for _, elt := range stateEntries {
+		stateEntriesByName[elt.Name] = elt
+	}
+
 	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
 
-	existing, err := r.manager.ReadMany(ctx, location, components, stateEntries)
+	existing, err := r.manager.ReadMany(ctx, location, components)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error while reading entries from the server", err.Error())
 		return
 	}
 
-	existingEntriesByName := make(map[string]*staticroute.Entry, len(existing))
+	filtered := make([]*staticroute.Entry, 0, len(stateEntries))
 	for _, elt := range existing {
+		if _, found := stateEntriesByName[elt.EntryName()]; found {
+			filtered = append(filtered, elt)
+		}
+	}
+
+	existingEntriesByName := make(map[string]*staticroute.Entry, len(filtered))
+	for _, elt := range filtered {
 		existingEntriesByName[elt.Name] = elt
 	}
 

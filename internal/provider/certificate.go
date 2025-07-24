@@ -993,7 +993,7 @@ func CertificateLocationSchema() rsschema.Attribute {
 				},
 			},
 			"template": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template",
+				Description: "A shared resource located within a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{

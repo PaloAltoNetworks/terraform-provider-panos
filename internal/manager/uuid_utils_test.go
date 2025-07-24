@@ -3,6 +3,7 @@ package manager_test
 import (
 	"container/list"
 	"context"
+	"encoding/xml"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -19,9 +20,10 @@ import (
 var _ = slog.LevelDebug
 
 type MockUuidObject struct {
-	Name  string
-	Uuid  *string
-	Value string
+	Location string
+	Name     string
+	Uuid     *string
+	Value    string
 }
 
 func (o MockUuidObject) EntryUuid() *string {
@@ -44,11 +46,27 @@ func (o *MockUuidObject) SetEntryName(name string) {
 	o.Name = name
 }
 
+func (o *MockUuidObject) GetMiscAttributes() []xml.Attr {
+	if o.Location == "" {
+		return nil
+	}
+
+	return []xml.Attr{
+		{
+			Name: xml.Name{
+				Local: "loc",
+			},
+			Value: o.Location,
+		},
+	}
+}
+
 func (o *MockUuidObject) DeepCopy() any {
 	return &MockUuidObject{
-		Name:  o.Name,
-		Uuid:  o.Uuid,
-		Value: o.Value,
+		Location: o.Location,
+		Name:     o.Name,
+		Uuid:     o.Uuid,
+		Value:    o.Value,
 	}
 }
 

@@ -2,6 +2,8 @@ package manager
 
 import (
 	"context"
+	"encoding/xml"
+	"errors"
 	"fmt"
 	"log/slog"
 
@@ -28,11 +30,13 @@ type TFEntryObject[E any] interface {
 }
 
 type EntryObject interface {
+	GetMiscAttributes() []xml.Attr
 	EntryName() string
 	SetEntryName(name string)
 }
 
 type EntryLocation interface {
+	LocationFilter() *string
 	XpathWithComponents(version.Number, ...string) ([]string, error)
 }
 
@@ -61,7 +65,33 @@ func NewEntryObjectManager[E EntryObject, L EntryLocation, S SDKEntryService[E, 
 	}
 }
 
-func (o *EntryObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, components []string, entries []E) ([]E, error) {
+func (o *EntryObjectManager[E, L, S]) filterEntriesByLocation(location L, entries []E) []E {
+	filter := location.LocationFilter()
+	if filter == nil {
+		return entries
+	}
+
+	getLocAttribute := func(entry E) *string {
+		for _, elt := range entry.GetMiscAttributes() {
+			if elt.Name.Local == "loc" {
+				return &elt.Value
+			}
+		}
+		return nil
+	}
+
+	var filtered []E
+	for _, elt := range entries {
+		location := getLocAttribute(elt)
+		if location == nil || *location == *filter {
+			filtered = append(filtered, elt)
+		}
+	}
+
+	return filtered
+}
+
+func (o *EntryObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, components []string) ([]E, error) {
 	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(components, util.AsEntryXpath(""))...)
 	if err != nil {
 		return nil, err
@@ -76,16 +106,7 @@ func (o *EntryObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, 
 		}
 	}
 
-	entriesByName := o.entriesByName(entries, entryOk)
-
-	filtered := make([]E, 0, len(entries))
-	for _, elt := range existing {
-		if _, found := entriesByName[elt.EntryName()]; found {
-			filtered = append(filtered, elt)
-		}
-	}
-
-	return filtered, nil
+	return o.filterEntriesByLocation(location, existing), nil
 }
 
 func (o *EntryObjectManager[E, L, S]) Read(ctx context.Context, location L, parentComponents []string, name string) (E, error) {
@@ -102,22 +123,27 @@ func (o *EntryObjectManager[E, L, S]) Read(ctx context.Context, location L, pare
 		return *new(E), &Error{err: err}
 	}
 
-	return object, nil
+	filtered := o.filterEntriesByLocation(location, []E{object})
+	if len(filtered) > 0 {
+		return filtered[0], nil
+	}
+
+	return *new(E), ErrObjectNotFound
 }
 
 func (o *EntryObjectManager[E, L, S]) Create(ctx context.Context, location L, parentComponents []string, entry E) (E, error) {
-	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(parentComponents, util.AsEntryXpath(entry.EntryName()))...)
-	if err != nil {
-		return *new(E), err
-	}
-
-	_, err = o.service.ReadWithXpath(ctx, util.AsXpath(xpath), "get")
+	_, err := o.Read(ctx, location, parentComponents, entry.EntryName())
 	if err == nil {
 		return *new(E), &Error{err: ErrConflict, message: fmt.Sprintf("entry '%s' already exists", entry.EntryName())}
 	}
 
-	if err != nil && !sdkerrors.IsObjectNotFound(err) {
+	if err != nil && !errors.Is(err, ErrObjectNotFound) {
 		return *new(E), &Error{err: err, message: "failed to read existing entry from the server"}
+	}
+
+	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(parentComponents, util.AsEntryXpath(entry.EntryName()))...)
+	if err != nil {
+		return *new(E), err
 	}
 
 	err = o.service.CreateWithXpath(ctx, util.AsXpath(xpath[:len(xpath)-1]), entry)
@@ -134,14 +160,9 @@ func (o *EntryObjectManager[E, L, S]) Create(ctx context.Context, location L, pa
 }
 
 func (o *EntryObjectManager[E, L, S]) CreateMany(ctx context.Context, location L, parentComponents []string, entries []E) ([]E, error) {
-	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(parentComponents, util.AsEntryXpath(""))...)
-	if err != nil {
-		return nil, err
-	}
-
 	// First, check if none of the entries from the plan already exist on the server
-	existing, err := o.service.ListWithXpath(ctx, util.AsXpath(xpath), "get", "", "")
-	if err != nil && !sdkerrors.IsObjectNotFound(err) {
+	existing, err := o.ReadMany(ctx, location, parentComponents)
+	if err != nil && !errors.Is(err, ErrObjectNotFound) {
 		return nil, &Error{err: err, message: "failed to list existing entries on the server"}
 	}
 
@@ -151,6 +172,11 @@ func (o *EntryObjectManager[E, L, S]) CreateMany(ctx context.Context, location L
 		if _, found := entriesByName[elt.EntryName()]; found {
 			return nil, &Error{err: ErrConflict, message: fmt.Sprintf("entry '%s' already exists", elt.EntryName())}
 		}
+	}
+
+	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(parentComponents, util.AsEntryXpath(""))...)
+	if err != nil {
+		return nil, err
 	}
 
 	updates := xmlapi.NewChunkedMultiConfig(len(existing), o.batchSize)
@@ -322,13 +348,8 @@ func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L
 		}
 	}
 
-	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(components, util.AsEntryXpath(""))...)
-	if err != nil {
-		return nil, err
-	}
-
-	existing, err := o.service.ListWithXpath(ctx, util.AsXpath(xpath), "get", "", "")
-	if err != nil && !sdkerrors.IsObjectNotFound(err) {
+	existing, err := o.ReadMany(ctx, location, components)
+	if err != nil && !errors.Is(err, ErrObjectNotFound) {
 		return nil, &Error{err: err, message: "failed to get a list of existing entries from the server"}
 	}
 
@@ -337,6 +358,11 @@ func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L
 			elt.State = entryDeleted
 			processedStateEntriesByName[name] = elt
 		}
+	}
+
+	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(components, util.AsEntryXpath(""))...)
+	if err != nil {
+		return nil, err
 	}
 
 	updates := xmlapi.NewChunkedMultiConfig(len(planEntries), o.batchSize)

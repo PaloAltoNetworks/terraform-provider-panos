@@ -46,7 +46,7 @@ description: |-
 Optional:
 
 - `panorama` (Attributes) Located in a panorama. (see [below for nested schema](#nestedatt--location--panorama))
-- `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
+- `template` (Attributes) A shared resource located within a specific template (see [below for nested schema](#nestedatt--location--template))
 - `template_stack` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template_stack))
 - `template_stack_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_stack_vsys))
 - `template_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_vsys))

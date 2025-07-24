@@ -2,6 +2,7 @@ package manager
 
 import (
 	"context"
+	"encoding/xml"
 	"errors"
 	"fmt"
 
@@ -27,9 +28,11 @@ type UuidObject interface {
 	SetEntryName(name string)
 	EntryUuid() *string
 	SetEntryUuid(value *string)
+	GetMiscAttributes() []xml.Attr
 }
 
 type UuidLocation interface {
+	LocationFilter() *string
 	XpathWithComponents(version.Number, ...string) ([]string, error)
 }
 
@@ -159,11 +162,39 @@ func (o *UuidObjectManager[E, L, S]) entriesProperlySorted(existing []E, planEnt
 	return movementRequired, nil
 }
 
+func (o *UuidObjectManager[E, L, S]) filterEntriesByLocation(location L, entries []E) []E {
+	filter := location.LocationFilter()
+	if filter == nil {
+		return entries
+	}
+
+	getLocAttribute := func(entry E) *string {
+		for _, elt := range entry.GetMiscAttributes() {
+			if elt.Name.Local == "loc" {
+				return &elt.Value
+			}
+		}
+		return nil
+	}
+
+	var filtered []E
+	for _, elt := range entries {
+		location := getLocAttribute(elt)
+		if location == nil || *location == *filter {
+			filtered = append(filtered, elt)
+		}
+	}
+
+	return filtered
+}
+
 func (o *UuidObjectManager[E, L, S]) moveExhaustive(ctx context.Context, location L, entriesByName map[string]uuidObjectWithState[E], position movement.Position) error {
 	existing, err := o.service.List(ctx, location, "get", "", "")
 	if err != nil && err.Error() != "Object not found" {
 		return &Error{err: err, message: "Failed to list existing entries"}
 	}
+
+	existing = o.filterEntriesByLocation(location, existing)
 
 	movementRequired, err := o.entriesProperlySorted(existing, entriesByName)
 	if err != nil {
@@ -231,6 +262,8 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	if err != nil && !sdkerrors.IsObjectNotFound(err) {
 		return nil, fmt.Errorf("Failed to list remote entries: %w", err)
 	}
+
+	existing = o.filterEntriesByLocation(location, existing)
 
 	updates := xmlapi.NewChunkedMultiConfig(len(planEntries), o.batchSize)
 
@@ -302,6 +335,8 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	if err != nil && !sdkerrors.IsObjectNotFound(err) {
 		return nil, fmt.Errorf("Failed to list remote entries: %w", err)
 	}
+
+	existing = o.filterEntriesByLocation(location, existing)
 
 	entries := make([]E, len(planEntries))
 	for _, elt := range existing {
@@ -408,6 +443,8 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 	if err != nil && err.Error() != "Object not found" {
 		return nil, &Error{err: err, message: "sdk error while listing resources"}
 	}
+
+	existing = o.filterEntriesByLocation(location, existing)
 
 	updates := xmlapi.NewChunkedMultiConfig(len(existing), o.batchSize)
 
@@ -572,6 +609,8 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 		return nil, fmt.Errorf("Failed to list remote entries: %w", err)
 	}
 
+	existing = o.filterEntriesByLocation(location, existing)
+
 	entries := make([]E, len(planEntries))
 	for _, elt := range existing {
 		if planEntry, found := planEntriesByName[elt.EntryName()]; found {
@@ -590,6 +629,8 @@ func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, s
 		}
 		return nil, false, &Error{err: err, message: "failed to list remote entries"}
 	}
+
+	existing = o.filterEntriesByLocation(location, existing)
 
 	if exhaustive == Exhaustive {
 		// For resources that take sole ownership of a given list, Read()

@@ -807,6 +807,139 @@ func securityPolicyRulesPreCheck(prefix string) {
 	}
 }
 
+const securityPolicyRules_Hierarchy_Initial_Tmpl = `
+variable prefix { type = string }
+
+resource "panos_device_group" "parent" {
+  location = { panorama = {} }
+
+  name = format("%s-parent", var.prefix)
+}
+
+resource "panos_device_group" "child" {
+  location = { panorama = {} }
+
+  name = format("%s-child", var.prefix)
+}
+
+resource "panos_device_group_parent" "relation" {
+  location = { panorama = {} }
+
+  device_group = panos_device_group.child.name
+  parent       = panos_device_group.parent.name
+}
+`
+
+const securityPolicyRules_Hierarchy_Parent_Entries_Tmpl = `
+variable "parent_rule_names" {
+  type = list(string)
+}
+
+resource "panos_security_policy_rules" "parent" {
+  location = { device_group = { name = panos_device_group.parent.name } }
+
+  position = { where = "first" }
+
+  rules = [
+    for index, name in var.parent_rule_names: {
+      name = name
+
+      source_zones     = ["any"]
+      source_addresses = ["any"]
+
+      destination_zones     = ["any"]
+      destination_addresses = ["any"]
+
+      services = ["any"]
+      applications = ["any"]
+    }
+  ]
+}
+`
+
+const securityPolicyRules_Hierarchy_Child_Entries_Tmpl = `
+variable "child_rule_names" {
+  type = list(string)
+}
+
+resource "panos_security_policy_rules" "child" {
+  location = { device_group = { name = panos_device_group.child.name} }
+
+  position = { where = "first" }
+
+  rules = [
+    for index, name in var.child_rule_names: {
+      name = name
+
+      source_zones     = ["any"]
+      source_addresses = ["any"]
+
+      destination_zones     = ["any"]
+      destination_addresses = ["any"]
+
+      services = ["any"]
+      applications = ["any"]
+    }
+  ]
+}
+`
+
+func testAccSecurityPolicyRules_Hierarchy(t *testing.T, parent config.Variable, child config.Variable) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	configStep1 := securityPolicyRules_Hierarchy_Initial_Tmpl
+	configStep2 := mergeConfigs(
+		securityPolicyRules_Hierarchy_Initial_Tmpl,
+		securityPolicyRules_Hierarchy_Parent_Entries_Tmpl,
+	)
+	configStep3 := mergeConfigs(
+		securityPolicyRules_Hierarchy_Initial_Tmpl,
+		securityPolicyRules_Hierarchy_Parent_Entries_Tmpl,
+		securityPolicyRules_Hierarchy_Child_Entries_Tmpl,
+	)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			securityPolicyPreCheck(prefix)
+
+		},
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: configStep1,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+			{
+				Config: configStep2,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":            config.StringVariable(prefix),
+					"parent_rule_names": parent,
+				},
+			},
+			{
+				Config: configStep3,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":            config.StringVariable(prefix),
+					"parent_rule_names": parent,
+					"child_rule_names":  child,
+				},
+			},
+		},
+	})
+}
+
+func TestAccSecurityPolicyRules_Hierarchy_UniqueNames(t *testing.T) {
+	parentRules := config.ListVariable(config.StringVariable("rule-1"), config.StringVariable("rule-2"))
+	childRules := config.ListVariable(config.StringVariable("rule-3"), config.StringVariable("rule-4"))
+	testAccSecurityPolicyRules_Hierarchy(t, parentRules, childRules)
+}
+
 func mergeConfigs(configs ...string) string {
 	return strings.Join(configs, "\n")
 }
