@@ -342,7 +342,62 @@ resource "panos_nat_policy" "policy" {
 }
 `
 
-func TestAccNatPolicyExtended(t *testing.T) {
+const natPolicyExtendedResource5Tmpl = `
+variable "prefix" { type = string }
+
+resource "panos_template" "template" {
+  location = { panorama = {} }
+
+  name = format("%s-tmpl5", var.prefix)
+}
+
+resource "panos_device_group" "dg" {
+  location = { panorama = {} }
+
+  name = format("%s-dg5", var.prefix)
+  templates = [ resource.panos_template.template.name ]
+}
+
+resource "panos_ethernet_interface" "interface" {
+  location = { template = { name = resource.panos_template.template.name, vsys = "vsys1" } }
+
+  name = "ethernet1/1"
+
+  layer3 = {
+    ips = [{ name = "192.168.0.1" }]
+  }
+}
+
+resource "panos_nat_policy" "policy" {
+  location = { device_group = { name = resource.panos_device_group.dg.name }}
+
+  rules = [{
+      name = format("%s-rule2", var.prefix)
+      source_zones = ["any"]
+      source_addresses = ["any"]
+      destination_zone = ["external"]
+      destination_addresses = ["any"]
+
+      source_translation = {
+        dynamic_ip_and_port = {
+          interface_address = {
+            interface = resource.panos_ethernet_interface.interface.name
+          }
+        }
+      }
+
+      dynamic_destination_translation = {
+        translated_address = "1.1.1.1"
+        translated_port = 443
+        distribution = "least-sessions"
+      }
+
+      active_active_device_binding = "primary"
+  }]
+}
+`
+
+func TestAccNatPolicy_Extended(t *testing.T) {
 	t.Parallel()
 
 	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
@@ -620,6 +675,98 @@ func TestAccNatPolicyExtended(t *testing.T) {
 							AtMapKey("interface_address").
 							AtMapKey("ip"),
 						knownvalue.StringExact("192.168.0.1"),
+					),
+				},
+			},
+		},
+	})
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: natPolicyExtendedResource5Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_nat_policy.policy",
+						tfjsonpath.New("rules").
+							AtSliceIndex(0).
+							AtMapKey("source_translation").
+							AtMapKey("dynamic_ip_and_port").
+							AtMapKey("translated_address"),
+						knownvalue.Null(),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_nat_policy.policy",
+						tfjsonpath.New("rules").
+							AtSliceIndex(0).
+							AtMapKey("source_translation").
+							AtMapKey("dynamic_ip_and_port").
+							AtMapKey("interface_address").
+							AtMapKey("interface"),
+						knownvalue.StringExact("ethernet1/1"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_nat_policy.policy",
+						tfjsonpath.New("rules").
+							AtSliceIndex(0).
+							AtMapKey("source_translation").
+							AtMapKey("dynamic_ip_and_port").
+							AtMapKey("interface_address").
+							AtMapKey("ip"),
+						knownvalue.Null(),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_nat_policy.policy",
+						tfjsonpath.New("rules").
+							AtSliceIndex(0).
+							AtMapKey("source_translation").
+							AtMapKey("dynamic_ip_and_port").
+							AtMapKey("interface_address").
+							AtMapKey("floating_ip"),
+						knownvalue.Null(),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_nat_policy.policy",
+						tfjsonpath.New("rules").
+							AtSliceIndex(0).
+							AtMapKey("destination_translation"),
+						knownvalue.Null(),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_nat_policy.policy",
+						tfjsonpath.New("rules").
+							AtSliceIndex(0).
+							AtMapKey("dynamic_destination_translation").
+							AtMapKey("translated_address"),
+						knownvalue.StringExact("1.1.1.1"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_nat_policy.policy",
+						tfjsonpath.New("rules").
+							AtSliceIndex(0).
+							AtMapKey("dynamic_destination_translation").
+							AtMapKey("translated_port"),
+						knownvalue.Int64Exact(443),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_nat_policy.policy",
+						tfjsonpath.New("rules").
+							AtSliceIndex(0).
+							AtMapKey("dynamic_destination_translation").
+							AtMapKey("distribution"),
+						knownvalue.StringExact("least-sessions"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_nat_policy.policy",
+						tfjsonpath.New("rules").
+							AtSliceIndex(0).
+							AtMapKey("active_active_device_binding"),
+						knownvalue.StringExact("primary"),
 					),
 				},
 			},

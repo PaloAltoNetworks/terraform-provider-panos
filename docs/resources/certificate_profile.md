@@ -42,10 +42,10 @@ description: |-
 Optional:
 
 - `panorama` (Attributes) Located in a panorama. (see [below for nested schema](#nestedatt--location--panorama))
-- `shared` (Attributes) Located in shared. (see [below for nested schema](#nestedatt--location--shared))
-- `template` (Attributes) Located in a specific template. (see [below for nested schema](#nestedatt--location--template))
-- `template_stack` (Attributes) Located in a specific template stack. (see [below for nested schema](#nestedatt--location--template_stack))
-- `template_stack_vsys` (Attributes) Located in a specific template stack, device and vsys. (see [below for nested schema](#nestedatt--location--template_stack_vsys))
+- `shared` (Attributes) Panorama shared object (see [below for nested schema](#nestedatt--location--shared))
+- `template` (Attributes) A shared resource located within a specific template (see [below for nested schema](#nestedatt--location--template))
+- `template_stack` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template_stack))
+- `template_stack_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_stack_vsys))
 - `template_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_vsys))
 
 <a id="nestedatt--location--panorama"></a>
@@ -61,8 +61,8 @@ Optional:
 
 Optional:
 
-- `name` (String) The template.
-- `panorama_device` (String) The panorama device.
+- `name` (String) Specific Panorama template
+- `panorama_device` (String) Specific Panorama device
 
 
 <a id="nestedatt--location--template_stack"></a>
@@ -70,8 +70,8 @@ Optional:
 
 Optional:
 
-- `name` (String) The template stack.
-- `panorama_device` (String) The panorama device.
+- `name` (String) The template stack
+- `panorama_device` (String) Specific Panorama device
 
 
 <a id="nestedatt--location--template_stack_vsys"></a>
@@ -79,9 +79,9 @@ Optional:
 
 Optional:
 
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
-- `template_stack` (String) The template stack.
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
+- `template_stack` (String) The template stack
 - `vsys` (String) The vsys.
 
 
@@ -90,9 +90,9 @@ Optional:
 
 Optional:
 
-- `ngfw_device` (String) The NGFW device.
-- `panorama_device` (String) The panorama device.
-- `template` (String) The template.
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
+- `template` (String) Specific Panorama template
 - `vsys` (String) The vsys.
 
 

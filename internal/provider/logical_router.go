@@ -18960,6 +18960,16 @@ func (o *LogicalRouterDataSource) Read(ctx context.Context, req datasource.ReadR
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &logical_router.NgfwLocation{}
+			var innerLocation LogicalRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
 	}
 
 	// Basic logging.
@@ -38049,6 +38059,16 @@ func (r *LogicalRouterResource) Create(ctx context.Context, req resource.CreateR
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &logical_router.NgfwLocation{}
+			var innerLocation LogicalRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
 	}
 
 	if err := location.IsValid(); err != nil {
@@ -38159,6 +38179,16 @@ func (o *LogicalRouterResource) Read(ctx context.Context, req resource.ReadReque
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &logical_router.NgfwLocation{}
+			var innerLocation LogicalRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
 	}
 
 	// Basic logging.
@@ -38267,6 +38297,16 @@ func (r *LogicalRouterResource) Update(ctx context.Context, req resource.UpdateR
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &logical_router.NgfwLocation{}
+			var innerLocation LogicalRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -38399,6 +38439,16 @@ func (r *LogicalRouterResource) Delete(ctx context.Context, req resource.DeleteR
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &logical_router.NgfwLocation{}
+			var innerLocation LogicalRouterNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 	}
 
@@ -38545,10 +38595,14 @@ type LogicalRouterTemplateStackLocation struct {
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
+type LogicalRouterNgfwLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+}
 type LogicalRouterLocation struct {
 	Vsys          types.Object `tfsdk:"vsys"`
 	Template      types.Object `tfsdk:"template"`
 	TemplateStack types.Object `tfsdk:"template_stack"`
+	Ngfw          types.Object `tfsdk:"ngfw"`
 }
 
 func LogicalRouterLocationSchema() rsschema.Attribute {
@@ -38588,6 +38642,7 @@ func LogicalRouterLocationSchema() rsschema.Attribute {
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
+						path.MatchRelative().AtParent().AtName("ngfw"),
 					}...),
 				},
 			},
@@ -38649,6 +38704,24 @@ func LogicalRouterLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"ngfw": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific NGFW device",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
 					"ngfw_device": rsschema.StringAttribute{
 						Description: "The NGFW device",
 						Optional:    true,
@@ -38762,11 +38835,37 @@ func (o *LogicalRouterTemplateStackLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o LogicalRouterNgfwLocation) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *LogicalRouterNgfwLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
 func (o LogicalRouterLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		Vsys          *LogicalRouterVsysLocation          `json:"vsys,omitempty"`
 		Template      *LogicalRouterTemplateLocation      `json:"template,omitempty"`
 		TemplateStack *LogicalRouterTemplateStackLocation `json:"template_stack,omitempty"`
+		Ngfw          *LogicalRouterNgfwLocation          `json:"ngfw,omitempty"`
 	}
 	var vsys_object *LogicalRouterVsysLocation
 	{
@@ -38789,11 +38888,19 @@ func (o LogicalRouterLocation) MarshalJSON() ([]byte, error) {
 			return nil, NewDiagnosticsError("Failed to marshal template_stack into JSON document", diags.Errors())
 		}
 	}
+	var ngfw_object *LogicalRouterNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
+	}
 
 	obj := shadow{
 		Vsys:          vsys_object,
 		Template:      template_object,
 		TemplateStack: templateStack_object,
+		Ngfw:          ngfw_object,
 	}
 
 	return json.Marshal(obj)
@@ -38804,6 +38911,7 @@ func (o *LogicalRouterLocation) UnmarshalJSON(data []byte) error {
 		Vsys          *LogicalRouterVsysLocation          `json:"vsys,omitempty"`
 		Template      *LogicalRouterTemplateLocation      `json:"template,omitempty"`
 		TemplateStack *LogicalRouterTemplateStackLocation `json:"template_stack,omitempty"`
+		Ngfw          *LogicalRouterNgfwLocation          `json:"ngfw,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -38834,9 +38942,18 @@ func (o *LogicalRouterLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
 		}
 	}
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
+	}
 	o.Vsys = vsys_object
 	o.Template = template_object
 	o.TemplateStack = templateStack_object
+	o.Ngfw = ngfw_object
 
 	return nil
 }
@@ -38861,10 +38978,16 @@ func (o *LogicalRouterTemplateStackLocation) AttributeTypes() map[string]attr.Ty
 		"ngfw_device":     types.StringType,
 	}
 }
+func (o *LogicalRouterNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
 func (o *LogicalRouterLocation) AttributeTypes() map[string]attr.Type {
 	var vsysObj LogicalRouterVsysLocation
 	var templateObj LogicalRouterTemplateLocation
 	var templateStackObj LogicalRouterTemplateStackLocation
+	var ngfwObj LogicalRouterNgfwLocation
 	return map[string]attr.Type{
 		"vsys": types.ObjectType{
 			AttrTypes: vsysObj.AttributeTypes(),
@@ -38874,6 +38997,9 @@ func (o *LogicalRouterLocation) AttributeTypes() map[string]attr.Type {
 		},
 		"template_stack": types.ObjectType{
 			AttrTypes: templateStackObj.AttributeTypes(),
+		},
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
 		},
 	}
 }

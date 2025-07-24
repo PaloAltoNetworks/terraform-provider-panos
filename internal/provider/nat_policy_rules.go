@@ -2779,7 +2779,7 @@ func NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddre
 				Sensitive:   false,
 
 				Validators: []validator.String{
-					stringvalidator.ExactlyOneOf(path.Expressions{
+					stringvalidator.ConflictsWith(path.Expressions{
 						path.MatchRelative().AtParent().AtName("floating_ip"),
 						path.MatchRelative().AtParent().AtName("ip"),
 					}...),
@@ -2896,7 +2896,7 @@ func NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddres
 				Sensitive:   false,
 
 				Validators: []validator.String{
-					stringvalidator.ExactlyOneOf(path.Expressions{
+					stringvalidator.ConflictsWith(path.Expressions{
 						path.MatchRelative().AtParent().AtName("floating_ip"),
 						path.MatchRelative().AtParent().AtName("ip"),
 					}...),

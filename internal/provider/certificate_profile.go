@@ -680,6 +680,15 @@ func (o *CertificateProfileDataSource) Read(ctx context.Context, req datasource.
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &certificate.TemplateLocation{}
 			var innerLocation CertificateProfileTemplateLocation
@@ -726,15 +735,6 @@ func (o *CertificateProfileDataSource) Read(ctx context.Context, req datasource.
 			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
 			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
-		}
-
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &certificate.SharedLocation{}
-			var innerLocation CertificateProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 	}
 
@@ -1453,6 +1453,15 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &certificate.TemplateLocation{}
 			var innerLocation CertificateProfileTemplateLocation
@@ -1499,15 +1508,6 @@ func (r *CertificateProfileResource) Create(ctx context.Context, req resource.Cr
 			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
 			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
-		}
-
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &certificate.SharedLocation{}
-			var innerLocation CertificateProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 	}
 
@@ -1594,6 +1594,15 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &certificate.TemplateLocation{}
 			var innerLocation CertificateProfileTemplateLocation
@@ -1640,15 +1649,6 @@ func (o *CertificateProfileResource) Read(ctx context.Context, req resource.Read
 			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
 			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
-		}
-
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &certificate.SharedLocation{}
-			var innerLocation CertificateProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 	}
 
@@ -1734,6 +1734,15 @@ func (r *CertificateProfileResource) Update(ctx context.Context, req resource.Up
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &certificate.TemplateLocation{}
 			var innerLocation CertificateProfileTemplateLocation
@@ -1780,15 +1789,6 @@ func (r *CertificateProfileResource) Update(ctx context.Context, req resource.Up
 			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
 			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
-		}
-
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &certificate.SharedLocation{}
-			var innerLocation CertificateProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 	}
 
@@ -1897,6 +1897,15 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &certificate.SharedLocation{}
+			var innerLocation CertificateProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &certificate.TemplateLocation{}
 			var innerLocation CertificateProfileTemplateLocation
@@ -1943,15 +1952,6 @@ func (r *CertificateProfileResource) Delete(ctx context.Context, req resource.De
 			location.TemplateStackVsys.TemplateStack = innerLocation.TemplateStack.ValueString()
 			location.TemplateStackVsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 			location.TemplateStackVsys.Vsys = innerLocation.Vsys.ValueString()
-		}
-
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &certificate.SharedLocation{}
-			var innerLocation CertificateProfileSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 	}
 
@@ -2086,6 +2086,8 @@ func (r *CertificateProfileResource) ImportState(ctx context.Context, req resour
 
 type CertificateProfilePanoramaLocation struct {
 }
+type CertificateProfileSharedLocation struct {
+}
 type CertificateProfileTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
@@ -2106,15 +2108,13 @@ type CertificateProfileTemplateStackVsysLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 	Vsys           types.String `tfsdk:"vsys"`
 }
-type CertificateProfileSharedLocation struct {
-}
 type CertificateProfileLocation struct {
 	Panorama          types.Object `tfsdk:"panorama"`
+	Shared            types.Object `tfsdk:"shared"`
 	Template          types.Object `tfsdk:"template"`
 	TemplateVsys      types.Object `tfsdk:"template_vsys"`
 	TemplateStack     types.Object `tfsdk:"template_stack"`
 	TemplateStackVsys types.Object `tfsdk:"template_stack_vsys"`
-	Shared            types.Object `tfsdk:"shared"`
 }
 
 func CertificateProfileLocationSchema() rsschema.Attribute {
@@ -2132,20 +2132,27 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("panorama"),
+						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_vsys"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
 						path.MatchRelative().AtParent().AtName("template_stack_vsys"),
-						path.MatchRelative().AtParent().AtName("shared"),
 					}...),
 				},
 			},
+			"shared": rsschema.SingleNestedAttribute{
+				Description: "Panorama shared object",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+			},
 			"template": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template.",
+				Description: "A shared resource located within a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "Specific Panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -2154,7 +2161,7 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The template.",
+						Description: "Specific Panorama template",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -2172,7 +2179,7 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "Specific Panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -2181,7 +2188,7 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"template": rsschema.StringAttribute{
-						Description: "The template.",
+						Description: "Specific Panorama template",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -2190,7 +2197,7 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
+						Description: "The NGFW device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -2213,11 +2220,11 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 				},
 			},
 			"template_stack": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template stack.",
+				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "Specific Panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -2226,7 +2233,7 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The template stack.",
+						Description: "The template stack",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -2240,11 +2247,11 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 				},
 			},
 			"template_stack_vsys": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template stack, device and vsys.",
+				Description: "Located in a specific template, device and vsys.",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "Specific Panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -2253,7 +2260,7 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"template_stack": rsschema.StringAttribute{
-						Description: "The template stack.",
+						Description: "The template stack",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -2262,7 +2269,7 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 						},
 					},
 					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device.",
+						Description: "The NGFW device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -2284,13 +2291,6 @@ func CertificateProfileLocationSchema() rsschema.Attribute {
 					objectplanmodifier.RequiresReplace(),
 				},
 			},
-			"shared": rsschema.SingleNestedAttribute{
-				Description: "Located in shared.",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-			},
 		},
 	}
 }
@@ -2305,6 +2305,26 @@ func (o CertificateProfilePanoramaLocation) MarshalJSON() ([]byte, error) {
 }
 
 func (o *CertificateProfilePanoramaLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (o CertificateProfileSharedLocation) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+	}
+
+	obj := shadow{}
+
+	return json.Marshal(obj)
+}
+
+func (o *CertificateProfileSharedLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 	}
 
@@ -2447,40 +2467,27 @@ func (o *CertificateProfileTemplateStackVsysLocation) UnmarshalJSON(data []byte)
 
 	return nil
 }
-func (o CertificateProfileSharedLocation) MarshalJSON() ([]byte, error) {
-	type shadow struct {
-	}
-
-	obj := shadow{}
-
-	return json.Marshal(obj)
-}
-
-func (o *CertificateProfileSharedLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
 func (o CertificateProfileLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		Panorama          *CertificateProfilePanoramaLocation          `json:"panorama,omitempty"`
+		Shared            *CertificateProfileSharedLocation            `json:"shared,omitempty"`
 		Template          *CertificateProfileTemplateLocation          `json:"template,omitempty"`
 		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
 		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack,omitempty"`
 		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys,omitempty"`
-		Shared            *CertificateProfileSharedLocation            `json:"shared,omitempty"`
 	}
 	var panorama_object *CertificateProfilePanoramaLocation
 	{
 		diags := o.Panorama.As(context.TODO(), &panorama_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
 			return nil, NewDiagnosticsError("Failed to marshal panorama into JSON document", diags.Errors())
+		}
+	}
+	var shared_object *CertificateProfileSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
 		}
 	}
 	var template_object *CertificateProfileTemplateLocation
@@ -2511,21 +2518,14 @@ func (o CertificateProfileLocation) MarshalJSON() ([]byte, error) {
 			return nil, NewDiagnosticsError("Failed to marshal template_stack_vsys into JSON document", diags.Errors())
 		}
 	}
-	var shared_object *CertificateProfileSharedLocation
-	{
-		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
-		}
-	}
 
 	obj := shadow{
 		Panorama:          panorama_object,
+		Shared:            shared_object,
 		Template:          template_object,
 		TemplateVsys:      templateVsys_object,
 		TemplateStack:     templateStack_object,
 		TemplateStackVsys: templateStackVsys_object,
-		Shared:            shared_object,
 	}
 
 	return json.Marshal(obj)
@@ -2534,11 +2534,11 @@ func (o CertificateProfileLocation) MarshalJSON() ([]byte, error) {
 func (o *CertificateProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 		Panorama          *CertificateProfilePanoramaLocation          `json:"panorama,omitempty"`
+		Shared            *CertificateProfileSharedLocation            `json:"shared,omitempty"`
 		Template          *CertificateProfileTemplateLocation          `json:"template,omitempty"`
 		TemplateVsys      *CertificateProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
 		TemplateStack     *CertificateProfileTemplateStackLocation     `json:"template_stack,omitempty"`
 		TemplateStackVsys *CertificateProfileTemplateStackVsysLocation `json:"template_stack_vsys,omitempty"`
-		Shared            *CertificateProfileSharedLocation            `json:"shared,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2551,6 +2551,14 @@ func (o *CertificateProfileLocation) UnmarshalJSON(data []byte) error {
 		panorama_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Panorama.AttributeTypes(), shadow.Panorama)
 		if diags_tmp.HasError() {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into panorama", diags_tmp.Errors())
+		}
+	}
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
 		}
 	}
 	var template_object types.Object
@@ -2585,25 +2593,20 @@ func (o *CertificateProfileLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack_vsys", diags_tmp.Errors())
 		}
 	}
-	var shared_object types.Object
-	{
-		var diags_tmp diag.Diagnostics
-		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
-		}
-	}
 	o.Panorama = panorama_object
+	o.Shared = shared_object
 	o.Template = template_object
 	o.TemplateVsys = templateVsys_object
 	o.TemplateStack = templateStack_object
 	o.TemplateStackVsys = templateStackVsys_object
-	o.Shared = shared_object
 
 	return nil
 }
 
 func (o *CertificateProfilePanoramaLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *CertificateProfileSharedLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
 func (o *CertificateProfileTemplateLocation) AttributeTypes() map[string]attr.Type {
@@ -2634,19 +2637,19 @@ func (o *CertificateProfileTemplateStackVsysLocation) AttributeTypes() map[strin
 		"vsys":            types.StringType,
 	}
 }
-func (o *CertificateProfileSharedLocation) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
-}
 func (o *CertificateProfileLocation) AttributeTypes() map[string]attr.Type {
 	var panoramaObj CertificateProfilePanoramaLocation
+	var sharedObj CertificateProfileSharedLocation
 	var templateObj CertificateProfileTemplateLocation
 	var templateVsysObj CertificateProfileTemplateVsysLocation
 	var templateStackObj CertificateProfileTemplateStackLocation
 	var templateStackVsysObj CertificateProfileTemplateStackVsysLocation
-	var sharedObj CertificateProfileSharedLocation
 	return map[string]attr.Type{
 		"panorama": types.ObjectType{
 			AttrTypes: panoramaObj.AttributeTypes(),
+		},
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
 		},
 		"template": types.ObjectType{
 			AttrTypes: templateObj.AttributeTypes(),
@@ -2659,9 +2662,6 @@ func (o *CertificateProfileLocation) AttributeTypes() map[string]attr.Type {
 		},
 		"template_stack_vsys": types.ObjectType{
 			AttrTypes: templateStackVsysObj.AttributeTypes(),
-		},
-		"shared": types.ObjectType{
-			AttrTypes: sharedObj.AttributeTypes(),
 		},
 	}
 }

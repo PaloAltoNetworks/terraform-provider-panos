@@ -322,6 +322,7 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewNtpSettingsDataSource,
 		NewLdapProfileDataSource,
 		NewSslDecryptDataSource,
+		NewDhcpDataSource,
 		NewIkeGatewayDataSource,
 		NewAggregateInterfaceDataSource,
 		NewEthernetInterfaceDataSource,
@@ -385,6 +386,7 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewNtpSettingsResource,
 		NewLdapProfileResource,
 		NewSslDecryptResource,
+		NewDhcpResource,
 		NewIkeGatewayResource,
 		NewAggregateInterfaceResource,
 		NewEthernetInterfaceResource,
@@ -515,6 +517,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_device_group": resourceFuncs{
 		CreateImportId: DeviceGroupImportStateCreator,
+	},
+	"panos_dhcp": resourceFuncs{
+		CreateImportId: DhcpImportStateCreator,
 	},
 	"panos_ethernet_interface": resourceFuncs{
 		CreateImportId: EthernetInterfaceImportStateCreator,

@@ -29,9 +29,18 @@ description: |-
 
 Optional:
 
+- `ngfw` (Attributes) Located in a specific NGFW device (see [below for nested schema](#nestedatt--location--ngfw))
 - `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
 - `template_stack` (Attributes) Located in a specific template stack (see [below for nested schema](#nestedatt--location--template_stack))
 - `vsys` (Attributes) Located in a specific Virtual System (see [below for nested schema](#nestedatt--location--vsys))
+
+<a id="nestedatt--location--ngfw"></a>
+### Nested Schema for `location.ngfw`
+
+Optional:
+
+- `ngfw_device` (String) The NGFW device
+
 
 <a id="nestedatt--location--template"></a>
 ### Nested Schema for `location.template`
