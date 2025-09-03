@@ -667,6 +667,16 @@ func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, s
 		}
 	}
 
+	// If position is nil, there is a lifecycle { ignore_changes = [position] } in place
+	// and the state now keep null position instead of an actual position attribute.
+	//
+	// In that case we return movementRequired = true, but this will be ignored by terraform
+	// anyway until lifecycly ignore_changes is updated to remove position. When that happens
+	// terraform will detect a drift (actual position -> null) and generate a valid plan.
+	if position == nil {
+		return common, true, nil
+	}
+
 	actions, err := movement.MoveGroup(position, stateEntries, existing)
 	if err != nil {
 		if errors.Is(err, movement.ErrSlicesNotEqualLength) {

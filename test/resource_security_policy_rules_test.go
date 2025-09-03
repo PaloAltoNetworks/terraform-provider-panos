@@ -682,7 +682,7 @@ func TestAccSecurityPolicyRulesOrderingDependant(t *testing.T) {
 	})
 }
 
-func TestAccSecurityPolicyRulesPositionAsVariable(t *testing.T) {
+func TestAccSecurityPolicyRules_PositionAsVariable(t *testing.T) {
 	t.Parallel()
 
 	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
@@ -699,7 +699,7 @@ func TestAccSecurityPolicyRulesPositionAsVariable(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: securityPolicyRulesPositionAsVariableTmpl,
+				Config: securityPolicyRules_PositionAsVariable_Tmpl,
 				ConfigVariables: map[string]config.Variable{
 					"rule_names": config.ListVariable(withPrefix(prefix, ruleNames)...),
 					"prefix":     config.StringVariable(prefix),
@@ -714,7 +714,7 @@ func TestAccSecurityPolicyRulesPositionAsVariable(t *testing.T) {
 				},
 			},
 			{
-				Config: securityPolicyRulesPositionAsVariableTmpl,
+				Config: securityPolicyRules_PositionAsVariable_Tmpl,
 				ConfigVariables: map[string]config.Variable{
 					"rule_names": config.ListVariable(withPrefix(prefix, ruleNames)...),
 					"prefix":     config.StringVariable(prefix),
@@ -732,7 +732,7 @@ func TestAccSecurityPolicyRulesPositionAsVariable(t *testing.T) {
 	})
 }
 
-const securityPolicyRulesPositionAsVariableTmpl = `
+const securityPolicyRules_PositionAsVariable_Tmpl = `
 variable "position" { type = any }
 variable "prefix" { type = string }
 variable "rule_names" { type = list(string) }
@@ -756,6 +756,171 @@ resource "panos_security_policy_rules" "policy" {
       applications = ["any"]
     }
   ]
+}
+`
+
+func TestAccSecurityPolicyRules_WithLifecycle_IgnoredChanges(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+			securityPolicyRulesPreCheck(prefix)
+
+		},
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: securityPolicyRules_WithLifecycle_IgnoredChanges_Initial_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+			{
+				Config: securityPolicyRules_WithLifecycle_IgnoredChanges_Initial_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				PlanOnly: true,
+			},
+			{
+				Config: securityPolicyRules_WithLifecycle_IgnoredChanges_Initial_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+			{
+				Config: securityPolicyRules_WithLifecycle_IgnoredChanges_Final_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				PlanOnly:           true,
+				ExpectNonEmptyPlan: true,
+			},
+			{
+				Config: securityPolicyRules_WithLifecycle_IgnoredChanges_Final_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+		},
+	})
+}
+
+const securityPolicyRules_WithLifecycle_IgnoredChanges_Initial_Tmpl = `
+variable "prefix" {
+  type = string
+}
+
+resource "panos_device_group" "example" {
+  location = { panorama = {} }
+
+  name = var.prefix
+}
+
+resource "panos_security_policy_rules" "first" {
+  location = { device_group = { name = panos_device_group.example.name } }
+
+  position = { where = "first" }
+
+  rules = [{
+    name = "rule-1"
+
+    source_zones     = ["any"]
+    source_addresses = ["any"]
+
+    destination_zones     = ["any"]
+    destination_addresses = ["any"]
+
+    services = ["any"]
+    applications = ["any"]
+  }]
+
+  lifecycle {
+    ignore_changes = [position]
+  }
+}
+
+resource "panos_security_policy_rules" "second" {
+  depends_on = [panos_security_policy_rules.first]
+  location = { device_group = { name = panos_device_group.example.name } }
+
+  position = { where = "first" }
+
+  rules = [{
+    name = "rule-2"
+
+    source_zones     = ["any"]
+    source_addresses = ["any"]
+
+    destination_zones     = ["any"]
+    destination_addresses = ["any"]
+
+    services = ["any"]
+    applications = ["any"]
+  }]
+
+  lifecycle {
+    ignore_changes = [position]
+  }
+}
+`
+
+const securityPolicyRules_WithLifecycle_IgnoredChanges_Final_Tmpl = `
+variable "prefix" {
+  type = string
+}
+
+resource "panos_device_group" "example" {
+  location = { panorama = {} }
+
+  name = var.prefix
+}
+
+resource "panos_security_policy_rules" "first" {
+  location = { device_group = { name = panos_device_group.example.name } }
+
+  position = { where = "first" }
+
+  rules = [{
+    name = "rule-1"
+
+    source_zones     = ["any"]
+    source_addresses = ["any"]
+
+    destination_zones     = ["any"]
+    destination_addresses = ["any"]
+
+    services = ["any"]
+    applications = ["any"]
+  }]
+}
+
+resource "panos_security_policy_rules" "second" {
+  depends_on = [panos_security_policy_rules.first]
+  location = { device_group = { name = panos_device_group.example.name } }
+
+  position = { where = "first" }
+
+  rules = [{
+    name = "rule-2"
+
+    source_zones     = ["any"]
+    source_addresses = ["any"]
+
+    destination_zones     = ["any"]
+    destination_addresses = ["any"]
+
+    services = ["any"]
+    applications = ["any"]
+  }]
+
+  lifecycle {
+    ignore_changes = [position]
+  }
 }
 `
 

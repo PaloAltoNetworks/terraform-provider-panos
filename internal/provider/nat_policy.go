@@ -2197,8 +2197,6 @@ func (o *NatPolicyDataSource) Read(ctx context.Context, req datasource.ReadReque
 		entries = append(entries, entry)
 	}
 
-	// true
-
 	position := movement.PositionFirst{}
 	readEntries, _, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.Exhaustive, position)
 	if err != nil {
@@ -4612,8 +4610,6 @@ func (o *NatPolicyResource) Read(ctx context.Context, req resource.ReadRequest, 
 		}
 		entries = append(entries, entry)
 	}
-
-	// true
 
 	position := movement.PositionFirst{}
 	readEntries, _, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.Exhaustive, position)

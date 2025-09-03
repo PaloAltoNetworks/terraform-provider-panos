@@ -2058,8 +2058,6 @@ func (o *SecurityPolicyDataSource) Read(ctx context.Context, req datasource.Read
 		entries = append(entries, entry)
 	}
 
-	// true
-
 	position := movement.PositionFirst{}
 	readEntries, _, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.Exhaustive, position)
 	if err != nil {
@@ -4317,8 +4315,6 @@ func (o *SecurityPolicyResource) Read(ctx context.Context, req resource.ReadRequ
 		}
 		entries = append(entries, entry)
 	}
-
-	// true
 
 	position := movement.PositionFirst{}
 	readEntries, _, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.Exhaustive, position)
