@@ -644,7 +644,7 @@ func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, s
 	for idx, elt := range stateEntries {
 		stateEntriesByName[elt.EntryName()] = uuidObjectWithState[E]{
 			Entry:    elt,
-			State:    entryUnknown,
+			State:    entryMissing,
 			StateIdx: idx,
 		}
 	}
@@ -661,10 +661,29 @@ func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, s
 	}
 
 	common := make([]E, commonCount)
+	var stateEntriesMissing bool
 	for _, elt := range stateEntriesByName {
 		if elt.State == entryOk {
 			common[elt.StateIdx] = elt.Entry
 		}
+
+		if elt.State == entryMissing {
+			stateEntriesMissing = true
+		}
+	}
+
+	if stateEntriesMissing {
+		return common, false, nil
+	}
+
+	// If position is nil, there is a lifecycle { ignore_changes = [position] } in place
+	// and the state now keep null position instead of an actual position attribute.
+	//
+	// In that case we return movementRequired = true, but this will be ignored by terraform
+	// anyway until lifecycly ignore_changes is updated to remove position. When that happens
+	// terraform will detect a drift (actual position -> null) and generate a valid plan.
+	if position == nil {
+		return common, true, nil
 	}
 
 	actions, err := movement.MoveGroup(position, stateEntries, existing)

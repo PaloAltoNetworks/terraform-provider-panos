@@ -18,6 +18,25 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
+func DeleteServerSecurityRules(prefix string, ruleNames []string) {
+	location := security.NewDeviceGroupLocation()
+	location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
+
+	service := security.NewService(sdkClient)
+
+	var names []string
+	for _, elt := range ruleNames {
+		names = append(names, prefixed(prefix, elt))
+	}
+
+	err := service.Delete(context.TODO(), *location, names...)
+	if err != nil {
+		panic("failed to delete entries from the server")
+	}
+
+	return
+}
+
 type expectServerSecurityRulesOrder struct {
 	Location  security.Location
 	Prefix    string
@@ -516,24 +535,11 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 	rulesInitial := []string{"rule-1", "rule-2", "rule-3", "rule-4", "rule-5"}
 	rulesReordered := []string{"rule-2", "rule-1", "rule-3", "rule-4", "rule-5"}
 
-	prefixed := func(name string) string {
-		return fmt.Sprintf("%s-%s", prefix, name)
-	}
-
-	withPrefix := func(rules []string) []config.Variable {
-		var result []config.Variable
-		for _, elt := range rules {
-			result = append(result, config.StringVariable(prefixed(elt)))
-		}
-
-		return result
-	}
-
 	stateExpectedRuleName := func(idx int, value string) statecheck.StateCheck {
 		return statecheck.ExpectKnownValue(
 			"panos_security_policy.policy",
 			tfjsonpath.New("rules").AtSliceIndex(idx).AtMapKey("name"),
-			knownvalue.StringExact(prefixed(value)),
+			knownvalue.StringExact(prefixed(prefix, value)),
 		)
 	}
 
@@ -541,7 +547,7 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 		return plancheck.ExpectKnownValue(
 			"panos_security_policy.policy",
 			tfjsonpath.New("rules").AtSliceIndex(idx).AtMapKey("name"),
-			knownvalue.StringExact(prefixed(value)),
+			knownvalue.StringExact(prefixed(prefix, value)),
 		)
 	}
 
@@ -573,7 +579,7 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
 					"prefix":     config.StringVariable(prefix),
-					"rule_names": config.ListVariable(withPrefix(rulesInitial)...),
+					"rule_names": config.ListVariable(withPrefix(prefix, rulesInitial)...),
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					stateExpectedRuleName(0, "rule-1"),
@@ -589,7 +595,7 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
 					"prefix":     config.StringVariable(prefix),
-					"rule_names": config.ListVariable(withPrefix(rulesInitial)...),
+					"rule_names": config.ListVariable(withPrefix(prefix, rulesInitial)...),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
@@ -601,7 +607,7 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 				Config: securityPolicyOrderingTmpl,
 				ConfigVariables: map[string]config.Variable{
 					"prefix":     config.StringVariable(prefix),
-					"rule_names": config.ListVariable(withPrefix(rulesReordered)...),
+					"rule_names": config.ListVariable(withPrefix(prefix, rulesReordered)...),
 				},
 				ConfigPlanChecks: resource.ConfigPlanChecks{
 					PreApply: []plancheck.PlanCheck{
@@ -636,6 +642,71 @@ func TestAccSecurityPolicyOrdering(t *testing.T) {
 				},
 				PlanOnly:           true,
 				ExpectNonEmptyPlan: false,
+			},
+		},
+	})
+}
+
+const securityPolicy_UpdateMissing_Tmpl = `
+variable "prefix" { type = string }
+variable "rule_names" { type = list(string) }
+
+resource "panos_security_policy_rules" "policy" {
+  location = { device_group = { name = format("%s-dg", var.prefix) }}
+
+  rules = [
+    for index, name in var.rule_names: {
+      name = name
+
+      source_zones     = ["any"]
+      source_addresses = ["any"]
+
+      destination_zones     = ["any"]
+      destination_addresses = ["any"]
+
+      services = ["any"]
+      applications = ["any"]
+    }
+  ]
+}
+`
+
+func TestAccSecurityPolicy_UpdateMissing(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	rules := []string{"rule-1", "rule-2", "rule-3"}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+
+		},
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: securityPolicyRules_UpdateMissing_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":     config.StringVariable(prefix),
+					"rule_names": config.ListVariable(withPrefix(prefix, rules)...),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					ExpectServerSecurityRulesOrder(prefix, rules),
+				},
+			},
+			{
+				Config: securityPolicyRules_UpdateMissing_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":     config.StringVariable(prefix),
+					"rule_names": config.ListVariable(withPrefix(prefix, rules)...),
+				},
+				PreConfig: func() {
+					DeleteServerSecurityRules(prefix, []string{"rule-2"})
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					ExpectServerSecurityRulesOrder(prefix, rules),
+				},
 			},
 		},
 	})

@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
+	"github.com/PaloAltoNetworks/pango/movement"
 	"github.com/PaloAltoNetworks/pango/policies/rules/decryption"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -1541,13 +1542,16 @@ func (o *DecryptionPolicyRulesDataSource) Read(ctx context.Context, req datasour
 		entries = append(entries, entry)
 	}
 
-	// false
+	var position movement.Position
 	var positionAttribute TerraformPositionObject
-	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
-	if resp.Diagnostics.HasError() {
-		return
+	if !state.Position.IsNull() && !state.Position.IsUnknown() {
+		resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		position = positionAttribute.CopyToPango()
 	}
-	position := positionAttribute.CopyToPango()
 	readEntries, movementRequired, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
@@ -3298,13 +3302,16 @@ func (o *DecryptionPolicyRulesResource) Read(ctx context.Context, req resource.R
 		entries = append(entries, entry)
 	}
 
-	// false
+	var position movement.Position
 	var positionAttribute TerraformPositionObject
-	resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
-	if resp.Diagnostics.HasError() {
-		return
+	if !state.Position.IsNull() && !state.Position.IsUnknown() {
+		resp.Diagnostics.Append(state.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+
+		position = positionAttribute.CopyToPango()
 	}
-	position := positionAttribute.CopyToPango()
 	readEntries, movementRequired, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive, position)
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {

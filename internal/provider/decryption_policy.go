@@ -1534,8 +1534,6 @@ func (o *DecryptionPolicyDataSource) Read(ctx context.Context, req datasource.Re
 		entries = append(entries, entry)
 	}
 
-	// true
-
 	position := movement.PositionFirst{}
 	readEntries, _, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.Exhaustive, position)
 	if err != nil {
@@ -3251,8 +3249,6 @@ func (o *DecryptionPolicyResource) Read(ctx context.Context, req resource.ReadRe
 		}
 		entries = append(entries, entry)
 	}
-
-	// true
 
 	position := movement.PositionFirst{}
 	readEntries, _, err := o.manager.ReadMany(ctx, location, entries, sdkmanager.Exhaustive, position)
