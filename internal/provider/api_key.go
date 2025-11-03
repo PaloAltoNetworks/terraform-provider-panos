@@ -10,13 +10,10 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	ephschema "github.com/hashicorp/terraform-plugin-framework/ephemeral/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-)
-
-import (
-	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 )
 
 // Generate Terraform Ephemeral object
@@ -31,6 +28,7 @@ func NewApiKeyResource() ephemeral.EphemeralResource {
 
 type ApiKeyResource struct {
 	client *pango.Client
+	custom *ApiKeyCustom
 }
 
 type ApiKeyResourceModel struct {
@@ -39,7 +37,7 @@ type ApiKeyResourceModel struct {
 	ApiKey   types.String `tfsdk:"api_key"`
 }
 
-func (r *ApiKeyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *ApiKeyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -93,24 +91,30 @@ func (o *ApiKeyResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func (r *ApiKeyResource) Metadata(ctx context.Context, req ephemeral.MetadataRequest, resp *ephemeral.MetadataResponse) {
+func (o *ApiKeyResource) Metadata(ctx context.Context, req ephemeral.MetadataRequest, resp *ephemeral.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_api_key"
 }
 
-func (r *ApiKeyResource) Schema(_ context.Context, _ ephemeral.SchemaRequest, resp *ephemeral.SchemaResponse) {
+func (o *ApiKeyResource) Schema(_ context.Context, _ ephemeral.SchemaRequest, resp *ephemeral.SchemaResponse) {
 	resp.Schema = ApiKeyResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *ApiKeyResource) Configure(ctx context.Context, req ephemeral.ConfigureRequest, resp *ephemeral.ConfigureResponse) {
+func (o *ApiKeyResource) Configure(ctx context.Context, req ephemeral.ConfigureRequest, resp *ephemeral.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
+	o.client = providerData.Client
+	custom, err := NewApiKeyCustom(providerData)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
+		return
+	}
+	o.custom = custom
 }
 
 func (o *ApiKeyResourceModel) resourceXpathParentComponents() ([]string, error) {
@@ -118,28 +122,12 @@ func (o *ApiKeyResourceModel) resourceXpathParentComponents() ([]string, error) 
 	return components, nil
 }
 
-func (r *ApiKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest, resp *ephemeral.OpenResponse) {
+func (o *ApiKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest, resp *ephemeral.OpenResponse) {
 
-	var data ApiKeyResourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	username := data.Username.ValueString()
-	password := data.Password.ValueString()
-
-	apiKey, err := r.client.GenerateApiKey(ctx, username, password)
-	if err != nil {
-		resp.Diagnostics.AddError("failed to generate API key", err.Error())
-		return
-	}
-
-	data.ApiKey = types.StringValue(apiKey)
-	resp.Diagnostics.Append(resp.Result.Set(ctx, &data)...)
+	o.OpenCustom(ctx, req, resp)
 
 }
 
-func (r *ApiKeyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *ApiKeyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 }

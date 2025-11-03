@@ -179,36 +179,6 @@ var _ = Describe("Server", func() {
 				Expect(processed).To(MatchEntries(entries))
 			})
 		})
-
-		Context("when some of the entries were removed from the server", func() {
-			BeforeEach(func() {
-				initial = []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "3", Value: "C"}}
-				client = NewMockUuidClient(initial)
-				service = NewMockUuidService[*MockUuidObject, MockLocation](client)
-				var ok bool
-				if mockService, ok = service.(*MockUuidService[*MockUuidObject, MockLocation]); !ok {
-					panic("failed to cast service to mockService")
-				}
-				manager = sdkmanager.NewUuidObjectManager(client, service, batchSize, MockUuidSpecifier, MockUuidMatcher)
-
-			})
-
-			It("should recreate missing entries on the server based on the state", func() {
-				entries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
-
-				processed, moveRequired, err := manager.ReadMany(ctx, location, entries, sdkmanager.NonExhaustive, movement.PositionLast{})
-
-				Expect(err).ToNot(HaveOccurred())
-				Expect(moveRequired).To(BeFalse())
-				Expect(processed).To(HaveLen(2))
-
-				processed, err = manager.UpdateMany(ctx, location, []string{}, processed, entries, sdkmanager.NonExhaustive, movement.PositionLast{})
-				Expect(client.list()).To(HaveLen(3))
-				Expect(err).ToNot(HaveOccurred())
-				Expect(processed).To(HaveLen(3))
-				Expect(processed).To(MatchEntries(entries))
-			})
-		})
 	})
 
 	Context("initially has some entries", func() {

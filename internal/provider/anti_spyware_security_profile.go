@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/security/profiles/spyware"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -54,25 +55,25 @@ type AntiSpywareSecurityProfileDataSourceFilter struct {
 }
 
 type AntiSpywareSecurityProfileDataSourceModel struct {
-	Location                 types.Object                                             `tfsdk:"location"`
-	Name                     types.String                                             `tfsdk:"name"`
-	BotnetDomains            *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject `tfsdk:"botnet_domains"`
-	CloudInlineAnalysis      types.Bool                                               `tfsdk:"cloud_inline_analysis"`
-	Description              types.String                                             `tfsdk:"description"`
-	DisableOverride          types.String                                             `tfsdk:"disable_override"`
-	InlineExceptionEdlUrl    types.List                                               `tfsdk:"inline_exception_edl_url"`
-	InlineExceptionIpAddress types.List                                               `tfsdk:"inline_exception_ip_address"`
-	MicaEngineSpywareEnabled types.List                                               `tfsdk:"mica_engine_spyware_enabled"`
-	Rules                    types.List                                               `tfsdk:"rules"`
-	ThreatException          types.List                                               `tfsdk:"threat_exception"`
+	Location                 types.Object `tfsdk:"location"`
+	Name                     types.String `tfsdk:"name"`
+	BotnetDomains            types.Object `tfsdk:"botnet_domains"`
+	CloudInlineAnalysis      types.Bool   `tfsdk:"cloud_inline_analysis"`
+	Description              types.String `tfsdk:"description"`
+	DisableOverride          types.String `tfsdk:"disable_override"`
+	InlineExceptionEdlUrl    types.List   `tfsdk:"inline_exception_edl_url"`
+	InlineExceptionIpAddress types.List   `tfsdk:"inline_exception_ip_address"`
+	MicaEngineSpywareEnabled types.List   `tfsdk:"mica_engine_spyware_enabled"`
+	Rules                    types.List   `tfsdk:"rules"`
+	ThreatException          types.List   `tfsdk:"threat_exception"`
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsObject struct {
-	DnsSecurityCategories types.List                                                          `tfsdk:"dns_security_categories"`
-	Lists                 types.List                                                          `tfsdk:"lists"`
-	RtypeAction           *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject `tfsdk:"rtype_action"`
-	Sinkhole              *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject    `tfsdk:"sinkhole"`
-	ThreatException       types.List                                                          `tfsdk:"threat_exception"`
-	Whitelist             types.List                                                          `tfsdk:"whitelist"`
+	DnsSecurityCategories types.List   `tfsdk:"dns_security_categories"`
+	Lists                 types.List   `tfsdk:"lists"`
+	RtypeAction           types.Object `tfsdk:"rtype_action"`
+	Sinkhole              types.Object `tfsdk:"sinkhole"`
+	ThreatException       types.List   `tfsdk:"threat_exception"`
+	Whitelist             types.List   `tfsdk:"whitelist"`
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject struct {
 	Name          types.String `tfsdk:"name"`
@@ -81,15 +82,15 @@ type AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObjec
 	PacketCapture types.String `tfsdk:"packet_capture"`
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject struct {
-	Name          types.String                                                        `tfsdk:"name"`
-	Action        *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject `tfsdk:"action"`
-	PacketCapture types.String                                                        `tfsdk:"packet_capture"`
+	Name          types.String `tfsdk:"name"`
+	Action        types.Object `tfsdk:"action"`
+	PacketCapture types.String `tfsdk:"packet_capture"`
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject struct {
-	Alert    *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject    `tfsdk:"alert"`
-	Allow    *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject    `tfsdk:"allow"`
-	Block    *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject    `tfsdk:"block"`
-	Sinkhole *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject `tfsdk:"sinkhole"`
+	Alert    types.Object `tfsdk:"alert"`
+	Allow    types.Object `tfsdk:"allow"`
+	Block    types.Object `tfsdk:"block"`
+	Sinkhole types.Object `tfsdk:"sinkhole"`
 }
 type AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject struct {
 }
@@ -120,22 +121,22 @@ type AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject struct {
 	InlinePolicyAction types.String `tfsdk:"inline_policy_action"`
 }
 type AntiSpywareSecurityProfileDataSourceRulesObject struct {
-	Name          types.String                                           `tfsdk:"name"`
-	ThreatName    types.String                                           `tfsdk:"threat_name"`
-	Category      types.String                                           `tfsdk:"category"`
-	PacketCapture types.String                                           `tfsdk:"packet_capture"`
-	Severity      types.List                                             `tfsdk:"severity"`
-	Action        *AntiSpywareSecurityProfileDataSourceRulesActionObject `tfsdk:"action"`
+	Name          types.String `tfsdk:"name"`
+	ThreatName    types.String `tfsdk:"threat_name"`
+	Category      types.String `tfsdk:"category"`
+	PacketCapture types.String `tfsdk:"packet_capture"`
+	Severity      types.List   `tfsdk:"severity"`
+	Action        types.Object `tfsdk:"action"`
 }
 type AntiSpywareSecurityProfileDataSourceRulesActionObject struct {
-	Default     *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject     `tfsdk:"default"`
-	Allow       *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject       `tfsdk:"allow"`
-	Alert       *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject       `tfsdk:"alert"`
-	Drop        *AntiSpywareSecurityProfileDataSourceRulesActionDropObject        `tfsdk:"drop"`
-	ResetClient *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject `tfsdk:"reset_client"`
-	ResetServer *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject `tfsdk:"reset_server"`
-	ResetBoth   *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject   `tfsdk:"reset_both"`
-	BlockIp     *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject     `tfsdk:"block_ip"`
+	Default     types.Object `tfsdk:"default"`
+	Allow       types.Object `tfsdk:"allow"`
+	Alert       types.Object `tfsdk:"alert"`
+	Drop        types.Object `tfsdk:"drop"`
+	ResetClient types.Object `tfsdk:"reset_client"`
+	ResetServer types.Object `tfsdk:"reset_server"`
+	ResetBoth   types.Object `tfsdk:"reset_both"`
+	BlockIp     types.Object `tfsdk:"block_ip"`
 }
 type AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject struct {
 }
@@ -156,20 +157,20 @@ type AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject struct {
 	Duration types.Int64  `tfsdk:"duration"`
 }
 type AntiSpywareSecurityProfileDataSourceThreatExceptionObject struct {
-	Name          types.String                                                     `tfsdk:"name"`
-	PacketCapture types.String                                                     `tfsdk:"packet_capture"`
-	Action        *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject `tfsdk:"action"`
-	ExemptIp      types.List                                                       `tfsdk:"exempt_ip"`
+	Name          types.String `tfsdk:"name"`
+	PacketCapture types.String `tfsdk:"packet_capture"`
+	Action        types.Object `tfsdk:"action"`
+	ExemptIp      types.List   `tfsdk:"exempt_ip"`
 }
 type AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject struct {
-	Default     *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject     `tfsdk:"default"`
-	Allow       *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject       `tfsdk:"allow"`
-	Alert       *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject       `tfsdk:"alert"`
-	Drop        *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject        `tfsdk:"drop"`
-	ResetBoth   *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject   `tfsdk:"reset_both"`
-	ResetClient *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject `tfsdk:"reset_client"`
-	ResetServer *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject `tfsdk:"reset_server"`
-	BlockIp     *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject     `tfsdk:"block_ip"`
+	Default     types.Object `tfsdk:"default"`
+	Allow       types.Object `tfsdk:"allow"`
+	Alert       types.Object `tfsdk:"alert"`
+	Drop        types.Object `tfsdk:"drop"`
+	ResetBoth   types.Object `tfsdk:"reset_both"`
+	ResetClient types.Object `tfsdk:"reset_client"`
+	ResetServer types.Object `tfsdk:"reset_server"`
+	BlockIp     types.Object `tfsdk:"block_ip"`
 }
 type AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject struct {
 }
@@ -199,6 +200,11 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) AttributeTypes() map[string]
 
 	var botnetDomainsObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject
 
+	var micaEngineSpywareEnabledObj *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject
+
+	var rulesObj *AntiSpywareSecurityProfileDataSourceRulesObject
+
+	var threatExceptionObj *AntiSpywareSecurityProfileDataSourceThreatExceptionObject
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
@@ -207,14 +213,30 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) AttributeTypes() map[string]
 		"botnet_domains": types.ObjectType{
 			AttrTypes: botnetDomainsObj.AttributeTypes(),
 		},
-		"cloud_inline_analysis":       types.BoolType,
-		"description":                 types.StringType,
-		"disable_override":            types.StringType,
-		"inline_exception_edl_url":    types.ListType{},
-		"inline_exception_ip_address": types.ListType{},
-		"mica_engine_spyware_enabled": types.ListType{},
-		"rules":                       types.ListType{},
-		"threat_exception":            types.ListType{},
+		"cloud_inline_analysis": types.BoolType,
+		"description":           types.StringType,
+		"disable_override":      types.StringType,
+		"inline_exception_edl_url": types.ListType{
+			ElemType: types.StringType,
+		},
+		"inline_exception_ip_address": types.ListType{
+			ElemType: types.StringType,
+		},
+		"mica_engine_spyware_enabled": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: micaEngineSpywareEnabledObj.AttributeTypes(),
+			},
+		},
+		"rules": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: rulesObj.AttributeTypes(),
+			},
+		},
+		"threat_exception": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: threatExceptionObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -227,21 +249,44 @@ func (o AntiSpywareSecurityProfileDataSourceModel) EntryName() *string {
 }
 func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) AttributeTypes() map[string]attr.Type {
 
+	var dnsSecurityCategoriesObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject
+
+	var listsObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject
+
 	var rtypeActionObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject
 
 	var sinkholeObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject
 
+	var threatExceptionObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject
+
+	var whitelistObj *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject
 	return map[string]attr.Type{
-		"dns_security_categories": types.ListType{},
-		"lists":                   types.ListType{},
+		"dns_security_categories": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: dnsSecurityCategoriesObj.AttributeTypes(),
+			},
+		},
+		"lists": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: listsObj.AttributeTypes(),
+			},
+		},
 		"rtype_action": types.ObjectType{
 			AttrTypes: rtypeActionObj.AttributeTypes(),
 		},
 		"sinkhole": types.ObjectType{
 			AttrTypes: sinkholeObj.AttributeTypes(),
 		},
-		"threat_exception": types.ListType{},
-		"whitelist":        types.ListType{},
+		"threat_exception": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: threatExceptionObj.AttributeTypes(),
+			},
+		},
+		"whitelist": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: whitelistObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -448,7 +493,9 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesObject) AttributeTypes() map[s
 		"threat_name":    types.StringType,
 		"category":       types.StringType,
 		"packet_capture": types.StringType,
-		"severity":       types.ListType{},
+		"severity": types.ListType{
+			ElemType: types.StringType,
+		},
 		"action": types.ObjectType{
 			AttrTypes: actionObj.AttributeTypes(),
 		},
@@ -610,13 +657,18 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) AttributeTyp
 
 	var actionObj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject
 
+	var exemptIpObj *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject
 	return map[string]attr.Type{
 		"name":           types.StringType,
 		"packet_capture": types.StringType,
 		"action": types.ObjectType{
 			AttrTypes: actionObj.AttributeTypes(),
 		},
-		"exempt_ip": types.ListType{},
+		"exempt_ip": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: exemptIpObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -786,17 +838,21 @@ func (o AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) Entry
 	return o.Name.ValueStringPointer()
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var botnetDomains_entry *spyware.BotnetDomains
-	if o.BotnetDomains != nil {
+	if !o.BotnetDomains.IsUnknown() && !o.BotnetDomains.IsNull() {
 		if *obj != nil && (*obj).BotnetDomains != nil {
 			botnetDomains_entry = (*obj).BotnetDomains
 		} else {
 			botnetDomains_entry = new(spyware.BotnetDomains)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.BotnetDomains.CopyToPango(ctx, ancestors, &botnetDomains_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject
+		diags.Append(o.BotnetDomains.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &botnetDomains_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -804,15 +860,31 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 	cloudInlineAnalysis_value := o.CloudInlineAnalysis.ValueBoolPointer()
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	inlineExceptionEdlUrl_pango_entries := make([]string, 0)
-	diags.Append(o.InlineExceptionEdlUrl.ElementsAs(ctx, &inlineExceptionEdlUrl_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var inlineExceptionEdlUrl_pango_entries []string
+	if !o.InlineExceptionEdlUrl.IsUnknown() && !o.InlineExceptionEdlUrl.IsNull() {
+		object_entries := make([]types.String, 0, len(o.InlineExceptionEdlUrl.Elements()))
+		diags.Append(o.InlineExceptionEdlUrl.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			inlineExceptionEdlUrl_pango_entries = append(inlineExceptionEdlUrl_pango_entries, elt.ValueString())
+		}
 	}
-	inlineExceptionIpAddress_pango_entries := make([]string, 0)
-	diags.Append(o.InlineExceptionIpAddress.ElementsAs(ctx, &inlineExceptionIpAddress_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var inlineExceptionIpAddress_pango_entries []string
+	if !o.InlineExceptionIpAddress.IsUnknown() && !o.InlineExceptionIpAddress.IsNull() {
+		object_entries := make([]types.String, 0, len(o.InlineExceptionIpAddress.Elements()))
+		diags.Append(o.InlineExceptionIpAddress.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			inlineExceptionIpAddress_pango_entries = append(inlineExceptionIpAddress_pango_entries, elt.ValueString())
+		}
 	}
 	var micaEngineSpywareEnabled_tf_entries []AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject
 	var micaEngineSpywareEnabled_pango_entries []spyware.MicaEngineSpywareEnabled
@@ -824,7 +896,7 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 		}
 		for _, elt := range micaEngineSpywareEnabled_tf_entries {
 			var entry *spyware.MicaEngineSpywareEnabled
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -841,7 +913,7 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 		}
 		for _, elt := range rules_tf_entries {
 			var entry *spyware.Rules
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -858,7 +930,7 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 		}
 		for _, elt := range threatException_tf_entries {
 			var entry *spyware.ThreatException
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -882,7 +954,7 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomains, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomains, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSecurityCategories_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject
 	var dnsSecurityCategories_pango_entries []spyware.BotnetDomainsDnsSecurityCategories
@@ -894,7 +966,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 		}
 		for _, elt := range dnsSecurityCategories_tf_entries {
 			var entry *spyware.BotnetDomainsDnsSecurityCategories
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -911,7 +983,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 		}
 		for _, elt := range lists_tf_entries {
 			var entry *spyware.BotnetDomainsLists
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -919,27 +991,35 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 		}
 	}
 	var rtypeAction_entry *spyware.BotnetDomainsRtypeAction
-	if o.RtypeAction != nil {
+	if !o.RtypeAction.IsUnknown() && !o.RtypeAction.IsNull() {
 		if *obj != nil && (*obj).RtypeAction != nil {
 			rtypeAction_entry = (*obj).RtypeAction
 		} else {
 			rtypeAction_entry = new(spyware.BotnetDomainsRtypeAction)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RtypeAction.CopyToPango(ctx, append(ancestors, o), &rtypeAction_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject
+		diags.Append(o.RtypeAction.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &rtypeAction_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var sinkhole_entry *spyware.BotnetDomainsSinkhole
-	if o.Sinkhole != nil {
+	if !o.Sinkhole.IsUnknown() && !o.Sinkhole.IsNull() {
 		if *obj != nil && (*obj).Sinkhole != nil {
 			sinkhole_entry = (*obj).Sinkhole
 		} else {
 			sinkhole_entry = new(spyware.BotnetDomainsSinkhole)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Sinkhole.CopyToPango(ctx, append(ancestors, o), &sinkhole_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject
+		diags.Append(o.Sinkhole.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &sinkhole_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -954,7 +1034,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 		}
 		for _, elt := range threatException_tf_entries {
 			var entry *spyware.BotnetDomainsThreatException
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -971,7 +1051,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 		}
 		for _, elt := range whitelist_tf_entries {
 			var entry *spyware.BotnetDomainsWhitelist
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -991,7 +1071,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsDnsSecurityCategories, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsDnsSecurityCategories, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	logLevel_value := o.LogLevel.ValueStringPointer()
@@ -1007,17 +1087,21 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesO
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsLists, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsLists, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var action_entry *spyware.BotnetDomainsListsAction
-	if o.Action != nil {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
 		if *obj != nil && (*obj).Action != nil {
 			action_entry = (*obj).Action
 		} else {
 			action_entry = new(spyware.BotnetDomainsListsAction)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Action.CopyToPango(ctx, append(ancestors, o), &action_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject
+		diags.Append(o.Action.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &action_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1033,56 +1117,72 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) CopyToPan
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var alert_entry *spyware.BotnetDomainsListsActionAlert
-	if o.Alert != nil {
+	if !o.Alert.IsUnknown() && !o.Alert.IsNull() {
 		if *obj != nil && (*obj).Alert != nil {
 			alert_entry = (*obj).Alert
 		} else {
 			alert_entry = new(spyware.BotnetDomainsListsActionAlert)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Alert.CopyToPango(ctx, append(ancestors, o), &alert_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject
+		diags.Append(o.Alert.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &alert_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var allow_entry *spyware.BotnetDomainsListsActionAllow
-	if o.Allow != nil {
+	if !o.Allow.IsUnknown() && !o.Allow.IsNull() {
 		if *obj != nil && (*obj).Allow != nil {
 			allow_entry = (*obj).Allow
 		} else {
 			allow_entry = new(spyware.BotnetDomainsListsActionAllow)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Allow.CopyToPango(ctx, append(ancestors, o), &allow_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject
+		diags.Append(o.Allow.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &allow_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var block_entry *spyware.BotnetDomainsListsActionBlock
-	if o.Block != nil {
+	if !o.Block.IsUnknown() && !o.Block.IsNull() {
 		if *obj != nil && (*obj).Block != nil {
 			block_entry = (*obj).Block
 		} else {
 			block_entry = new(spyware.BotnetDomainsListsActionBlock)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Block.CopyToPango(ctx, append(ancestors, o), &block_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject
+		diags.Append(o.Block.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &block_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var sinkhole_entry *spyware.BotnetDomainsListsActionSinkhole
-	if o.Sinkhole != nil {
+	if !o.Sinkhole.IsUnknown() && !o.Sinkhole.IsNull() {
 		if *obj != nil && (*obj).Sinkhole != nil {
 			sinkhole_entry = (*obj).Sinkhole
 		} else {
 			sinkhole_entry = new(spyware.BotnetDomainsListsActionSinkhole)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Sinkhole.CopyToPango(ctx, append(ancestors, o), &sinkhole_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject
+		diags.Append(o.Sinkhole.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &sinkhole_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1098,7 +1198,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) Cop
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1107,7 +1207,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1116,7 +1216,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionBlock, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionBlock, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1125,7 +1225,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1134,7 +1234,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObj
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsRtypeAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsRtypeAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	any_value := o.Any.ValueStringPointer()
 	https_value := o.Https.ValueStringPointer()
@@ -1149,7 +1249,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) Cop
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4Address_value := o.Ipv4Address.ValueStringPointer()
 	ipv6Address_value := o.Ipv6Address.ValueStringPointer()
@@ -1162,7 +1262,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) CopyTo
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1172,7 +1272,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject)
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsWhitelist, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsWhitelist, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 
@@ -1184,7 +1284,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyT
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.MicaEngineSpywareEnabled, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.MicaEngineSpywareEnabled, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	inlinePolicyAction_value := o.InlinePolicyAction.ValueStringPointer()
 
@@ -1196,25 +1296,37 @@ func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) Cop
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	threatName_value := o.ThreatName.ValueStringPointer()
 	category_value := o.Category.ValueStringPointer()
 	packetCapture_value := o.PacketCapture.ValueStringPointer()
-	severity_pango_entries := make([]string, 0)
-	diags.Append(o.Severity.ElementsAs(ctx, &severity_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var severity_pango_entries []string
+	if !o.Severity.IsUnknown() && !o.Severity.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Severity.Elements()))
+		diags.Append(o.Severity.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			severity_pango_entries = append(severity_pango_entries, elt.ValueString())
+		}
 	}
 	var action_entry *spyware.RulesAction
-	if o.Action != nil {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
 		if *obj != nil && (*obj).Action != nil {
 			action_entry = (*obj).Action
 		} else {
 			action_entry = new(spyware.RulesAction)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Action.CopyToPango(ctx, append(ancestors, o), &action_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceRulesActionObject
+		diags.Append(o.Action.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &action_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1232,108 +1344,140 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var default_entry *spyware.RulesActionDefault
-	if o.Default != nil {
+	if !o.Default.IsUnknown() && !o.Default.IsNull() {
 		if *obj != nil && (*obj).Default != nil {
 			default_entry = (*obj).Default
 		} else {
 			default_entry = new(spyware.RulesActionDefault)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Default.CopyToPango(ctx, append(ancestors, o), &default_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject
+		diags.Append(o.Default.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &default_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var allow_entry *spyware.RulesActionAllow
-	if o.Allow != nil {
+	if !o.Allow.IsUnknown() && !o.Allow.IsNull() {
 		if *obj != nil && (*obj).Allow != nil {
 			allow_entry = (*obj).Allow
 		} else {
 			allow_entry = new(spyware.RulesActionAllow)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Allow.CopyToPango(ctx, append(ancestors, o), &allow_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject
+		diags.Append(o.Allow.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &allow_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var alert_entry *spyware.RulesActionAlert
-	if o.Alert != nil {
+	if !o.Alert.IsUnknown() && !o.Alert.IsNull() {
 		if *obj != nil && (*obj).Alert != nil {
 			alert_entry = (*obj).Alert
 		} else {
 			alert_entry = new(spyware.RulesActionAlert)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Alert.CopyToPango(ctx, append(ancestors, o), &alert_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject
+		diags.Append(o.Alert.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &alert_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var drop_entry *spyware.RulesActionDrop
-	if o.Drop != nil {
+	if !o.Drop.IsUnknown() && !o.Drop.IsNull() {
 		if *obj != nil && (*obj).Drop != nil {
 			drop_entry = (*obj).Drop
 		} else {
 			drop_entry = new(spyware.RulesActionDrop)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Drop.CopyToPango(ctx, append(ancestors, o), &drop_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceRulesActionDropObject
+		diags.Append(o.Drop.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &drop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetClient_entry *spyware.RulesActionResetClient
-	if o.ResetClient != nil {
+	if !o.ResetClient.IsUnknown() && !o.ResetClient.IsNull() {
 		if *obj != nil && (*obj).ResetClient != nil {
 			resetClient_entry = (*obj).ResetClient
 		} else {
 			resetClient_entry = new(spyware.RulesActionResetClient)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetClient.CopyToPango(ctx, append(ancestors, o), &resetClient_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject
+		diags.Append(o.ResetClient.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetServer_entry *spyware.RulesActionResetServer
-	if o.ResetServer != nil {
+	if !o.ResetServer.IsUnknown() && !o.ResetServer.IsNull() {
 		if *obj != nil && (*obj).ResetServer != nil {
 			resetServer_entry = (*obj).ResetServer
 		} else {
 			resetServer_entry = new(spyware.RulesActionResetServer)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetServer.CopyToPango(ctx, append(ancestors, o), &resetServer_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject
+		diags.Append(o.ResetServer.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetBoth_entry *spyware.RulesActionResetBoth
-	if o.ResetBoth != nil {
+	if !o.ResetBoth.IsUnknown() && !o.ResetBoth.IsNull() {
 		if *obj != nil && (*obj).ResetBoth != nil {
 			resetBoth_entry = (*obj).ResetBoth
 		} else {
 			resetBoth_entry = new(spyware.RulesActionResetBoth)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetBoth.CopyToPango(ctx, append(ancestors, o), &resetBoth_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject
+		diags.Append(o.ResetBoth.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetBoth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var blockIp_entry *spyware.RulesActionBlockIp
-	if o.BlockIp != nil {
+	if !o.BlockIp.IsUnknown() && !o.BlockIp.IsNull() {
 		if *obj != nil && (*obj).BlockIp != nil {
 			blockIp_entry = (*obj).BlockIp
 		} else {
 			blockIp_entry = new(spyware.RulesActionBlockIp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.BlockIp.CopyToPango(ctx, append(ancestors, o), &blockIp_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject
+		diags.Append(o.BlockIp.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &blockIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1353,7 +1497,7 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1362,7 +1506,7 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject) CopyToPan
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1371,7 +1515,7 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject) CopyToPango
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1380,7 +1524,7 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject) CopyToPango
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionDropObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionDropObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1389,7 +1533,7 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionDropObject) CopyToPango(
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1398,7 +1542,7 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) CopyT
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1407,7 +1551,7 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) CopyT
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1416,7 +1560,7 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) CopyToP
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	trackBy_value := o.TrackBy.ValueStringPointer()
 	duration_value := o.Duration.ValueInt64Pointer()
@@ -1429,18 +1573,22 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject) CopyToPan
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	packetCapture_value := o.PacketCapture.ValueStringPointer()
 	var action_entry *spyware.ThreatExceptionAction
-	if o.Action != nil {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
 		if *obj != nil && (*obj).Action != nil {
 			action_entry = (*obj).Action
 		} else {
 			action_entry = new(spyware.ThreatExceptionAction)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Action.CopyToPango(ctx, append(ancestors, o), &action_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject
+		diags.Append(o.Action.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &action_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1455,7 +1603,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyToPango(
 		}
 		for _, elt := range exemptIp_tf_entries {
 			var entry *spyware.ThreatExceptionExemptIp
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1473,108 +1621,140 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyToPango(
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var default_entry *spyware.ThreatExceptionActionDefault
-	if o.Default != nil {
+	if !o.Default.IsUnknown() && !o.Default.IsNull() {
 		if *obj != nil && (*obj).Default != nil {
 			default_entry = (*obj).Default
 		} else {
 			default_entry = new(spyware.ThreatExceptionActionDefault)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Default.CopyToPango(ctx, append(ancestors, o), &default_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject
+		diags.Append(o.Default.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &default_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var allow_entry *spyware.ThreatExceptionActionAllow
-	if o.Allow != nil {
+	if !o.Allow.IsUnknown() && !o.Allow.IsNull() {
 		if *obj != nil && (*obj).Allow != nil {
 			allow_entry = (*obj).Allow
 		} else {
 			allow_entry = new(spyware.ThreatExceptionActionAllow)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Allow.CopyToPango(ctx, append(ancestors, o), &allow_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject
+		diags.Append(o.Allow.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &allow_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var alert_entry *spyware.ThreatExceptionActionAlert
-	if o.Alert != nil {
+	if !o.Alert.IsUnknown() && !o.Alert.IsNull() {
 		if *obj != nil && (*obj).Alert != nil {
 			alert_entry = (*obj).Alert
 		} else {
 			alert_entry = new(spyware.ThreatExceptionActionAlert)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Alert.CopyToPango(ctx, append(ancestors, o), &alert_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject
+		diags.Append(o.Alert.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &alert_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var drop_entry *spyware.ThreatExceptionActionDrop
-	if o.Drop != nil {
+	if !o.Drop.IsUnknown() && !o.Drop.IsNull() {
 		if *obj != nil && (*obj).Drop != nil {
 			drop_entry = (*obj).Drop
 		} else {
 			drop_entry = new(spyware.ThreatExceptionActionDrop)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Drop.CopyToPango(ctx, append(ancestors, o), &drop_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject
+		diags.Append(o.Drop.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &drop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetBoth_entry *spyware.ThreatExceptionActionResetBoth
-	if o.ResetBoth != nil {
+	if !o.ResetBoth.IsUnknown() && !o.ResetBoth.IsNull() {
 		if *obj != nil && (*obj).ResetBoth != nil {
 			resetBoth_entry = (*obj).ResetBoth
 		} else {
 			resetBoth_entry = new(spyware.ThreatExceptionActionResetBoth)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetBoth.CopyToPango(ctx, append(ancestors, o), &resetBoth_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject
+		diags.Append(o.ResetBoth.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetBoth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetClient_entry *spyware.ThreatExceptionActionResetClient
-	if o.ResetClient != nil {
+	if !o.ResetClient.IsUnknown() && !o.ResetClient.IsNull() {
 		if *obj != nil && (*obj).ResetClient != nil {
 			resetClient_entry = (*obj).ResetClient
 		} else {
 			resetClient_entry = new(spyware.ThreatExceptionActionResetClient)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetClient.CopyToPango(ctx, append(ancestors, o), &resetClient_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject
+		diags.Append(o.ResetClient.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetServer_entry *spyware.ThreatExceptionActionResetServer
-	if o.ResetServer != nil {
+	if !o.ResetServer.IsUnknown() && !o.ResetServer.IsNull() {
 		if *obj != nil && (*obj).ResetServer != nil {
 			resetServer_entry = (*obj).ResetServer
 		} else {
 			resetServer_entry = new(spyware.ThreatExceptionActionResetServer)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetServer.CopyToPango(ctx, append(ancestors, o), &resetServer_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject
+		diags.Append(o.ResetServer.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var blockIp_entry *spyware.ThreatExceptionActionBlockIp
-	if o.BlockIp != nil {
+	if !o.BlockIp.IsUnknown() && !o.BlockIp.IsNull() {
 		if *obj != nil && (*obj).BlockIp != nil {
 			blockIp_entry = (*obj).BlockIp
 		} else {
 			blockIp_entry = new(spyware.ThreatExceptionActionBlockIp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.BlockIp.CopyToPango(ctx, append(ancestors, o), &blockIp_entry, ev)...)
+		var object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject
+		diags.Append(o.BlockIp.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &blockIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1594,7 +1774,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyTo
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1603,7 +1783,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject)
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1612,7 +1792,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) C
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1621,7 +1801,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) C
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1630,7 +1810,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) Co
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1639,7 +1819,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObjec
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1648,7 +1828,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObj
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1657,7 +1837,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObj
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	trackBy_value := o.TrackBy.ValueStringPointer()
 	duration_value := o.Duration.ValueInt64Pointer()
@@ -1670,7 +1850,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject)
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionExemptIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionExemptIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1681,12 +1861,18 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) Copy
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var inlineExceptionEdlUrl_list types.List
 	{
 		var list_diags diag.Diagnostics
-		inlineExceptionEdlUrl_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionEdlUrl)
+
+		entries := make([]string, 0)
+		if o.InlineExceptionEdlUrl.IsNull() || len(obj.InlineExceptionEdlUrl) > 0 {
+			entries = obj.InlineExceptionEdlUrl
+		}
+
+		inlineExceptionEdlUrl_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -1695,7 +1881,13 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Co
 	var inlineExceptionIpAddress_list types.List
 	{
 		var list_diags diag.Diagnostics
-		inlineExceptionIpAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionIpAddress)
+
+		entries := make([]string, 0)
+		if o.InlineExceptionIpAddress.IsNull() || len(obj.InlineExceptionIpAddress) > 0 {
+			entries = obj.InlineExceptionIpAddress
+		}
+
+		inlineExceptionIpAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -1704,15 +1896,31 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Co
 	var micaEngineSpywareEnabled_list types.List
 	{
 		var micaEngineSpywareEnabled_tf_entries []AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject
-		for _, elt := range obj.MicaEngineSpywareEnabled {
-			entry := AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.MicaEngineSpywareEnabled.IsNull() {
+			diags.Append(o.MicaEngineSpywareEnabled.ElementsAs(ctx, &micaEngineSpywareEnabled_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			micaEngineSpywareEnabled_tf_entries = append(micaEngineSpywareEnabled_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.MicaEngineSpywareEnabled {
+			entry := AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(micaEngineSpywareEnabled_tf_entries) {
+				entry = micaEngineSpywareEnabled_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(micaEngineSpywareEnabled_tf_entries) {
+				micaEngineSpywareEnabled_tf_entries[idx] = entry
+			} else {
+				micaEngineSpywareEnabled_tf_entries = append(micaEngineSpywareEnabled_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("mica_engine_spyware_enabled")
@@ -1722,15 +1930,31 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Co
 	var rules_list types.List
 	{
 		var rules_tf_entries []AntiSpywareSecurityProfileDataSourceRulesObject
-		for _, elt := range obj.Rules {
-			entry := AntiSpywareSecurityProfileDataSourceRulesObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Rules.IsNull() {
+			diags.Append(o.Rules.ElementsAs(ctx, &rules_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			rules_tf_entries = append(rules_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Rules {
+			entry := AntiSpywareSecurityProfileDataSourceRulesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(rules_tf_entries) {
+				entry = rules_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(rules_tf_entries) {
+				rules_tf_entries[idx] = entry
+			} else {
+				rules_tf_entries = append(rules_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("rules")
@@ -1740,25 +1964,56 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Co
 	var threatException_list types.List
 	{
 		var threatException_tf_entries []AntiSpywareSecurityProfileDataSourceThreatExceptionObject
-		for _, elt := range obj.ThreatException {
-			entry := AntiSpywareSecurityProfileDataSourceThreatExceptionObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.ThreatException.IsNull() {
+			diags.Append(o.ThreatException.ElementsAs(ctx, &threatException_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			threatException_tf_entries = append(threatException_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.ThreatException {
+			entry := AntiSpywareSecurityProfileDataSourceThreatExceptionObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(threatException_tf_entries) {
+				entry = threatException_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(threatException_tf_entries) {
+				threatException_tf_entries[idx] = entry
+			} else {
+				threatException_tf_entries = append(threatException_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("threat_exception")
 		threatException_list, list_diags = types.ListValueFrom(ctx, schemaType, threatException_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var botnetDomains_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject
+
+	var botnetDomains_obj *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject
+	if o.BotnetDomains.IsNull() {
+		botnetDomains_obj = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsObject)
+	} else {
+		diags.Append(o.BotnetDomains.As(ctx, &botnetDomains_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	botnetDomains_object := types.ObjectNull(botnetDomains_obj.AttributeTypes())
 	if obj.BotnetDomains != nil {
-		botnetDomains_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsObject)
-		diags.Append(botnetDomains_object.CopyFromPango(ctx, ancestors, obj.BotnetDomains, ev)...)
+		diags.Append(botnetDomains_obj.CopyFromPango(ctx, client, ancestors, obj.BotnetDomains, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		botnetDomains_object, diags_tmp = types.ObjectValueFrom(ctx, botnetDomains_obj.AttributeTypes(), botnetDomains_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1790,20 +2045,36 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomains, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomains, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSecurityCategories_list types.List
 	{
 		var dnsSecurityCategories_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject
-		for _, elt := range obj.DnsSecurityCategories {
-			entry := AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.DnsSecurityCategories.IsNull() {
+			diags.Append(o.DnsSecurityCategories.ElementsAs(ctx, &dnsSecurityCategories_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			dnsSecurityCategories_tf_entries = append(dnsSecurityCategories_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.DnsSecurityCategories {
+			entry := AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(dnsSecurityCategories_tf_entries) {
+				entry = dnsSecurityCategories_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(dnsSecurityCategories_tf_entries) {
+				dnsSecurityCategories_tf_entries[idx] = entry
+			} else {
+				dnsSecurityCategories_tf_entries = append(dnsSecurityCategories_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("dns_security_categories")
@@ -1813,15 +2084,31 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(
 	var lists_list types.List
 	{
 		var lists_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject
-		for _, elt := range obj.Lists {
-			entry := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Lists.IsNull() {
+			diags.Append(o.Lists.ElementsAs(ctx, &lists_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			lists_tf_entries = append(lists_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Lists {
+			entry := AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(lists_tf_entries) {
+				entry = lists_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(lists_tf_entries) {
+				lists_tf_entries[idx] = entry
+			} else {
+				lists_tf_entries = append(lists_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("lists")
@@ -1831,15 +2118,31 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(
 	var threatException_list types.List
 	{
 		var threatException_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject
-		for _, elt := range obj.ThreatException {
-			entry := AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.ThreatException.IsNull() {
+			diags.Append(o.ThreatException.ElementsAs(ctx, &threatException_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			threatException_tf_entries = append(threatException_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.ThreatException {
+			entry := AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(threatException_tf_entries) {
+				entry = threatException_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(threatException_tf_entries) {
+				threatException_tf_entries[idx] = entry
+			} else {
+				threatException_tf_entries = append(threatException_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("threat_exception")
@@ -1849,33 +2152,79 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(
 	var whitelist_list types.List
 	{
 		var whitelist_tf_entries []AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject
-		for _, elt := range obj.Whitelist {
-			entry := AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Whitelist.IsNull() {
+			diags.Append(o.Whitelist.ElementsAs(ctx, &whitelist_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			whitelist_tf_entries = append(whitelist_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Whitelist {
+			entry := AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(whitelist_tf_entries) {
+				entry = whitelist_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(whitelist_tf_entries) {
+				whitelist_tf_entries[idx] = entry
+			} else {
+				whitelist_tf_entries = append(whitelist_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("whitelist")
 		whitelist_list, list_diags = types.ListValueFrom(ctx, schemaType, whitelist_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var rtypeAction_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject
-	if obj.RtypeAction != nil {
-		rtypeAction_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject)
-		diags.Append(rtypeAction_object.CopyFromPango(ctx, append(ancestors, o), obj.RtypeAction, ev)...)
+
+	var rtypeAction_obj *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject
+	if o.RtypeAction.IsNull() {
+		rtypeAction_obj = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject)
+	} else {
+		diags.Append(o.RtypeAction.As(ctx, &rtypeAction_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var sinkhole_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject
+	rtypeAction_object := types.ObjectNull(rtypeAction_obj.AttributeTypes())
+	if obj.RtypeAction != nil {
+		diags.Append(rtypeAction_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RtypeAction, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		rtypeAction_object, diags_tmp = types.ObjectValueFrom(ctx, rtypeAction_obj.AttributeTypes(), rtypeAction_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var sinkhole_obj *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject
+	if o.Sinkhole.IsNull() {
+		sinkhole_obj = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject)
+	} else {
+		diags.Append(o.Sinkhole.As(ctx, &sinkhole_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	sinkhole_object := types.ObjectNull(sinkhole_obj.AttributeTypes())
 	if obj.Sinkhole != nil {
-		sinkhole_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject)
-		diags.Append(sinkhole_object.CopyFromPango(ctx, append(ancestors, o), obj.Sinkhole, ev)...)
+		diags.Append(sinkhole_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Sinkhole, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		sinkhole_object, diags_tmp = types.ObjectValueFrom(ctx, sinkhole_obj.AttributeTypes(), sinkhole_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1891,7 +2240,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyFromPango(
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsDnsSecurityCategories, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsDnsSecurityCategories, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -1914,12 +2263,27 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesO
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsLists, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsLists, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var action_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject
+
+	var action_obj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject
+	if o.Action.IsNull() {
+		action_obj = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject)
+	} else {
+		diags.Append(o.Action.As(ctx, &action_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	action_object := types.ObjectNull(action_obj.AttributeTypes())
 	if obj.Action != nil {
-		action_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject)
-		diags.Append(action_object.CopyFromPango(ctx, append(ancestors, o), obj.Action, ev)...)
+		diags.Append(action_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Action, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		action_object, diags_tmp = types.ObjectValueFrom(ctx, action_obj.AttributeTypes(), action_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1936,36 +2300,96 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) CopyFromP
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var alert_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject
+
+	var alert_obj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject
+	if o.Alert.IsNull() {
+		alert_obj = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject)
+	} else {
+		diags.Append(o.Alert.As(ctx, &alert_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	alert_object := types.ObjectNull(alert_obj.AttributeTypes())
 	if obj.Alert != nil {
-		alert_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject)
-		diags.Append(alert_object.CopyFromPango(ctx, append(ancestors, o), obj.Alert, ev)...)
+		diags.Append(alert_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Alert, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		alert_object, diags_tmp = types.ObjectValueFrom(ctx, alert_obj.AttributeTypes(), alert_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var allow_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject
+
+	var allow_obj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject
+	if o.Allow.IsNull() {
+		allow_obj = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject)
+	} else {
+		diags.Append(o.Allow.As(ctx, &allow_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	allow_object := types.ObjectNull(allow_obj.AttributeTypes())
 	if obj.Allow != nil {
-		allow_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject)
-		diags.Append(allow_object.CopyFromPango(ctx, append(ancestors, o), obj.Allow, ev)...)
+		diags.Append(allow_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Allow, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		allow_object, diags_tmp = types.ObjectValueFrom(ctx, allow_obj.AttributeTypes(), allow_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var block_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject
+
+	var block_obj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject
+	if o.Block.IsNull() {
+		block_obj = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject)
+	} else {
+		diags.Append(o.Block.As(ctx, &block_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	block_object := types.ObjectNull(block_obj.AttributeTypes())
 	if obj.Block != nil {
-		block_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject)
-		diags.Append(block_object.CopyFromPango(ctx, append(ancestors, o), obj.Block, ev)...)
+		diags.Append(block_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Block, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		block_object, diags_tmp = types.ObjectValueFrom(ctx, block_obj.AttributeTypes(), block_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var sinkhole_object *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject
+
+	var sinkhole_obj *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject
+	if o.Sinkhole.IsNull() {
+		sinkhole_obj = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject)
+	} else {
+		diags.Append(o.Sinkhole.As(ctx, &sinkhole_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	sinkhole_object := types.ObjectNull(sinkhole_obj.AttributeTypes())
 	if obj.Sinkhole != nil {
-		sinkhole_object = new(AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject)
-		diags.Append(sinkhole_object.CopyFromPango(ctx, append(ancestors, o), obj.Sinkhole, ev)...)
+		diags.Append(sinkhole_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Sinkhole, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		sinkhole_object, diags_tmp = types.ObjectValueFrom(ctx, sinkhole_obj.AttributeTypes(), sinkhole_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1979,31 +2403,31 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) Cop
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionBlock, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionBlock, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsRtypeAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsRtypeAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var any_value types.String
@@ -2025,7 +2449,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) Cop
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4Address_value types.String
@@ -2042,14 +2466,14 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeObject) CopyFr
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsWhitelist, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsWhitelist, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var description_value types.String
@@ -2062,7 +2486,7 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistObject) CopyF
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.MicaEngineSpywareEnabled, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.MicaEngineSpywareEnabled, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var inlinePolicyAction_value types.String
@@ -2075,21 +2499,42 @@ func (o *AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledObject) Cop
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var severity_list types.List
 	{
 		var list_diags diag.Diagnostics
-		severity_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Severity)
+
+		entries := make([]string, 0)
+		if o.Severity.IsNull() || len(obj.Severity) > 0 {
+			entries = obj.Severity
+		}
+
+		severity_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var action_object *AntiSpywareSecurityProfileDataSourceRulesActionObject
+
+	var action_obj *AntiSpywareSecurityProfileDataSourceRulesActionObject
+	if o.Action.IsNull() {
+		action_obj = new(AntiSpywareSecurityProfileDataSourceRulesActionObject)
+	} else {
+		diags.Append(o.Action.As(ctx, &action_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	action_object := types.ObjectNull(action_obj.AttributeTypes())
 	if obj.Action != nil {
-		action_object = new(AntiSpywareSecurityProfileDataSourceRulesActionObject)
-		diags.Append(action_object.CopyFromPango(ctx, append(ancestors, o), obj.Action, ev)...)
+		diags.Append(action_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Action, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		action_object, diags_tmp = types.ObjectValueFrom(ctx, action_obj.AttributeTypes(), action_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2117,68 +2562,188 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var default_object *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject
+
+	var default_obj *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject
+	if o.Default.IsNull() {
+		default_obj = new(AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject)
+	} else {
+		diags.Append(o.Default.As(ctx, &default_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	default_object := types.ObjectNull(default_obj.AttributeTypes())
 	if obj.Default != nil {
-		default_object = new(AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject)
-		diags.Append(default_object.CopyFromPango(ctx, append(ancestors, o), obj.Default, ev)...)
+		diags.Append(default_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Default, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		default_object, diags_tmp = types.ObjectValueFrom(ctx, default_obj.AttributeTypes(), default_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var allow_object *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject
+
+	var allow_obj *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject
+	if o.Allow.IsNull() {
+		allow_obj = new(AntiSpywareSecurityProfileDataSourceRulesActionAllowObject)
+	} else {
+		diags.Append(o.Allow.As(ctx, &allow_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	allow_object := types.ObjectNull(allow_obj.AttributeTypes())
 	if obj.Allow != nil {
-		allow_object = new(AntiSpywareSecurityProfileDataSourceRulesActionAllowObject)
-		diags.Append(allow_object.CopyFromPango(ctx, append(ancestors, o), obj.Allow, ev)...)
+		diags.Append(allow_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Allow, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		allow_object, diags_tmp = types.ObjectValueFrom(ctx, allow_obj.AttributeTypes(), allow_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var alert_object *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject
+
+	var alert_obj *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject
+	if o.Alert.IsNull() {
+		alert_obj = new(AntiSpywareSecurityProfileDataSourceRulesActionAlertObject)
+	} else {
+		diags.Append(o.Alert.As(ctx, &alert_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	alert_object := types.ObjectNull(alert_obj.AttributeTypes())
 	if obj.Alert != nil {
-		alert_object = new(AntiSpywareSecurityProfileDataSourceRulesActionAlertObject)
-		diags.Append(alert_object.CopyFromPango(ctx, append(ancestors, o), obj.Alert, ev)...)
+		diags.Append(alert_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Alert, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		alert_object, diags_tmp = types.ObjectValueFrom(ctx, alert_obj.AttributeTypes(), alert_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var drop_object *AntiSpywareSecurityProfileDataSourceRulesActionDropObject
+
+	var drop_obj *AntiSpywareSecurityProfileDataSourceRulesActionDropObject
+	if o.Drop.IsNull() {
+		drop_obj = new(AntiSpywareSecurityProfileDataSourceRulesActionDropObject)
+	} else {
+		diags.Append(o.Drop.As(ctx, &drop_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	drop_object := types.ObjectNull(drop_obj.AttributeTypes())
 	if obj.Drop != nil {
-		drop_object = new(AntiSpywareSecurityProfileDataSourceRulesActionDropObject)
-		diags.Append(drop_object.CopyFromPango(ctx, append(ancestors, o), obj.Drop, ev)...)
+		diags.Append(drop_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Drop, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		drop_object, diags_tmp = types.ObjectValueFrom(ctx, drop_obj.AttributeTypes(), drop_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetClient_object *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject
+
+	var resetClient_obj *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject
+	if o.ResetClient.IsNull() {
+		resetClient_obj = new(AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject)
+	} else {
+		diags.Append(o.ResetClient.As(ctx, &resetClient_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetClient_object := types.ObjectNull(resetClient_obj.AttributeTypes())
 	if obj.ResetClient != nil {
-		resetClient_object = new(AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject)
-		diags.Append(resetClient_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetClient, ev)...)
+		diags.Append(resetClient_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetClient, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetClient_object, diags_tmp = types.ObjectValueFrom(ctx, resetClient_obj.AttributeTypes(), resetClient_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetServer_object *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject
+
+	var resetServer_obj *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject
+	if o.ResetServer.IsNull() {
+		resetServer_obj = new(AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject)
+	} else {
+		diags.Append(o.ResetServer.As(ctx, &resetServer_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetServer_object := types.ObjectNull(resetServer_obj.AttributeTypes())
 	if obj.ResetServer != nil {
-		resetServer_object = new(AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject)
-		diags.Append(resetServer_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetServer, ev)...)
+		diags.Append(resetServer_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetServer_object, diags_tmp = types.ObjectValueFrom(ctx, resetServer_obj.AttributeTypes(), resetServer_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetBoth_object *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject
+
+	var resetBoth_obj *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject
+	if o.ResetBoth.IsNull() {
+		resetBoth_obj = new(AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject)
+	} else {
+		diags.Append(o.ResetBoth.As(ctx, &resetBoth_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetBoth_object := types.ObjectNull(resetBoth_obj.AttributeTypes())
 	if obj.ResetBoth != nil {
-		resetBoth_object = new(AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject)
-		diags.Append(resetBoth_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetBoth, ev)...)
+		diags.Append(resetBoth_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetBoth, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetBoth_object, diags_tmp = types.ObjectValueFrom(ctx, resetBoth_obj.AttributeTypes(), resetBoth_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var blockIp_object *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject
+
+	var blockIp_obj *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject
+	if o.BlockIp.IsNull() {
+		blockIp_obj = new(AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject)
+	} else {
+		diags.Append(o.BlockIp.As(ctx, &blockIp_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	blockIp_object := types.ObjectNull(blockIp_obj.AttributeTypes())
 	if obj.BlockIp != nil {
-		blockIp_object = new(AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject)
-		diags.Append(blockIp_object.CopyFromPango(ctx, append(ancestors, o), obj.BlockIp, ev)...)
+		diags.Append(blockIp_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.BlockIp, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		blockIp_object, diags_tmp = types.ObjectValueFrom(ctx, blockIp_obj.AttributeTypes(), blockIp_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2196,49 +2761,49 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionDropObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionDropObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var trackBy_value types.String
@@ -2255,30 +2820,61 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionBlockIpObject) CopyFromP
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exemptIp_list types.List
 	{
 		var exemptIp_tf_entries []AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject
-		for _, elt := range obj.ExemptIp {
-			entry := AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.ExemptIp.IsNull() {
+			diags.Append(o.ExemptIp.ElementsAs(ctx, &exemptIp_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			exemptIp_tf_entries = append(exemptIp_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.ExemptIp {
+			entry := AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(exemptIp_tf_entries) {
+				entry = exemptIp_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(exemptIp_tf_entries) {
+				exemptIp_tf_entries[idx] = entry
+			} else {
+				exemptIp_tf_entries = append(exemptIp_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("exempt_ip")
 		exemptIp_list, list_diags = types.ListValueFrom(ctx, schemaType, exemptIp_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var action_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject
+
+	var action_obj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject
+	if o.Action.IsNull() {
+		action_obj = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject)
+	} else {
+		diags.Append(o.Action.As(ctx, &action_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	action_object := types.ObjectNull(action_obj.AttributeTypes())
 	if obj.Action != nil {
-		action_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject)
-		diags.Append(action_object.CopyFromPango(ctx, append(ancestors, o), obj.Action, ev)...)
+		diags.Append(action_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Action, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		action_object, diags_tmp = types.ObjectValueFrom(ctx, action_obj.AttributeTypes(), action_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2296,68 +2892,188 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyFromPang
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var default_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject
+
+	var default_obj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject
+	if o.Default.IsNull() {
+		default_obj = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject)
+	} else {
+		diags.Append(o.Default.As(ctx, &default_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	default_object := types.ObjectNull(default_obj.AttributeTypes())
 	if obj.Default != nil {
-		default_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject)
-		diags.Append(default_object.CopyFromPango(ctx, append(ancestors, o), obj.Default, ev)...)
+		diags.Append(default_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Default, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		default_object, diags_tmp = types.ObjectValueFrom(ctx, default_obj.AttributeTypes(), default_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var allow_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject
+
+	var allow_obj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject
+	if o.Allow.IsNull() {
+		allow_obj = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject)
+	} else {
+		diags.Append(o.Allow.As(ctx, &allow_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	allow_object := types.ObjectNull(allow_obj.AttributeTypes())
 	if obj.Allow != nil {
-		allow_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject)
-		diags.Append(allow_object.CopyFromPango(ctx, append(ancestors, o), obj.Allow, ev)...)
+		diags.Append(allow_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Allow, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		allow_object, diags_tmp = types.ObjectValueFrom(ctx, allow_obj.AttributeTypes(), allow_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var alert_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject
+
+	var alert_obj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject
+	if o.Alert.IsNull() {
+		alert_obj = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject)
+	} else {
+		diags.Append(o.Alert.As(ctx, &alert_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	alert_object := types.ObjectNull(alert_obj.AttributeTypes())
 	if obj.Alert != nil {
-		alert_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject)
-		diags.Append(alert_object.CopyFromPango(ctx, append(ancestors, o), obj.Alert, ev)...)
+		diags.Append(alert_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Alert, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		alert_object, diags_tmp = types.ObjectValueFrom(ctx, alert_obj.AttributeTypes(), alert_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var drop_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject
+
+	var drop_obj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject
+	if o.Drop.IsNull() {
+		drop_obj = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject)
+	} else {
+		diags.Append(o.Drop.As(ctx, &drop_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	drop_object := types.ObjectNull(drop_obj.AttributeTypes())
 	if obj.Drop != nil {
-		drop_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject)
-		diags.Append(drop_object.CopyFromPango(ctx, append(ancestors, o), obj.Drop, ev)...)
+		diags.Append(drop_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Drop, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		drop_object, diags_tmp = types.ObjectValueFrom(ctx, drop_obj.AttributeTypes(), drop_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetBoth_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject
+
+	var resetBoth_obj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject
+	if o.ResetBoth.IsNull() {
+		resetBoth_obj = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject)
+	} else {
+		diags.Append(o.ResetBoth.As(ctx, &resetBoth_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetBoth_object := types.ObjectNull(resetBoth_obj.AttributeTypes())
 	if obj.ResetBoth != nil {
-		resetBoth_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject)
-		diags.Append(resetBoth_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetBoth, ev)...)
+		diags.Append(resetBoth_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetBoth, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetBoth_object, diags_tmp = types.ObjectValueFrom(ctx, resetBoth_obj.AttributeTypes(), resetBoth_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetClient_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject
+
+	var resetClient_obj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject
+	if o.ResetClient.IsNull() {
+		resetClient_obj = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject)
+	} else {
+		diags.Append(o.ResetClient.As(ctx, &resetClient_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetClient_object := types.ObjectNull(resetClient_obj.AttributeTypes())
 	if obj.ResetClient != nil {
-		resetClient_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject)
-		diags.Append(resetClient_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetClient, ev)...)
+		diags.Append(resetClient_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetClient, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetClient_object, diags_tmp = types.ObjectValueFrom(ctx, resetClient_obj.AttributeTypes(), resetClient_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetServer_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject
+
+	var resetServer_obj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject
+	if o.ResetServer.IsNull() {
+		resetServer_obj = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject)
+	} else {
+		diags.Append(o.ResetServer.As(ctx, &resetServer_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetServer_object := types.ObjectNull(resetServer_obj.AttributeTypes())
 	if obj.ResetServer != nil {
-		resetServer_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject)
-		diags.Append(resetServer_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetServer, ev)...)
+		diags.Append(resetServer_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetServer_object, diags_tmp = types.ObjectValueFrom(ctx, resetServer_obj.AttributeTypes(), resetServer_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var blockIp_object *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject
+
+	var blockIp_obj *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject
+	if o.BlockIp.IsNull() {
+		blockIp_obj = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject)
+	} else {
+		diags.Append(o.BlockIp.As(ctx, &blockIp_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	blockIp_object := types.ObjectNull(blockIp_obj.AttributeTypes())
 	if obj.BlockIp != nil {
-		blockIp_object = new(AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject)
-		diags.Append(blockIp_object.CopyFromPango(ctx, append(ancestors, o), obj.BlockIp, ev)...)
+		diags.Append(blockIp_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.BlockIp, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		blockIp_object, diags_tmp = types.ObjectValueFrom(ctx, blockIp_obj.AttributeTypes(), blockIp_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2375,49 +3091,49 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) CopyFr
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var trackBy_value types.String
@@ -2434,7 +3150,7 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpObject)
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionExemptIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionExemptIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
@@ -4110,8 +4826,8 @@ func (d *AntiSpywareSecurityProfileDataSource) Configure(_ context.Context, req 
 }
 func (o *AntiSpywareSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state AntiSpywareSecurityProfileDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state AntiSpywareSecurityProfileDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -4127,7 +4843,7 @@ func (o *AntiSpywareSecurityProfileDataSource) Read(ctx context.Context, req dat
 
 	{
 		var terraformLocation AntiSpywareSecurityProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -4168,15 +4884,15 @@ func (o *AntiSpywareSecurityProfileDataSource) Read(ctx context.Context, req dat
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_anti_spyware_security_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -4186,16 +4902,16 @@ func (o *AntiSpywareSecurityProfileDataSource) Read(ctx context.Context, req dat
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -4228,25 +4944,25 @@ func AntiSpywareSecurityProfileResourceLocationSchema() rsschema.Attribute {
 }
 
 type AntiSpywareSecurityProfileResourceModel struct {
-	Location                 types.Object                                           `tfsdk:"location"`
-	Name                     types.String                                           `tfsdk:"name"`
-	BotnetDomains            *AntiSpywareSecurityProfileResourceBotnetDomainsObject `tfsdk:"botnet_domains"`
-	CloudInlineAnalysis      types.Bool                                             `tfsdk:"cloud_inline_analysis"`
-	Description              types.String                                           `tfsdk:"description"`
-	DisableOverride          types.String                                           `tfsdk:"disable_override"`
-	InlineExceptionEdlUrl    types.List                                             `tfsdk:"inline_exception_edl_url"`
-	InlineExceptionIpAddress types.List                                             `tfsdk:"inline_exception_ip_address"`
-	MicaEngineSpywareEnabled types.List                                             `tfsdk:"mica_engine_spyware_enabled"`
-	Rules                    types.List                                             `tfsdk:"rules"`
-	ThreatException          types.List                                             `tfsdk:"threat_exception"`
+	Location                 types.Object `tfsdk:"location"`
+	Name                     types.String `tfsdk:"name"`
+	BotnetDomains            types.Object `tfsdk:"botnet_domains"`
+	CloudInlineAnalysis      types.Bool   `tfsdk:"cloud_inline_analysis"`
+	Description              types.String `tfsdk:"description"`
+	DisableOverride          types.String `tfsdk:"disable_override"`
+	InlineExceptionEdlUrl    types.List   `tfsdk:"inline_exception_edl_url"`
+	InlineExceptionIpAddress types.List   `tfsdk:"inline_exception_ip_address"`
+	MicaEngineSpywareEnabled types.List   `tfsdk:"mica_engine_spyware_enabled"`
+	Rules                    types.List   `tfsdk:"rules"`
+	ThreatException          types.List   `tfsdk:"threat_exception"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsObject struct {
-	DnsSecurityCategories types.List                                                        `tfsdk:"dns_security_categories"`
-	Lists                 types.List                                                        `tfsdk:"lists"`
-	RtypeAction           *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject `tfsdk:"rtype_action"`
-	Sinkhole              *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject    `tfsdk:"sinkhole"`
-	ThreatException       types.List                                                        `tfsdk:"threat_exception"`
-	Whitelist             types.List                                                        `tfsdk:"whitelist"`
+	DnsSecurityCategories types.List   `tfsdk:"dns_security_categories"`
+	Lists                 types.List   `tfsdk:"lists"`
+	RtypeAction           types.Object `tfsdk:"rtype_action"`
+	Sinkhole              types.Object `tfsdk:"sinkhole"`
+	ThreatException       types.List   `tfsdk:"threat_exception"`
+	Whitelist             types.List   `tfsdk:"whitelist"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject struct {
 	Name          types.String `tfsdk:"name"`
@@ -4255,15 +4971,15 @@ type AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject 
 	PacketCapture types.String `tfsdk:"packet_capture"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsListsObject struct {
-	Name          types.String                                                      `tfsdk:"name"`
-	Action        *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject `tfsdk:"action"`
-	PacketCapture types.String                                                      `tfsdk:"packet_capture"`
+	Name          types.String `tfsdk:"name"`
+	Action        types.Object `tfsdk:"action"`
+	PacketCapture types.String `tfsdk:"packet_capture"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject struct {
-	Alert    *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject    `tfsdk:"alert"`
-	Allow    *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject    `tfsdk:"allow"`
-	Block    *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject    `tfsdk:"block"`
-	Sinkhole *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject `tfsdk:"sinkhole"`
+	Alert    types.Object `tfsdk:"alert"`
+	Allow    types.Object `tfsdk:"allow"`
+	Block    types.Object `tfsdk:"block"`
+	Sinkhole types.Object `tfsdk:"sinkhole"`
 }
 type AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject struct {
 }
@@ -4294,22 +5010,22 @@ type AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject struct {
 	InlinePolicyAction types.String `tfsdk:"inline_policy_action"`
 }
 type AntiSpywareSecurityProfileResourceRulesObject struct {
-	Name          types.String                                         `tfsdk:"name"`
-	ThreatName    types.String                                         `tfsdk:"threat_name"`
-	Category      types.String                                         `tfsdk:"category"`
-	PacketCapture types.String                                         `tfsdk:"packet_capture"`
-	Severity      types.List                                           `tfsdk:"severity"`
-	Action        *AntiSpywareSecurityProfileResourceRulesActionObject `tfsdk:"action"`
+	Name          types.String `tfsdk:"name"`
+	ThreatName    types.String `tfsdk:"threat_name"`
+	Category      types.String `tfsdk:"category"`
+	PacketCapture types.String `tfsdk:"packet_capture"`
+	Severity      types.List   `tfsdk:"severity"`
+	Action        types.Object `tfsdk:"action"`
 }
 type AntiSpywareSecurityProfileResourceRulesActionObject struct {
-	Default     *AntiSpywareSecurityProfileResourceRulesActionDefaultObject     `tfsdk:"default"`
-	Allow       *AntiSpywareSecurityProfileResourceRulesActionAllowObject       `tfsdk:"allow"`
-	Alert       *AntiSpywareSecurityProfileResourceRulesActionAlertObject       `tfsdk:"alert"`
-	Drop        *AntiSpywareSecurityProfileResourceRulesActionDropObject        `tfsdk:"drop"`
-	ResetClient *AntiSpywareSecurityProfileResourceRulesActionResetClientObject `tfsdk:"reset_client"`
-	ResetServer *AntiSpywareSecurityProfileResourceRulesActionResetServerObject `tfsdk:"reset_server"`
-	ResetBoth   *AntiSpywareSecurityProfileResourceRulesActionResetBothObject   `tfsdk:"reset_both"`
-	BlockIp     *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject     `tfsdk:"block_ip"`
+	Default     types.Object `tfsdk:"default"`
+	Allow       types.Object `tfsdk:"allow"`
+	Alert       types.Object `tfsdk:"alert"`
+	Drop        types.Object `tfsdk:"drop"`
+	ResetClient types.Object `tfsdk:"reset_client"`
+	ResetServer types.Object `tfsdk:"reset_server"`
+	ResetBoth   types.Object `tfsdk:"reset_both"`
+	BlockIp     types.Object `tfsdk:"block_ip"`
 }
 type AntiSpywareSecurityProfileResourceRulesActionDefaultObject struct {
 }
@@ -4330,20 +5046,20 @@ type AntiSpywareSecurityProfileResourceRulesActionBlockIpObject struct {
 	Duration types.Int64  `tfsdk:"duration"`
 }
 type AntiSpywareSecurityProfileResourceThreatExceptionObject struct {
-	Name          types.String                                                   `tfsdk:"name"`
-	PacketCapture types.String                                                   `tfsdk:"packet_capture"`
-	Action        *AntiSpywareSecurityProfileResourceThreatExceptionActionObject `tfsdk:"action"`
-	ExemptIp      types.List                                                     `tfsdk:"exempt_ip"`
+	Name          types.String `tfsdk:"name"`
+	PacketCapture types.String `tfsdk:"packet_capture"`
+	Action        types.Object `tfsdk:"action"`
+	ExemptIp      types.List   `tfsdk:"exempt_ip"`
 }
 type AntiSpywareSecurityProfileResourceThreatExceptionActionObject struct {
-	Default     *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject     `tfsdk:"default"`
-	Allow       *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject       `tfsdk:"allow"`
-	Alert       *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject       `tfsdk:"alert"`
-	Drop        *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject        `tfsdk:"drop"`
-	ResetBoth   *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject   `tfsdk:"reset_both"`
-	ResetClient *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject `tfsdk:"reset_client"`
-	ResetServer *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject `tfsdk:"reset_server"`
-	BlockIp     *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject     `tfsdk:"block_ip"`
+	Default     types.Object `tfsdk:"default"`
+	Allow       types.Object `tfsdk:"allow"`
+	Alert       types.Object `tfsdk:"alert"`
+	Drop        types.Object `tfsdk:"drop"`
+	ResetBoth   types.Object `tfsdk:"reset_both"`
+	ResetClient types.Object `tfsdk:"reset_client"`
+	ResetServer types.Object `tfsdk:"reset_server"`
+	BlockIp     types.Object `tfsdk:"block_ip"`
 }
 type AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject struct {
 }
@@ -4367,7 +5083,7 @@ type AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject struct {
 	Name types.String `tfsdk:"name"`
 }
 
-func (r *AntiSpywareSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *AntiSpywareSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -6025,31 +6741,31 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) getTyp
 	panic("unreachable")
 }
 
-func (r *AntiSpywareSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *AntiSpywareSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_anti_spyware_security_profile"
 }
 
-func (r *AntiSpywareSecurityProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *AntiSpywareSecurityProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = AntiSpywareSecurityProfileResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *AntiSpywareSecurityProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *AntiSpywareSecurityProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := spyware.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := spyware.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*spyware.Entry, spyware.Location, *spyware.Service](r.client, spyware.NewService(r.client), batchSize, specifier, spyware.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*spyware.Entry, spyware.Location, *spyware.Service](o.client, spyware.NewService(o.client), batchSize, specifier, spyware.SpecMatches)
 }
 
 func (o *AntiSpywareSecurityProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -6058,6 +6774,11 @@ func (o *AntiSpywareSecurityProfileResourceModel) AttributeTypes() map[string]at
 
 	var botnetDomainsObj *AntiSpywareSecurityProfileResourceBotnetDomainsObject
 
+	var micaEngineSpywareEnabledObj *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject
+
+	var rulesObj *AntiSpywareSecurityProfileResourceRulesObject
+
+	var threatExceptionObj *AntiSpywareSecurityProfileResourceThreatExceptionObject
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
@@ -6066,14 +6787,30 @@ func (o *AntiSpywareSecurityProfileResourceModel) AttributeTypes() map[string]at
 		"botnet_domains": types.ObjectType{
 			AttrTypes: botnetDomainsObj.AttributeTypes(),
 		},
-		"cloud_inline_analysis":       types.BoolType,
-		"description":                 types.StringType,
-		"disable_override":            types.StringType,
-		"inline_exception_edl_url":    types.ListType{},
-		"inline_exception_ip_address": types.ListType{},
-		"mica_engine_spyware_enabled": types.ListType{},
-		"rules":                       types.ListType{},
-		"threat_exception":            types.ListType{},
+		"cloud_inline_analysis": types.BoolType,
+		"description":           types.StringType,
+		"disable_override":      types.StringType,
+		"inline_exception_edl_url": types.ListType{
+			ElemType: types.StringType,
+		},
+		"inline_exception_ip_address": types.ListType{
+			ElemType: types.StringType,
+		},
+		"mica_engine_spyware_enabled": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: micaEngineSpywareEnabledObj.AttributeTypes(),
+			},
+		},
+		"rules": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: rulesObj.AttributeTypes(),
+			},
+		},
+		"threat_exception": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: threatExceptionObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -6086,21 +6823,44 @@ func (o AntiSpywareSecurityProfileResourceModel) EntryName() *string {
 }
 func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) AttributeTypes() map[string]attr.Type {
 
+	var dnsSecurityCategoriesObj *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject
+
+	var listsObj *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject
+
 	var rtypeActionObj *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject
 
 	var sinkholeObj *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject
 
+	var threatExceptionObj *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject
+
+	var whitelistObj *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject
 	return map[string]attr.Type{
-		"dns_security_categories": types.ListType{},
-		"lists":                   types.ListType{},
+		"dns_security_categories": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: dnsSecurityCategoriesObj.AttributeTypes(),
+			},
+		},
+		"lists": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: listsObj.AttributeTypes(),
+			},
+		},
 		"rtype_action": types.ObjectType{
 			AttrTypes: rtypeActionObj.AttributeTypes(),
 		},
 		"sinkhole": types.ObjectType{
 			AttrTypes: sinkholeObj.AttributeTypes(),
 		},
-		"threat_exception": types.ListType{},
-		"whitelist":        types.ListType{},
+		"threat_exception": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: threatExceptionObj.AttributeTypes(),
+			},
+		},
+		"whitelist": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: whitelistObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -6307,7 +7067,9 @@ func (o *AntiSpywareSecurityProfileResourceRulesObject) AttributeTypes() map[str
 		"threat_name":    types.StringType,
 		"category":       types.StringType,
 		"packet_capture": types.StringType,
-		"severity":       types.ListType{},
+		"severity": types.ListType{
+			ElemType: types.StringType,
+		},
 		"action": types.ObjectType{
 			AttrTypes: actionObj.AttributeTypes(),
 		},
@@ -6469,13 +7231,18 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) AttributeTypes
 
 	var actionObj *AntiSpywareSecurityProfileResourceThreatExceptionActionObject
 
+	var exemptIpObj *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject
 	return map[string]attr.Type{
 		"name":           types.StringType,
 		"packet_capture": types.StringType,
 		"action": types.ObjectType{
 			AttrTypes: actionObj.AttributeTypes(),
 		},
-		"exempt_ip": types.ListType{},
+		"exempt_ip": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: exemptIpObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -6645,17 +7412,21 @@ func (o AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) EntryNa
 	return o.Name.ValueStringPointer()
 }
 
-func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var botnetDomains_entry *spyware.BotnetDomains
-	if o.BotnetDomains != nil {
+	if !o.BotnetDomains.IsUnknown() && !o.BotnetDomains.IsNull() {
 		if *obj != nil && (*obj).BotnetDomains != nil {
 			botnetDomains_entry = (*obj).BotnetDomains
 		} else {
 			botnetDomains_entry = new(spyware.BotnetDomains)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.BotnetDomains.CopyToPango(ctx, ancestors, &botnetDomains_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceBotnetDomainsObject
+		diags.Append(o.BotnetDomains.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &botnetDomains_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6663,15 +7434,31 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 	cloudInlineAnalysis_value := o.CloudInlineAnalysis.ValueBoolPointer()
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	inlineExceptionEdlUrl_pango_entries := make([]string, 0)
-	diags.Append(o.InlineExceptionEdlUrl.ElementsAs(ctx, &inlineExceptionEdlUrl_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var inlineExceptionEdlUrl_pango_entries []string
+	if !o.InlineExceptionEdlUrl.IsUnknown() && !o.InlineExceptionEdlUrl.IsNull() {
+		object_entries := make([]types.String, 0, len(o.InlineExceptionEdlUrl.Elements()))
+		diags.Append(o.InlineExceptionEdlUrl.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			inlineExceptionEdlUrl_pango_entries = append(inlineExceptionEdlUrl_pango_entries, elt.ValueString())
+		}
 	}
-	inlineExceptionIpAddress_pango_entries := make([]string, 0)
-	diags.Append(o.InlineExceptionIpAddress.ElementsAs(ctx, &inlineExceptionIpAddress_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var inlineExceptionIpAddress_pango_entries []string
+	if !o.InlineExceptionIpAddress.IsUnknown() && !o.InlineExceptionIpAddress.IsNull() {
+		object_entries := make([]types.String, 0, len(o.InlineExceptionIpAddress.Elements()))
+		diags.Append(o.InlineExceptionIpAddress.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			inlineExceptionIpAddress_pango_entries = append(inlineExceptionIpAddress_pango_entries, elt.ValueString())
+		}
 	}
 	var micaEngineSpywareEnabled_tf_entries []AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject
 	var micaEngineSpywareEnabled_pango_entries []spyware.MicaEngineSpywareEnabled
@@ -6683,7 +7470,7 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 		}
 		for _, elt := range micaEngineSpywareEnabled_tf_entries {
 			var entry *spyware.MicaEngineSpywareEnabled
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -6700,7 +7487,7 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 		}
 		for _, elt := range rules_tf_entries {
 			var entry *spyware.Rules
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -6717,7 +7504,7 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 		}
 		for _, elt := range threatException_tf_entries {
 			var entry *spyware.ThreatException
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -6741,7 +7528,7 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomains, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomains, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSecurityCategories_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject
 	var dnsSecurityCategories_pango_entries []spyware.BotnetDomainsDnsSecurityCategories
@@ -6753,7 +7540,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 		}
 		for _, elt := range dnsSecurityCategories_tf_entries {
 			var entry *spyware.BotnetDomainsDnsSecurityCategories
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -6770,7 +7557,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 		}
 		for _, elt := range lists_tf_entries {
 			var entry *spyware.BotnetDomainsLists
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -6778,27 +7565,35 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 		}
 	}
 	var rtypeAction_entry *spyware.BotnetDomainsRtypeAction
-	if o.RtypeAction != nil {
+	if !o.RtypeAction.IsUnknown() && !o.RtypeAction.IsNull() {
 		if *obj != nil && (*obj).RtypeAction != nil {
 			rtypeAction_entry = (*obj).RtypeAction
 		} else {
 			rtypeAction_entry = new(spyware.BotnetDomainsRtypeAction)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RtypeAction.CopyToPango(ctx, append(ancestors, o), &rtypeAction_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject
+		diags.Append(o.RtypeAction.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &rtypeAction_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var sinkhole_entry *spyware.BotnetDomainsSinkhole
-	if o.Sinkhole != nil {
+	if !o.Sinkhole.IsUnknown() && !o.Sinkhole.IsNull() {
 		if *obj != nil && (*obj).Sinkhole != nil {
 			sinkhole_entry = (*obj).Sinkhole
 		} else {
 			sinkhole_entry = new(spyware.BotnetDomainsSinkhole)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Sinkhole.CopyToPango(ctx, append(ancestors, o), &sinkhole_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject
+		diags.Append(o.Sinkhole.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &sinkhole_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6813,7 +7608,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 		}
 		for _, elt := range threatException_tf_entries {
 			var entry *spyware.BotnetDomainsThreatException
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -6830,7 +7625,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 		}
 		for _, elt := range whitelist_tf_entries {
 			var entry *spyware.BotnetDomainsWhitelist
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -6850,7 +7645,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsDnsSecurityCategories, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsDnsSecurityCategories, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	logLevel_value := o.LogLevel.ValueStringPointer()
@@ -6866,17 +7661,21 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObj
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsLists, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsLists, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var action_entry *spyware.BotnetDomainsListsAction
-	if o.Action != nil {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
 		if *obj != nil && (*obj).Action != nil {
 			action_entry = (*obj).Action
 		} else {
 			action_entry = new(spyware.BotnetDomainsListsAction)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Action.CopyToPango(ctx, append(ancestors, o), &action_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject
+		diags.Append(o.Action.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &action_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6892,56 +7691,72 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) CopyToPango
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var alert_entry *spyware.BotnetDomainsListsActionAlert
-	if o.Alert != nil {
+	if !o.Alert.IsUnknown() && !o.Alert.IsNull() {
 		if *obj != nil && (*obj).Alert != nil {
 			alert_entry = (*obj).Alert
 		} else {
 			alert_entry = new(spyware.BotnetDomainsListsActionAlert)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Alert.CopyToPango(ctx, append(ancestors, o), &alert_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject
+		diags.Append(o.Alert.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &alert_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var allow_entry *spyware.BotnetDomainsListsActionAllow
-	if o.Allow != nil {
+	if !o.Allow.IsUnknown() && !o.Allow.IsNull() {
 		if *obj != nil && (*obj).Allow != nil {
 			allow_entry = (*obj).Allow
 		} else {
 			allow_entry = new(spyware.BotnetDomainsListsActionAllow)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Allow.CopyToPango(ctx, append(ancestors, o), &allow_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject
+		diags.Append(o.Allow.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &allow_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var block_entry *spyware.BotnetDomainsListsActionBlock
-	if o.Block != nil {
+	if !o.Block.IsUnknown() && !o.Block.IsNull() {
 		if *obj != nil && (*obj).Block != nil {
 			block_entry = (*obj).Block
 		} else {
 			block_entry = new(spyware.BotnetDomainsListsActionBlock)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Block.CopyToPango(ctx, append(ancestors, o), &block_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject
+		diags.Append(o.Block.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &block_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var sinkhole_entry *spyware.BotnetDomainsListsActionSinkhole
-	if o.Sinkhole != nil {
+	if !o.Sinkhole.IsUnknown() && !o.Sinkhole.IsNull() {
 		if *obj != nil && (*obj).Sinkhole != nil {
 			sinkhole_entry = (*obj).Sinkhole
 		} else {
 			sinkhole_entry = new(spyware.BotnetDomainsListsActionSinkhole)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Sinkhole.CopyToPango(ctx, append(ancestors, o), &sinkhole_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject
+		diags.Append(o.Sinkhole.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &sinkhole_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -6957,7 +7772,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) CopyT
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -6966,7 +7781,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) 
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -6975,7 +7790,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) 
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionBlock, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionBlock, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -6984,7 +7799,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) 
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsListsActionSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -6993,7 +7808,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObjec
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsRtypeAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsRtypeAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	any_value := o.Any.ValueStringPointer()
 	https_value := o.Https.ValueStringPointer()
@@ -7008,7 +7823,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyT
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipv4Address_value := o.Ipv4Address.ValueStringPointer()
 	ipv6Address_value := o.Ipv6Address.ValueStringPointer()
@@ -7021,7 +7836,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) CopyToPa
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7031,7 +7846,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject) C
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.BotnetDomainsWhitelist, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.BotnetDomainsWhitelist, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 
@@ -7043,7 +7858,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) CopyToP
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.MicaEngineSpywareEnabled, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.MicaEngineSpywareEnabled, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	inlinePolicyAction_value := o.InlinePolicyAction.ValueStringPointer()
 
@@ -7055,25 +7870,37 @@ func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) CopyT
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	threatName_value := o.ThreatName.ValueStringPointer()
 	category_value := o.Category.ValueStringPointer()
 	packetCapture_value := o.PacketCapture.ValueStringPointer()
-	severity_pango_entries := make([]string, 0)
-	diags.Append(o.Severity.ElementsAs(ctx, &severity_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var severity_pango_entries []string
+	if !o.Severity.IsUnknown() && !o.Severity.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Severity.Elements()))
+		diags.Append(o.Severity.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			severity_pango_entries = append(severity_pango_entries, elt.ValueString())
+		}
 	}
 	var action_entry *spyware.RulesAction
-	if o.Action != nil {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
 		if *obj != nil && (*obj).Action != nil {
 			action_entry = (*obj).Action
 		} else {
 			action_entry = new(spyware.RulesAction)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Action.CopyToPango(ctx, append(ancestors, o), &action_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceRulesActionObject
+		diags.Append(o.Action.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &action_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7091,108 +7918,140 @@ func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var default_entry *spyware.RulesActionDefault
-	if o.Default != nil {
+	if !o.Default.IsUnknown() && !o.Default.IsNull() {
 		if *obj != nil && (*obj).Default != nil {
 			default_entry = (*obj).Default
 		} else {
 			default_entry = new(spyware.RulesActionDefault)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Default.CopyToPango(ctx, append(ancestors, o), &default_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceRulesActionDefaultObject
+		diags.Append(o.Default.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &default_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var allow_entry *spyware.RulesActionAllow
-	if o.Allow != nil {
+	if !o.Allow.IsUnknown() && !o.Allow.IsNull() {
 		if *obj != nil && (*obj).Allow != nil {
 			allow_entry = (*obj).Allow
 		} else {
 			allow_entry = new(spyware.RulesActionAllow)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Allow.CopyToPango(ctx, append(ancestors, o), &allow_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceRulesActionAllowObject
+		diags.Append(o.Allow.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &allow_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var alert_entry *spyware.RulesActionAlert
-	if o.Alert != nil {
+	if !o.Alert.IsUnknown() && !o.Alert.IsNull() {
 		if *obj != nil && (*obj).Alert != nil {
 			alert_entry = (*obj).Alert
 		} else {
 			alert_entry = new(spyware.RulesActionAlert)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Alert.CopyToPango(ctx, append(ancestors, o), &alert_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceRulesActionAlertObject
+		diags.Append(o.Alert.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &alert_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var drop_entry *spyware.RulesActionDrop
-	if o.Drop != nil {
+	if !o.Drop.IsUnknown() && !o.Drop.IsNull() {
 		if *obj != nil && (*obj).Drop != nil {
 			drop_entry = (*obj).Drop
 		} else {
 			drop_entry = new(spyware.RulesActionDrop)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Drop.CopyToPango(ctx, append(ancestors, o), &drop_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceRulesActionDropObject
+		diags.Append(o.Drop.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &drop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetClient_entry *spyware.RulesActionResetClient
-	if o.ResetClient != nil {
+	if !o.ResetClient.IsUnknown() && !o.ResetClient.IsNull() {
 		if *obj != nil && (*obj).ResetClient != nil {
 			resetClient_entry = (*obj).ResetClient
 		} else {
 			resetClient_entry = new(spyware.RulesActionResetClient)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetClient.CopyToPango(ctx, append(ancestors, o), &resetClient_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceRulesActionResetClientObject
+		diags.Append(o.ResetClient.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetServer_entry *spyware.RulesActionResetServer
-	if o.ResetServer != nil {
+	if !o.ResetServer.IsUnknown() && !o.ResetServer.IsNull() {
 		if *obj != nil && (*obj).ResetServer != nil {
 			resetServer_entry = (*obj).ResetServer
 		} else {
 			resetServer_entry = new(spyware.RulesActionResetServer)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetServer.CopyToPango(ctx, append(ancestors, o), &resetServer_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceRulesActionResetServerObject
+		diags.Append(o.ResetServer.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetBoth_entry *spyware.RulesActionResetBoth
-	if o.ResetBoth != nil {
+	if !o.ResetBoth.IsUnknown() && !o.ResetBoth.IsNull() {
 		if *obj != nil && (*obj).ResetBoth != nil {
 			resetBoth_entry = (*obj).ResetBoth
 		} else {
 			resetBoth_entry = new(spyware.RulesActionResetBoth)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetBoth.CopyToPango(ctx, append(ancestors, o), &resetBoth_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceRulesActionResetBothObject
+		diags.Append(o.ResetBoth.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetBoth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var blockIp_entry *spyware.RulesActionBlockIp
-	if o.BlockIp != nil {
+	if !o.BlockIp.IsUnknown() && !o.BlockIp.IsNull() {
 		if *obj != nil && (*obj).BlockIp != nil {
 			blockIp_entry = (*obj).BlockIp
 		} else {
 			blockIp_entry = new(spyware.RulesActionBlockIp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.BlockIp.CopyToPango(ctx, append(ancestors, o), &blockIp_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject
+		diags.Append(o.BlockIp.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &blockIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7212,7 +8071,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7221,7 +8080,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) CopyToPango
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7230,7 +8089,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) CopyToPango(c
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7239,7 +8098,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) CopyToPango(c
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7248,7 +8107,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7257,7 +8116,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) CopyToP
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7266,7 +8125,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) CopyToP
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7275,7 +8134,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) CopyToPan
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.RulesActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.RulesActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	trackBy_value := o.TrackBy.ValueStringPointer()
 	duration_value := o.Duration.ValueInt64Pointer()
@@ -7288,18 +8147,22 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyToPango
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	packetCapture_value := o.PacketCapture.ValueStringPointer()
 	var action_entry *spyware.ThreatExceptionAction
-	if o.Action != nil {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
 		if *obj != nil && (*obj).Action != nil {
 			action_entry = (*obj).Action
 		} else {
 			action_entry = new(spyware.ThreatExceptionAction)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Action.CopyToPango(ctx, append(ancestors, o), &action_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceThreatExceptionActionObject
+		diags.Append(o.Action.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &action_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7314,7 +8177,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyToPango(ct
 		}
 		for _, elt := range exemptIp_tf_entries {
 			var entry *spyware.ThreatExceptionExemptIp
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -7332,108 +8195,140 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyToPango(ct
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var default_entry *spyware.ThreatExceptionActionDefault
-	if o.Default != nil {
+	if !o.Default.IsUnknown() && !o.Default.IsNull() {
 		if *obj != nil && (*obj).Default != nil {
 			default_entry = (*obj).Default
 		} else {
 			default_entry = new(spyware.ThreatExceptionActionDefault)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Default.CopyToPango(ctx, append(ancestors, o), &default_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject
+		diags.Append(o.Default.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &default_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var allow_entry *spyware.ThreatExceptionActionAllow
-	if o.Allow != nil {
+	if !o.Allow.IsUnknown() && !o.Allow.IsNull() {
 		if *obj != nil && (*obj).Allow != nil {
 			allow_entry = (*obj).Allow
 		} else {
 			allow_entry = new(spyware.ThreatExceptionActionAllow)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Allow.CopyToPango(ctx, append(ancestors, o), &allow_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject
+		diags.Append(o.Allow.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &allow_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var alert_entry *spyware.ThreatExceptionActionAlert
-	if o.Alert != nil {
+	if !o.Alert.IsUnknown() && !o.Alert.IsNull() {
 		if *obj != nil && (*obj).Alert != nil {
 			alert_entry = (*obj).Alert
 		} else {
 			alert_entry = new(spyware.ThreatExceptionActionAlert)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Alert.CopyToPango(ctx, append(ancestors, o), &alert_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject
+		diags.Append(o.Alert.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &alert_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var drop_entry *spyware.ThreatExceptionActionDrop
-	if o.Drop != nil {
+	if !o.Drop.IsUnknown() && !o.Drop.IsNull() {
 		if *obj != nil && (*obj).Drop != nil {
 			drop_entry = (*obj).Drop
 		} else {
 			drop_entry = new(spyware.ThreatExceptionActionDrop)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Drop.CopyToPango(ctx, append(ancestors, o), &drop_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject
+		diags.Append(o.Drop.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &drop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetBoth_entry *spyware.ThreatExceptionActionResetBoth
-	if o.ResetBoth != nil {
+	if !o.ResetBoth.IsUnknown() && !o.ResetBoth.IsNull() {
 		if *obj != nil && (*obj).ResetBoth != nil {
 			resetBoth_entry = (*obj).ResetBoth
 		} else {
 			resetBoth_entry = new(spyware.ThreatExceptionActionResetBoth)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetBoth.CopyToPango(ctx, append(ancestors, o), &resetBoth_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject
+		diags.Append(o.ResetBoth.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetBoth_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetClient_entry *spyware.ThreatExceptionActionResetClient
-	if o.ResetClient != nil {
+	if !o.ResetClient.IsUnknown() && !o.ResetClient.IsNull() {
 		if *obj != nil && (*obj).ResetClient != nil {
 			resetClient_entry = (*obj).ResetClient
 		} else {
 			resetClient_entry = new(spyware.ThreatExceptionActionResetClient)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetClient.CopyToPango(ctx, append(ancestors, o), &resetClient_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject
+		diags.Append(o.ResetClient.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var resetServer_entry *spyware.ThreatExceptionActionResetServer
-	if o.ResetServer != nil {
+	if !o.ResetServer.IsUnknown() && !o.ResetServer.IsNull() {
 		if *obj != nil && (*obj).ResetServer != nil {
 			resetServer_entry = (*obj).ResetServer
 		} else {
 			resetServer_entry = new(spyware.ThreatExceptionActionResetServer)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.ResetServer.CopyToPango(ctx, append(ancestors, o), &resetServer_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject
+		diags.Append(o.ResetServer.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &resetServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var blockIp_entry *spyware.ThreatExceptionActionBlockIp
-	if o.BlockIp != nil {
+	if !o.BlockIp.IsUnknown() && !o.BlockIp.IsNull() {
 		if *obj != nil && (*obj).BlockIp != nil {
 			blockIp_entry = (*obj).BlockIp
 		} else {
 			blockIp_entry = new(spyware.ThreatExceptionActionBlockIp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.BlockIp.CopyToPango(ctx, append(ancestors, o), &blockIp_entry, ev)...)
+		var object *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject
+		diags.Append(o.BlockIp.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &blockIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7453,7 +8348,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) CopyToPa
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7462,7 +8357,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) C
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7471,7 +8366,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) Cop
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7480,7 +8375,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) Cop
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7489,7 +8384,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) Copy
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7498,7 +8393,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject)
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7507,7 +8402,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObjec
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7516,7 +8411,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObjec
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	trackBy_value := o.TrackBy.ValueStringPointer()
 	duration_value := o.Duration.ValueInt64Pointer()
@@ -7529,7 +8424,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) C
 
 	return diags
 }
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **spyware.ThreatExceptionExemptIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **spyware.ThreatExceptionExemptIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -7540,12 +8435,18 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) CopyTo
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var inlineExceptionEdlUrl_list types.List
 	{
 		var list_diags diag.Diagnostics
-		inlineExceptionEdlUrl_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionEdlUrl)
+
+		entries := make([]string, 0)
+		if o.InlineExceptionEdlUrl.IsNull() || len(obj.InlineExceptionEdlUrl) > 0 {
+			entries = obj.InlineExceptionEdlUrl
+		}
+
+		inlineExceptionEdlUrl_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -7554,7 +8455,13 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Cont
 	var inlineExceptionIpAddress_list types.List
 	{
 		var list_diags diag.Diagnostics
-		inlineExceptionIpAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.InlineExceptionIpAddress)
+
+		entries := make([]string, 0)
+		if o.InlineExceptionIpAddress.IsNull() || len(obj.InlineExceptionIpAddress) > 0 {
+			entries = obj.InlineExceptionIpAddress
+		}
+
+		inlineExceptionIpAddress_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -7563,15 +8470,31 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Cont
 	var micaEngineSpywareEnabled_list types.List
 	{
 		var micaEngineSpywareEnabled_tf_entries []AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject
-		for _, elt := range obj.MicaEngineSpywareEnabled {
-			entry := AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.MicaEngineSpywareEnabled.IsNull() {
+			diags.Append(o.MicaEngineSpywareEnabled.ElementsAs(ctx, &micaEngineSpywareEnabled_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			micaEngineSpywareEnabled_tf_entries = append(micaEngineSpywareEnabled_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.MicaEngineSpywareEnabled {
+			entry := AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(micaEngineSpywareEnabled_tf_entries) {
+				entry = micaEngineSpywareEnabled_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(micaEngineSpywareEnabled_tf_entries) {
+				micaEngineSpywareEnabled_tf_entries[idx] = entry
+			} else {
+				micaEngineSpywareEnabled_tf_entries = append(micaEngineSpywareEnabled_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("mica_engine_spyware_enabled")
@@ -7581,15 +8504,31 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Cont
 	var rules_list types.List
 	{
 		var rules_tf_entries []AntiSpywareSecurityProfileResourceRulesObject
-		for _, elt := range obj.Rules {
-			entry := AntiSpywareSecurityProfileResourceRulesObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Rules.IsNull() {
+			diags.Append(o.Rules.ElementsAs(ctx, &rules_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			rules_tf_entries = append(rules_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Rules {
+			entry := AntiSpywareSecurityProfileResourceRulesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(rules_tf_entries) {
+				entry = rules_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(rules_tf_entries) {
+				rules_tf_entries[idx] = entry
+			} else {
+				rules_tf_entries = append(rules_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("rules")
@@ -7599,25 +8538,56 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Cont
 	var threatException_list types.List
 	{
 		var threatException_tf_entries []AntiSpywareSecurityProfileResourceThreatExceptionObject
-		for _, elt := range obj.ThreatException {
-			entry := AntiSpywareSecurityProfileResourceThreatExceptionObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.ThreatException.IsNull() {
+			diags.Append(o.ThreatException.ElementsAs(ctx, &threatException_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			threatException_tf_entries = append(threatException_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.ThreatException {
+			entry := AntiSpywareSecurityProfileResourceThreatExceptionObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(threatException_tf_entries) {
+				entry = threatException_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(threatException_tf_entries) {
+				threatException_tf_entries[idx] = entry
+			} else {
+				threatException_tf_entries = append(threatException_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("threat_exception")
 		threatException_list, list_diags = types.ListValueFrom(ctx, schemaType, threatException_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var botnetDomains_object *AntiSpywareSecurityProfileResourceBotnetDomainsObject
+
+	var botnetDomains_obj *AntiSpywareSecurityProfileResourceBotnetDomainsObject
+	if o.BotnetDomains.IsNull() {
+		botnetDomains_obj = new(AntiSpywareSecurityProfileResourceBotnetDomainsObject)
+	} else {
+		diags.Append(o.BotnetDomains.As(ctx, &botnetDomains_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	botnetDomains_object := types.ObjectNull(botnetDomains_obj.AttributeTypes())
 	if obj.BotnetDomains != nil {
-		botnetDomains_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsObject)
-		diags.Append(botnetDomains_object.CopyFromPango(ctx, ancestors, obj.BotnetDomains, ev)...)
+		diags.Append(botnetDomains_obj.CopyFromPango(ctx, client, ancestors, obj.BotnetDomains, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		botnetDomains_object, diags_tmp = types.ObjectValueFrom(ctx, botnetDomains_obj.AttributeTypes(), botnetDomains_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7649,20 +8619,36 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomains, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomains, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSecurityCategories_list types.List
 	{
 		var dnsSecurityCategories_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject
-		for _, elt := range obj.DnsSecurityCategories {
-			entry := AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.DnsSecurityCategories.IsNull() {
+			diags.Append(o.DnsSecurityCategories.ElementsAs(ctx, &dnsSecurityCategories_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			dnsSecurityCategories_tf_entries = append(dnsSecurityCategories_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.DnsSecurityCategories {
+			entry := AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(dnsSecurityCategories_tf_entries) {
+				entry = dnsSecurityCategories_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(dnsSecurityCategories_tf_entries) {
+				dnsSecurityCategories_tf_entries[idx] = entry
+			} else {
+				dnsSecurityCategories_tf_entries = append(dnsSecurityCategories_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("dns_security_categories")
@@ -7672,15 +8658,31 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyFromPango(ct
 	var lists_list types.List
 	{
 		var lists_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsListsObject
-		for _, elt := range obj.Lists {
-			entry := AntiSpywareSecurityProfileResourceBotnetDomainsListsObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Lists.IsNull() {
+			diags.Append(o.Lists.ElementsAs(ctx, &lists_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			lists_tf_entries = append(lists_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Lists {
+			entry := AntiSpywareSecurityProfileResourceBotnetDomainsListsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(lists_tf_entries) {
+				entry = lists_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(lists_tf_entries) {
+				lists_tf_entries[idx] = entry
+			} else {
+				lists_tf_entries = append(lists_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("lists")
@@ -7690,15 +8692,31 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyFromPango(ct
 	var threatException_list types.List
 	{
 		var threatException_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject
-		for _, elt := range obj.ThreatException {
-			entry := AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.ThreatException.IsNull() {
+			diags.Append(o.ThreatException.ElementsAs(ctx, &threatException_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			threatException_tf_entries = append(threatException_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.ThreatException {
+			entry := AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(threatException_tf_entries) {
+				entry = threatException_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(threatException_tf_entries) {
+				threatException_tf_entries[idx] = entry
+			} else {
+				threatException_tf_entries = append(threatException_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("threat_exception")
@@ -7708,33 +8726,79 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyFromPango(ct
 	var whitelist_list types.List
 	{
 		var whitelist_tf_entries []AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject
-		for _, elt := range obj.Whitelist {
-			entry := AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Whitelist.IsNull() {
+			diags.Append(o.Whitelist.ElementsAs(ctx, &whitelist_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			whitelist_tf_entries = append(whitelist_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Whitelist {
+			entry := AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(whitelist_tf_entries) {
+				entry = whitelist_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(whitelist_tf_entries) {
+				whitelist_tf_entries[idx] = entry
+			} else {
+				whitelist_tf_entries = append(whitelist_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("whitelist")
 		whitelist_list, list_diags = types.ListValueFrom(ctx, schemaType, whitelist_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var rtypeAction_object *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject
-	if obj.RtypeAction != nil {
-		rtypeAction_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject)
-		diags.Append(rtypeAction_object.CopyFromPango(ctx, append(ancestors, o), obj.RtypeAction, ev)...)
+
+	var rtypeAction_obj *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject
+	if o.RtypeAction.IsNull() {
+		rtypeAction_obj = new(AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject)
+	} else {
+		diags.Append(o.RtypeAction.As(ctx, &rtypeAction_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var sinkhole_object *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject
+	rtypeAction_object := types.ObjectNull(rtypeAction_obj.AttributeTypes())
+	if obj.RtypeAction != nil {
+		diags.Append(rtypeAction_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RtypeAction, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		rtypeAction_object, diags_tmp = types.ObjectValueFrom(ctx, rtypeAction_obj.AttributeTypes(), rtypeAction_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var sinkhole_obj *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject
+	if o.Sinkhole.IsNull() {
+		sinkhole_obj = new(AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject)
+	} else {
+		diags.Append(o.Sinkhole.As(ctx, &sinkhole_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	sinkhole_object := types.ObjectNull(sinkhole_obj.AttributeTypes())
 	if obj.Sinkhole != nil {
-		sinkhole_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject)
-		diags.Append(sinkhole_object.CopyFromPango(ctx, append(ancestors, o), obj.Sinkhole, ev)...)
+		diags.Append(sinkhole_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Sinkhole, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		sinkhole_object, diags_tmp = types.ObjectValueFrom(ctx, sinkhole_obj.AttributeTypes(), sinkhole_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7750,7 +8814,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsDnsSecurityCategories, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsDnsSecurityCategories, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -7773,12 +8837,27 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObj
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsLists, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsLists, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var action_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject
+
+	var action_obj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject
+	if o.Action.IsNull() {
+		action_obj = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject)
+	} else {
+		diags.Append(o.Action.As(ctx, &action_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	action_object := types.ObjectNull(action_obj.AttributeTypes())
 	if obj.Action != nil {
-		action_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject)
-		diags.Append(action_object.CopyFromPango(ctx, append(ancestors, o), obj.Action, ev)...)
+		diags.Append(action_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Action, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		action_object, diags_tmp = types.ObjectValueFrom(ctx, action_obj.AttributeTypes(), action_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7795,36 +8874,96 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) CopyFromPan
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var alert_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject
+
+	var alert_obj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject
+	if o.Alert.IsNull() {
+		alert_obj = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject)
+	} else {
+		diags.Append(o.Alert.As(ctx, &alert_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	alert_object := types.ObjectNull(alert_obj.AttributeTypes())
 	if obj.Alert != nil {
-		alert_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject)
-		diags.Append(alert_object.CopyFromPango(ctx, append(ancestors, o), obj.Alert, ev)...)
+		diags.Append(alert_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Alert, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		alert_object, diags_tmp = types.ObjectValueFrom(ctx, alert_obj.AttributeTypes(), alert_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var allow_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject
+
+	var allow_obj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject
+	if o.Allow.IsNull() {
+		allow_obj = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject)
+	} else {
+		diags.Append(o.Allow.As(ctx, &allow_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	allow_object := types.ObjectNull(allow_obj.AttributeTypes())
 	if obj.Allow != nil {
-		allow_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject)
-		diags.Append(allow_object.CopyFromPango(ctx, append(ancestors, o), obj.Allow, ev)...)
+		diags.Append(allow_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Allow, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		allow_object, diags_tmp = types.ObjectValueFrom(ctx, allow_obj.AttributeTypes(), allow_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var block_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject
+
+	var block_obj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject
+	if o.Block.IsNull() {
+		block_obj = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject)
+	} else {
+		diags.Append(o.Block.As(ctx, &block_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	block_object := types.ObjectNull(block_obj.AttributeTypes())
 	if obj.Block != nil {
-		block_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject)
-		diags.Append(block_object.CopyFromPango(ctx, append(ancestors, o), obj.Block, ev)...)
+		diags.Append(block_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Block, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		block_object, diags_tmp = types.ObjectValueFrom(ctx, block_obj.AttributeTypes(), block_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var sinkhole_object *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject
+
+	var sinkhole_obj *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject
+	if o.Sinkhole.IsNull() {
+		sinkhole_obj = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject)
+	} else {
+		diags.Append(o.Sinkhole.As(ctx, &sinkhole_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	sinkhole_object := types.ObjectNull(sinkhole_obj.AttributeTypes())
 	if obj.Sinkhole != nil {
-		sinkhole_object = new(AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject)
-		diags.Append(sinkhole_object.CopyFromPango(ctx, append(ancestors, o), obj.Sinkhole, ev)...)
+		diags.Append(sinkhole_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Sinkhole, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		sinkhole_object, diags_tmp = types.ObjectValueFrom(ctx, sinkhole_obj.AttributeTypes(), sinkhole_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7838,31 +8977,31 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) CopyF
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionBlock, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionBlock, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsListsActionSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsRtypeAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsRtypeAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var any_value types.String
@@ -7884,7 +9023,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) CopyF
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsSinkhole, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipv4Address_value types.String
@@ -7901,14 +9040,14 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) CopyFrom
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.BotnetDomainsWhitelist, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.BotnetDomainsWhitelist, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var description_value types.String
@@ -7921,7 +9060,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) CopyFro
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.MicaEngineSpywareEnabled, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.MicaEngineSpywareEnabled, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var inlinePolicyAction_value types.String
@@ -7934,21 +9073,42 @@ func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) CopyF
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var severity_list types.List
 	{
 		var list_diags diag.Diagnostics
-		severity_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Severity)
+
+		entries := make([]string, 0)
+		if o.Severity.IsNull() || len(obj.Severity) > 0 {
+			entries = obj.Severity
+		}
+
+		severity_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var action_object *AntiSpywareSecurityProfileResourceRulesActionObject
+
+	var action_obj *AntiSpywareSecurityProfileResourceRulesActionObject
+	if o.Action.IsNull() {
+		action_obj = new(AntiSpywareSecurityProfileResourceRulesActionObject)
+	} else {
+		diags.Append(o.Action.As(ctx, &action_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	action_object := types.ObjectNull(action_obj.AttributeTypes())
 	if obj.Action != nil {
-		action_object = new(AntiSpywareSecurityProfileResourceRulesActionObject)
-		diags.Append(action_object.CopyFromPango(ctx, append(ancestors, o), obj.Action, ev)...)
+		diags.Append(action_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Action, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		action_object, diags_tmp = types.ObjectValueFrom(ctx, action_obj.AttributeTypes(), action_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -7976,68 +9136,188 @@ func (o *AntiSpywareSecurityProfileResourceRulesObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var default_object *AntiSpywareSecurityProfileResourceRulesActionDefaultObject
+
+	var default_obj *AntiSpywareSecurityProfileResourceRulesActionDefaultObject
+	if o.Default.IsNull() {
+		default_obj = new(AntiSpywareSecurityProfileResourceRulesActionDefaultObject)
+	} else {
+		diags.Append(o.Default.As(ctx, &default_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	default_object := types.ObjectNull(default_obj.AttributeTypes())
 	if obj.Default != nil {
-		default_object = new(AntiSpywareSecurityProfileResourceRulesActionDefaultObject)
-		diags.Append(default_object.CopyFromPango(ctx, append(ancestors, o), obj.Default, ev)...)
+		diags.Append(default_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Default, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		default_object, diags_tmp = types.ObjectValueFrom(ctx, default_obj.AttributeTypes(), default_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var allow_object *AntiSpywareSecurityProfileResourceRulesActionAllowObject
+
+	var allow_obj *AntiSpywareSecurityProfileResourceRulesActionAllowObject
+	if o.Allow.IsNull() {
+		allow_obj = new(AntiSpywareSecurityProfileResourceRulesActionAllowObject)
+	} else {
+		diags.Append(o.Allow.As(ctx, &allow_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	allow_object := types.ObjectNull(allow_obj.AttributeTypes())
 	if obj.Allow != nil {
-		allow_object = new(AntiSpywareSecurityProfileResourceRulesActionAllowObject)
-		diags.Append(allow_object.CopyFromPango(ctx, append(ancestors, o), obj.Allow, ev)...)
+		diags.Append(allow_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Allow, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		allow_object, diags_tmp = types.ObjectValueFrom(ctx, allow_obj.AttributeTypes(), allow_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var alert_object *AntiSpywareSecurityProfileResourceRulesActionAlertObject
+
+	var alert_obj *AntiSpywareSecurityProfileResourceRulesActionAlertObject
+	if o.Alert.IsNull() {
+		alert_obj = new(AntiSpywareSecurityProfileResourceRulesActionAlertObject)
+	} else {
+		diags.Append(o.Alert.As(ctx, &alert_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	alert_object := types.ObjectNull(alert_obj.AttributeTypes())
 	if obj.Alert != nil {
-		alert_object = new(AntiSpywareSecurityProfileResourceRulesActionAlertObject)
-		diags.Append(alert_object.CopyFromPango(ctx, append(ancestors, o), obj.Alert, ev)...)
+		diags.Append(alert_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Alert, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		alert_object, diags_tmp = types.ObjectValueFrom(ctx, alert_obj.AttributeTypes(), alert_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var drop_object *AntiSpywareSecurityProfileResourceRulesActionDropObject
+
+	var drop_obj *AntiSpywareSecurityProfileResourceRulesActionDropObject
+	if o.Drop.IsNull() {
+		drop_obj = new(AntiSpywareSecurityProfileResourceRulesActionDropObject)
+	} else {
+		diags.Append(o.Drop.As(ctx, &drop_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	drop_object := types.ObjectNull(drop_obj.AttributeTypes())
 	if obj.Drop != nil {
-		drop_object = new(AntiSpywareSecurityProfileResourceRulesActionDropObject)
-		diags.Append(drop_object.CopyFromPango(ctx, append(ancestors, o), obj.Drop, ev)...)
+		diags.Append(drop_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Drop, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		drop_object, diags_tmp = types.ObjectValueFrom(ctx, drop_obj.AttributeTypes(), drop_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetClient_object *AntiSpywareSecurityProfileResourceRulesActionResetClientObject
+
+	var resetClient_obj *AntiSpywareSecurityProfileResourceRulesActionResetClientObject
+	if o.ResetClient.IsNull() {
+		resetClient_obj = new(AntiSpywareSecurityProfileResourceRulesActionResetClientObject)
+	} else {
+		diags.Append(o.ResetClient.As(ctx, &resetClient_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetClient_object := types.ObjectNull(resetClient_obj.AttributeTypes())
 	if obj.ResetClient != nil {
-		resetClient_object = new(AntiSpywareSecurityProfileResourceRulesActionResetClientObject)
-		diags.Append(resetClient_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetClient, ev)...)
+		diags.Append(resetClient_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetClient, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetClient_object, diags_tmp = types.ObjectValueFrom(ctx, resetClient_obj.AttributeTypes(), resetClient_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetServer_object *AntiSpywareSecurityProfileResourceRulesActionResetServerObject
+
+	var resetServer_obj *AntiSpywareSecurityProfileResourceRulesActionResetServerObject
+	if o.ResetServer.IsNull() {
+		resetServer_obj = new(AntiSpywareSecurityProfileResourceRulesActionResetServerObject)
+	} else {
+		diags.Append(o.ResetServer.As(ctx, &resetServer_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetServer_object := types.ObjectNull(resetServer_obj.AttributeTypes())
 	if obj.ResetServer != nil {
-		resetServer_object = new(AntiSpywareSecurityProfileResourceRulesActionResetServerObject)
-		diags.Append(resetServer_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetServer, ev)...)
+		diags.Append(resetServer_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetServer_object, diags_tmp = types.ObjectValueFrom(ctx, resetServer_obj.AttributeTypes(), resetServer_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetBoth_object *AntiSpywareSecurityProfileResourceRulesActionResetBothObject
+
+	var resetBoth_obj *AntiSpywareSecurityProfileResourceRulesActionResetBothObject
+	if o.ResetBoth.IsNull() {
+		resetBoth_obj = new(AntiSpywareSecurityProfileResourceRulesActionResetBothObject)
+	} else {
+		diags.Append(o.ResetBoth.As(ctx, &resetBoth_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetBoth_object := types.ObjectNull(resetBoth_obj.AttributeTypes())
 	if obj.ResetBoth != nil {
-		resetBoth_object = new(AntiSpywareSecurityProfileResourceRulesActionResetBothObject)
-		diags.Append(resetBoth_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetBoth, ev)...)
+		diags.Append(resetBoth_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetBoth, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetBoth_object, diags_tmp = types.ObjectValueFrom(ctx, resetBoth_obj.AttributeTypes(), resetBoth_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var blockIp_object *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject
+
+	var blockIp_obj *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject
+	if o.BlockIp.IsNull() {
+		blockIp_obj = new(AntiSpywareSecurityProfileResourceRulesActionBlockIpObject)
+	} else {
+		diags.Append(o.BlockIp.As(ctx, &blockIp_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	blockIp_object := types.ObjectNull(blockIp_obj.AttributeTypes())
 	if obj.BlockIp != nil {
-		blockIp_object = new(AntiSpywareSecurityProfileResourceRulesActionBlockIpObject)
-		diags.Append(blockIp_object.CopyFromPango(ctx, append(ancestors, o), obj.BlockIp, ev)...)
+		diags.Append(blockIp_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.BlockIp, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		blockIp_object, diags_tmp = types.ObjectValueFrom(ctx, blockIp_obj.AttributeTypes(), blockIp_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8055,49 +9335,49 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.RulesActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.RulesActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var trackBy_value types.String
@@ -8114,30 +9394,61 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) CopyFromPan
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatException, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var exemptIp_list types.List
 	{
 		var exemptIp_tf_entries []AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject
-		for _, elt := range obj.ExemptIp {
-			entry := AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.ExemptIp.IsNull() {
+			diags.Append(o.ExemptIp.ElementsAs(ctx, &exemptIp_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			exemptIp_tf_entries = append(exemptIp_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.ExemptIp {
+			entry := AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(exemptIp_tf_entries) {
+				entry = exemptIp_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(exemptIp_tf_entries) {
+				exemptIp_tf_entries[idx] = entry
+			} else {
+				exemptIp_tf_entries = append(exemptIp_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("exempt_ip")
 		exemptIp_list, list_diags = types.ListValueFrom(ctx, schemaType, exemptIp_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var action_object *AntiSpywareSecurityProfileResourceThreatExceptionActionObject
+
+	var action_obj *AntiSpywareSecurityProfileResourceThreatExceptionActionObject
+	if o.Action.IsNull() {
+		action_obj = new(AntiSpywareSecurityProfileResourceThreatExceptionActionObject)
+	} else {
+		diags.Append(o.Action.As(ctx, &action_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	action_object := types.ObjectNull(action_obj.AttributeTypes())
 	if obj.Action != nil {
-		action_object = new(AntiSpywareSecurityProfileResourceThreatExceptionActionObject)
-		diags.Append(action_object.CopyFromPango(ctx, append(ancestors, o), obj.Action, ev)...)
+		diags.Append(action_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Action, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		action_object, diags_tmp = types.ObjectValueFrom(ctx, action_obj.AttributeTypes(), action_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8155,68 +9466,188 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyFromPango(
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionAction, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionAction, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var default_object *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject
+
+	var default_obj *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject
+	if o.Default.IsNull() {
+		default_obj = new(AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject)
+	} else {
+		diags.Append(o.Default.As(ctx, &default_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	default_object := types.ObjectNull(default_obj.AttributeTypes())
 	if obj.Default != nil {
-		default_object = new(AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject)
-		diags.Append(default_object.CopyFromPango(ctx, append(ancestors, o), obj.Default, ev)...)
+		diags.Append(default_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Default, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		default_object, diags_tmp = types.ObjectValueFrom(ctx, default_obj.AttributeTypes(), default_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var allow_object *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject
+
+	var allow_obj *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject
+	if o.Allow.IsNull() {
+		allow_obj = new(AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject)
+	} else {
+		diags.Append(o.Allow.As(ctx, &allow_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	allow_object := types.ObjectNull(allow_obj.AttributeTypes())
 	if obj.Allow != nil {
-		allow_object = new(AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject)
-		diags.Append(allow_object.CopyFromPango(ctx, append(ancestors, o), obj.Allow, ev)...)
+		diags.Append(allow_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Allow, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		allow_object, diags_tmp = types.ObjectValueFrom(ctx, allow_obj.AttributeTypes(), allow_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var alert_object *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject
+
+	var alert_obj *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject
+	if o.Alert.IsNull() {
+		alert_obj = new(AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject)
+	} else {
+		diags.Append(o.Alert.As(ctx, &alert_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	alert_object := types.ObjectNull(alert_obj.AttributeTypes())
 	if obj.Alert != nil {
-		alert_object = new(AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject)
-		diags.Append(alert_object.CopyFromPango(ctx, append(ancestors, o), obj.Alert, ev)...)
+		diags.Append(alert_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Alert, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		alert_object, diags_tmp = types.ObjectValueFrom(ctx, alert_obj.AttributeTypes(), alert_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var drop_object *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject
+
+	var drop_obj *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject
+	if o.Drop.IsNull() {
+		drop_obj = new(AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject)
+	} else {
+		diags.Append(o.Drop.As(ctx, &drop_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	drop_object := types.ObjectNull(drop_obj.AttributeTypes())
 	if obj.Drop != nil {
-		drop_object = new(AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject)
-		diags.Append(drop_object.CopyFromPango(ctx, append(ancestors, o), obj.Drop, ev)...)
+		diags.Append(drop_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Drop, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		drop_object, diags_tmp = types.ObjectValueFrom(ctx, drop_obj.AttributeTypes(), drop_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetBoth_object *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject
+
+	var resetBoth_obj *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject
+	if o.ResetBoth.IsNull() {
+		resetBoth_obj = new(AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject)
+	} else {
+		diags.Append(o.ResetBoth.As(ctx, &resetBoth_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetBoth_object := types.ObjectNull(resetBoth_obj.AttributeTypes())
 	if obj.ResetBoth != nil {
-		resetBoth_object = new(AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject)
-		diags.Append(resetBoth_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetBoth, ev)...)
+		diags.Append(resetBoth_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetBoth, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetBoth_object, diags_tmp = types.ObjectValueFrom(ctx, resetBoth_obj.AttributeTypes(), resetBoth_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetClient_object *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject
+
+	var resetClient_obj *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject
+	if o.ResetClient.IsNull() {
+		resetClient_obj = new(AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject)
+	} else {
+		diags.Append(o.ResetClient.As(ctx, &resetClient_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetClient_object := types.ObjectNull(resetClient_obj.AttributeTypes())
 	if obj.ResetClient != nil {
-		resetClient_object = new(AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject)
-		diags.Append(resetClient_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetClient, ev)...)
+		diags.Append(resetClient_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetClient, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetClient_object, diags_tmp = types.ObjectValueFrom(ctx, resetClient_obj.AttributeTypes(), resetClient_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var resetServer_object *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject
+
+	var resetServer_obj *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject
+	if o.ResetServer.IsNull() {
+		resetServer_obj = new(AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject)
+	} else {
+		diags.Append(o.ResetServer.As(ctx, &resetServer_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	resetServer_object := types.ObjectNull(resetServer_obj.AttributeTypes())
 	if obj.ResetServer != nil {
-		resetServer_object = new(AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject)
-		diags.Append(resetServer_object.CopyFromPango(ctx, append(ancestors, o), obj.ResetServer, ev)...)
+		diags.Append(resetServer_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.ResetServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		resetServer_object, diags_tmp = types.ObjectValueFrom(ctx, resetServer_obj.AttributeTypes(), resetServer_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var blockIp_object *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject
+
+	var blockIp_obj *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject
+	if o.BlockIp.IsNull() {
+		blockIp_obj = new(AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject)
+	} else {
+		diags.Append(o.BlockIp.As(ctx, &blockIp_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	blockIp_object := types.ObjectNull(blockIp_obj.AttributeTypes())
 	if obj.BlockIp != nil {
-		blockIp_object = new(AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject)
-		diags.Append(blockIp_object.CopyFromPango(ctx, append(ancestors, o), obj.BlockIp, ev)...)
+		diags.Append(blockIp_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.BlockIp, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		blockIp_object, diags_tmp = types.ObjectValueFrom(ctx, blockIp_obj.AttributeTypes(), blockIp_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -8234,49 +9665,49 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) CopyFrom
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionDefault, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionAllow, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionAlert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionDrop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionResetServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionActionBlockIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var trackBy_value types.String
@@ -8293,7 +9724,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) C
 	return diags
 }
 
-func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *spyware.ThreatExceptionExemptIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *spyware.ThreatExceptionExemptIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
@@ -8305,7 +9736,7 @@ func (o *AntiSpywareSecurityProfileResourceModel) resourceXpathParentComponents(
 	return components, nil
 }
 
-func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state AntiSpywareSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -8320,7 +9751,7 @@ func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req res
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -8382,7 +9813,7 @@ func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req res
 
 	// Load the desired config.
 	var obj *spyware.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -8400,13 +9831,13 @@ func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req res
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -8423,8 +9854,8 @@ func (r *AntiSpywareSecurityProfileResource) Create(ctx context.Context, req res
 }
 func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state AntiSpywareSecurityProfileResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state AntiSpywareSecurityProfileResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -8444,7 +9875,7 @@ func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resou
 
 	{
 		var terraformLocation AntiSpywareSecurityProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -8485,15 +9916,15 @@ func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resou
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_anti_spyware_security_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -8503,16 +9934,16 @@ func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resou
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -8525,7 +9956,7 @@ func (o *AntiSpywareSecurityProfileResource) Read(ctx context.Context, req resou
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state AntiSpywareSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -8593,7 +10024,7 @@ func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req res
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -8603,13 +10034,13 @@ func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req res
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	obj, err := o.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -8620,22 +10051,19 @@ func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req res
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	updated, err := o.manager.Update(ctx, location, components, obj, obj.Name)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -8649,10 +10077,10 @@ func (r *AntiSpywareSecurityProfileResource) Update(ctx context.Context, req res
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *AntiSpywareSecurityProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *AntiSpywareSecurityProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state AntiSpywareSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -8668,7 +10096,7 @@ func (r *AntiSpywareSecurityProfileResource) Delete(ctx context.Context, req res
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -8719,7 +10147,7 @@ func (r *AntiSpywareSecurityProfileResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -8816,7 +10244,7 @@ func AntiSpywareSecurityProfileImportStateCreator(ctx context.Context, resource 
 	return json.Marshal(importStruct)
 }
 
-func (r *AntiSpywareSecurityProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *AntiSpywareSecurityProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj AntiSpywareSecurityProfileImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

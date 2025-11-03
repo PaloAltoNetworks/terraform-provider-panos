@@ -644,7 +644,7 @@ func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, s
 	for idx, elt := range stateEntries {
 		stateEntriesByName[elt.EntryName()] = uuidObjectWithState[E]{
 			Entry:    elt,
-			State:    entryMissing,
+			State:    entryUnknown,
 			StateIdx: idx,
 		}
 	}
@@ -661,19 +661,10 @@ func (o *UuidObjectManager[E, L, S]) ReadMany(ctx context.Context, location L, s
 	}
 
 	common := make([]E, commonCount)
-	var stateEntriesMissing bool
 	for _, elt := range stateEntriesByName {
 		if elt.State == entryOk {
 			common[elt.StateIdx] = elt.Entry
 		}
-
-		if elt.State == entryMissing {
-			stateEntriesMissing = true
-		}
-	}
-
-	if stateEntriesMissing {
-		return common, false, nil
 	}
 
 	// If position is nil, there is a lifecycle { ignore_changes = [position] } in place

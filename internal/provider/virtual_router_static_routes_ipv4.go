@@ -61,25 +61,25 @@ type VirtualRouterStaticRoutesIpv4DataSourceModel struct {
 	StaticRoutes  types.List   `tfsdk:"static_routes"`
 }
 type VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject struct {
-	Name        types.String                                                          `tfsdk:"name"`
-	AdminDist   types.Int64                                                           `tfsdk:"admin_dist"`
-	Bfd         *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject         `tfsdk:"bfd"`
-	Destination types.String                                                          `tfsdk:"destination"`
-	Interface   types.String                                                          `tfsdk:"interface"`
-	Metric      types.Int64                                                           `tfsdk:"metric"`
-	Nexthop     *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject     `tfsdk:"nexthop"`
-	PathMonitor *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject `tfsdk:"path_monitor"`
-	RouteTable  *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject  `tfsdk:"route_table"`
+	Name        types.String `tfsdk:"name"`
+	AdminDist   types.Int64  `tfsdk:"admin_dist"`
+	Bfd         types.Object `tfsdk:"bfd"`
+	Destination types.String `tfsdk:"destination"`
+	Interface   types.String `tfsdk:"interface"`
+	Metric      types.Int64  `tfsdk:"metric"`
+	Nexthop     types.Object `tfsdk:"nexthop"`
+	PathMonitor types.Object `tfsdk:"path_monitor"`
+	RouteTable  types.Object `tfsdk:"route_table"`
 }
 type VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject struct {
 	Profile types.String `tfsdk:"profile"`
 }
 type VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject struct {
-	Discard   *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject `tfsdk:"discard"`
-	Fqdn      types.String                                                             `tfsdk:"fqdn"`
-	IpAddress types.String                                                             `tfsdk:"ip_address"`
-	NextVr    types.String                                                             `tfsdk:"next_vr"`
-	Receive   *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject `tfsdk:"receive"`
+	Discard   types.Object `tfsdk:"discard"`
+	Fqdn      types.String `tfsdk:"fqdn"`
+	IpAddress types.String `tfsdk:"ip_address"`
+	NextVr    types.String `tfsdk:"next_vr"`
+	Receive   types.Object `tfsdk:"receive"`
 }
 type VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject struct {
 }
@@ -100,10 +100,10 @@ type VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestin
 	Count       types.Int64  `tfsdk:"count"`
 }
 type VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject struct {
-	Both      *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject      `tfsdk:"both"`
-	Multicast *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject `tfsdk:"multicast"`
-	NoInstall *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject `tfsdk:"no_install"`
-	Unicast   *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject   `tfsdk:"unicast"`
+	Both      types.Object `tfsdk:"both"`
+	Multicast types.Object `tfsdk:"multicast"`
+	NoInstall types.Object `tfsdk:"no_install"`
+	Unicast   types.Object `tfsdk:"unicast"`
 }
 type VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject struct {
 }
@@ -118,12 +118,17 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceModel) AttributeTypes() map[stri
 
 	var locationObj VirtualRouterStaticRoutesIpv4Location
 
+	var staticRoutesObj VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
 		"virtual_router": types.StringType,
-		"static_routes":  types.ListType{},
+		"static_routes": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: staticRoutesObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -234,11 +239,16 @@ func (o VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject)
 }
 func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject) AttributeTypes() map[string]attr.Type {
 
+	var monitorDestinationsObj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestinationsObject
 	return map[string]attr.Type{
-		"enable":               types.BoolType,
-		"failure_condition":    types.StringType,
-		"hold_time":            types.Int64Type,
-		"monitor_destinations": types.ListType{},
+		"enable":            types.BoolType,
+		"failure_condition": types.StringType,
+		"hold_time":         types.Int64Type,
+		"monitor_destinations": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: monitorDestinationsObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -345,18 +355,22 @@ func (o VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObje
 	return nil
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	adminDist_value := o.AdminDist.ValueInt64Pointer()
 	var bfd_entry *staticroute.Bfd
-	if o.Bfd != nil {
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
 		if *obj != nil && (*obj).Bfd != nil {
 			bfd_entry = (*obj).Bfd
 		} else {
 			bfd_entry = new(staticroute.Bfd)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject
+		diags.Append(o.Bfd.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -365,40 +379,52 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject) CopyToPango(
 	interface_value := o.Interface.ValueStringPointer()
 	metric_value := o.Metric.ValueInt64Pointer()
 	var nexthop_entry *staticroute.Nexthop
-	if o.Nexthop != nil {
+	if !o.Nexthop.IsUnknown() && !o.Nexthop.IsNull() {
 		if *obj != nil && (*obj).Nexthop != nil {
 			nexthop_entry = (*obj).Nexthop
 		} else {
 			nexthop_entry = new(staticroute.Nexthop)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Nexthop.CopyToPango(ctx, append(ancestors, o), &nexthop_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject
+		diags.Append(o.Nexthop.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &nexthop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var pathMonitor_entry *staticroute.PathMonitor
-	if o.PathMonitor != nil {
+	if !o.PathMonitor.IsUnknown() && !o.PathMonitor.IsNull() {
 		if *obj != nil && (*obj).PathMonitor != nil {
 			pathMonitor_entry = (*obj).PathMonitor
 		} else {
 			pathMonitor_entry = new(staticroute.PathMonitor)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.PathMonitor.CopyToPango(ctx, append(ancestors, o), &pathMonitor_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject
+		diags.Append(o.PathMonitor.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &pathMonitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var routeTable_entry *staticroute.RouteTable
-	if o.RouteTable != nil {
+	if !o.RouteTable.IsUnknown() && !o.RouteTable.IsNull() {
 		if *obj != nil && (*obj).RouteTable != nil {
 			routeTable_entry = (*obj).RouteTable
 		} else {
 			routeTable_entry = new(staticroute.RouteTable)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RouteTable.CopyToPango(ctx, append(ancestors, o), &routeTable_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject
+		diags.Append(o.RouteTable.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &routeTable_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -419,7 +445,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject) CopyToPango(
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.Bfd, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.Bfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -430,17 +456,21 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject) CopyToPan
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.Nexthop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.Nexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_entry *staticroute.NexthopDiscard
-	if o.Discard != nil {
+	if !o.Discard.IsUnknown() && !o.Discard.IsNull() {
 		if *obj != nil && (*obj).Discard != nil {
 			discard_entry = (*obj).Discard
 		} else {
 			discard_entry = new(staticroute.NexthopDiscard)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Discard.CopyToPango(ctx, append(ancestors, o), &discard_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject
+		diags.Append(o.Discard.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &discard_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -449,14 +479,18 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject) CopyT
 	ipAddress_value := o.IpAddress.ValueStringPointer()
 	nextVr_value := o.NextVr.ValueStringPointer()
 	var receive_entry *staticroute.NexthopReceive
-	if o.Receive != nil {
+	if !o.Receive.IsUnknown() && !o.Receive.IsNull() {
 		if *obj != nil && (*obj).Receive != nil {
 			receive_entry = (*obj).Receive
 		} else {
 			receive_entry = new(staticroute.NexthopReceive)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Receive.CopyToPango(ctx, append(ancestors, o), &receive_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject
+		diags.Append(o.Receive.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &receive_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -473,7 +507,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject) CopyT
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.NexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.NexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -482,7 +516,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.NexthopReceive, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.NexthopReceive, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -491,7 +525,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.PathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.PathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	failureCondition_value := o.FailureCondition.ValueStringPointer()
@@ -506,7 +540,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject) C
 		}
 		for _, elt := range monitorDestinations_tf_entries {
 			var entry *staticroute.PathMonitorMonitorDestinations
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -524,7 +558,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject) C
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.PathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.PathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	source_value := o.Source.ValueStringPointer()
@@ -544,56 +578,72 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDe
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var both_entry *staticroute.RouteTableBoth
-	if o.Both != nil {
+	if !o.Both.IsUnknown() && !o.Both.IsNull() {
 		if *obj != nil && (*obj).Both != nil {
 			both_entry = (*obj).Both
 		} else {
 			both_entry = new(staticroute.RouteTableBoth)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Both.CopyToPango(ctx, append(ancestors, o), &both_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject
+		diags.Append(o.Both.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &both_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var multicast_entry *staticroute.RouteTableMulticast
-	if o.Multicast != nil {
+	if !o.Multicast.IsUnknown() && !o.Multicast.IsNull() {
 		if *obj != nil && (*obj).Multicast != nil {
 			multicast_entry = (*obj).Multicast
 		} else {
 			multicast_entry = new(staticroute.RouteTableMulticast)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Multicast.CopyToPango(ctx, append(ancestors, o), &multicast_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject
+		diags.Append(o.Multicast.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &multicast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var noInstall_entry *staticroute.RouteTableNoInstall
-	if o.NoInstall != nil {
+	if !o.NoInstall.IsUnknown() && !o.NoInstall.IsNull() {
 		if *obj != nil && (*obj).NoInstall != nil {
 			noInstall_entry = (*obj).NoInstall
 		} else {
 			noInstall_entry = new(staticroute.RouteTableNoInstall)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.NoInstall.CopyToPango(ctx, append(ancestors, o), &noInstall_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject
+		diags.Append(o.NoInstall.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &noInstall_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var unicast_entry *staticroute.RouteTableUnicast
-	if o.Unicast != nil {
+	if !o.Unicast.IsUnknown() && !o.Unicast.IsNull() {
 		if *obj != nil && (*obj).Unicast != nil {
 			unicast_entry = (*obj).Unicast
 		} else {
 			unicast_entry = new(staticroute.RouteTableUnicast)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Unicast.CopyToPango(ctx, append(ancestors, o), &unicast_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject
+		diags.Append(o.Unicast.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &unicast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -609,7 +659,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject) Co
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTableBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTableBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -618,7 +668,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTableMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTableMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -627,7 +677,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastO
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTableNoInstall, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTableNoInstall, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -636,7 +686,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallO
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTableUnicast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTableUnicast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -646,36 +696,96 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObj
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var bfd_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject
+
+	var bfd_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject
+	if o.Bfd.IsNull() {
+		bfd_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject)
+	} else {
+		diags.Append(o.Bfd.As(ctx, &bfd_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	bfd_object := types.ObjectNull(bfd_obj.AttributeTypes())
 	if obj.Bfd != nil {
-		bfd_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject)
-		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
+		diags.Append(bfd_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Bfd, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		bfd_object, diags_tmp = types.ObjectValueFrom(ctx, bfd_obj.AttributeTypes(), bfd_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var nexthop_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject
+
+	var nexthop_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject
+	if o.Nexthop.IsNull() {
+		nexthop_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject)
+	} else {
+		diags.Append(o.Nexthop.As(ctx, &nexthop_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	nexthop_object := types.ObjectNull(nexthop_obj.AttributeTypes())
 	if obj.Nexthop != nil {
-		nexthop_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject)
-		diags.Append(nexthop_object.CopyFromPango(ctx, append(ancestors, o), obj.Nexthop, ev)...)
+		diags.Append(nexthop_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Nexthop, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		nexthop_object, diags_tmp = types.ObjectValueFrom(ctx, nexthop_obj.AttributeTypes(), nexthop_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var pathMonitor_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject
+
+	var pathMonitor_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject
+	if o.PathMonitor.IsNull() {
+		pathMonitor_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject)
+	} else {
+		diags.Append(o.PathMonitor.As(ctx, &pathMonitor_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	pathMonitor_object := types.ObjectNull(pathMonitor_obj.AttributeTypes())
 	if obj.PathMonitor != nil {
-		pathMonitor_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject)
-		diags.Append(pathMonitor_object.CopyFromPango(ctx, append(ancestors, o), obj.PathMonitor, ev)...)
+		diags.Append(pathMonitor_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.PathMonitor, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		pathMonitor_object, diags_tmp = types.ObjectValueFrom(ctx, pathMonitor_obj.AttributeTypes(), pathMonitor_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var routeTable_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject
+
+	var routeTable_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject
+	if o.RouteTable.IsNull() {
+		routeTable_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject)
+	} else {
+		diags.Append(o.RouteTable.As(ctx, &routeTable_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	routeTable_object := types.ObjectNull(routeTable_obj.AttributeTypes())
 	if obj.RouteTable != nil {
-		routeTable_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject)
-		diags.Append(routeTable_object.CopyFromPango(ctx, append(ancestors, o), obj.RouteTable, ev)...)
+		diags.Append(routeTable_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RouteTable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		routeTable_object, diags_tmp = types.ObjectValueFrom(ctx, routeTable_obj.AttributeTypes(), routeTable_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -710,7 +820,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject) CopyFromPang
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.Bfd, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.Bfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -722,20 +832,50 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject) CopyFromP
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.Nexthop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.Nexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var discard_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject
-	if obj.Discard != nil {
-		discard_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject)
-		diags.Append(discard_object.CopyFromPango(ctx, append(ancestors, o), obj.Discard, ev)...)
+
+	var discard_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject
+	if o.Discard.IsNull() {
+		discard_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject)
+	} else {
+		diags.Append(o.Discard.As(ctx, &discard_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var receive_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject
+	discard_object := types.ObjectNull(discard_obj.AttributeTypes())
+	if obj.Discard != nil {
+		diags.Append(discard_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Discard, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		discard_object, diags_tmp = types.ObjectValueFrom(ctx, discard_obj.AttributeTypes(), discard_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var receive_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject
+	if o.Receive.IsNull() {
+		receive_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject)
+	} else {
+		diags.Append(o.Receive.As(ctx, &receive_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	receive_object := types.ObjectNull(receive_obj.AttributeTypes())
 	if obj.Receive != nil {
-		receive_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject)
-		diags.Append(receive_object.CopyFromPango(ctx, append(ancestors, o), obj.Receive, ev)...)
+		diags.Append(receive_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Receive, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		receive_object, diags_tmp = types.ObjectValueFrom(ctx, receive_obj.AttributeTypes(), receive_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -762,32 +902,48 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject) CopyF
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.NexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.NexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.NexthopReceive, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.NexthopReceive, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.PathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.PathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var monitorDestinations_list types.List
 	{
 		var monitorDestinations_tf_entries []VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestinationsObject
-		for _, elt := range obj.MonitorDestinations {
-			entry := VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestinationsObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.MonitorDestinations.IsNull() {
+			diags.Append(o.MonitorDestinations.ElementsAs(ctx, &monitorDestinations_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			monitorDestinations_tf_entries = append(monitorDestinations_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.MonitorDestinations {
+			entry := VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestinationsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(monitorDestinations_tf_entries) {
+				entry = monitorDestinations_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(monitorDestinations_tf_entries) {
+				monitorDestinations_tf_entries[idx] = entry
+			} else {
+				monitorDestinations_tf_entries = append(monitorDestinations_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("monitor_destinations")
@@ -815,7 +971,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorObject) C
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.PathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.PathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -848,36 +1004,96 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDe
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var both_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject
+
+	var both_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject
+	if o.Both.IsNull() {
+		both_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject)
+	} else {
+		diags.Append(o.Both.As(ctx, &both_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	both_object := types.ObjectNull(both_obj.AttributeTypes())
 	if obj.Both != nil {
-		both_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject)
-		diags.Append(both_object.CopyFromPango(ctx, append(ancestors, o), obj.Both, ev)...)
+		diags.Append(both_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Both, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		both_object, diags_tmp = types.ObjectValueFrom(ctx, both_obj.AttributeTypes(), both_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var multicast_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject
+
+	var multicast_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject
+	if o.Multicast.IsNull() {
+		multicast_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject)
+	} else {
+		diags.Append(o.Multicast.As(ctx, &multicast_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	multicast_object := types.ObjectNull(multicast_obj.AttributeTypes())
 	if obj.Multicast != nil {
-		multicast_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject)
-		diags.Append(multicast_object.CopyFromPango(ctx, append(ancestors, o), obj.Multicast, ev)...)
+		diags.Append(multicast_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Multicast, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		multicast_object, diags_tmp = types.ObjectValueFrom(ctx, multicast_obj.AttributeTypes(), multicast_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var noInstall_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject
+
+	var noInstall_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject
+	if o.NoInstall.IsNull() {
+		noInstall_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject)
+	} else {
+		diags.Append(o.NoInstall.As(ctx, &noInstall_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	noInstall_object := types.ObjectNull(noInstall_obj.AttributeTypes())
 	if obj.NoInstall != nil {
-		noInstall_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject)
-		diags.Append(noInstall_object.CopyFromPango(ctx, append(ancestors, o), obj.NoInstall, ev)...)
+		diags.Append(noInstall_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.NoInstall, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		noInstall_object, diags_tmp = types.ObjectValueFrom(ctx, noInstall_obj.AttributeTypes(), noInstall_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var unicast_object *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject
+
+	var unicast_obj *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject
+	if o.Unicast.IsNull() {
+		unicast_obj = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject)
+	} else {
+		diags.Append(o.Unicast.As(ctx, &unicast_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	unicast_object := types.ObjectNull(unicast_obj.AttributeTypes())
 	if obj.Unicast != nil {
-		unicast_object = new(VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject)
-		diags.Append(unicast_object.CopyFromPango(ctx, append(ancestors, o), obj.Unicast, ev)...)
+		diags.Append(unicast_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Unicast, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		unicast_object, diags_tmp = types.ObjectValueFrom(ctx, unicast_obj.AttributeTypes(), unicast_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -891,25 +1107,25 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject) Co
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTableBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTableBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTableMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTableMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTableNoInstall, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTableNoInstall, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTableUnicast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTableUnicast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
@@ -1643,7 +1859,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSource) Read(ctx context.Context, req 
 	entries := make([]*staticroute.Entry, 0, len(elements))
 	for _, elt := range elements {
 		var entry *staticroute.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, o.client, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1668,7 +1884,7 @@ func (o *VirtualRouterStaticRoutesIpv4DataSource) Read(ctx context.Context, req 
 	objects := make([]VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject, len(readEntries))
 	for idx, elt := range readEntries {
 		var object VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, elt, ev)...)
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1724,25 +1940,25 @@ type VirtualRouterStaticRoutesIpv4ResourceModel struct {
 	StaticRoutes  types.List   `tfsdk:"static_routes"`
 }
 type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject struct {
-	Name        types.String                                                        `tfsdk:"name"`
-	AdminDist   types.Int64                                                         `tfsdk:"admin_dist"`
-	Bfd         *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject         `tfsdk:"bfd"`
-	Destination types.String                                                        `tfsdk:"destination"`
-	Interface   types.String                                                        `tfsdk:"interface"`
-	Metric      types.Int64                                                         `tfsdk:"metric"`
-	Nexthop     *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject     `tfsdk:"nexthop"`
-	PathMonitor *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject `tfsdk:"path_monitor"`
-	RouteTable  *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject  `tfsdk:"route_table"`
+	Name        types.String `tfsdk:"name"`
+	AdminDist   types.Int64  `tfsdk:"admin_dist"`
+	Bfd         types.Object `tfsdk:"bfd"`
+	Destination types.String `tfsdk:"destination"`
+	Interface   types.String `tfsdk:"interface"`
+	Metric      types.Int64  `tfsdk:"metric"`
+	Nexthop     types.Object `tfsdk:"nexthop"`
+	PathMonitor types.Object `tfsdk:"path_monitor"`
+	RouteTable  types.Object `tfsdk:"route_table"`
 }
 type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject struct {
 	Profile types.String `tfsdk:"profile"`
 }
 type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject struct {
-	Discard   *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject `tfsdk:"discard"`
-	Fqdn      types.String                                                           `tfsdk:"fqdn"`
-	IpAddress types.String                                                           `tfsdk:"ip_address"`
-	NextVr    types.String                                                           `tfsdk:"next_vr"`
-	Receive   *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject `tfsdk:"receive"`
+	Discard   types.Object `tfsdk:"discard"`
+	Fqdn      types.String `tfsdk:"fqdn"`
+	IpAddress types.String `tfsdk:"ip_address"`
+	NextVr    types.String `tfsdk:"next_vr"`
+	Receive   types.Object `tfsdk:"receive"`
 }
 type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject struct {
 }
@@ -1763,10 +1979,10 @@ type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinat
 	Count       types.Int64  `tfsdk:"count"`
 }
 type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject struct {
-	Both      *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject      `tfsdk:"both"`
-	Multicast *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject `tfsdk:"multicast"`
-	NoInstall *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject `tfsdk:"no_install"`
-	Unicast   *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject   `tfsdk:"unicast"`
+	Both      types.Object `tfsdk:"both"`
+	Multicast types.Object `tfsdk:"multicast"`
+	NoInstall types.Object `tfsdk:"no_install"`
+	Unicast   types.Object `tfsdk:"unicast"`
 }
 type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject struct {
 }
@@ -1777,7 +1993,7 @@ type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject 
 type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject struct {
 }
 
-func (r *VirtualRouterStaticRoutesIpv4Resource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *VirtualRouterStaticRoutesIpv4Resource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -2405,43 +2621,48 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObjec
 	panic("unreachable")
 }
 
-func (r *VirtualRouterStaticRoutesIpv4Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *VirtualRouterStaticRoutesIpv4Resource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_virtual_router_static_routes_ipv4"
 }
 
-func (r *VirtualRouterStaticRoutesIpv4Resource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *VirtualRouterStaticRoutesIpv4Resource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = VirtualRouterStaticRoutesIpv4ResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *VirtualRouterStaticRoutesIpv4Resource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *VirtualRouterStaticRoutesIpv4Resource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := staticroute.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := staticroute.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*staticroute.Entry, staticroute.Location, *staticroute.Service](r.client, staticroute.NewService(r.client), batchSize, specifier, staticroute.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*staticroute.Entry, staticroute.Location, *staticroute.Service](o.client, staticroute.NewService(o.client), batchSize, specifier, staticroute.SpecMatches)
 }
 
 func (o *VirtualRouterStaticRoutesIpv4ResourceModel) AttributeTypes() map[string]attr.Type {
 
 	var locationObj VirtualRouterStaticRoutesIpv4Location
 
+	var staticRoutesObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
 		"virtual_router": types.StringType,
-		"static_routes":  types.ListType{},
+		"static_routes": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: staticRoutesObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -2552,11 +2773,16 @@ func (o VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject) E
 }
 func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject) AttributeTypes() map[string]attr.Type {
 
+	var monitorDestinationsObj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject
 	return map[string]attr.Type{
-		"enable":               types.BoolType,
-		"failure_condition":    types.StringType,
-		"hold_time":            types.Int64Type,
-		"monitor_destinations": types.ListType{},
+		"enable":            types.BoolType,
+		"failure_condition": types.StringType,
+		"hold_time":         types.Int64Type,
+		"monitor_destinations": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: monitorDestinationsObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -2663,18 +2889,22 @@ func (o VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject
 	return nil
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	adminDist_value := o.AdminDist.ValueInt64Pointer()
 	var bfd_entry *staticroute.Bfd
-	if o.Bfd != nil {
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
 		if *obj != nil && (*obj).Bfd != nil {
 			bfd_entry = (*obj).Bfd
 		} else {
 			bfd_entry = new(staticroute.Bfd)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Bfd.CopyToPango(ctx, append(ancestors, o), &bfd_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject
+		diags.Append(o.Bfd.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &bfd_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2683,40 +2913,52 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject) CopyToPango(ct
 	interface_value := o.Interface.ValueStringPointer()
 	metric_value := o.Metric.ValueInt64Pointer()
 	var nexthop_entry *staticroute.Nexthop
-	if o.Nexthop != nil {
+	if !o.Nexthop.IsUnknown() && !o.Nexthop.IsNull() {
 		if *obj != nil && (*obj).Nexthop != nil {
 			nexthop_entry = (*obj).Nexthop
 		} else {
 			nexthop_entry = new(staticroute.Nexthop)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Nexthop.CopyToPango(ctx, append(ancestors, o), &nexthop_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject
+		diags.Append(o.Nexthop.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &nexthop_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var pathMonitor_entry *staticroute.PathMonitor
-	if o.PathMonitor != nil {
+	if !o.PathMonitor.IsUnknown() && !o.PathMonitor.IsNull() {
 		if *obj != nil && (*obj).PathMonitor != nil {
 			pathMonitor_entry = (*obj).PathMonitor
 		} else {
 			pathMonitor_entry = new(staticroute.PathMonitor)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.PathMonitor.CopyToPango(ctx, append(ancestors, o), &pathMonitor_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject
+		diags.Append(o.PathMonitor.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &pathMonitor_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var routeTable_entry *staticroute.RouteTable
-	if o.RouteTable != nil {
+	if !o.RouteTable.IsUnknown() && !o.RouteTable.IsNull() {
 		if *obj != nil && (*obj).RouteTable != nil {
 			routeTable_entry = (*obj).RouteTable
 		} else {
 			routeTable_entry = new(staticroute.RouteTable)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RouteTable.CopyToPango(ctx, append(ancestors, o), &routeTable_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject
+		diags.Append(o.RouteTable.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &routeTable_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2737,7 +2979,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject) CopyToPango(ct
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.Bfd, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.Bfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	profile_value := o.Profile.ValueStringPointer()
 
@@ -2748,17 +2990,21 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject) CopyToPango
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.Nexthop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.Nexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var discard_entry *staticroute.NexthopDiscard
-	if o.Discard != nil {
+	if !o.Discard.IsUnknown() && !o.Discard.IsNull() {
 		if *obj != nil && (*obj).Discard != nil {
 			discard_entry = (*obj).Discard
 		} else {
 			discard_entry = new(staticroute.NexthopDiscard)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Discard.CopyToPango(ctx, append(ancestors, o), &discard_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject
+		diags.Append(o.Discard.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &discard_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2767,14 +3013,18 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject) CopyToP
 	ipAddress_value := o.IpAddress.ValueStringPointer()
 	nextVr_value := o.NextVr.ValueStringPointer()
 	var receive_entry *staticroute.NexthopReceive
-	if o.Receive != nil {
+	if !o.Receive.IsUnknown() && !o.Receive.IsNull() {
 		if *obj != nil && (*obj).Receive != nil {
 			receive_entry = (*obj).Receive
 		} else {
 			receive_entry = new(staticroute.NexthopReceive)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Receive.CopyToPango(ctx, append(ancestors, o), &receive_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject
+		diags.Append(o.Receive.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &receive_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2791,7 +3041,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject) CopyToP
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.NexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.NexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2800,7 +3050,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject) 
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.NexthopReceive, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.NexthopReceive, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2809,7 +3059,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject) 
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.PathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.PathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	failureCondition_value := o.FailureCondition.ValueStringPointer()
@@ -2824,7 +3074,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject) Cop
 		}
 		for _, elt := range monitorDestinations_tf_entries {
 			var entry *staticroute.PathMonitorMonitorDestinations
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2842,7 +3092,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject) Cop
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.PathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.PathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	source_value := o.Source.ValueStringPointer()
@@ -2862,56 +3112,72 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDest
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var both_entry *staticroute.RouteTableBoth
-	if o.Both != nil {
+	if !o.Both.IsUnknown() && !o.Both.IsNull() {
 		if *obj != nil && (*obj).Both != nil {
 			both_entry = (*obj).Both
 		} else {
 			both_entry = new(staticroute.RouteTableBoth)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Both.CopyToPango(ctx, append(ancestors, o), &both_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject
+		diags.Append(o.Both.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &both_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var multicast_entry *staticroute.RouteTableMulticast
-	if o.Multicast != nil {
+	if !o.Multicast.IsUnknown() && !o.Multicast.IsNull() {
 		if *obj != nil && (*obj).Multicast != nil {
 			multicast_entry = (*obj).Multicast
 		} else {
 			multicast_entry = new(staticroute.RouteTableMulticast)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Multicast.CopyToPango(ctx, append(ancestors, o), &multicast_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject
+		diags.Append(o.Multicast.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &multicast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var noInstall_entry *staticroute.RouteTableNoInstall
-	if o.NoInstall != nil {
+	if !o.NoInstall.IsUnknown() && !o.NoInstall.IsNull() {
 		if *obj != nil && (*obj).NoInstall != nil {
 			noInstall_entry = (*obj).NoInstall
 		} else {
 			noInstall_entry = new(staticroute.RouteTableNoInstall)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.NoInstall.CopyToPango(ctx, append(ancestors, o), &noInstall_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject
+		diags.Append(o.NoInstall.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &noInstall_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var unicast_entry *staticroute.RouteTableUnicast
-	if o.Unicast != nil {
+	if !o.Unicast.IsUnknown() && !o.Unicast.IsNull() {
 		if *obj != nil && (*obj).Unicast != nil {
 			unicast_entry = (*obj).Unicast
 		} else {
 			unicast_entry = new(staticroute.RouteTableUnicast)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Unicast.CopyToPango(ctx, append(ancestors, o), &unicast_entry, ev)...)
+		var object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject
+		diags.Append(o.Unicast.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &unicast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2927,7 +3193,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject) Copy
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTableBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTableBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2936,7 +3202,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject) 
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTableMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTableMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2945,7 +3211,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObj
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTableNoInstall, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTableNoInstall, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2954,7 +3220,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObj
 
 	return diags
 }
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **staticroute.RouteTableUnicast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **staticroute.RouteTableUnicast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2964,36 +3230,96 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObjec
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var bfd_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject
+
+	var bfd_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject
+	if o.Bfd.IsNull() {
+		bfd_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject)
+	} else {
+		diags.Append(o.Bfd.As(ctx, &bfd_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	bfd_object := types.ObjectNull(bfd_obj.AttributeTypes())
 	if obj.Bfd != nil {
-		bfd_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject)
-		diags.Append(bfd_object.CopyFromPango(ctx, append(ancestors, o), obj.Bfd, ev)...)
+		diags.Append(bfd_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Bfd, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		bfd_object, diags_tmp = types.ObjectValueFrom(ctx, bfd_obj.AttributeTypes(), bfd_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var nexthop_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject
+
+	var nexthop_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject
+	if o.Nexthop.IsNull() {
+		nexthop_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject)
+	} else {
+		diags.Append(o.Nexthop.As(ctx, &nexthop_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	nexthop_object := types.ObjectNull(nexthop_obj.AttributeTypes())
 	if obj.Nexthop != nil {
-		nexthop_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject)
-		diags.Append(nexthop_object.CopyFromPango(ctx, append(ancestors, o), obj.Nexthop, ev)...)
+		diags.Append(nexthop_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Nexthop, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		nexthop_object, diags_tmp = types.ObjectValueFrom(ctx, nexthop_obj.AttributeTypes(), nexthop_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var pathMonitor_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject
+
+	var pathMonitor_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject
+	if o.PathMonitor.IsNull() {
+		pathMonitor_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject)
+	} else {
+		diags.Append(o.PathMonitor.As(ctx, &pathMonitor_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	pathMonitor_object := types.ObjectNull(pathMonitor_obj.AttributeTypes())
 	if obj.PathMonitor != nil {
-		pathMonitor_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject)
-		diags.Append(pathMonitor_object.CopyFromPango(ctx, append(ancestors, o), obj.PathMonitor, ev)...)
+		diags.Append(pathMonitor_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.PathMonitor, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		pathMonitor_object, diags_tmp = types.ObjectValueFrom(ctx, pathMonitor_obj.AttributeTypes(), pathMonitor_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var routeTable_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject
+
+	var routeTable_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject
+	if o.RouteTable.IsNull() {
+		routeTable_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject)
+	} else {
+		diags.Append(o.RouteTable.As(ctx, &routeTable_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	routeTable_object := types.ObjectNull(routeTable_obj.AttributeTypes())
 	if obj.RouteTable != nil {
-		routeTable_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject)
-		diags.Append(routeTable_object.CopyFromPango(ctx, append(ancestors, o), obj.RouteTable, ev)...)
+		diags.Append(routeTable_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RouteTable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		routeTable_object, diags_tmp = types.ObjectValueFrom(ctx, routeTable_obj.AttributeTypes(), routeTable_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3028,7 +3354,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject) CopyFromPango(
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.Bfd, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.Bfd, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var profile_value types.String
@@ -3040,20 +3366,50 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject) CopyFromPan
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.Nexthop, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.Nexthop, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var discard_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject
-	if obj.Discard != nil {
-		discard_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject)
-		diags.Append(discard_object.CopyFromPango(ctx, append(ancestors, o), obj.Discard, ev)...)
+
+	var discard_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject
+	if o.Discard.IsNull() {
+		discard_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject)
+	} else {
+		diags.Append(o.Discard.As(ctx, &discard_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var receive_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject
+	discard_object := types.ObjectNull(discard_obj.AttributeTypes())
+	if obj.Discard != nil {
+		diags.Append(discard_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Discard, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		discard_object, diags_tmp = types.ObjectValueFrom(ctx, discard_obj.AttributeTypes(), discard_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var receive_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject
+	if o.Receive.IsNull() {
+		receive_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject)
+	} else {
+		diags.Append(o.Receive.As(ctx, &receive_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	receive_object := types.ObjectNull(receive_obj.AttributeTypes())
 	if obj.Receive != nil {
-		receive_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject)
-		diags.Append(receive_object.CopyFromPango(ctx, append(ancestors, o), obj.Receive, ev)...)
+		diags.Append(receive_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Receive, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		receive_object, diags_tmp = types.ObjectValueFrom(ctx, receive_obj.AttributeTypes(), receive_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3080,32 +3436,48 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject) CopyFro
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.NexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.NexthopDiscard, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.NexthopReceive, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.NexthopReceive, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.PathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.PathMonitor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var monitorDestinations_list types.List
 	{
 		var monitorDestinations_tf_entries []VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject
-		for _, elt := range obj.MonitorDestinations {
-			entry := VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.MonitorDestinations.IsNull() {
+			diags.Append(o.MonitorDestinations.ElementsAs(ctx, &monitorDestinations_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			monitorDestinations_tf_entries = append(monitorDestinations_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.MonitorDestinations {
+			entry := VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(monitorDestinations_tf_entries) {
+				entry = monitorDestinations_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(monitorDestinations_tf_entries) {
+				monitorDestinations_tf_entries[idx] = entry
+			} else {
+				monitorDestinations_tf_entries = append(monitorDestinations_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("monitor_destinations")
@@ -3133,7 +3505,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject) Cop
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.PathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.PathMonitorMonitorDestinations, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -3166,36 +3538,96 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDest
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var both_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject
+
+	var both_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject
+	if o.Both.IsNull() {
+		both_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject)
+	} else {
+		diags.Append(o.Both.As(ctx, &both_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	both_object := types.ObjectNull(both_obj.AttributeTypes())
 	if obj.Both != nil {
-		both_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject)
-		diags.Append(both_object.CopyFromPango(ctx, append(ancestors, o), obj.Both, ev)...)
+		diags.Append(both_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Both, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		both_object, diags_tmp = types.ObjectValueFrom(ctx, both_obj.AttributeTypes(), both_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var multicast_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject
+
+	var multicast_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject
+	if o.Multicast.IsNull() {
+		multicast_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject)
+	} else {
+		diags.Append(o.Multicast.As(ctx, &multicast_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	multicast_object := types.ObjectNull(multicast_obj.AttributeTypes())
 	if obj.Multicast != nil {
-		multicast_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject)
-		diags.Append(multicast_object.CopyFromPango(ctx, append(ancestors, o), obj.Multicast, ev)...)
+		diags.Append(multicast_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Multicast, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		multicast_object, diags_tmp = types.ObjectValueFrom(ctx, multicast_obj.AttributeTypes(), multicast_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var noInstall_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject
+
+	var noInstall_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject
+	if o.NoInstall.IsNull() {
+		noInstall_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject)
+	} else {
+		diags.Append(o.NoInstall.As(ctx, &noInstall_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	noInstall_object := types.ObjectNull(noInstall_obj.AttributeTypes())
 	if obj.NoInstall != nil {
-		noInstall_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject)
-		diags.Append(noInstall_object.CopyFromPango(ctx, append(ancestors, o), obj.NoInstall, ev)...)
+		diags.Append(noInstall_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.NoInstall, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		noInstall_object, diags_tmp = types.ObjectValueFrom(ctx, noInstall_obj.AttributeTypes(), noInstall_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var unicast_object *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject
+
+	var unicast_obj *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject
+	if o.Unicast.IsNull() {
+		unicast_obj = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject)
+	} else {
+		diags.Append(o.Unicast.As(ctx, &unicast_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	unicast_object := types.ObjectNull(unicast_obj.AttributeTypes())
 	if obj.Unicast != nil {
-		unicast_object = new(VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject)
-		diags.Append(unicast_object.CopyFromPango(ctx, append(ancestors, o), obj.Unicast, ev)...)
+		diags.Append(unicast_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Unicast, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		unicast_object, diags_tmp = types.ObjectValueFrom(ctx, unicast_obj.AttributeTypes(), unicast_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3209,25 +3641,25 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject) Copy
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTableBoth, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTableBoth, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTableMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTableMulticast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTableNoInstall, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTableNoInstall, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *staticroute.RouteTableUnicast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *staticroute.RouteTableUnicast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
@@ -3239,7 +3671,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceModel) resourceXpathParentComponen
 	return components, nil
 }
 
-func (r *VirtualRouterStaticRoutesIpv4Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *VirtualRouterStaticRoutesIpv4Resource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 
 	var state VirtualRouterStaticRoutesIpv4ResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
@@ -3318,7 +3750,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Create(ctx context.Context, req 
 	entries := make([]*staticroute.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *staticroute.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, o.client, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -3332,7 +3764,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Create(ctx context.Context, req 
 		return
 	}
 
-	created, err := r.manager.CreateMany(ctx, location, components, entries)
+	created, err := o.manager.CreateMany(ctx, location, components, entries)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to create new entries", err.Error())
 		return
@@ -3350,7 +3782,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Create(ctx context.Context, req 
 		}
 
 		var object VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, elt, ev)...)
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -3448,7 +3880,7 @@ func (o *VirtualRouterStaticRoutesIpv4Resource) Read(ctx context.Context, req re
 	entries := make([]*staticroute.Entry, 0, len(elements))
 	for _, elt := range elements {
 		var entry *staticroute.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, o.client, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -3473,7 +3905,7 @@ func (o *VirtualRouterStaticRoutesIpv4Resource) Read(ctx context.Context, req re
 	objects := make([]VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject, len(readEntries))
 	for idx, elt := range readEntries {
 		var object VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, elt, ev)...)
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -3504,7 +3936,7 @@ func (o *VirtualRouterStaticRoutesIpv4Resource) Read(ctx context.Context, req re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *VirtualRouterStaticRoutesIpv4Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *VirtualRouterStaticRoutesIpv4Resource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var state, plan VirtualRouterStaticRoutesIpv4ResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -3589,7 +4021,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Update(ctx context.Context, req 
 	stateEntries := make([]*staticroute.Entry, len(elements))
 	for idx, elt := range elements {
 		var entry *staticroute.Entry
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &entry, ev)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, o.client, nil, &entry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -3607,7 +4039,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Update(ctx context.Context, req 
 		return
 	}
 
-	existing, err := r.manager.ReadMany(ctx, location, components)
+	existing, err := o.manager.ReadMany(ctx, location, components)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error while reading entries from the server", err.Error())
 		return
@@ -3633,7 +4065,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Update(ctx context.Context, req 
 	var planEntries []*staticroute.Entry
 	for _, elt := range elements {
 		existingEntry, _ := existingEntriesByName[elt.Name.ValueString()]
-		resp.Diagnostics.Append(elt.CopyToPango(ctx, nil, &existingEntry, ev)...)
+		resp.Diagnostics.Append(elt.CopyToPango(ctx, o.client, nil, &existingEntry, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -3641,7 +4073,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Update(ctx context.Context, req 
 		planEntries = append(planEntries, existingEntry)
 	}
 
-	processed, err := r.manager.UpdateMany(ctx, location, components, stateEntries, planEntries)
+	processed, err := o.manager.UpdateMany(ctx, location, components, stateEntries, planEntries)
 	if err != nil {
 		resp.Diagnostics.AddError("Error while updating entries", err.Error())
 		return
@@ -3649,7 +4081,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Update(ctx context.Context, req 
 	objects := make([]*VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject, len(processed))
 	for idx, elt := range processed {
 		var object VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject
-		resp.Diagnostics.Append(object.CopyFromPango(ctx, nil, elt, ev)...)
+		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -3676,7 +4108,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Update(ctx context.Context, req 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *VirtualRouterStaticRoutesIpv4Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *VirtualRouterStaticRoutesIpv4Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state VirtualRouterStaticRoutesIpv4ResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -3749,7 +4181,7 @@ func (r *VirtualRouterStaticRoutesIpv4Resource) Delete(ctx context.Context, req 
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, names)
+	err = o.manager.Delete(ctx, location, components, names)
 	if err != nil {
 		resp.Diagnostics.AddError("error while deleting entries", err.Error())
 		return
@@ -3846,7 +4278,7 @@ func VirtualRouterStaticRoutesIpv4ImportStateCreator(ctx context.Context, resour
 	return json.Marshal(importStruct)
 }
 
-func (r *VirtualRouterStaticRoutesIpv4Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *VirtualRouterStaticRoutesIpv4Resource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj VirtualRouterStaticRoutesIpv4ImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

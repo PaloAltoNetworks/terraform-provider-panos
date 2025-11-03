@@ -10,17 +10,10 @@ import (
 	"github.com/PaloAltoNetworks/pango"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	ephschema "github.com/hashicorp/terraform-plugin-framework/ephemeral/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-)
-
-import (
-	"encoding/xml"
-	"regexp"
-
-	"github.com/PaloAltoNetworks/pango/xmlapi"
-	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 )
 
 // Generate Terraform Ephemeral object
@@ -35,6 +28,7 @@ func NewVmAuthKeyResource() ephemeral.EphemeralResource {
 
 type VmAuthKeyResource struct {
 	client *pango.Client
+	custom *VmAuthKeyCustom
 }
 
 type VmAuthKeyResourceModel struct {
@@ -43,7 +37,7 @@ type VmAuthKeyResourceModel struct {
 	ExpirationDate types.String `tfsdk:"expiration_date"`
 }
 
-func (r *VmAuthKeyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *VmAuthKeyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -97,24 +91,30 @@ func (o *VmAuthKeyResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func (r *VmAuthKeyResource) Metadata(ctx context.Context, req ephemeral.MetadataRequest, resp *ephemeral.MetadataResponse) {
+func (o *VmAuthKeyResource) Metadata(ctx context.Context, req ephemeral.MetadataRequest, resp *ephemeral.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_vm_auth_key"
 }
 
-func (r *VmAuthKeyResource) Schema(_ context.Context, _ ephemeral.SchemaRequest, resp *ephemeral.SchemaResponse) {
+func (o *VmAuthKeyResource) Schema(_ context.Context, _ ephemeral.SchemaRequest, resp *ephemeral.SchemaResponse) {
 	resp.Schema = VmAuthKeyResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *VmAuthKeyResource) Configure(ctx context.Context, req ephemeral.ConfigureRequest, resp *ephemeral.ConfigureResponse) {
+func (o *VmAuthKeyResource) Configure(ctx context.Context, req ephemeral.ConfigureRequest, resp *ephemeral.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
+	o.client = providerData.Client
+	custom, err := NewVmAuthKeyCustom(providerData)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
+		return
+	}
+	o.custom = custom
 }
 
 func (o *VmAuthKeyResourceModel) resourceXpathParentComponents() ([]string, error) {
@@ -122,68 +122,12 @@ func (o *VmAuthKeyResourceModel) resourceXpathParentComponents() ([]string, erro
 	return components, nil
 }
 
-func (r *VmAuthKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest, resp *ephemeral.OpenResponse) {
+func (o *VmAuthKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest, resp *ephemeral.OpenResponse) {
 
-	var data VmAuthKeyResourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	lifetime := data.Lifetime.ValueInt64()
-
-	cmd := &xmlapi.Op{
-		Command: vmAuthKeyRequest{Lifetime: lifetime},
-	}
-
-	var serverResponse vmAuthKeyResponse
-	if _, _, err := r.client.Communicate(ctx, cmd, false, &serverResponse); err != nil {
-		resp.Diagnostics.AddError("Failed to generate Authenticaion Key", "Server returned an error: "+err.Error())
-		return
-	}
-
-	vmAuthKeyRegexp := `VM auth key (?P<vmauthkey>.+) generated. Expires at: (?P<expiration>.+)`
-	expr := regexp.MustCompile(vmAuthKeyRegexp)
-	match := expr.FindStringSubmatch(serverResponse.Result)
-	if match == nil {
-		resp.Diagnostics.AddError("Failed to parse server response", "Server response did not match regular expression")
-		return
-	}
-
-	groups := make(map[string]string)
-	for i, name := range expr.SubexpNames() {
-		if i != 0 && name != "" {
-			groups[name] = match[i]
-		}
-	}
-
-	if vmAuthKey, found := groups["vmauthkey"]; found {
-		data.VmAuthKey = types.StringValue(vmAuthKey)
-	} else {
-		resp.Diagnostics.AddError("Failed to parse server response", "Server response did not contain matching authentication key")
-		return
-	}
-
-	if expiration, found := groups["expiration"]; found {
-		data.ExpirationDate = types.StringValue(expiration)
-	} else {
-		resp.Diagnostics.AddWarning("Incomplete server response", "Server response didn't contain a valid expiration date")
-	}
-
-	resp.Diagnostics.Append(resp.Result.Set(ctx, &data)...)
+	o.OpenCustom(ctx, req, resp)
 
 }
 
-func (r *VmAuthKeyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *VmAuthKeyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
-}
-
-type vmAuthKeyRequest struct {
-	XMLName  xml.Name `xml:"request"`
-	Lifetime int64    `xml:"bootstrap>vm-auth-key>generate>lifetime"`
-}
-
-type vmAuthKeyResponse struct {
-	XMLName xml.Name `xml:"response"`
-	Result  string   `xml:"result"`
 }

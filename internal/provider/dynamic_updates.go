@@ -11,6 +11,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/dynamicupdates"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -52,29 +53,29 @@ type DynamicUpdatesDataSourceFilter struct {
 }
 
 type DynamicUpdatesDataSourceModel struct {
-	Location       types.Object                                  `tfsdk:"location"`
-	UpdateSchedule *DynamicUpdatesDataSourceUpdateScheduleObject `tfsdk:"update_schedule"`
+	Location       types.Object `tfsdk:"location"`
+	UpdateSchedule types.Object `tfsdk:"update_schedule"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleObject struct {
-	AntiVirus                  *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject                  `tfsdk:"anti_virus"`
-	AppProfile                 *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject                 `tfsdk:"app_profile"`
-	GlobalProtectClientlessVpn *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject `tfsdk:"global_protect_clientless_vpn"`
-	GlobalProtectDatafile      *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject      `tfsdk:"global_protect_datafile"`
-	StatisticsService          *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject          `tfsdk:"statistics_service"`
-	Threats                    *DynamicUpdatesDataSourceUpdateScheduleThreatsObject                    `tfsdk:"threats"`
-	WfPrivate                  *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject                  `tfsdk:"wf_private"`
-	Wildfire                   *DynamicUpdatesDataSourceUpdateScheduleWildfireObject                   `tfsdk:"wildfire"`
+	AntiVirus                  types.Object `tfsdk:"anti_virus"`
+	AppProfile                 types.Object `tfsdk:"app_profile"`
+	GlobalProtectClientlessVpn types.Object `tfsdk:"global_protect_clientless_vpn"`
+	GlobalProtectDatafile      types.Object `tfsdk:"global_protect_datafile"`
+	StatisticsService          types.Object `tfsdk:"statistics_service"`
+	Threats                    types.Object `tfsdk:"threats"`
+	WfPrivate                  types.Object `tfsdk:"wf_private"`
+	Wildfire                   types.Object `tfsdk:"wildfire"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject struct {
-	Recurring *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject struct {
-	SyncToPeer types.Bool                                                            `tfsdk:"sync_to_peer"`
-	Threshold  types.Int64                                                           `tfsdk:"threshold"`
-	Daily      *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject  `tfsdk:"daily"`
-	Hourly     *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject `tfsdk:"hourly"`
-	None       *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject   `tfsdk:"none"`
-	Weekly     *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject `tfsdk:"weekly"`
+	SyncToPeer types.Bool   `tfsdk:"sync_to_peer"`
+	Threshold  types.Int64  `tfsdk:"threshold"`
+	Daily      types.Object `tfsdk:"daily"`
+	Hourly     types.Object `tfsdk:"hourly"`
+	None       types.Object `tfsdk:"none"`
+	Weekly     types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject struct {
 	Action types.String `tfsdk:"action"`
@@ -92,14 +93,14 @@ type DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject struct
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleAppProfileObject struct {
-	Recurring *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject struct {
-	SyncToPeer types.Bool                                                             `tfsdk:"sync_to_peer"`
-	Threshold  types.Int64                                                            `tfsdk:"threshold"`
-	Daily      *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject  `tfsdk:"daily"`
-	None       *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject   `tfsdk:"none"`
-	Weekly     *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject `tfsdk:"weekly"`
+	SyncToPeer types.Bool   `tfsdk:"sync_to_peer"`
+	Threshold  types.Int64  `tfsdk:"threshold"`
+	Daily      types.Object `tfsdk:"daily"`
+	None       types.Object `tfsdk:"none"`
+	Weekly     types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject struct {
 	Action types.String `tfsdk:"action"`
@@ -113,13 +114,13 @@ type DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject struc
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject struct {
-	Recurring *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject struct {
-	Daily  *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject  `tfsdk:"daily"`
-	Hourly *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject `tfsdk:"hourly"`
-	None   *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject   `tfsdk:"none"`
-	Weekly *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject `tfsdk:"weekly"`
+	Daily  types.Object `tfsdk:"daily"`
+	Hourly types.Object `tfsdk:"hourly"`
+	None   types.Object `tfsdk:"none"`
+	Weekly types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject struct {
 	Action types.String `tfsdk:"action"`
@@ -137,13 +138,13 @@ type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWe
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject struct {
-	Recurring *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject struct {
-	Daily  *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject  `tfsdk:"daily"`
-	Hourly *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject `tfsdk:"hourly"`
-	None   *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject   `tfsdk:"none"`
-	Weekly *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject `tfsdk:"weekly"`
+	Daily  types.Object `tfsdk:"daily"`
+	Hourly types.Object `tfsdk:"hourly"`
+	None   types.Object `tfsdk:"none"`
+	Weekly types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject struct {
 	Action types.String `tfsdk:"action"`
@@ -171,17 +172,17 @@ type DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject struct {
 	UrlReports                  types.Bool `tfsdk:"url_reports"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleThreatsObject struct {
-	Recurring *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject struct {
-	NewAppThreshold types.Int64                                                              `tfsdk:"new_app_threshold"`
-	SyncToPeer      types.Bool                                                               `tfsdk:"sync_to_peer"`
-	Threshold       types.Int64                                                              `tfsdk:"threshold"`
-	Daily           *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject       `tfsdk:"daily"`
-	Every30Mins     *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
-	Hourly          *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject      `tfsdk:"hourly"`
-	None            *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject        `tfsdk:"none"`
-	Weekly          *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject      `tfsdk:"weekly"`
+	NewAppThreshold types.Int64  `tfsdk:"new_app_threshold"`
+	SyncToPeer      types.Bool   `tfsdk:"sync_to_peer"`
+	Threshold       types.Int64  `tfsdk:"threshold"`
+	Daily           types.Object `tfsdk:"daily"`
+	Every30Mins     types.Object `tfsdk:"every_30_mins"`
+	Hourly          types.Object `tfsdk:"hourly"`
+	None            types.Object `tfsdk:"none"`
+	Weekly          types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject struct {
 	Action            types.String `tfsdk:"action"`
@@ -207,15 +208,15 @@ type DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject struct {
 	DisableNewContent types.Bool   `tfsdk:"disable_new_content"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject struct {
-	Recurring *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject struct {
-	SyncToPeer  types.Bool                                                                 `tfsdk:"sync_to_peer"`
-	Every15Mins *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject `tfsdk:"every_15_mins"`
-	Every30Mins *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
-	Every5Mins  *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject  `tfsdk:"every_5_mins"`
-	EveryHour   *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject   `tfsdk:"every_hour"`
-	None        *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject        `tfsdk:"none"`
+	SyncToPeer  types.Bool   `tfsdk:"sync_to_peer"`
+	Every15Mins types.Object `tfsdk:"every_15_mins"`
+	Every30Mins types.Object `tfsdk:"every_30_mins"`
+	Every5Mins  types.Object `tfsdk:"every_5_mins"`
+	EveryHour   types.Object `tfsdk:"every_hour"`
+	None        types.Object `tfsdk:"none"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject struct {
 	Action types.String `tfsdk:"action"`
@@ -236,15 +237,15 @@ type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject str
 type DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject struct {
 }
 type DynamicUpdatesDataSourceUpdateScheduleWildfireObject struct {
-	Recurring *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject struct {
-	Every15Mins *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject `tfsdk:"every_15_mins"`
-	Every30Mins *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
-	EveryHour   *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject   `tfsdk:"every_hour"`
-	EveryMin    *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject    `tfsdk:"every_min"`
-	None        *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject        `tfsdk:"none"`
-	RealTime    *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject    `tfsdk:"real_time"`
+	Every15Mins types.Object `tfsdk:"every_15_mins"`
+	Every30Mins types.Object `tfsdk:"every_30_mins"`
+	EveryHour   types.Object `tfsdk:"every_hour"`
+	EveryMin    types.Object `tfsdk:"every_min"`
+	None        types.Object `tfsdk:"none"`
+	RealTime    types.Object `tfsdk:"real_time"`
 }
 type DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject struct {
 	Action     types.String `tfsdk:"action"`
@@ -1177,17 +1178,21 @@ func (o DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) E
 	return nil
 }
 
-func (o *DynamicUpdatesDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var updateSchedule_entry *dynamicupdates.UpdateSchedule
-	if o.UpdateSchedule != nil {
+	if !o.UpdateSchedule.IsUnknown() && !o.UpdateSchedule.IsNull() {
 		if *obj != nil && (*obj).UpdateSchedule != nil {
 			updateSchedule_entry = (*obj).UpdateSchedule
 		} else {
 			updateSchedule_entry = new(dynamicupdates.UpdateSchedule)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.UpdateSchedule.CopyToPango(ctx, ancestors, &updateSchedule_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleObject
+		diags.Append(o.UpdateSchedule.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &updateSchedule_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1200,108 +1205,140 @@ func (o *DynamicUpdatesDataSourceModel) CopyToPango(ctx context.Context, ancesto
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateSchedule, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateSchedule, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var antiVirus_entry *dynamicupdates.UpdateScheduleAntiVirus
-	if o.AntiVirus != nil {
+	if !o.AntiVirus.IsUnknown() && !o.AntiVirus.IsNull() {
 		if *obj != nil && (*obj).AntiVirus != nil {
 			antiVirus_entry = (*obj).AntiVirus
 		} else {
 			antiVirus_entry = new(dynamicupdates.UpdateScheduleAntiVirus)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.AntiVirus.CopyToPango(ctx, append(ancestors, o), &antiVirus_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject
+		diags.Append(o.AntiVirus.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &antiVirus_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var appProfile_entry *dynamicupdates.UpdateScheduleAppProfile
-	if o.AppProfile != nil {
+	if !o.AppProfile.IsUnknown() && !o.AppProfile.IsNull() {
 		if *obj != nil && (*obj).AppProfile != nil {
 			appProfile_entry = (*obj).AppProfile
 		} else {
 			appProfile_entry = new(dynamicupdates.UpdateScheduleAppProfile)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.AppProfile.CopyToPango(ctx, append(ancestors, o), &appProfile_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject
+		diags.Append(o.AppProfile.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &appProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var globalProtectClientlessVpn_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn
-	if o.GlobalProtectClientlessVpn != nil {
+	if !o.GlobalProtectClientlessVpn.IsUnknown() && !o.GlobalProtectClientlessVpn.IsNull() {
 		if *obj != nil && (*obj).GlobalProtectClientlessVpn != nil {
 			globalProtectClientlessVpn_entry = (*obj).GlobalProtectClientlessVpn
 		} else {
 			globalProtectClientlessVpn_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.GlobalProtectClientlessVpn.CopyToPango(ctx, append(ancestors, o), &globalProtectClientlessVpn_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject
+		diags.Append(o.GlobalProtectClientlessVpn.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &globalProtectClientlessVpn_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var globalProtectDatafile_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafile
-	if o.GlobalProtectDatafile != nil {
+	if !o.GlobalProtectDatafile.IsUnknown() && !o.GlobalProtectDatafile.IsNull() {
 		if *obj != nil && (*obj).GlobalProtectDatafile != nil {
 			globalProtectDatafile_entry = (*obj).GlobalProtectDatafile
 		} else {
 			globalProtectDatafile_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafile)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.GlobalProtectDatafile.CopyToPango(ctx, append(ancestors, o), &globalProtectDatafile_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject
+		diags.Append(o.GlobalProtectDatafile.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &globalProtectDatafile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var statisticsService_entry *dynamicupdates.UpdateScheduleStatisticsService
-	if o.StatisticsService != nil {
+	if !o.StatisticsService.IsUnknown() && !o.StatisticsService.IsNull() {
 		if *obj != nil && (*obj).StatisticsService != nil {
 			statisticsService_entry = (*obj).StatisticsService
 		} else {
 			statisticsService_entry = new(dynamicupdates.UpdateScheduleStatisticsService)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.StatisticsService.CopyToPango(ctx, append(ancestors, o), &statisticsService_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject
+		diags.Append(o.StatisticsService.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &statisticsService_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var threats_entry *dynamicupdates.UpdateScheduleThreats
-	if o.Threats != nil {
+	if !o.Threats.IsUnknown() && !o.Threats.IsNull() {
 		if *obj != nil && (*obj).Threats != nil {
 			threats_entry = (*obj).Threats
 		} else {
 			threats_entry = new(dynamicupdates.UpdateScheduleThreats)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Threats.CopyToPango(ctx, append(ancestors, o), &threats_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleThreatsObject
+		diags.Append(o.Threats.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &threats_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var wfPrivate_entry *dynamicupdates.UpdateScheduleWfPrivate
-	if o.WfPrivate != nil {
+	if !o.WfPrivate.IsUnknown() && !o.WfPrivate.IsNull() {
 		if *obj != nil && (*obj).WfPrivate != nil {
 			wfPrivate_entry = (*obj).WfPrivate
 		} else {
 			wfPrivate_entry = new(dynamicupdates.UpdateScheduleWfPrivate)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.WfPrivate.CopyToPango(ctx, append(ancestors, o), &wfPrivate_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject
+		diags.Append(o.WfPrivate.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &wfPrivate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var wildfire_entry *dynamicupdates.UpdateScheduleWildfire
-	if o.Wildfire != nil {
+	if !o.Wildfire.IsUnknown() && !o.Wildfire.IsNull() {
 		if *obj != nil && (*obj).Wildfire != nil {
 			wildfire_entry = (*obj).Wildfire
 		} else {
 			wildfire_entry = new(dynamicupdates.UpdateScheduleWildfire)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Wildfire.CopyToPango(ctx, append(ancestors, o), &wildfire_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWildfireObject
+		diags.Append(o.Wildfire.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &wildfire_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1321,17 +1358,21 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirus, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirus, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleAntiVirusRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1344,58 +1385,74 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	threshold_value := o.Threshold.ValueInt64Pointer()
 	var daily_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var hourly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly
-	if o.Hourly != nil {
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
 		if *obj != nil && (*obj).Hourly != nil {
 			hourly_entry = (*obj).Hourly
 		} else {
 			hourly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject
+		diags.Append(o.Hourly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1413,7 +1470,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) CopyToP
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -1426,7 +1483,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) Co
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -1439,7 +1496,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) C
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1448,7 +1505,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject) Cop
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -1463,17 +1520,21 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) C
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfile, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleAppProfileRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1486,45 +1547,57 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	threshold_value := o.Threshold.ValueInt64Pointer()
 	var daily_entry *dynamicupdates.UpdateScheduleAppProfileRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleAppProfileRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1541,7 +1614,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) CopyTo
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -1554,7 +1627,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) C
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1563,7 +1636,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) Co
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -1578,17 +1651,21 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) 
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1601,56 +1678,72 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject)
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly
-	if o.Hourly != nil {
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
 		if *obj != nil && (*obj).Hourly != nil {
 			hourly_entry = (*obj).Hourly
 		} else {
 			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject
+		diags.Append(o.Hourly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1666,7 +1759,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -1679,7 +1772,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -1692,7 +1785,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1701,7 +1794,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -1716,17 +1809,21 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafile, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1739,56 +1836,72 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) Copy
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly
-	if o.Hourly != nil {
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
 		if *obj != nil && (*obj).Hourly != nil {
 			hourly_entry = (*obj).Hourly
 		} else {
 			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
+		diags.Append(o.Hourly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1804,7 +1917,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObj
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -1817,7 +1930,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDai
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -1830,7 +1943,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHou
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1839,7 +1952,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNon
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -1854,7 +1967,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWee
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleStatisticsService, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleStatisticsService, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationReports_value := o.ApplicationReports.ValueBoolPointer()
 	fileIdentificationReports_value := o.FileIdentificationReports.ValueBoolPointer()
@@ -1879,17 +1992,21 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyToPa
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreats, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreats, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleThreatsRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleThreatsRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1902,72 +2019,92 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	newAppThreshold_value := o.NewAppThreshold.ValueInt64Pointer()
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	threshold_value := o.Threshold.ValueInt64Pointer()
 	var daily_entry *dynamicupdates.UpdateScheduleThreatsRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var every30Mins_entry *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins
-	if o.Every30Mins != nil {
+	if !o.Every30Mins.IsUnknown() && !o.Every30Mins.IsNull() {
 		if *obj != nil && (*obj).Every30Mins != nil {
 			every30Mins_entry = (*obj).Every30Mins
 		} else {
 			every30Mins_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every30Mins.CopyToPango(ctx, append(ancestors, o), &every30Mins_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject
+		diags.Append(o.Every30Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every30Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var hourly_entry *dynamicupdates.UpdateScheduleThreatsRecurringHourly
-	if o.Hourly != nil {
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
 		if *obj != nil && (*obj).Hourly != nil {
 			hourly_entry = (*obj).Hourly
 		} else {
 			hourly_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringHourly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject
+		diags.Append(o.Hourly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleThreatsRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleThreatsRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1987,7 +2124,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) CopyToPan
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -2002,7 +2139,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) Copy
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -2017,7 +2154,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -2032,7 +2169,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject) Cop
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2041,7 +2178,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject) CopyT
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -2058,17 +2195,21 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) Cop
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivate, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleWfPrivateRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2081,70 +2222,90 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	var every15Mins_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins
-	if o.Every15Mins != nil {
+	if !o.Every15Mins.IsUnknown() && !o.Every15Mins.IsNull() {
 		if *obj != nil && (*obj).Every15Mins != nil {
 			every15Mins_entry = (*obj).Every15Mins
 		} else {
 			every15Mins_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every15Mins.CopyToPango(ctx, append(ancestors, o), &every15Mins_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+		diags.Append(o.Every15Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every15Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var every30Mins_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins
-	if o.Every30Mins != nil {
+	if !o.Every30Mins.IsUnknown() && !o.Every30Mins.IsNull() {
 		if *obj != nil && (*obj).Every30Mins != nil {
 			every30Mins_entry = (*obj).Every30Mins
 		} else {
 			every30Mins_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every30Mins.CopyToPango(ctx, append(ancestors, o), &every30Mins_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+		diags.Append(o.Every30Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every30Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var every5Mins_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins
-	if o.Every5Mins != nil {
+	if !o.Every5Mins.IsUnknown() && !o.Every5Mins.IsNull() {
 		if *obj != nil && (*obj).Every5Mins != nil {
 			every5Mins_entry = (*obj).Every5Mins
 		} else {
 			every5Mins_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every5Mins.CopyToPango(ctx, append(ancestors, o), &every5Mins_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+		diags.Append(o.Every5Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every5Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var everyHour_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour
-	if o.EveryHour != nil {
+	if !o.EveryHour.IsUnknown() && !o.EveryHour.IsNull() {
 		if *obj != nil && (*obj).EveryHour != nil {
 			everyHour_entry = (*obj).EveryHour
 		} else {
 			everyHour_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.EveryHour.CopyToPango(ctx, append(ancestors, o), &everyHour_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
+		diags.Append(o.EveryHour.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &everyHour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2162,7 +2323,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyToP
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -2175,7 +2336,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObje
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -2188,7 +2349,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObje
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -2201,7 +2362,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObjec
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -2214,7 +2375,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2223,17 +2384,21 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) Cop
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfire, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfire, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleWildfireRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleWildfireRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2246,82 +2411,106 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var every15Mins_entry *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins
-	if o.Every15Mins != nil {
+	if !o.Every15Mins.IsUnknown() && !o.Every15Mins.IsNull() {
 		if *obj != nil && (*obj).Every15Mins != nil {
 			every15Mins_entry = (*obj).Every15Mins
 		} else {
 			every15Mins_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every15Mins.CopyToPango(ctx, append(ancestors, o), &every15Mins_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject
+		diags.Append(o.Every15Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every15Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var every30Mins_entry *dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins
-	if o.Every30Mins != nil {
+	if !o.Every30Mins.IsUnknown() && !o.Every30Mins.IsNull() {
 		if *obj != nil && (*obj).Every30Mins != nil {
 			every30Mins_entry = (*obj).Every30Mins
 		} else {
 			every30Mins_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every30Mins.CopyToPango(ctx, append(ancestors, o), &every30Mins_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject
+		diags.Append(o.Every30Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every30Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var everyHour_entry *dynamicupdates.UpdateScheduleWildfireRecurringEveryHour
-	if o.EveryHour != nil {
+	if !o.EveryHour.IsUnknown() && !o.EveryHour.IsNull() {
 		if *obj != nil && (*obj).EveryHour != nil {
 			everyHour_entry = (*obj).EveryHour
 		} else {
 			everyHour_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEveryHour)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.EveryHour.CopyToPango(ctx, append(ancestors, o), &everyHour_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject
+		diags.Append(o.EveryHour.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &everyHour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var everyMin_entry *dynamicupdates.UpdateScheduleWildfireRecurringEveryMin
-	if o.EveryMin != nil {
+	if !o.EveryMin.IsUnknown() && !o.EveryMin.IsNull() {
 		if *obj != nil && (*obj).EveryMin != nil {
 			everyMin_entry = (*obj).EveryMin
 		} else {
 			everyMin_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEveryMin)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.EveryMin.CopyToPango(ctx, append(ancestors, o), &everyMin_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject
+		diags.Append(o.EveryMin.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &everyMin_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleWildfireRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var realTime_entry *dynamicupdates.UpdateScheduleWildfireRecurringRealTime
-	if o.RealTime != nil {
+	if !o.RealTime.IsUnknown() && !o.RealTime.IsNull() {
 		if *obj != nil && (*obj).RealTime != nil {
 			realTime_entry = (*obj).RealTime
 		} else {
 			realTime_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringRealTime)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RealTime.CopyToPango(ctx, append(ancestors, o), &realTime_entry, ev)...)
+		var object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject
+		diags.Append(o.RealTime.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &realTime_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2339,7 +2528,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyToPa
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -2354,7 +2543,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObjec
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -2369,7 +2558,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObjec
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -2384,7 +2573,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject)
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
@@ -2397,7 +2586,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) 
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2406,7 +2595,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject) Copy
 
 	return diags
 }
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringRealTime, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringRealTime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2416,12 +2605,27 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var updateSchedule_object *DynamicUpdatesDataSourceUpdateScheduleObject
+
+	var updateSchedule_obj *DynamicUpdatesDataSourceUpdateScheduleObject
+	if o.UpdateSchedule.IsNull() {
+		updateSchedule_obj = new(DynamicUpdatesDataSourceUpdateScheduleObject)
+	} else {
+		diags.Append(o.UpdateSchedule.As(ctx, &updateSchedule_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	updateSchedule_object := types.ObjectNull(updateSchedule_obj.AttributeTypes())
 	if obj.UpdateSchedule != nil {
-		updateSchedule_object = new(DynamicUpdatesDataSourceUpdateScheduleObject)
-		diags.Append(updateSchedule_object.CopyFromPango(ctx, ancestors, obj.UpdateSchedule, ev)...)
+		diags.Append(updateSchedule_obj.CopyFromPango(ctx, client, ancestors, obj.UpdateSchedule, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		updateSchedule_object, diags_tmp = types.ObjectValueFrom(ctx, updateSchedule_obj.AttributeTypes(), updateSchedule_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2432,68 +2636,188 @@ func (o *DynamicUpdatesDataSourceModel) CopyFromPango(ctx context.Context, ances
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateSchedule, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateSchedule, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var antiVirus_object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject
+
+	var antiVirus_obj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject
+	if o.AntiVirus.IsNull() {
+		antiVirus_obj = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject)
+	} else {
+		diags.Append(o.AntiVirus.As(ctx, &antiVirus_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	antiVirus_object := types.ObjectNull(antiVirus_obj.AttributeTypes())
 	if obj.AntiVirus != nil {
-		antiVirus_object = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject)
-		diags.Append(antiVirus_object.CopyFromPango(ctx, append(ancestors, o), obj.AntiVirus, ev)...)
+		diags.Append(antiVirus_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.AntiVirus, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		antiVirus_object, diags_tmp = types.ObjectValueFrom(ctx, antiVirus_obj.AttributeTypes(), antiVirus_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var appProfile_object *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject
+
+	var appProfile_obj *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject
+	if o.AppProfile.IsNull() {
+		appProfile_obj = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileObject)
+	} else {
+		diags.Append(o.AppProfile.As(ctx, &appProfile_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	appProfile_object := types.ObjectNull(appProfile_obj.AttributeTypes())
 	if obj.AppProfile != nil {
-		appProfile_object = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileObject)
-		diags.Append(appProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.AppProfile, ev)...)
+		diags.Append(appProfile_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.AppProfile, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		appProfile_object, diags_tmp = types.ObjectValueFrom(ctx, appProfile_obj.AttributeTypes(), appProfile_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var globalProtectClientlessVpn_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject
+
+	var globalProtectClientlessVpn_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject
+	if o.GlobalProtectClientlessVpn.IsNull() {
+		globalProtectClientlessVpn_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject)
+	} else {
+		diags.Append(o.GlobalProtectClientlessVpn.As(ctx, &globalProtectClientlessVpn_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	globalProtectClientlessVpn_object := types.ObjectNull(globalProtectClientlessVpn_obj.AttributeTypes())
 	if obj.GlobalProtectClientlessVpn != nil {
-		globalProtectClientlessVpn_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject)
-		diags.Append(globalProtectClientlessVpn_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtectClientlessVpn, ev)...)
+		diags.Append(globalProtectClientlessVpn_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.GlobalProtectClientlessVpn, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		globalProtectClientlessVpn_object, diags_tmp = types.ObjectValueFrom(ctx, globalProtectClientlessVpn_obj.AttributeTypes(), globalProtectClientlessVpn_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var globalProtectDatafile_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject
+
+	var globalProtectDatafile_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject
+	if o.GlobalProtectDatafile.IsNull() {
+		globalProtectDatafile_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject)
+	} else {
+		diags.Append(o.GlobalProtectDatafile.As(ctx, &globalProtectDatafile_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	globalProtectDatafile_object := types.ObjectNull(globalProtectDatafile_obj.AttributeTypes())
 	if obj.GlobalProtectDatafile != nil {
-		globalProtectDatafile_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject)
-		diags.Append(globalProtectDatafile_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtectDatafile, ev)...)
+		diags.Append(globalProtectDatafile_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.GlobalProtectDatafile, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		globalProtectDatafile_object, diags_tmp = types.ObjectValueFrom(ctx, globalProtectDatafile_obj.AttributeTypes(), globalProtectDatafile_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var statisticsService_object *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject
+
+	var statisticsService_obj *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject
+	if o.StatisticsService.IsNull() {
+		statisticsService_obj = new(DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject)
+	} else {
+		diags.Append(o.StatisticsService.As(ctx, &statisticsService_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	statisticsService_object := types.ObjectNull(statisticsService_obj.AttributeTypes())
 	if obj.StatisticsService != nil {
-		statisticsService_object = new(DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject)
-		diags.Append(statisticsService_object.CopyFromPango(ctx, append(ancestors, o), obj.StatisticsService, ev)...)
+		diags.Append(statisticsService_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.StatisticsService, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		statisticsService_object, diags_tmp = types.ObjectValueFrom(ctx, statisticsService_obj.AttributeTypes(), statisticsService_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var threats_object *DynamicUpdatesDataSourceUpdateScheduleThreatsObject
+
+	var threats_obj *DynamicUpdatesDataSourceUpdateScheduleThreatsObject
+	if o.Threats.IsNull() {
+		threats_obj = new(DynamicUpdatesDataSourceUpdateScheduleThreatsObject)
+	} else {
+		diags.Append(o.Threats.As(ctx, &threats_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	threats_object := types.ObjectNull(threats_obj.AttributeTypes())
 	if obj.Threats != nil {
-		threats_object = new(DynamicUpdatesDataSourceUpdateScheduleThreatsObject)
-		diags.Append(threats_object.CopyFromPango(ctx, append(ancestors, o), obj.Threats, ev)...)
+		diags.Append(threats_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Threats, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		threats_object, diags_tmp = types.ObjectValueFrom(ctx, threats_obj.AttributeTypes(), threats_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var wfPrivate_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject
+
+	var wfPrivate_obj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject
+	if o.WfPrivate.IsNull() {
+		wfPrivate_obj = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject)
+	} else {
+		diags.Append(o.WfPrivate.As(ctx, &wfPrivate_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	wfPrivate_object := types.ObjectNull(wfPrivate_obj.AttributeTypes())
 	if obj.WfPrivate != nil {
-		wfPrivate_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject)
-		diags.Append(wfPrivate_object.CopyFromPango(ctx, append(ancestors, o), obj.WfPrivate, ev)...)
+		diags.Append(wfPrivate_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.WfPrivate, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		wfPrivate_object, diags_tmp = types.ObjectValueFrom(ctx, wfPrivate_obj.AttributeTypes(), wfPrivate_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var wildfire_object *DynamicUpdatesDataSourceUpdateScheduleWildfireObject
+
+	var wildfire_obj *DynamicUpdatesDataSourceUpdateScheduleWildfireObject
+	if o.Wildfire.IsNull() {
+		wildfire_obj = new(DynamicUpdatesDataSourceUpdateScheduleWildfireObject)
+	} else {
+		diags.Append(o.Wildfire.As(ctx, &wildfire_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	wildfire_object := types.ObjectNull(wildfire_obj.AttributeTypes())
 	if obj.Wildfire != nil {
-		wildfire_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireObject)
-		diags.Append(wildfire_object.CopyFromPango(ctx, append(ancestors, o), obj.Wildfire, ev)...)
+		diags.Append(wildfire_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Wildfire, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		wildfire_object, diags_tmp = types.ObjectValueFrom(ctx, wildfire_obj.AttributeTypes(), wildfire_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2511,12 +2835,27 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirus, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirus, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject
+
+	var recurring_obj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2527,36 +2866,96 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var hourly_object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject
+
+	var hourly_obj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject
+	if o.Hourly.IsNull() {
+		hourly_obj = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject)
+	} else {
+		diags.Append(o.Hourly.As(ctx, &hourly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	hourly_object := types.ObjectNull(hourly_obj.AttributeTypes())
 	if obj.Hourly != nil {
-		hourly_object = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject)
-		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
+		diags.Append(hourly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Hourly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		hourly_object, diags_tmp = types.ObjectValueFrom(ctx, hourly_obj.AttributeTypes(), hourly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject
+
+	var none_obj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2580,7 +2979,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) CopyFro
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2597,7 +2996,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) Co
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2614,13 +3013,13 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) C
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2642,12 +3041,27 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) C
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfile, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject
+
+	var recurring_obj *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2658,28 +3072,73 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) CopyFromPango(c
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject
+
+	var none_obj *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2702,7 +3161,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) CopyFr
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2719,13 +3178,13 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) C
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2747,12 +3206,27 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject
+
+	var recurring_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2763,36 +3237,96 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject)
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var hourly_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject
+
+	var hourly_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject
+	if o.Hourly.IsNull() {
+		hourly_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject)
+	} else {
+		diags.Append(o.Hourly.As(ctx, &hourly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	hourly_object := types.ObjectNull(hourly_obj.AttributeTypes())
 	if obj.Hourly != nil {
-		hourly_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject)
-		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
+		diags.Append(hourly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Hourly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		hourly_object, diags_tmp = types.ObjectValueFrom(ctx, hourly_obj.AttributeTypes(), hourly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject
+
+	var none_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2806,7 +3340,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2823,7 +3357,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2840,13 +3374,13 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2868,12 +3402,27 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafile, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject
+
+	var recurring_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2884,36 +3433,96 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) Copy
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var hourly_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
+
+	var hourly_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
+	if o.Hourly.IsNull() {
+		hourly_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject)
+	} else {
+		diags.Append(o.Hourly.As(ctx, &hourly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	hourly_object := types.ObjectNull(hourly_obj.AttributeTypes())
 	if obj.Hourly != nil {
-		hourly_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject)
-		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
+		diags.Append(hourly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Hourly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		hourly_object, diags_tmp = types.ObjectValueFrom(ctx, hourly_obj.AttributeTypes(), hourly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject
+
+	var none_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2927,7 +3536,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObj
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2944,7 +3553,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDai
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2961,13 +3570,13 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHou
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -2989,7 +3598,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWee
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleStatisticsService, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleStatisticsService, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationReports_value types.Bool
@@ -3036,12 +3645,27 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) CopyFrom
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreats, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreats, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject
+
+	var recurring_obj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3052,44 +3676,119 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var every30Mins_object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject
+
+	var every30Mins_obj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject
+	if o.Every30Mins.IsNull() {
+		every30Mins_obj = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject)
+	} else {
+		diags.Append(o.Every30Mins.As(ctx, &every30Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every30Mins_object := types.ObjectNull(every30Mins_obj.AttributeTypes())
 	if obj.Every30Mins != nil {
-		every30Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject)
-		diags.Append(every30Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every30Mins, ev)...)
+		diags.Append(every30Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every30Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every30Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every30Mins_obj.AttributeTypes(), every30Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var hourly_object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject
+
+	var hourly_obj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject
+	if o.Hourly.IsNull() {
+		hourly_obj = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject)
+	} else {
+		diags.Append(o.Hourly.As(ctx, &hourly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	hourly_object := types.ObjectNull(hourly_obj.AttributeTypes())
 	if obj.Hourly != nil {
-		hourly_object = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject)
-		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
+		diags.Append(hourly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Hourly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		hourly_object, diags_tmp = types.ObjectValueFrom(ctx, hourly_obj.AttributeTypes(), hourly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject
+
+	var none_obj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3119,7 +3818,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) CopyFromP
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3141,7 +3840,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) Copy
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3163,7 +3862,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3185,13 +3884,13 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject) Cop
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3218,12 +3917,27 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) Cop
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivate, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject
+
+	var recurring_obj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3234,44 +3948,119 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var every15Mins_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+
+	var every15Mins_obj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+	if o.Every15Mins.IsNull() {
+		every15Mins_obj = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject)
+	} else {
+		diags.Append(o.Every15Mins.As(ctx, &every15Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every15Mins_object := types.ObjectNull(every15Mins_obj.AttributeTypes())
 	if obj.Every15Mins != nil {
-		every15Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject)
-		diags.Append(every15Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every15Mins, ev)...)
+		diags.Append(every15Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every15Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every15Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every15Mins_obj.AttributeTypes(), every15Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var every30Mins_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+
+	var every30Mins_obj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+	if o.Every30Mins.IsNull() {
+		every30Mins_obj = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject)
+	} else {
+		diags.Append(o.Every30Mins.As(ctx, &every30Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every30Mins_object := types.ObjectNull(every30Mins_obj.AttributeTypes())
 	if obj.Every30Mins != nil {
-		every30Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject)
-		diags.Append(every30Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every30Mins, ev)...)
+		diags.Append(every30Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every30Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every30Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every30Mins_obj.AttributeTypes(), every30Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var every5Mins_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+
+	var every5Mins_obj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+	if o.Every5Mins.IsNull() {
+		every5Mins_obj = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject)
+	} else {
+		diags.Append(o.Every5Mins.As(ctx, &every5Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every5Mins_object := types.ObjectNull(every5Mins_obj.AttributeTypes())
 	if obj.Every5Mins != nil {
-		every5Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject)
-		diags.Append(every5Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every5Mins, ev)...)
+		diags.Append(every5Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every5Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every5Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every5Mins_obj.AttributeTypes(), every5Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var everyHour_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
+
+	var everyHour_obj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
+	if o.EveryHour.IsNull() {
+		everyHour_obj = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject)
+	} else {
+		diags.Append(o.EveryHour.As(ctx, &everyHour_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	everyHour_object := types.ObjectNull(everyHour_obj.AttributeTypes())
 	if obj.EveryHour != nil {
-		everyHour_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject)
-		diags.Append(everyHour_object.CopyFromPango(ctx, append(ancestors, o), obj.EveryHour, ev)...)
+		diags.Append(everyHour_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.EveryHour, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		everyHour_object, diags_tmp = types.ObjectValueFrom(ctx, everyHour_obj.AttributeTypes(), everyHour_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject
+
+	var none_obj *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3291,7 +4080,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) CopyFro
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3308,7 +4097,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObje
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3325,7 +4114,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObje
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3342,7 +4131,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObjec
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3359,18 +4148,33 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfire, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfire, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject
+
+	var recurring_obj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3381,52 +4185,142 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var every15Mins_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject
+
+	var every15Mins_obj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject
+	if o.Every15Mins.IsNull() {
+		every15Mins_obj = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject)
+	} else {
+		diags.Append(o.Every15Mins.As(ctx, &every15Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every15Mins_object := types.ObjectNull(every15Mins_obj.AttributeTypes())
 	if obj.Every15Mins != nil {
-		every15Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject)
-		diags.Append(every15Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every15Mins, ev)...)
+		diags.Append(every15Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every15Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every15Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every15Mins_obj.AttributeTypes(), every15Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var every30Mins_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject
+
+	var every30Mins_obj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject
+	if o.Every30Mins.IsNull() {
+		every30Mins_obj = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject)
+	} else {
+		diags.Append(o.Every30Mins.As(ctx, &every30Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every30Mins_object := types.ObjectNull(every30Mins_obj.AttributeTypes())
 	if obj.Every30Mins != nil {
-		every30Mins_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject)
-		diags.Append(every30Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every30Mins, ev)...)
+		diags.Append(every30Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every30Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every30Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every30Mins_obj.AttributeTypes(), every30Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var everyHour_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject
+
+	var everyHour_obj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject
+	if o.EveryHour.IsNull() {
+		everyHour_obj = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject)
+	} else {
+		diags.Append(o.EveryHour.As(ctx, &everyHour_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	everyHour_object := types.ObjectNull(everyHour_obj.AttributeTypes())
 	if obj.EveryHour != nil {
-		everyHour_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject)
-		diags.Append(everyHour_object.CopyFromPango(ctx, append(ancestors, o), obj.EveryHour, ev)...)
+		diags.Append(everyHour_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.EveryHour, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		everyHour_object, diags_tmp = types.ObjectValueFrom(ctx, everyHour_obj.AttributeTypes(), everyHour_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var everyMin_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject
+
+	var everyMin_obj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject
+	if o.EveryMin.IsNull() {
+		everyMin_obj = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject)
+	} else {
+		diags.Append(o.EveryMin.As(ctx, &everyMin_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	everyMin_object := types.ObjectNull(everyMin_obj.AttributeTypes())
 	if obj.EveryMin != nil {
-		everyMin_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject)
-		diags.Append(everyMin_object.CopyFromPango(ctx, append(ancestors, o), obj.EveryMin, ev)...)
+		diags.Append(everyMin_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.EveryMin, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		everyMin_object, diags_tmp = types.ObjectValueFrom(ctx, everyMin_obj.AttributeTypes(), everyMin_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject
+
+	var none_obj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var realTime_object *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject
+
+	var realTime_obj *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject
+	if o.RealTime.IsNull() {
+		realTime_obj = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject)
+	} else {
+		diags.Append(o.RealTime.As(ctx, &realTime_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	realTime_object := types.ObjectNull(realTime_obj.AttributeTypes())
 	if obj.RealTime != nil {
-		realTime_object = new(DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject)
-		diags.Append(realTime_object.CopyFromPango(ctx, append(ancestors, o), obj.RealTime, ev)...)
+		diags.Append(realTime_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RealTime, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		realTime_object, diags_tmp = types.ObjectValueFrom(ctx, realTime_obj.AttributeTypes(), realTime_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3442,7 +4336,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) CopyFrom
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3464,7 +4358,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObjec
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3486,7 +4380,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObjec
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3508,7 +4402,7 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject)
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -3525,13 +4419,13 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringRealTime, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringRealTime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
@@ -5986,8 +6880,8 @@ func (d *DynamicUpdatesDataSource) Configure(_ context.Context, req datasource.C
 }
 func (o *DynamicUpdatesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state DynamicUpdatesDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state DynamicUpdatesDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -6003,7 +6897,7 @@ func (o *DynamicUpdatesDataSource) Read(ctx context.Context, req datasource.Read
 
 	{
 		var terraformLocation DynamicUpdatesLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -6049,7 +6943,7 @@ func (o *DynamicUpdatesDataSource) Read(ctx context.Context, req datasource.Read
 		"function":      "Read",
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
@@ -6064,16 +6958,16 @@ func (o *DynamicUpdatesDataSource) Read(ctx context.Context, req datasource.Read
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -6101,29 +6995,29 @@ func DynamicUpdatesResourceLocationSchema() rsschema.Attribute {
 }
 
 type DynamicUpdatesResourceModel struct {
-	Location       types.Object                                `tfsdk:"location"`
-	UpdateSchedule *DynamicUpdatesResourceUpdateScheduleObject `tfsdk:"update_schedule"`
+	Location       types.Object `tfsdk:"location"`
+	UpdateSchedule types.Object `tfsdk:"update_schedule"`
 }
 type DynamicUpdatesResourceUpdateScheduleObject struct {
-	AntiVirus                  *DynamicUpdatesResourceUpdateScheduleAntiVirusObject                  `tfsdk:"anti_virus"`
-	AppProfile                 *DynamicUpdatesResourceUpdateScheduleAppProfileObject                 `tfsdk:"app_profile"`
-	GlobalProtectClientlessVpn *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject `tfsdk:"global_protect_clientless_vpn"`
-	GlobalProtectDatafile      *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject      `tfsdk:"global_protect_datafile"`
-	StatisticsService          *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject          `tfsdk:"statistics_service"`
-	Threats                    *DynamicUpdatesResourceUpdateScheduleThreatsObject                    `tfsdk:"threats"`
-	WfPrivate                  *DynamicUpdatesResourceUpdateScheduleWfPrivateObject                  `tfsdk:"wf_private"`
-	Wildfire                   *DynamicUpdatesResourceUpdateScheduleWildfireObject                   `tfsdk:"wildfire"`
+	AntiVirus                  types.Object `tfsdk:"anti_virus"`
+	AppProfile                 types.Object `tfsdk:"app_profile"`
+	GlobalProtectClientlessVpn types.Object `tfsdk:"global_protect_clientless_vpn"`
+	GlobalProtectDatafile      types.Object `tfsdk:"global_protect_datafile"`
+	StatisticsService          types.Object `tfsdk:"statistics_service"`
+	Threats                    types.Object `tfsdk:"threats"`
+	WfPrivate                  types.Object `tfsdk:"wf_private"`
+	Wildfire                   types.Object `tfsdk:"wildfire"`
 }
 type DynamicUpdatesResourceUpdateScheduleAntiVirusObject struct {
-	Recurring *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject struct {
-	SyncToPeer types.Bool                                                          `tfsdk:"sync_to_peer"`
-	Threshold  types.Int64                                                         `tfsdk:"threshold"`
-	Daily      *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject  `tfsdk:"daily"`
-	Hourly     *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject `tfsdk:"hourly"`
-	None       *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject   `tfsdk:"none"`
-	Weekly     *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject `tfsdk:"weekly"`
+	SyncToPeer types.Bool   `tfsdk:"sync_to_peer"`
+	Threshold  types.Int64  `tfsdk:"threshold"`
+	Daily      types.Object `tfsdk:"daily"`
+	Hourly     types.Object `tfsdk:"hourly"`
+	None       types.Object `tfsdk:"none"`
+	Weekly     types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject struct {
 	Action types.String `tfsdk:"action"`
@@ -6141,14 +7035,14 @@ type DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject struct {
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type DynamicUpdatesResourceUpdateScheduleAppProfileObject struct {
-	Recurring *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject struct {
-	SyncToPeer types.Bool                                                           `tfsdk:"sync_to_peer"`
-	Threshold  types.Int64                                                          `tfsdk:"threshold"`
-	Daily      *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject  `tfsdk:"daily"`
-	None       *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject   `tfsdk:"none"`
-	Weekly     *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject `tfsdk:"weekly"`
+	SyncToPeer types.Bool   `tfsdk:"sync_to_peer"`
+	Threshold  types.Int64  `tfsdk:"threshold"`
+	Daily      types.Object `tfsdk:"daily"`
+	None       types.Object `tfsdk:"none"`
+	Weekly     types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject struct {
 	Action types.String `tfsdk:"action"`
@@ -6162,13 +7056,13 @@ type DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject struct 
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject struct {
-	Recurring *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject struct {
-	Daily  *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject  `tfsdk:"daily"`
-	Hourly *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject `tfsdk:"hourly"`
-	None   *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject   `tfsdk:"none"`
-	Weekly *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject `tfsdk:"weekly"`
+	Daily  types.Object `tfsdk:"daily"`
+	Hourly types.Object `tfsdk:"hourly"`
+	None   types.Object `tfsdk:"none"`
+	Weekly types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject struct {
 	Action types.String `tfsdk:"action"`
@@ -6186,13 +7080,13 @@ type DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeek
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject struct {
-	Recurring *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject struct {
-	Daily  *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject  `tfsdk:"daily"`
-	Hourly *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject `tfsdk:"hourly"`
-	None   *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject   `tfsdk:"none"`
-	Weekly *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject `tfsdk:"weekly"`
+	Daily  types.Object `tfsdk:"daily"`
+	Hourly types.Object `tfsdk:"hourly"`
+	None   types.Object `tfsdk:"none"`
+	Weekly types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject struct {
 	Action types.String `tfsdk:"action"`
@@ -6220,17 +7114,17 @@ type DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject struct {
 	UrlReports                  types.Bool `tfsdk:"url_reports"`
 }
 type DynamicUpdatesResourceUpdateScheduleThreatsObject struct {
-	Recurring *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject struct {
-	NewAppThreshold types.Int64                                                            `tfsdk:"new_app_threshold"`
-	SyncToPeer      types.Bool                                                             `tfsdk:"sync_to_peer"`
-	Threshold       types.Int64                                                            `tfsdk:"threshold"`
-	Daily           *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject       `tfsdk:"daily"`
-	Every30Mins     *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
-	Hourly          *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject      `tfsdk:"hourly"`
-	None            *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject        `tfsdk:"none"`
-	Weekly          *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject      `tfsdk:"weekly"`
+	NewAppThreshold types.Int64  `tfsdk:"new_app_threshold"`
+	SyncToPeer      types.Bool   `tfsdk:"sync_to_peer"`
+	Threshold       types.Int64  `tfsdk:"threshold"`
+	Daily           types.Object `tfsdk:"daily"`
+	Every30Mins     types.Object `tfsdk:"every_30_mins"`
+	Hourly          types.Object `tfsdk:"hourly"`
+	None            types.Object `tfsdk:"none"`
+	Weekly          types.Object `tfsdk:"weekly"`
 }
 type DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject struct {
 	Action            types.String `tfsdk:"action"`
@@ -6256,15 +7150,15 @@ type DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject struct {
 	DisableNewContent types.Bool   `tfsdk:"disable_new_content"`
 }
 type DynamicUpdatesResourceUpdateScheduleWfPrivateObject struct {
-	Recurring *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject struct {
-	SyncToPeer  types.Bool                                                               `tfsdk:"sync_to_peer"`
-	Every15Mins *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject `tfsdk:"every_15_mins"`
-	Every30Mins *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
-	Every5Mins  *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject  `tfsdk:"every_5_mins"`
-	EveryHour   *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject   `tfsdk:"every_hour"`
-	None        *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject        `tfsdk:"none"`
+	SyncToPeer  types.Bool   `tfsdk:"sync_to_peer"`
+	Every15Mins types.Object `tfsdk:"every_15_mins"`
+	Every30Mins types.Object `tfsdk:"every_30_mins"`
+	Every5Mins  types.Object `tfsdk:"every_5_mins"`
+	EveryHour   types.Object `tfsdk:"every_hour"`
+	None        types.Object `tfsdk:"none"`
 }
 type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject struct {
 	Action types.String `tfsdk:"action"`
@@ -6285,15 +7179,15 @@ type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject struc
 type DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject struct {
 }
 type DynamicUpdatesResourceUpdateScheduleWildfireObject struct {
-	Recurring *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject `tfsdk:"recurring"`
+	Recurring types.Object `tfsdk:"recurring"`
 }
 type DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject struct {
-	Every15Mins *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject `tfsdk:"every_15_mins"`
-	Every30Mins *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject `tfsdk:"every_30_mins"`
-	EveryHour   *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject   `tfsdk:"every_hour"`
-	EveryMin    *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject    `tfsdk:"every_min"`
-	None        *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject        `tfsdk:"none"`
-	RealTime    *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject    `tfsdk:"real_time"`
+	Every15Mins types.Object `tfsdk:"every_15_mins"`
+	Every30Mins types.Object `tfsdk:"every_30_mins"`
+	EveryHour   types.Object `tfsdk:"every_hour"`
+	EveryMin    types.Object `tfsdk:"every_min"`
+	None        types.Object `tfsdk:"none"`
+	RealTime    types.Object `tfsdk:"real_time"`
 }
 type DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject struct {
 	Action     types.String `tfsdk:"action"`
@@ -6319,7 +7213,7 @@ type DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject struct {
 type DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject struct {
 }
 
-func (r *DynamicUpdatesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *DynamicUpdatesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -8737,30 +9631,30 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) ge
 	panic("unreachable")
 }
 
-func (r *DynamicUpdatesResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *DynamicUpdatesResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_dynamic_updates"
 }
 
-func (r *DynamicUpdatesResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *DynamicUpdatesResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = DynamicUpdatesResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *DynamicUpdatesResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *DynamicUpdatesResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := dynamicupdates.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := dynamicupdates.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewConfigObjectManager(r.client, dynamicupdates.NewService(r.client), specifier)
+	o.manager = sdkmanager.NewConfigObjectManager(o.client, dynamicupdates.NewService(o.client), specifier)
 }
 
 func (o *DynamicUpdatesResourceModel) AttributeTypes() map[string]attr.Type {
@@ -9670,17 +10564,21 @@ func (o DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) Ent
 	return nil
 }
 
-func (o *DynamicUpdatesResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var updateSchedule_entry *dynamicupdates.UpdateSchedule
-	if o.UpdateSchedule != nil {
+	if !o.UpdateSchedule.IsUnknown() && !o.UpdateSchedule.IsNull() {
 		if *obj != nil && (*obj).UpdateSchedule != nil {
 			updateSchedule_entry = (*obj).UpdateSchedule
 		} else {
 			updateSchedule_entry = new(dynamicupdates.UpdateSchedule)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.UpdateSchedule.CopyToPango(ctx, ancestors, &updateSchedule_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleObject
+		diags.Append(o.UpdateSchedule.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &updateSchedule_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9693,108 +10591,140 @@ func (o *DynamicUpdatesResourceModel) CopyToPango(ctx context.Context, ancestors
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateSchedule, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateSchedule, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var antiVirus_entry *dynamicupdates.UpdateScheduleAntiVirus
-	if o.AntiVirus != nil {
+	if !o.AntiVirus.IsUnknown() && !o.AntiVirus.IsNull() {
 		if *obj != nil && (*obj).AntiVirus != nil {
 			antiVirus_entry = (*obj).AntiVirus
 		} else {
 			antiVirus_entry = new(dynamicupdates.UpdateScheduleAntiVirus)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.AntiVirus.CopyToPango(ctx, append(ancestors, o), &antiVirus_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAntiVirusObject
+		diags.Append(o.AntiVirus.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &antiVirus_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var appProfile_entry *dynamicupdates.UpdateScheduleAppProfile
-	if o.AppProfile != nil {
+	if !o.AppProfile.IsUnknown() && !o.AppProfile.IsNull() {
 		if *obj != nil && (*obj).AppProfile != nil {
 			appProfile_entry = (*obj).AppProfile
 		} else {
 			appProfile_entry = new(dynamicupdates.UpdateScheduleAppProfile)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.AppProfile.CopyToPango(ctx, append(ancestors, o), &appProfile_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAppProfileObject
+		diags.Append(o.AppProfile.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &appProfile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var globalProtectClientlessVpn_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn
-	if o.GlobalProtectClientlessVpn != nil {
+	if !o.GlobalProtectClientlessVpn.IsUnknown() && !o.GlobalProtectClientlessVpn.IsNull() {
 		if *obj != nil && (*obj).GlobalProtectClientlessVpn != nil {
 			globalProtectClientlessVpn_entry = (*obj).GlobalProtectClientlessVpn
 		} else {
 			globalProtectClientlessVpn_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.GlobalProtectClientlessVpn.CopyToPango(ctx, append(ancestors, o), &globalProtectClientlessVpn_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject
+		diags.Append(o.GlobalProtectClientlessVpn.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &globalProtectClientlessVpn_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var globalProtectDatafile_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafile
-	if o.GlobalProtectDatafile != nil {
+	if !o.GlobalProtectDatafile.IsUnknown() && !o.GlobalProtectDatafile.IsNull() {
 		if *obj != nil && (*obj).GlobalProtectDatafile != nil {
 			globalProtectDatafile_entry = (*obj).GlobalProtectDatafile
 		} else {
 			globalProtectDatafile_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafile)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.GlobalProtectDatafile.CopyToPango(ctx, append(ancestors, o), &globalProtectDatafile_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject
+		diags.Append(o.GlobalProtectDatafile.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &globalProtectDatafile_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var statisticsService_entry *dynamicupdates.UpdateScheduleStatisticsService
-	if o.StatisticsService != nil {
+	if !o.StatisticsService.IsUnknown() && !o.StatisticsService.IsNull() {
 		if *obj != nil && (*obj).StatisticsService != nil {
 			statisticsService_entry = (*obj).StatisticsService
 		} else {
 			statisticsService_entry = new(dynamicupdates.UpdateScheduleStatisticsService)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.StatisticsService.CopyToPango(ctx, append(ancestors, o), &statisticsService_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject
+		diags.Append(o.StatisticsService.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &statisticsService_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var threats_entry *dynamicupdates.UpdateScheduleThreats
-	if o.Threats != nil {
+	if !o.Threats.IsUnknown() && !o.Threats.IsNull() {
 		if *obj != nil && (*obj).Threats != nil {
 			threats_entry = (*obj).Threats
 		} else {
 			threats_entry = new(dynamicupdates.UpdateScheduleThreats)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Threats.CopyToPango(ctx, append(ancestors, o), &threats_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleThreatsObject
+		diags.Append(o.Threats.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &threats_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var wfPrivate_entry *dynamicupdates.UpdateScheduleWfPrivate
-	if o.WfPrivate != nil {
+	if !o.WfPrivate.IsUnknown() && !o.WfPrivate.IsNull() {
 		if *obj != nil && (*obj).WfPrivate != nil {
 			wfPrivate_entry = (*obj).WfPrivate
 		} else {
 			wfPrivate_entry = new(dynamicupdates.UpdateScheduleWfPrivate)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.WfPrivate.CopyToPango(ctx, append(ancestors, o), &wfPrivate_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWfPrivateObject
+		diags.Append(o.WfPrivate.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &wfPrivate_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var wildfire_entry *dynamicupdates.UpdateScheduleWildfire
-	if o.Wildfire != nil {
+	if !o.Wildfire.IsUnknown() && !o.Wildfire.IsNull() {
 		if *obj != nil && (*obj).Wildfire != nil {
 			wildfire_entry = (*obj).Wildfire
 		} else {
 			wildfire_entry = new(dynamicupdates.UpdateScheduleWildfire)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Wildfire.CopyToPango(ctx, append(ancestors, o), &wildfire_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWildfireObject
+		diags.Append(o.Wildfire.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &wildfire_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9814,17 +10744,21 @@ func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirus, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirus, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleAntiVirusRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9837,58 +10771,74 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	threshold_value := o.Threshold.ValueInt64Pointer()
 	var daily_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var hourly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly
-	if o.Hourly != nil {
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
 		if *obj != nil && (*obj).Hourly != nil {
 			hourly_entry = (*obj).Hourly
 		} else {
 			hourly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringHourly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject
+		diags.Append(o.Hourly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9906,7 +10856,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) CopyToPan
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -9919,7 +10869,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) Copy
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -9932,7 +10882,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) Cop
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -9941,7 +10891,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) CopyT
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -9956,17 +10906,21 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) Cop
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfile, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleAppProfileRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -9979,45 +10933,57 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	threshold_value := o.Threshold.ValueInt64Pointer()
 	var daily_entry *dynamicupdates.UpdateScheduleAppProfileRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleAppProfileRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleAppProfileRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10034,7 +11000,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) CopyToPa
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -10047,7 +11013,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) Cop
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -10056,7 +11022,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) Copy
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -10071,17 +11037,21 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) Co
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10094,56 +11064,72 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) C
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly
-	if o.Hourly != nil {
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
 		if *obj != nil && (*obj).Hourly != nil {
 			hourly_entry = (*obj).Hourly
 		} else {
 			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject
+		diags.Append(o.Hourly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10159,7 +11145,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -10172,7 +11158,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10185,7 +11171,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -10194,7 +11180,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -10209,17 +11195,21 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafile, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10232,56 +11222,72 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) CopyTo
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var daily_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var hourly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly
-	if o.Hourly != nil {
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
 		if *obj != nil && (*obj).Hourly != nil {
 			hourly_entry = (*obj).Hourly
 		} else {
 			hourly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
+		diags.Append(o.Hourly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10297,7 +11303,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObjec
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -10310,7 +11316,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDaily
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10323,7 +11329,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourl
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -10332,7 +11338,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneO
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -10347,7 +11353,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeekl
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleStatisticsService, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleStatisticsService, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	applicationReports_value := o.ApplicationReports.ValueBoolPointer()
 	fileIdentificationReports_value := o.FileIdentificationReports.ValueBoolPointer()
@@ -10372,17 +11378,21 @@ func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) CopyToPang
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreats, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreats, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleThreatsRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleThreatsRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10395,72 +11405,92 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	newAppThreshold_value := o.NewAppThreshold.ValueInt64Pointer()
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	threshold_value := o.Threshold.ValueInt64Pointer()
 	var daily_entry *dynamicupdates.UpdateScheduleThreatsRecurringDaily
-	if o.Daily != nil {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
 		if *obj != nil && (*obj).Daily != nil {
 			daily_entry = (*obj).Daily
 		} else {
 			daily_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringDaily)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Daily.CopyToPango(ctx, append(ancestors, o), &daily_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject
+		diags.Append(o.Daily.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &daily_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var every30Mins_entry *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins
-	if o.Every30Mins != nil {
+	if !o.Every30Mins.IsUnknown() && !o.Every30Mins.IsNull() {
 		if *obj != nil && (*obj).Every30Mins != nil {
 			every30Mins_entry = (*obj).Every30Mins
 		} else {
 			every30Mins_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every30Mins.CopyToPango(ctx, append(ancestors, o), &every30Mins_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject
+		diags.Append(o.Every30Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every30Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var hourly_entry *dynamicupdates.UpdateScheduleThreatsRecurringHourly
-	if o.Hourly != nil {
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
 		if *obj != nil && (*obj).Hourly != nil {
 			hourly_entry = (*obj).Hourly
 		} else {
 			hourly_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringHourly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Hourly.CopyToPango(ctx, append(ancestors, o), &hourly_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject
+		diags.Append(o.Hourly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &hourly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleThreatsRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var weekly_entry *dynamicupdates.UpdateScheduleThreatsRecurringWeekly
-	if o.Weekly != nil {
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
 		if *obj != nil && (*obj).Weekly != nil {
 			weekly_entry = (*obj).Weekly
 		} else {
 			weekly_entry = new(dynamicupdates.UpdateScheduleThreatsRecurringWeekly)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Weekly.CopyToPango(ctx, append(ancestors, o), &weekly_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject
+		diags.Append(o.Weekly.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &weekly_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10480,7 +11510,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyToPango
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -10495,7 +11525,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) CopyTo
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10510,7 +11540,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) 
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10525,7 +11555,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject) CopyT
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -10534,7 +11564,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject) CopyToP
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleThreatsRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueStringPointer()
@@ -10551,17 +11581,21 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) CopyT
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivate, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleWfPrivateRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10574,70 +11608,90 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
 	var every15Mins_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins
-	if o.Every15Mins != nil {
+	if !o.Every15Mins.IsUnknown() && !o.Every15Mins.IsNull() {
 		if *obj != nil && (*obj).Every15Mins != nil {
 			every15Mins_entry = (*obj).Every15Mins
 		} else {
 			every15Mins_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every15Mins.CopyToPango(ctx, append(ancestors, o), &every15Mins_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+		diags.Append(o.Every15Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every15Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var every30Mins_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins
-	if o.Every30Mins != nil {
+	if !o.Every30Mins.IsUnknown() && !o.Every30Mins.IsNull() {
 		if *obj != nil && (*obj).Every30Mins != nil {
 			every30Mins_entry = (*obj).Every30Mins
 		} else {
 			every30Mins_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every30Mins.CopyToPango(ctx, append(ancestors, o), &every30Mins_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+		diags.Append(o.Every30Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every30Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var every5Mins_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins
-	if o.Every5Mins != nil {
+	if !o.Every5Mins.IsUnknown() && !o.Every5Mins.IsNull() {
 		if *obj != nil && (*obj).Every5Mins != nil {
 			every5Mins_entry = (*obj).Every5Mins
 		} else {
 			every5Mins_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every5Mins.CopyToPango(ctx, append(ancestors, o), &every5Mins_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+		diags.Append(o.Every5Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every5Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var everyHour_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour
-	if o.EveryHour != nil {
+	if !o.EveryHour.IsUnknown() && !o.EveryHour.IsNull() {
 		if *obj != nil && (*obj).EveryHour != nil {
 			everyHour_entry = (*obj).EveryHour
 		} else {
 			everyHour_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.EveryHour.CopyToPango(ctx, append(ancestors, o), &everyHour_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject
+		diags.Append(o.EveryHour.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &everyHour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleWfPrivateRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleWfPrivateRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10655,7 +11709,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) CopyToPan
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10668,7 +11722,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10681,7 +11735,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10694,7 +11748,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject)
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10707,7 +11761,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) 
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWfPrivateRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -10716,17 +11770,21 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) CopyT
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfire, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfire, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var recurring_entry *dynamicupdates.UpdateScheduleWildfireRecurring
-	if o.Recurring != nil {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
 		if *obj != nil && (*obj).Recurring != nil {
 			recurring_entry = (*obj).Recurring
 		} else {
 			recurring_entry = new(dynamicupdates.UpdateScheduleWildfireRecurring)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Recurring.CopyToPango(ctx, append(ancestors, o), &recurring_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject
+		diags.Append(o.Recurring.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &recurring_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10739,82 +11797,106 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var every15Mins_entry *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins
-	if o.Every15Mins != nil {
+	if !o.Every15Mins.IsUnknown() && !o.Every15Mins.IsNull() {
 		if *obj != nil && (*obj).Every15Mins != nil {
 			every15Mins_entry = (*obj).Every15Mins
 		} else {
 			every15Mins_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every15Mins.CopyToPango(ctx, append(ancestors, o), &every15Mins_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject
+		diags.Append(o.Every15Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every15Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var every30Mins_entry *dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins
-	if o.Every30Mins != nil {
+	if !o.Every30Mins.IsUnknown() && !o.Every30Mins.IsNull() {
 		if *obj != nil && (*obj).Every30Mins != nil {
 			every30Mins_entry = (*obj).Every30Mins
 		} else {
 			every30Mins_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Every30Mins.CopyToPango(ctx, append(ancestors, o), &every30Mins_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject
+		diags.Append(o.Every30Mins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &every30Mins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var everyHour_entry *dynamicupdates.UpdateScheduleWildfireRecurringEveryHour
-	if o.EveryHour != nil {
+	if !o.EveryHour.IsUnknown() && !o.EveryHour.IsNull() {
 		if *obj != nil && (*obj).EveryHour != nil {
 			everyHour_entry = (*obj).EveryHour
 		} else {
 			everyHour_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEveryHour)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.EveryHour.CopyToPango(ctx, append(ancestors, o), &everyHour_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject
+		diags.Append(o.EveryHour.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &everyHour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var everyMin_entry *dynamicupdates.UpdateScheduleWildfireRecurringEveryMin
-	if o.EveryMin != nil {
+	if !o.EveryMin.IsUnknown() && !o.EveryMin.IsNull() {
 		if *obj != nil && (*obj).EveryMin != nil {
 			everyMin_entry = (*obj).EveryMin
 		} else {
 			everyMin_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringEveryMin)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.EveryMin.CopyToPango(ctx, append(ancestors, o), &everyMin_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject
+		diags.Append(o.EveryMin.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &everyMin_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var none_entry *dynamicupdates.UpdateScheduleWildfireRecurringNone
-	if o.None != nil {
+	if !o.None.IsUnknown() && !o.None.IsNull() {
 		if *obj != nil && (*obj).None != nil {
 			none_entry = (*obj).None
 		} else {
 			none_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringNone)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.None.CopyToPango(ctx, append(ancestors, o), &none_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject
+		diags.Append(o.None.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &none_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var realTime_entry *dynamicupdates.UpdateScheduleWildfireRecurringRealTime
-	if o.RealTime != nil {
+	if !o.RealTime.IsUnknown() && !o.RealTime.IsNull() {
 		if *obj != nil && (*obj).RealTime != nil {
 			realTime_entry = (*obj).RealTime
 		} else {
 			realTime_entry = new(dynamicupdates.UpdateScheduleWildfireRecurringRealTime)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RealTime.CopyToPango(ctx, append(ancestors, o), &realTime_entry, ev)...)
+		var object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject
+		diags.Append(o.RealTime.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &realTime_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10832,7 +11914,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyToPang
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10847,7 +11929,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject)
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10862,7 +11944,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject)
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	at_value := o.At.ValueInt64Pointer()
@@ -10877,7 +11959,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) C
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	action_value := o.Action.ValueStringPointer()
 	syncToPeer_value := o.SyncToPeer.ValueBoolPointer()
@@ -10890,7 +11972,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) Co
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -10899,7 +11981,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) CopyTo
 
 	return diags
 }
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringRealTime, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dynamicupdates.UpdateScheduleWildfireRecurringRealTime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -10909,12 +11991,27 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) Co
 	return diags
 }
 
-func (o *DynamicUpdatesResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var updateSchedule_object *DynamicUpdatesResourceUpdateScheduleObject
+
+	var updateSchedule_obj *DynamicUpdatesResourceUpdateScheduleObject
+	if o.UpdateSchedule.IsNull() {
+		updateSchedule_obj = new(DynamicUpdatesResourceUpdateScheduleObject)
+	} else {
+		diags.Append(o.UpdateSchedule.As(ctx, &updateSchedule_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	updateSchedule_object := types.ObjectNull(updateSchedule_obj.AttributeTypes())
 	if obj.UpdateSchedule != nil {
-		updateSchedule_object = new(DynamicUpdatesResourceUpdateScheduleObject)
-		diags.Append(updateSchedule_object.CopyFromPango(ctx, ancestors, obj.UpdateSchedule, ev)...)
+		diags.Append(updateSchedule_obj.CopyFromPango(ctx, client, ancestors, obj.UpdateSchedule, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		updateSchedule_object, diags_tmp = types.ObjectValueFrom(ctx, updateSchedule_obj.AttributeTypes(), updateSchedule_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -10925,68 +12022,188 @@ func (o *DynamicUpdatesResourceModel) CopyFromPango(ctx context.Context, ancesto
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateSchedule, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateSchedule, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var antiVirus_object *DynamicUpdatesResourceUpdateScheduleAntiVirusObject
+
+	var antiVirus_obj *DynamicUpdatesResourceUpdateScheduleAntiVirusObject
+	if o.AntiVirus.IsNull() {
+		antiVirus_obj = new(DynamicUpdatesResourceUpdateScheduleAntiVirusObject)
+	} else {
+		diags.Append(o.AntiVirus.As(ctx, &antiVirus_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	antiVirus_object := types.ObjectNull(antiVirus_obj.AttributeTypes())
 	if obj.AntiVirus != nil {
-		antiVirus_object = new(DynamicUpdatesResourceUpdateScheduleAntiVirusObject)
-		diags.Append(antiVirus_object.CopyFromPango(ctx, append(ancestors, o), obj.AntiVirus, ev)...)
+		diags.Append(antiVirus_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.AntiVirus, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		antiVirus_object, diags_tmp = types.ObjectValueFrom(ctx, antiVirus_obj.AttributeTypes(), antiVirus_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var appProfile_object *DynamicUpdatesResourceUpdateScheduleAppProfileObject
+
+	var appProfile_obj *DynamicUpdatesResourceUpdateScheduleAppProfileObject
+	if o.AppProfile.IsNull() {
+		appProfile_obj = new(DynamicUpdatesResourceUpdateScheduleAppProfileObject)
+	} else {
+		diags.Append(o.AppProfile.As(ctx, &appProfile_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	appProfile_object := types.ObjectNull(appProfile_obj.AttributeTypes())
 	if obj.AppProfile != nil {
-		appProfile_object = new(DynamicUpdatesResourceUpdateScheduleAppProfileObject)
-		diags.Append(appProfile_object.CopyFromPango(ctx, append(ancestors, o), obj.AppProfile, ev)...)
+		diags.Append(appProfile_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.AppProfile, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		appProfile_object, diags_tmp = types.ObjectValueFrom(ctx, appProfile_obj.AttributeTypes(), appProfile_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var globalProtectClientlessVpn_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject
+
+	var globalProtectClientlessVpn_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject
+	if o.GlobalProtectClientlessVpn.IsNull() {
+		globalProtectClientlessVpn_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject)
+	} else {
+		diags.Append(o.GlobalProtectClientlessVpn.As(ctx, &globalProtectClientlessVpn_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	globalProtectClientlessVpn_object := types.ObjectNull(globalProtectClientlessVpn_obj.AttributeTypes())
 	if obj.GlobalProtectClientlessVpn != nil {
-		globalProtectClientlessVpn_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject)
-		diags.Append(globalProtectClientlessVpn_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtectClientlessVpn, ev)...)
+		diags.Append(globalProtectClientlessVpn_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.GlobalProtectClientlessVpn, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		globalProtectClientlessVpn_object, diags_tmp = types.ObjectValueFrom(ctx, globalProtectClientlessVpn_obj.AttributeTypes(), globalProtectClientlessVpn_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var globalProtectDatafile_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject
+
+	var globalProtectDatafile_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject
+	if o.GlobalProtectDatafile.IsNull() {
+		globalProtectDatafile_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject)
+	} else {
+		diags.Append(o.GlobalProtectDatafile.As(ctx, &globalProtectDatafile_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	globalProtectDatafile_object := types.ObjectNull(globalProtectDatafile_obj.AttributeTypes())
 	if obj.GlobalProtectDatafile != nil {
-		globalProtectDatafile_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject)
-		diags.Append(globalProtectDatafile_object.CopyFromPango(ctx, append(ancestors, o), obj.GlobalProtectDatafile, ev)...)
+		diags.Append(globalProtectDatafile_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.GlobalProtectDatafile, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		globalProtectDatafile_object, diags_tmp = types.ObjectValueFrom(ctx, globalProtectDatafile_obj.AttributeTypes(), globalProtectDatafile_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var statisticsService_object *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject
+
+	var statisticsService_obj *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject
+	if o.StatisticsService.IsNull() {
+		statisticsService_obj = new(DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject)
+	} else {
+		diags.Append(o.StatisticsService.As(ctx, &statisticsService_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	statisticsService_object := types.ObjectNull(statisticsService_obj.AttributeTypes())
 	if obj.StatisticsService != nil {
-		statisticsService_object = new(DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject)
-		diags.Append(statisticsService_object.CopyFromPango(ctx, append(ancestors, o), obj.StatisticsService, ev)...)
+		diags.Append(statisticsService_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.StatisticsService, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		statisticsService_object, diags_tmp = types.ObjectValueFrom(ctx, statisticsService_obj.AttributeTypes(), statisticsService_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var threats_object *DynamicUpdatesResourceUpdateScheduleThreatsObject
+
+	var threats_obj *DynamicUpdatesResourceUpdateScheduleThreatsObject
+	if o.Threats.IsNull() {
+		threats_obj = new(DynamicUpdatesResourceUpdateScheduleThreatsObject)
+	} else {
+		diags.Append(o.Threats.As(ctx, &threats_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	threats_object := types.ObjectNull(threats_obj.AttributeTypes())
 	if obj.Threats != nil {
-		threats_object = new(DynamicUpdatesResourceUpdateScheduleThreatsObject)
-		diags.Append(threats_object.CopyFromPango(ctx, append(ancestors, o), obj.Threats, ev)...)
+		diags.Append(threats_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Threats, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		threats_object, diags_tmp = types.ObjectValueFrom(ctx, threats_obj.AttributeTypes(), threats_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var wfPrivate_object *DynamicUpdatesResourceUpdateScheduleWfPrivateObject
+
+	var wfPrivate_obj *DynamicUpdatesResourceUpdateScheduleWfPrivateObject
+	if o.WfPrivate.IsNull() {
+		wfPrivate_obj = new(DynamicUpdatesResourceUpdateScheduleWfPrivateObject)
+	} else {
+		diags.Append(o.WfPrivate.As(ctx, &wfPrivate_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	wfPrivate_object := types.ObjectNull(wfPrivate_obj.AttributeTypes())
 	if obj.WfPrivate != nil {
-		wfPrivate_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateObject)
-		diags.Append(wfPrivate_object.CopyFromPango(ctx, append(ancestors, o), obj.WfPrivate, ev)...)
+		diags.Append(wfPrivate_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.WfPrivate, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		wfPrivate_object, diags_tmp = types.ObjectValueFrom(ctx, wfPrivate_obj.AttributeTypes(), wfPrivate_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var wildfire_object *DynamicUpdatesResourceUpdateScheduleWildfireObject
+
+	var wildfire_obj *DynamicUpdatesResourceUpdateScheduleWildfireObject
+	if o.Wildfire.IsNull() {
+		wildfire_obj = new(DynamicUpdatesResourceUpdateScheduleWildfireObject)
+	} else {
+		diags.Append(o.Wildfire.As(ctx, &wildfire_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	wildfire_object := types.ObjectNull(wildfire_obj.AttributeTypes())
 	if obj.Wildfire != nil {
-		wildfire_object = new(DynamicUpdatesResourceUpdateScheduleWildfireObject)
-		diags.Append(wildfire_object.CopyFromPango(ctx, append(ancestors, o), obj.Wildfire, ev)...)
+		diags.Append(wildfire_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Wildfire, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		wildfire_object, diags_tmp = types.ObjectValueFrom(ctx, wildfire_obj.AttributeTypes(), wildfire_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11004,12 +12221,27 @@ func (o *DynamicUpdatesResourceUpdateScheduleObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirus, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirus, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject
+
+	var recurring_obj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11020,36 +12252,96 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var hourly_object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject
+
+	var hourly_obj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject
+	if o.Hourly.IsNull() {
+		hourly_obj = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject)
+	} else {
+		diags.Append(o.Hourly.As(ctx, &hourly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	hourly_object := types.ObjectNull(hourly_obj.AttributeTypes())
 	if obj.Hourly != nil {
-		hourly_object = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject)
-		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
+		diags.Append(hourly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Hourly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		hourly_object, diags_tmp = types.ObjectValueFrom(ctx, hourly_obj.AttributeTypes(), hourly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject
+
+	var none_obj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11073,7 +12365,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) CopyFromP
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11090,7 +12382,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) Copy
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11107,13 +12399,13 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) Cop
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAntiVirusRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11135,12 +12427,27 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) Cop
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfile, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject
+
+	var recurring_obj *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11151,28 +12458,73 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject
+
+	var none_obj *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11195,7 +12547,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) CopyFrom
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11212,13 +12564,13 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) Cop
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleAppProfileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11240,12 +12592,27 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) Co
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpn, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject
+
+	var recurring_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11256,36 +12623,96 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) C
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var hourly_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject
+
+	var hourly_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject
+	if o.Hourly.IsNull() {
+		hourly_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject)
+	} else {
+		diags.Append(o.Hourly.As(ctx, &hourly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	hourly_object := types.ObjectNull(hourly_obj.AttributeTypes())
 	if obj.Hourly != nil {
-		hourly_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject)
-		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
+		diags.Append(hourly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Hourly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		hourly_object, diags_tmp = types.ObjectValueFrom(ctx, hourly_obj.AttributeTypes(), hourly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject
+
+	var none_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11299,7 +12726,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11316,7 +12743,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11333,13 +12760,13 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectClientlessVpnRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11361,12 +12788,27 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafile, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafile, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject
+
+	var recurring_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11377,36 +12819,96 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) CopyFr
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var hourly_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
+
+	var hourly_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
+	if o.Hourly.IsNull() {
+		hourly_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject)
+	} else {
+		diags.Append(o.Hourly.As(ctx, &hourly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	hourly_object := types.ObjectNull(hourly_obj.AttributeTypes())
 	if obj.Hourly != nil {
-		hourly_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject)
-		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
+		diags.Append(hourly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Hourly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		hourly_object, diags_tmp = types.ObjectValueFrom(ctx, hourly_obj.AttributeTypes(), hourly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject
+
+	var none_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11420,7 +12922,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObjec
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11437,7 +12939,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDaily
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11454,13 +12956,13 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourl
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleGlobalProtectDatafileRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11482,7 +12984,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeekl
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleStatisticsService, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleStatisticsService, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var applicationReports_value types.Bool
@@ -11529,12 +13031,27 @@ func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) CopyFromPa
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreats, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreats, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject
+
+	var recurring_obj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11545,44 +13062,119 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var daily_object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject
+
+	var daily_obj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject
+	if o.Daily.IsNull() {
+		daily_obj = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject)
+	} else {
+		diags.Append(o.Daily.As(ctx, &daily_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	daily_object := types.ObjectNull(daily_obj.AttributeTypes())
 	if obj.Daily != nil {
-		daily_object = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject)
-		diags.Append(daily_object.CopyFromPango(ctx, append(ancestors, o), obj.Daily, ev)...)
+		diags.Append(daily_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Daily, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		daily_object, diags_tmp = types.ObjectValueFrom(ctx, daily_obj.AttributeTypes(), daily_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var every30Mins_object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject
+
+	var every30Mins_obj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject
+	if o.Every30Mins.IsNull() {
+		every30Mins_obj = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject)
+	} else {
+		diags.Append(o.Every30Mins.As(ctx, &every30Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every30Mins_object := types.ObjectNull(every30Mins_obj.AttributeTypes())
 	if obj.Every30Mins != nil {
-		every30Mins_object = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject)
-		diags.Append(every30Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every30Mins, ev)...)
+		diags.Append(every30Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every30Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every30Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every30Mins_obj.AttributeTypes(), every30Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var hourly_object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject
+
+	var hourly_obj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject
+	if o.Hourly.IsNull() {
+		hourly_obj = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject)
+	} else {
+		diags.Append(o.Hourly.As(ctx, &hourly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	hourly_object := types.ObjectNull(hourly_obj.AttributeTypes())
 	if obj.Hourly != nil {
-		hourly_object = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject)
-		diags.Append(hourly_object.CopyFromPango(ctx, append(ancestors, o), obj.Hourly, ev)...)
+		diags.Append(hourly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Hourly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		hourly_object, diags_tmp = types.ObjectValueFrom(ctx, hourly_obj.AttributeTypes(), hourly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject
+
+	var none_obj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var weekly_object *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject
+
+	var weekly_obj *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject
+	if o.Weekly.IsNull() {
+		weekly_obj = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject)
+	} else {
+		diags.Append(o.Weekly.As(ctx, &weekly_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	weekly_object := types.ObjectNull(weekly_obj.AttributeTypes())
 	if obj.Weekly != nil {
-		weekly_object = new(DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject)
-		diags.Append(weekly_object.CopyFromPango(ctx, append(ancestors, o), obj.Weekly, ev)...)
+		diags.Append(weekly_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Weekly, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		weekly_object, diags_tmp = types.ObjectValueFrom(ctx, weekly_obj.AttributeTypes(), weekly_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11612,7 +13204,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) CopyFromPan
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringDaily, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11634,7 +13226,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) CopyFr
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11656,7 +13248,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringHourly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11678,13 +13270,13 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject) CopyF
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleThreatsRecurringWeekly, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11711,12 +13303,27 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) CopyF
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivate, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivate, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject
+
+	var recurring_obj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11727,44 +13334,119 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var every15Mins_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+
+	var every15Mins_obj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+	if o.Every15Mins.IsNull() {
+		every15Mins_obj = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject)
+	} else {
+		diags.Append(o.Every15Mins.As(ctx, &every15Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every15Mins_object := types.ObjectNull(every15Mins_obj.AttributeTypes())
 	if obj.Every15Mins != nil {
-		every15Mins_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject)
-		diags.Append(every15Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every15Mins, ev)...)
+		diags.Append(every15Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every15Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every15Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every15Mins_obj.AttributeTypes(), every15Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var every30Mins_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+
+	var every30Mins_obj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+	if o.Every30Mins.IsNull() {
+		every30Mins_obj = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject)
+	} else {
+		diags.Append(o.Every30Mins.As(ctx, &every30Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every30Mins_object := types.ObjectNull(every30Mins_obj.AttributeTypes())
 	if obj.Every30Mins != nil {
-		every30Mins_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject)
-		diags.Append(every30Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every30Mins, ev)...)
+		diags.Append(every30Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every30Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every30Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every30Mins_obj.AttributeTypes(), every30Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var every5Mins_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+
+	var every5Mins_obj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+	if o.Every5Mins.IsNull() {
+		every5Mins_obj = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject)
+	} else {
+		diags.Append(o.Every5Mins.As(ctx, &every5Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every5Mins_object := types.ObjectNull(every5Mins_obj.AttributeTypes())
 	if obj.Every5Mins != nil {
-		every5Mins_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject)
-		diags.Append(every5Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every5Mins, ev)...)
+		diags.Append(every5Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every5Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every5Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every5Mins_obj.AttributeTypes(), every5Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var everyHour_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject
+
+	var everyHour_obj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject
+	if o.EveryHour.IsNull() {
+		everyHour_obj = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject)
+	} else {
+		diags.Append(o.EveryHour.As(ctx, &everyHour_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	everyHour_object := types.ObjectNull(everyHour_obj.AttributeTypes())
 	if obj.EveryHour != nil {
-		everyHour_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject)
-		diags.Append(everyHour_object.CopyFromPango(ctx, append(ancestors, o), obj.EveryHour, ev)...)
+		diags.Append(everyHour_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.EveryHour, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		everyHour_object, diags_tmp = types.ObjectValueFrom(ctx, everyHour_obj.AttributeTypes(), everyHour_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject
+
+	var none_obj *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11784,7 +13466,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) CopyFromP
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11801,7 +13483,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11818,7 +13500,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEvery5Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11835,7 +13517,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject)
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11852,18 +13534,33 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWfPrivateRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfire, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfire, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var recurring_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject
+
+	var recurring_obj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject
+	if o.Recurring.IsNull() {
+		recurring_obj = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject)
+	} else {
+		diags.Append(o.Recurring.As(ctx, &recurring_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	recurring_object := types.ObjectNull(recurring_obj.AttributeTypes())
 	if obj.Recurring != nil {
-		recurring_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject)
-		diags.Append(recurring_object.CopyFromPango(ctx, append(ancestors, o), obj.Recurring, ev)...)
+		diags.Append(recurring_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Recurring, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		recurring_object, diags_tmp = types.ObjectValueFrom(ctx, recurring_obj.AttributeTypes(), recurring_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11874,52 +13571,142 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurring, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var every15Mins_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject
+
+	var every15Mins_obj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject
+	if o.Every15Mins.IsNull() {
+		every15Mins_obj = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject)
+	} else {
+		diags.Append(o.Every15Mins.As(ctx, &every15Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every15Mins_object := types.ObjectNull(every15Mins_obj.AttributeTypes())
 	if obj.Every15Mins != nil {
-		every15Mins_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject)
-		diags.Append(every15Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every15Mins, ev)...)
+		diags.Append(every15Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every15Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every15Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every15Mins_obj.AttributeTypes(), every15Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var every30Mins_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject
+
+	var every30Mins_obj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject
+	if o.Every30Mins.IsNull() {
+		every30Mins_obj = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject)
+	} else {
+		diags.Append(o.Every30Mins.As(ctx, &every30Mins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	every30Mins_object := types.ObjectNull(every30Mins_obj.AttributeTypes())
 	if obj.Every30Mins != nil {
-		every30Mins_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject)
-		diags.Append(every30Mins_object.CopyFromPango(ctx, append(ancestors, o), obj.Every30Mins, ev)...)
+		diags.Append(every30Mins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Every30Mins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		every30Mins_object, diags_tmp = types.ObjectValueFrom(ctx, every30Mins_obj.AttributeTypes(), every30Mins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var everyHour_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject
+
+	var everyHour_obj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject
+	if o.EveryHour.IsNull() {
+		everyHour_obj = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject)
+	} else {
+		diags.Append(o.EveryHour.As(ctx, &everyHour_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	everyHour_object := types.ObjectNull(everyHour_obj.AttributeTypes())
 	if obj.EveryHour != nil {
-		everyHour_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject)
-		diags.Append(everyHour_object.CopyFromPango(ctx, append(ancestors, o), obj.EveryHour, ev)...)
+		diags.Append(everyHour_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.EveryHour, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		everyHour_object, diags_tmp = types.ObjectValueFrom(ctx, everyHour_obj.AttributeTypes(), everyHour_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var everyMin_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject
+
+	var everyMin_obj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject
+	if o.EveryMin.IsNull() {
+		everyMin_obj = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject)
+	} else {
+		diags.Append(o.EveryMin.As(ctx, &everyMin_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	everyMin_object := types.ObjectNull(everyMin_obj.AttributeTypes())
 	if obj.EveryMin != nil {
-		everyMin_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject)
-		diags.Append(everyMin_object.CopyFromPango(ctx, append(ancestors, o), obj.EveryMin, ev)...)
+		diags.Append(everyMin_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.EveryMin, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		everyMin_object, diags_tmp = types.ObjectValueFrom(ctx, everyMin_obj.AttributeTypes(), everyMin_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var none_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject
+
+	var none_obj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject
+	if o.None.IsNull() {
+		none_obj = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject)
+	} else {
+		diags.Append(o.None.As(ctx, &none_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	none_object := types.ObjectNull(none_obj.AttributeTypes())
 	if obj.None != nil {
-		none_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject)
-		diags.Append(none_object.CopyFromPango(ctx, append(ancestors, o), obj.None, ev)...)
+		diags.Append(none_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.None, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		none_object, diags_tmp = types.ObjectValueFrom(ctx, none_obj.AttributeTypes(), none_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var realTime_object *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject
+
+	var realTime_obj *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject
+	if o.RealTime.IsNull() {
+		realTime_obj = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject)
+	} else {
+		diags.Append(o.RealTime.As(ctx, &realTime_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	realTime_object := types.ObjectNull(realTime_obj.AttributeTypes())
 	if obj.RealTime != nil {
-		realTime_object = new(DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject)
-		diags.Append(realTime_object.CopyFromPango(ctx, append(ancestors, o), obj.RealTime, ev)...)
+		diags.Append(realTime_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RealTime, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		realTime_object, diags_tmp = types.ObjectValueFrom(ctx, realTime_obj.AttributeTypes(), realTime_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -11935,7 +13722,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) CopyFromPa
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery15Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11957,7 +13744,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject)
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEvery30Mins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -11979,7 +13766,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject)
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryHour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -12001,7 +13788,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) C
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringEveryMin, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var action_value types.String
@@ -12018,13 +13805,13 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) Co
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringNone, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringRealTime, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dynamicupdates.UpdateScheduleWildfireRecurringRealTime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
@@ -12035,7 +13822,7 @@ func (o *DynamicUpdatesResourceModel) resourceXpathParentComponents() ([]string,
 	return components, nil
 }
 
-func (r *DynamicUpdatesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *DynamicUpdatesResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state DynamicUpdatesResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -12049,7 +13836,7 @@ func (r *DynamicUpdatesResource) Create(ctx context.Context, req resource.Create
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -12114,7 +13901,7 @@ func (r *DynamicUpdatesResource) Create(ctx context.Context, req resource.Create
 
 	// Load the desired config.
 	var obj *dynamicupdates.Config
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -12132,13 +13919,13 @@ func (r *DynamicUpdatesResource) Create(ctx context.Context, req resource.Create
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -12155,8 +13942,8 @@ func (r *DynamicUpdatesResource) Create(ctx context.Context, req resource.Create
 }
 func (o *DynamicUpdatesResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state DynamicUpdatesResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state DynamicUpdatesResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -12176,7 +13963,7 @@ func (o *DynamicUpdatesResource) Read(ctx context.Context, req resource.ReadRequ
 
 	{
 		var terraformLocation DynamicUpdatesLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -12222,7 +14009,7 @@ func (o *DynamicUpdatesResource) Read(ctx context.Context, req resource.ReadRequ
 		"function":      "Read",
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
@@ -12237,16 +14024,16 @@ func (o *DynamicUpdatesResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -12259,7 +14046,7 @@ func (o *DynamicUpdatesResource) Read(ctx context.Context, req resource.ReadRequ
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *DynamicUpdatesResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *DynamicUpdatesResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state DynamicUpdatesResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -12330,7 +14117,7 @@ func (r *DynamicUpdatesResource) Update(ctx context.Context, req resource.Update
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -12340,13 +14127,13 @@ func (r *DynamicUpdatesResource) Update(ctx context.Context, req resource.Update
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -12357,22 +14144,19 @@ func (r *DynamicUpdatesResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj)
+	updated, err := o.manager.Update(ctx, location, components, obj)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -12386,10 +14170,10 @@ func (r *DynamicUpdatesResource) Update(ctx context.Context, req resource.Update
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *DynamicUpdatesResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *DynamicUpdatesResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state DynamicUpdatesResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -12404,7 +14188,7 @@ func (r *DynamicUpdatesResource) Delete(ctx context.Context, req resource.Delete
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -12459,7 +14243,7 @@ func (r *DynamicUpdatesResource) Delete(ctx context.Context, req resource.Delete
 		return
 	}
 
-	existing, err := r.manager.Read(ctx, location, components)
+	existing, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error while deleting resource", err.Error())
 		return
@@ -12468,7 +14252,7 @@ func (r *DynamicUpdatesResource) Delete(ctx context.Context, req resource.Delete
 	var obj dynamicupdates.Config
 	obj.Misc = existing.Misc
 
-	err = r.manager.Delete(ctx, location, &obj)
+	err = o.manager.Delete(ctx, location, &obj)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -12476,7 +14260,7 @@ func (r *DynamicUpdatesResource) Delete(ctx context.Context, req resource.Delete
 
 }
 
-func (r *DynamicUpdatesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *DynamicUpdatesResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 }
 

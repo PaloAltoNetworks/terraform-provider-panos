@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/secgroup"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -76,17 +77,35 @@ func (o *SecurityProfileGroupDataSourceModel) AttributeTypes() map[string]attr.T
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":              types.StringType,
-		"data_filtering":    types.ListType{},
-		"disable_override":  types.StringType,
-		"file_blocking":     types.ListType{},
-		"gtp":               types.ListType{},
-		"sctp":              types.ListType{},
-		"spyware":           types.ListType{},
-		"url_filtering":     types.ListType{},
-		"virus":             types.ListType{},
-		"vulnerability":     types.ListType{},
-		"wildfire_analysis": types.ListType{},
+		"name": types.StringType,
+		"data_filtering": types.ListType{
+			ElemType: types.StringType,
+		},
+		"disable_override": types.StringType,
+		"file_blocking": types.ListType{
+			ElemType: types.StringType,
+		},
+		"gtp": types.ListType{
+			ElemType: types.StringType,
+		},
+		"sctp": types.ListType{
+			ElemType: types.StringType,
+		},
+		"spyware": types.ListType{
+			ElemType: types.StringType,
+		},
+		"url_filtering": types.ListType{
+			ElemType: types.StringType,
+		},
+		"virus": types.ListType{
+			ElemType: types.StringType,
+		},
+		"vulnerability": types.ListType{
+			ElemType: types.StringType,
+		},
+		"wildfire_analysis": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -98,53 +117,125 @@ func (o SecurityProfileGroupDataSourceModel) EntryName() *string {
 	return nil
 }
 
-func (o *SecurityProfileGroupDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **secgroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SecurityProfileGroupDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **secgroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	dataFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var dataFiltering_pango_entries []string
+	if !o.DataFiltering.IsUnknown() && !o.DataFiltering.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DataFiltering.Elements()))
+		diags.Append(o.DataFiltering.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			dataFiltering_pango_entries = append(dataFiltering_pango_entries, elt.ValueString())
+		}
 	}
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	fileBlocking_pango_entries := make([]string, 0)
-	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var fileBlocking_pango_entries []string
+	if !o.FileBlocking.IsUnknown() && !o.FileBlocking.IsNull() {
+		object_entries := make([]types.String, 0, len(o.FileBlocking.Elements()))
+		diags.Append(o.FileBlocking.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			fileBlocking_pango_entries = append(fileBlocking_pango_entries, elt.ValueString())
+		}
 	}
-	gtp_pango_entries := make([]string, 0)
-	diags.Append(o.Gtp.ElementsAs(ctx, &gtp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var gtp_pango_entries []string
+	if !o.Gtp.IsUnknown() && !o.Gtp.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Gtp.Elements()))
+		diags.Append(o.Gtp.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			gtp_pango_entries = append(gtp_pango_entries, elt.ValueString())
+		}
 	}
-	sctp_pango_entries := make([]string, 0)
-	diags.Append(o.Sctp.ElementsAs(ctx, &sctp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var sctp_pango_entries []string
+	if !o.Sctp.IsUnknown() && !o.Sctp.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Sctp.Elements()))
+		diags.Append(o.Sctp.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			sctp_pango_entries = append(sctp_pango_entries, elt.ValueString())
+		}
 	}
-	spyware_pango_entries := make([]string, 0)
-	diags.Append(o.Spyware.ElementsAs(ctx, &spyware_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var spyware_pango_entries []string
+	if !o.Spyware.IsUnknown() && !o.Spyware.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Spyware.Elements()))
+		diags.Append(o.Spyware.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			spyware_pango_entries = append(spyware_pango_entries, elt.ValueString())
+		}
 	}
-	urlFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var urlFiltering_pango_entries []string
+	if !o.UrlFiltering.IsUnknown() && !o.UrlFiltering.IsNull() {
+		object_entries := make([]types.String, 0, len(o.UrlFiltering.Elements()))
+		diags.Append(o.UrlFiltering.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			urlFiltering_pango_entries = append(urlFiltering_pango_entries, elt.ValueString())
+		}
 	}
-	virus_pango_entries := make([]string, 0)
-	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var virus_pango_entries []string
+	if !o.Virus.IsUnknown() && !o.Virus.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Virus.Elements()))
+		diags.Append(o.Virus.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			virus_pango_entries = append(virus_pango_entries, elt.ValueString())
+		}
 	}
-	vulnerability_pango_entries := make([]string, 0)
-	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var vulnerability_pango_entries []string
+	if !o.Vulnerability.IsUnknown() && !o.Vulnerability.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Vulnerability.Elements()))
+		diags.Append(o.Vulnerability.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			vulnerability_pango_entries = append(vulnerability_pango_entries, elt.ValueString())
+		}
 	}
-	wildfireAnalysis_pango_entries := make([]string, 0)
-	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var wildfireAnalysis_pango_entries []string
+	if !o.WildfireAnalysis.IsUnknown() && !o.WildfireAnalysis.IsNull() {
+		object_entries := make([]types.String, 0, len(o.WildfireAnalysis.Elements()))
+		diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			wildfireAnalysis_pango_entries = append(wildfireAnalysis_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -165,12 +256,18 @@ func (o *SecurityProfileGroupDataSourceModel) CopyToPango(ctx context.Context, a
 	return diags
 }
 
-func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *secgroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *secgroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dataFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
-		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
+
+		entries := make([]string, 0)
+		if o.DataFiltering.IsNull() || len(obj.DataFiltering) > 0 {
+			entries = obj.DataFiltering
+		}
+
+		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -179,7 +276,13 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 	var fileBlocking_list types.List
 	{
 		var list_diags diag.Diagnostics
-		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
+
+		entries := make([]string, 0)
+		if o.FileBlocking.IsNull() || len(obj.FileBlocking) > 0 {
+			entries = obj.FileBlocking
+		}
+
+		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -188,7 +291,13 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 	var gtp_list types.List
 	{
 		var list_diags diag.Diagnostics
-		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
+
+		entries := make([]string, 0)
+		if o.Gtp.IsNull() || len(obj.Gtp) > 0 {
+			entries = obj.Gtp
+		}
+
+		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -197,7 +306,13 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 	var sctp_list types.List
 	{
 		var list_diags diag.Diagnostics
-		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
+
+		entries := make([]string, 0)
+		if o.Sctp.IsNull() || len(obj.Sctp) > 0 {
+			entries = obj.Sctp
+		}
+
+		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -206,7 +321,13 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 	var spyware_list types.List
 	{
 		var list_diags diag.Diagnostics
-		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
+
+		entries := make([]string, 0)
+		if o.Spyware.IsNull() || len(obj.Spyware) > 0 {
+			entries = obj.Spyware
+		}
+
+		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -215,7 +336,13 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 	var urlFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
-		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
+
+		entries := make([]string, 0)
+		if o.UrlFiltering.IsNull() || len(obj.UrlFiltering) > 0 {
+			entries = obj.UrlFiltering
+		}
+
+		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -224,7 +351,13 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 	var virus_list types.List
 	{
 		var list_diags diag.Diagnostics
-		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
+
+		entries := make([]string, 0)
+		if o.Virus.IsNull() || len(obj.Virus) > 0 {
+			entries = obj.Virus
+		}
+
+		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -233,7 +366,13 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 	var vulnerability_list types.List
 	{
 		var list_diags diag.Diagnostics
-		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
+
+		entries := make([]string, 0)
+		if o.Vulnerability.IsNull() || len(obj.Vulnerability) > 0 {
+			entries = obj.Vulnerability
+		}
+
+		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -242,7 +381,13 @@ func (o *SecurityProfileGroupDataSourceModel) CopyFromPango(ctx context.Context,
 	var wildfireAnalysis_list types.List
 	{
 		var list_diags diag.Diagnostics
-		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
+
+		entries := make([]string, 0)
+		if o.WildfireAnalysis.IsNull() || len(obj.WildfireAnalysis) > 0 {
+			entries = obj.WildfireAnalysis
+		}
+
+		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -429,8 +574,8 @@ func (d *SecurityProfileGroupDataSource) Configure(_ context.Context, req dataso
 }
 func (o *SecurityProfileGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state SecurityProfileGroupDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state SecurityProfileGroupDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -446,7 +591,7 @@ func (o *SecurityProfileGroupDataSource) Read(ctx context.Context, req datasourc
 
 	{
 		var terraformLocation SecurityProfileGroupLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -476,15 +621,15 @@ func (o *SecurityProfileGroupDataSource) Read(ctx context.Context, req datasourc
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_security_profile_group_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -494,16 +639,16 @@ func (o *SecurityProfileGroupDataSource) Read(ctx context.Context, req datasourc
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -550,7 +695,7 @@ type SecurityProfileGroupResourceModel struct {
 	WildfireAnalysis types.List   `tfsdk:"wildfire_analysis"`
 }
 
-func (r *SecurityProfileGroupResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *SecurityProfileGroupResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -686,31 +831,31 @@ func (o *SecurityProfileGroupResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func (r *SecurityProfileGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *SecurityProfileGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_security_profile_group"
 }
 
-func (r *SecurityProfileGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *SecurityProfileGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = SecurityProfileGroupResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *SecurityProfileGroupResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *SecurityProfileGroupResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := secgroup.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := secgroup.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*secgroup.Entry, secgroup.Location, *secgroup.Service](r.client, secgroup.NewService(r.client), batchSize, specifier, secgroup.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*secgroup.Entry, secgroup.Location, *secgroup.Service](o.client, secgroup.NewService(o.client), batchSize, specifier, secgroup.SpecMatches)
 }
 
 func (o *SecurityProfileGroupResourceModel) AttributeTypes() map[string]attr.Type {
@@ -721,17 +866,35 @@ func (o *SecurityProfileGroupResourceModel) AttributeTypes() map[string]attr.Typ
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":              types.StringType,
-		"data_filtering":    types.ListType{},
-		"disable_override":  types.StringType,
-		"file_blocking":     types.ListType{},
-		"gtp":               types.ListType{},
-		"sctp":              types.ListType{},
-		"spyware":           types.ListType{},
-		"url_filtering":     types.ListType{},
-		"virus":             types.ListType{},
-		"vulnerability":     types.ListType{},
-		"wildfire_analysis": types.ListType{},
+		"name": types.StringType,
+		"data_filtering": types.ListType{
+			ElemType: types.StringType,
+		},
+		"disable_override": types.StringType,
+		"file_blocking": types.ListType{
+			ElemType: types.StringType,
+		},
+		"gtp": types.ListType{
+			ElemType: types.StringType,
+		},
+		"sctp": types.ListType{
+			ElemType: types.StringType,
+		},
+		"spyware": types.ListType{
+			ElemType: types.StringType,
+		},
+		"url_filtering": types.ListType{
+			ElemType: types.StringType,
+		},
+		"virus": types.ListType{
+			ElemType: types.StringType,
+		},
+		"vulnerability": types.ListType{
+			ElemType: types.StringType,
+		},
+		"wildfire_analysis": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -743,53 +906,125 @@ func (o SecurityProfileGroupResourceModel) EntryName() *string {
 	return nil
 }
 
-func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **secgroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **secgroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	dataFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.DataFiltering.ElementsAs(ctx, &dataFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var dataFiltering_pango_entries []string
+	if !o.DataFiltering.IsUnknown() && !o.DataFiltering.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DataFiltering.Elements()))
+		diags.Append(o.DataFiltering.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			dataFiltering_pango_entries = append(dataFiltering_pango_entries, elt.ValueString())
+		}
 	}
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	fileBlocking_pango_entries := make([]string, 0)
-	diags.Append(o.FileBlocking.ElementsAs(ctx, &fileBlocking_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var fileBlocking_pango_entries []string
+	if !o.FileBlocking.IsUnknown() && !o.FileBlocking.IsNull() {
+		object_entries := make([]types.String, 0, len(o.FileBlocking.Elements()))
+		diags.Append(o.FileBlocking.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			fileBlocking_pango_entries = append(fileBlocking_pango_entries, elt.ValueString())
+		}
 	}
-	gtp_pango_entries := make([]string, 0)
-	diags.Append(o.Gtp.ElementsAs(ctx, &gtp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var gtp_pango_entries []string
+	if !o.Gtp.IsUnknown() && !o.Gtp.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Gtp.Elements()))
+		diags.Append(o.Gtp.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			gtp_pango_entries = append(gtp_pango_entries, elt.ValueString())
+		}
 	}
-	sctp_pango_entries := make([]string, 0)
-	diags.Append(o.Sctp.ElementsAs(ctx, &sctp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var sctp_pango_entries []string
+	if !o.Sctp.IsUnknown() && !o.Sctp.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Sctp.Elements()))
+		diags.Append(o.Sctp.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			sctp_pango_entries = append(sctp_pango_entries, elt.ValueString())
+		}
 	}
-	spyware_pango_entries := make([]string, 0)
-	diags.Append(o.Spyware.ElementsAs(ctx, &spyware_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var spyware_pango_entries []string
+	if !o.Spyware.IsUnknown() && !o.Spyware.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Spyware.Elements()))
+		diags.Append(o.Spyware.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			spyware_pango_entries = append(spyware_pango_entries, elt.ValueString())
+		}
 	}
-	urlFiltering_pango_entries := make([]string, 0)
-	diags.Append(o.UrlFiltering.ElementsAs(ctx, &urlFiltering_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var urlFiltering_pango_entries []string
+	if !o.UrlFiltering.IsUnknown() && !o.UrlFiltering.IsNull() {
+		object_entries := make([]types.String, 0, len(o.UrlFiltering.Elements()))
+		diags.Append(o.UrlFiltering.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			urlFiltering_pango_entries = append(urlFiltering_pango_entries, elt.ValueString())
+		}
 	}
-	virus_pango_entries := make([]string, 0)
-	diags.Append(o.Virus.ElementsAs(ctx, &virus_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var virus_pango_entries []string
+	if !o.Virus.IsUnknown() && !o.Virus.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Virus.Elements()))
+		diags.Append(o.Virus.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			virus_pango_entries = append(virus_pango_entries, elt.ValueString())
+		}
 	}
-	vulnerability_pango_entries := make([]string, 0)
-	diags.Append(o.Vulnerability.ElementsAs(ctx, &vulnerability_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var vulnerability_pango_entries []string
+	if !o.Vulnerability.IsUnknown() && !o.Vulnerability.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Vulnerability.Elements()))
+		diags.Append(o.Vulnerability.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			vulnerability_pango_entries = append(vulnerability_pango_entries, elt.ValueString())
+		}
 	}
-	wildfireAnalysis_pango_entries := make([]string, 0)
-	diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &wildfireAnalysis_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var wildfireAnalysis_pango_entries []string
+	if !o.WildfireAnalysis.IsUnknown() && !o.WildfireAnalysis.IsNull() {
+		object_entries := make([]types.String, 0, len(o.WildfireAnalysis.Elements()))
+		diags.Append(o.WildfireAnalysis.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			wildfireAnalysis_pango_entries = append(wildfireAnalysis_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -810,12 +1045,18 @@ func (o *SecurityProfileGroupResourceModel) CopyToPango(ctx context.Context, anc
 	return diags
 }
 
-func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *secgroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *secgroup.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dataFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
-		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DataFiltering)
+
+		entries := make([]string, 0)
+		if o.DataFiltering.IsNull() || len(obj.DataFiltering) > 0 {
+			entries = obj.DataFiltering
+		}
+
+		dataFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -824,7 +1065,13 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, a
 	var fileBlocking_list types.List
 	{
 		var list_diags diag.Diagnostics
-		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileBlocking)
+
+		entries := make([]string, 0)
+		if o.FileBlocking.IsNull() || len(obj.FileBlocking) > 0 {
+			entries = obj.FileBlocking
+		}
+
+		fileBlocking_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -833,7 +1080,13 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, a
 	var gtp_list types.List
 	{
 		var list_diags diag.Diagnostics
-		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Gtp)
+
+		entries := make([]string, 0)
+		if o.Gtp.IsNull() || len(obj.Gtp) > 0 {
+			entries = obj.Gtp
+		}
+
+		gtp_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -842,7 +1095,13 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, a
 	var sctp_list types.List
 	{
 		var list_diags diag.Diagnostics
-		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Sctp)
+
+		entries := make([]string, 0)
+		if o.Sctp.IsNull() || len(obj.Sctp) > 0 {
+			entries = obj.Sctp
+		}
+
+		sctp_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -851,7 +1110,13 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, a
 	var spyware_list types.List
 	{
 		var list_diags diag.Diagnostics
-		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Spyware)
+
+		entries := make([]string, 0)
+		if o.Spyware.IsNull() || len(obj.Spyware) > 0 {
+			entries = obj.Spyware
+		}
+
+		spyware_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -860,7 +1125,13 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, a
 	var urlFiltering_list types.List
 	{
 		var list_diags diag.Diagnostics
-		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.UrlFiltering)
+
+		entries := make([]string, 0)
+		if o.UrlFiltering.IsNull() || len(obj.UrlFiltering) > 0 {
+			entries = obj.UrlFiltering
+		}
+
+		urlFiltering_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -869,7 +1140,13 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, a
 	var virus_list types.List
 	{
 		var list_diags diag.Diagnostics
-		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Virus)
+
+		entries := make([]string, 0)
+		if o.Virus.IsNull() || len(obj.Virus) > 0 {
+			entries = obj.Virus
+		}
+
+		virus_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -878,7 +1155,13 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, a
 	var vulnerability_list types.List
 	{
 		var list_diags diag.Diagnostics
-		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Vulnerability)
+
+		entries := make([]string, 0)
+		if o.Vulnerability.IsNull() || len(obj.Vulnerability) > 0 {
+			entries = obj.Vulnerability
+		}
+
+		vulnerability_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -887,7 +1170,13 @@ func (o *SecurityProfileGroupResourceModel) CopyFromPango(ctx context.Context, a
 	var wildfireAnalysis_list types.List
 	{
 		var list_diags diag.Diagnostics
-		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.WildfireAnalysis)
+
+		entries := make([]string, 0)
+		if o.WildfireAnalysis.IsNull() || len(obj.WildfireAnalysis) > 0 {
+			entries = obj.WildfireAnalysis
+		}
+
+		wildfireAnalysis_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -918,7 +1207,7 @@ func (o *SecurityProfileGroupResourceModel) resourceXpathParentComponents() ([]s
 	return components, nil
 }
 
-func (r *SecurityProfileGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *SecurityProfileGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state SecurityProfileGroupResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -933,7 +1222,7 @@ func (r *SecurityProfileGroupResource) Create(ctx context.Context, req resource.
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -984,7 +1273,7 @@ func (r *SecurityProfileGroupResource) Create(ctx context.Context, req resource.
 
 	// Load the desired config.
 	var obj *secgroup.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1002,13 +1291,13 @@ func (r *SecurityProfileGroupResource) Create(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1025,8 +1314,8 @@ func (r *SecurityProfileGroupResource) Create(ctx context.Context, req resource.
 }
 func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state SecurityProfileGroupResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state SecurityProfileGroupResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1046,7 +1335,7 @@ func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.Re
 
 	{
 		var terraformLocation SecurityProfileGroupLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1076,15 +1365,15 @@ func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.Re
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_security_profile_group_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1094,16 +1383,16 @@ func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1116,7 +1405,7 @@ func (o *SecurityProfileGroupResource) Read(ctx context.Context, req resource.Re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *SecurityProfileGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state SecurityProfileGroupResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1173,7 +1462,7 @@ func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1183,13 +1472,13 @@ func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	obj, err := o.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1200,22 +1489,19 @@ func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	updated, err := o.manager.Update(ctx, location, components, obj, obj.Name)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1229,10 +1515,10 @@ func (r *SecurityProfileGroupResource) Update(ctx context.Context, req resource.
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *SecurityProfileGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *SecurityProfileGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state SecurityProfileGroupResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1248,7 +1534,7 @@ func (r *SecurityProfileGroupResource) Delete(ctx context.Context, req resource.
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1288,7 +1574,7 @@ func (r *SecurityProfileGroupResource) Delete(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1385,7 +1671,7 @@ func SecurityProfileGroupImportStateCreator(ctx context.Context, resource types.
 	return json.Marshal(importStruct)
 }
 
-func (r *SecurityProfileGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *SecurityProfileGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj SecurityProfileGroupImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

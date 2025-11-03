@@ -8,9 +8,11 @@ import (
 
 	sdk "github.com/PaloAltoNetworks/pango"
 
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/function"
+	"github.com/hashicorp/terraform-plugin-framework/list"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -20,7 +22,10 @@ import (
 
 // Ensure the provider implementation interface is sound.
 var (
-	_ provider.Provider = &PanosProvider{}
+	_ provider.Provider                  = &PanosProvider{}
+	_ provider.ProviderWithFunctions     = &PanosProvider{}
+	_ provider.ProviderWithActions       = &PanosProvider{}
+	_ provider.ProviderWithListResources = &PanosProvider{}
 )
 
 // PanosProvider is the provider implementation.
@@ -306,6 +311,7 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 	resp.DataSourceData = providerData
 	resp.ResourceData = providerData
 	resp.EphemeralResourceData = providerData
+	resp.ListResourceData = providerData
 
 	// Done.
 	tflog.Info(ctx, "Configured client", map[string]any{"success": true})
@@ -315,14 +321,17 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewAdminRoleDataSource,
+		NewAuthenticationProfileDataSource,
 		NewCertificateDataSource,
 		NewDnsSettingsDataSource,
 		NewDynamicUpdatesDataSource,
 		NewGeneralSettingsDataSource,
+		NewGlobalprotectGatewayDataSource,
 		NewNtpSettingsDataSource,
 		NewLdapProfileDataSource,
 		NewSslDecryptDataSource,
 		NewDhcpDataSource,
+		NewGlobalprotectPortalDataSource,
 		NewIkeGatewayDataSource,
 		NewAggregateInterfaceDataSource,
 		NewEthernetInterfaceDataSource,
@@ -380,13 +389,16 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAdminRoleResource,
+		NewAuthenticationProfileResource,
 		NewDnsSettingsResource,
 		NewDynamicUpdatesResource,
 		NewGeneralSettingsResource,
+		NewGlobalprotectGatewayResource,
 		NewNtpSettingsResource,
 		NewLdapProfileResource,
 		NewSslDecryptResource,
 		NewDhcpResource,
+		NewGlobalprotectPortalResource,
 		NewIkeGatewayResource,
 		NewAggregateInterfaceResource,
 		NewEthernetInterfaceResource,
@@ -447,6 +459,16 @@ func (p *PanosProvider) EphemeralResources(_ context.Context) []func() ephemeral
 	}
 }
 
+func (p *PanosProvider) ListResources(_ context.Context) []func() list.ListResource {
+	return []func() list.ListResource{
+		NewAddressListResource,
+	}
+}
+
+func (p *PanosProvider) Actions(_ context.Context) []func() action.Action {
+	return []func() action.Action{}
+}
+
 func (p *PanosProvider) Functions(_ context.Context) []func() function.Function {
 	return []func() function.Function{
 		NewAddressValueFunction,
@@ -503,6 +525,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_application_group": resourceFuncs{
 		CreateImportId: ApplicationGroupImportStateCreator,
 	},
+	"panos_authentication_profile": resourceFuncs{
+		CreateImportId: AuthenticationProfileImportStateCreator,
+	},
 	"panos_certificate_profile": resourceFuncs{
 		CreateImportId: CertificateProfileImportStateCreator,
 	},
@@ -532,6 +557,12 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_file_blocking_security_profile": resourceFuncs{
 		CreateImportId: FileBlockingSecurityProfileImportStateCreator,
+	},
+	"panos_globalprotect_gateway": resourceFuncs{
+		CreateImportId: GlobalprotectGatewayImportStateCreator,
+	},
+	"panos_globalprotect_portal": resourceFuncs{
+		CreateImportId: GlobalprotectPortalImportStateCreator,
 	},
 	"panos_ike_crypto_profile": resourceFuncs{
 		CreateImportId: IkeCryptoProfileImportStateCreator,

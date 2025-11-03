@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/address/group"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -54,13 +55,13 @@ type AddressGroupDataSourceFilter struct {
 }
 
 type AddressGroupDataSourceModel struct {
-	Location        types.Object                         `tfsdk:"location"`
-	Name            types.String                         `tfsdk:"name"`
-	Description     types.String                         `tfsdk:"description"`
-	DisableOverride types.String                         `tfsdk:"disable_override"`
-	Tag             types.List                           `tfsdk:"tag"`
-	Dynamic         *AddressGroupDataSourceDynamicObject `tfsdk:"dynamic"`
-	Static          types.List                           `tfsdk:"static"`
+	Location        types.Object `tfsdk:"location"`
+	Name            types.String `tfsdk:"name"`
+	Description     types.String `tfsdk:"description"`
+	DisableOverride types.String `tfsdk:"disable_override"`
+	Tag             types.List   `tfsdk:"tag"`
+	Dynamic         types.Object `tfsdk:"dynamic"`
+	Static          types.List   `tfsdk:"static"`
 }
 type AddressGroupDataSourceDynamicObject struct {
 	Filter types.String `tfsdk:"filter"`
@@ -79,11 +80,15 @@ func (o *AddressGroupDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"name":             types.StringType,
 		"description":      types.StringType,
 		"disable_override": types.StringType,
-		"tag":              types.ListType{},
+		"tag": types.ListType{
+			ElemType: types.StringType,
+		},
 		"dynamic": types.ObjectType{
 			AttrTypes: dynamicObj.AttributeTypes(),
 		},
-		"static": types.ListType{},
+		"static": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -109,32 +114,52 @@ func (o AddressGroupDataSourceDynamicObject) EntryName() *string {
 	return nil
 }
 
-func (o *AddressGroupDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **group.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressGroupDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **group.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	tag_pango_entries := make([]string, 0)
-	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var tag_pango_entries []string
+	if !o.Tag.IsUnknown() && !o.Tag.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Tag.Elements()))
+		diags.Append(o.Tag.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			tag_pango_entries = append(tag_pango_entries, elt.ValueString())
+		}
 	}
 	var dynamic_entry *group.Dynamic
-	if o.Dynamic != nil {
+	if !o.Dynamic.IsUnknown() && !o.Dynamic.IsNull() {
 		if *obj != nil && (*obj).Dynamic != nil {
 			dynamic_entry = (*obj).Dynamic
 		} else {
 			dynamic_entry = new(group.Dynamic)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Dynamic.CopyToPango(ctx, ancestors, &dynamic_entry, ev)...)
+		var object *AddressGroupDataSourceDynamicObject
+		diags.Append(o.Dynamic.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &dynamic_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	static_pango_entries := make([]string, 0)
-	diags.Append(o.Static.ElementsAs(ctx, &static_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var static_pango_entries []string
+	if !o.Static.IsUnknown() && !o.Static.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Static.Elements()))
+		diags.Append(o.Static.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			static_pango_entries = append(static_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -149,7 +174,7 @@ func (o *AddressGroupDataSourceModel) CopyToPango(ctx context.Context, ancestors
 
 	return diags
 }
-func (o *AddressGroupDataSourceDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **group.Dynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressGroupDataSourceDynamicObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **group.Dynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	filter_value := o.Filter.ValueStringPointer()
 
@@ -161,12 +186,18 @@ func (o *AddressGroupDataSourceDynamicObject) CopyToPango(ctx context.Context, a
 	return diags
 }
 
-func (o *AddressGroupDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *group.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressGroupDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *group.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tag_list types.List
 	{
 		var list_diags diag.Diagnostics
-		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
+
+		entries := make([]string, 0)
+		if o.Tag.IsNull() || len(obj.Tag) > 0 {
+			entries = obj.Tag
+		}
+
+		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -175,16 +206,37 @@ func (o *AddressGroupDataSourceModel) CopyFromPango(ctx context.Context, ancesto
 	var static_list types.List
 	{
 		var list_diags diag.Diagnostics
-		static_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Static)
+
+		entries := make([]string, 0)
+		if o.Static.IsNull() || len(obj.Static) > 0 {
+			entries = obj.Static
+		}
+
+		static_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dynamic_object *AddressGroupDataSourceDynamicObject
+
+	var dynamic_obj *AddressGroupDataSourceDynamicObject
+	if o.Dynamic.IsNull() {
+		dynamic_obj = new(AddressGroupDataSourceDynamicObject)
+	} else {
+		diags.Append(o.Dynamic.As(ctx, &dynamic_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dynamic_object := types.ObjectNull(dynamic_obj.AttributeTypes())
 	if obj.Dynamic != nil {
-		dynamic_object = new(AddressGroupDataSourceDynamicObject)
-		diags.Append(dynamic_object.CopyFromPango(ctx, ancestors, obj.Dynamic, ev)...)
+		diags.Append(dynamic_obj.CopyFromPango(ctx, client, ancestors, obj.Dynamic, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dynamic_object, diags_tmp = types.ObjectValueFrom(ctx, dynamic_obj.AttributeTypes(), dynamic_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -208,7 +260,7 @@ func (o *AddressGroupDataSourceModel) CopyFromPango(ctx context.Context, ancesto
 	return diags
 }
 
-func (o *AddressGroupDataSourceDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *group.Dynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressGroupDataSourceDynamicObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *group.Dynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var filter_value types.String
@@ -366,8 +418,8 @@ func (d *AddressGroupDataSource) Configure(_ context.Context, req datasource.Con
 }
 func (o *AddressGroupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state AddressGroupDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state AddressGroupDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -383,7 +435,7 @@ func (o *AddressGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 
 	{
 		var terraformLocation AddressGroupLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -424,15 +476,15 @@ func (o *AddressGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_address_group_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -442,16 +494,16 @@ func (o *AddressGroupDataSource) Read(ctx context.Context, req datasource.ReadRe
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -484,19 +536,19 @@ func AddressGroupResourceLocationSchema() rsschema.Attribute {
 }
 
 type AddressGroupResourceModel struct {
-	Location        types.Object                       `tfsdk:"location"`
-	Name            types.String                       `tfsdk:"name"`
-	Description     types.String                       `tfsdk:"description"`
-	DisableOverride types.String                       `tfsdk:"disable_override"`
-	Tag             types.List                         `tfsdk:"tag"`
-	Dynamic         *AddressGroupResourceDynamicObject `tfsdk:"dynamic"`
-	Static          types.List                         `tfsdk:"static"`
+	Location        types.Object `tfsdk:"location"`
+	Name            types.String `tfsdk:"name"`
+	Description     types.String `tfsdk:"description"`
+	DisableOverride types.String `tfsdk:"disable_override"`
+	Tag             types.List   `tfsdk:"tag"`
+	Dynamic         types.Object `tfsdk:"dynamic"`
+	Static          types.List   `tfsdk:"static"`
 }
 type AddressGroupResourceDynamicObject struct {
 	Filter types.String `tfsdk:"filter"`
 }
 
-func (r *AddressGroupResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *AddressGroupResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -623,31 +675,31 @@ func (o *AddressGroupResourceDynamicObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func (r *AddressGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *AddressGroupResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_address_group"
 }
 
-func (r *AddressGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *AddressGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = AddressGroupResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *AddressGroupResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *AddressGroupResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := group.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := group.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*group.Entry, group.Location, *group.Service](r.client, group.NewService(r.client), batchSize, specifier, group.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*group.Entry, group.Location, *group.Service](o.client, group.NewService(o.client), batchSize, specifier, group.SpecMatches)
 }
 
 func (o *AddressGroupResourceModel) AttributeTypes() map[string]attr.Type {
@@ -663,11 +715,15 @@ func (o *AddressGroupResourceModel) AttributeTypes() map[string]attr.Type {
 		"name":             types.StringType,
 		"description":      types.StringType,
 		"disable_override": types.StringType,
-		"tag":              types.ListType{},
+		"tag": types.ListType{
+			ElemType: types.StringType,
+		},
 		"dynamic": types.ObjectType{
 			AttrTypes: dynamicObj.AttributeTypes(),
 		},
-		"static": types.ListType{},
+		"static": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -693,32 +749,52 @@ func (o AddressGroupResourceDynamicObject) EntryName() *string {
 	return nil
 }
 
-func (o *AddressGroupResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **group.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressGroupResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **group.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	tag_pango_entries := make([]string, 0)
-	diags.Append(o.Tag.ElementsAs(ctx, &tag_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var tag_pango_entries []string
+	if !o.Tag.IsUnknown() && !o.Tag.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Tag.Elements()))
+		diags.Append(o.Tag.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			tag_pango_entries = append(tag_pango_entries, elt.ValueString())
+		}
 	}
 	var dynamic_entry *group.Dynamic
-	if o.Dynamic != nil {
+	if !o.Dynamic.IsUnknown() && !o.Dynamic.IsNull() {
 		if *obj != nil && (*obj).Dynamic != nil {
 			dynamic_entry = (*obj).Dynamic
 		} else {
 			dynamic_entry = new(group.Dynamic)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Dynamic.CopyToPango(ctx, ancestors, &dynamic_entry, ev)...)
+		var object *AddressGroupResourceDynamicObject
+		diags.Append(o.Dynamic.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &dynamic_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	static_pango_entries := make([]string, 0)
-	diags.Append(o.Static.ElementsAs(ctx, &static_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var static_pango_entries []string
+	if !o.Static.IsUnknown() && !o.Static.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Static.Elements()))
+		diags.Append(o.Static.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			static_pango_entries = append(static_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -733,7 +809,7 @@ func (o *AddressGroupResourceModel) CopyToPango(ctx context.Context, ancestors [
 
 	return diags
 }
-func (o *AddressGroupResourceDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **group.Dynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressGroupResourceDynamicObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **group.Dynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	filter_value := o.Filter.ValueStringPointer()
 
@@ -745,12 +821,18 @@ func (o *AddressGroupResourceDynamicObject) CopyToPango(ctx context.Context, anc
 	return diags
 }
 
-func (o *AddressGroupResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *group.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressGroupResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *group.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tag_list types.List
 	{
 		var list_diags diag.Diagnostics
-		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
+
+		entries := make([]string, 0)
+		if o.Tag.IsNull() || len(obj.Tag) > 0 {
+			entries = obj.Tag
+		}
+
+		tag_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -759,16 +841,37 @@ func (o *AddressGroupResourceModel) CopyFromPango(ctx context.Context, ancestors
 	var static_list types.List
 	{
 		var list_diags diag.Diagnostics
-		static_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Static)
+
+		entries := make([]string, 0)
+		if o.Static.IsNull() || len(obj.Static) > 0 {
+			entries = obj.Static
+		}
+
+		static_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dynamic_object *AddressGroupResourceDynamicObject
+
+	var dynamic_obj *AddressGroupResourceDynamicObject
+	if o.Dynamic.IsNull() {
+		dynamic_obj = new(AddressGroupResourceDynamicObject)
+	} else {
+		diags.Append(o.Dynamic.As(ctx, &dynamic_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dynamic_object := types.ObjectNull(dynamic_obj.AttributeTypes())
 	if obj.Dynamic != nil {
-		dynamic_object = new(AddressGroupResourceDynamicObject)
-		diags.Append(dynamic_object.CopyFromPango(ctx, ancestors, obj.Dynamic, ev)...)
+		diags.Append(dynamic_obj.CopyFromPango(ctx, client, ancestors, obj.Dynamic, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dynamic_object, diags_tmp = types.ObjectValueFrom(ctx, dynamic_obj.AttributeTypes(), dynamic_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -792,7 +895,7 @@ func (o *AddressGroupResourceModel) CopyFromPango(ctx context.Context, ancestors
 	return diags
 }
 
-func (o *AddressGroupResourceDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *group.Dynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressGroupResourceDynamicObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *group.Dynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var filter_value types.String
@@ -809,7 +912,7 @@ func (o *AddressGroupResourceModel) resourceXpathParentComponents() ([]string, e
 	return components, nil
 }
 
-func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *AddressGroupResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state AddressGroupResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -824,7 +927,7 @@ func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRe
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -886,7 +989,7 @@ func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRe
 
 	// Load the desired config.
 	var obj *group.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -904,13 +1007,13 @@ func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRe
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -927,8 +1030,8 @@ func (r *AddressGroupResource) Create(ctx context.Context, req resource.CreateRe
 }
 func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state AddressGroupResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state AddressGroupResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -948,7 +1051,7 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 
 	{
 		var terraformLocation AddressGroupLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -989,15 +1092,15 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_address_group_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1007,16 +1110,16 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1029,7 +1132,7 @@ func (o *AddressGroupResource) Read(ctx context.Context, req resource.ReadReques
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *AddressGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *AddressGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state AddressGroupResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1097,7 +1200,7 @@ func (r *AddressGroupResource) Update(ctx context.Context, req resource.UpdateRe
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1107,13 +1210,13 @@ func (r *AddressGroupResource) Update(ctx context.Context, req resource.UpdateRe
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	obj, err := o.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1124,22 +1227,19 @@ func (r *AddressGroupResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	updated, err := o.manager.Update(ctx, location, components, obj, obj.Name)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1153,10 +1253,10 @@ func (r *AddressGroupResource) Update(ctx context.Context, req resource.UpdateRe
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *AddressGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *AddressGroupResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state AddressGroupResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1172,7 +1272,7 @@ func (r *AddressGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1223,7 +1323,7 @@ func (r *AddressGroupResource) Delete(ctx context.Context, req resource.DeleteRe
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1320,7 +1420,7 @@ func AddressGroupImportStateCreator(ctx context.Context, resource types.Object) 
 	return json.Marshal(importStruct)
 }
 
-func (r *AddressGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *AddressGroupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj AddressGroupImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

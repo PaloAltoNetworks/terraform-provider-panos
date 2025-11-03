@@ -57,26 +57,26 @@ type EthernetLayer3SubinterfaceDataSourceFilter struct {
 }
 
 type EthernetLayer3SubinterfaceDataSourceModel struct {
-	Location                   types.Object                                                 `tfsdk:"location"`
-	Name                       types.String                                                 `tfsdk:"name"`
-	Parent                     types.String                                                 `tfsdk:"parent"`
-	AdjustTcpMss               *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject      `tfsdk:"adjust_tcp_mss"`
-	Arp                        types.List                                                   `tfsdk:"arp"`
-	Bonjour                    *EthernetLayer3SubinterfaceDataSourceBonjourObject           `tfsdk:"bonjour"`
-	Comment                    types.String                                                 `tfsdk:"comment"`
-	DdnsConfig                 *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject        `tfsdk:"ddns_config"`
-	DecryptForward             types.Bool                                                   `tfsdk:"decrypt_forward"`
-	DfIgnore                   types.Bool                                                   `tfsdk:"df_ignore"`
-	DhcpClient                 *EthernetLayer3SubinterfaceDataSourceDhcpClientObject        `tfsdk:"dhcp_client"`
-	InterfaceManagementProfile types.String                                                 `tfsdk:"interface_management_profile"`
-	Ip                         types.List                                                   `tfsdk:"ip"`
-	Ipv6                       *EthernetLayer3SubinterfaceDataSourceIpv6Object              `tfsdk:"ipv6"`
-	Mtu                        types.Int64                                                  `tfsdk:"mtu"`
-	NdpProxy                   *EthernetLayer3SubinterfaceDataSourceNdpProxyObject          `tfsdk:"ndp_proxy"`
-	NetflowProfile             types.String                                                 `tfsdk:"netflow_profile"`
-	Pppoe                      *EthernetLayer3SubinterfaceDataSourcePppoeObject             `tfsdk:"pppoe"`
-	SdwanLinkSettings          *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject `tfsdk:"sdwan_link_settings"`
-	Tag                        types.Int64                                                  `tfsdk:"tag"`
+	Location                   types.Object `tfsdk:"location"`
+	Name                       types.String `tfsdk:"name"`
+	Parent                     types.String `tfsdk:"parent"`
+	AdjustTcpMss               types.Object `tfsdk:"adjust_tcp_mss"`
+	Arp                        types.List   `tfsdk:"arp"`
+	Bonjour                    types.Object `tfsdk:"bonjour"`
+	Comment                    types.String `tfsdk:"comment"`
+	DdnsConfig                 types.Object `tfsdk:"ddns_config"`
+	DecryptForward             types.Bool   `tfsdk:"decrypt_forward"`
+	DfIgnore                   types.Bool   `tfsdk:"df_ignore"`
+	DhcpClient                 types.Object `tfsdk:"dhcp_client"`
+	InterfaceManagementProfile types.String `tfsdk:"interface_management_profile"`
+	Ip                         types.List   `tfsdk:"ip"`
+	Ipv6                       types.Object `tfsdk:"ipv6"`
+	Mtu                        types.Int64  `tfsdk:"mtu"`
+	NdpProxy                   types.Object `tfsdk:"ndp_proxy"`
+	NetflowProfile             types.String `tfsdk:"netflow_profile"`
+	Pppoe                      types.Object `tfsdk:"pppoe"`
+	SdwanLinkSettings          types.Object `tfsdk:"sdwan_link_settings"`
+	Tag                        types.Int64  `tfsdk:"tag"`
 }
 type EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject struct {
 	Enable            types.Bool  `tfsdk:"enable"`
@@ -107,10 +107,10 @@ type EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject struct
 	Value types.String `tfsdk:"value"`
 }
 type EthernetLayer3SubinterfaceDataSourceDhcpClientObject struct {
-	CreateDefaultRoute types.Bool                                                        `tfsdk:"create_default_route"`
-	DefaultRouteMetric types.Int64                                                       `tfsdk:"default_route_metric"`
-	Enable             types.Bool                                                        `tfsdk:"enable"`
-	SendHostname       *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject `tfsdk:"send_hostname"`
+	CreateDefaultRoute types.Bool   `tfsdk:"create_default_route"`
+	DefaultRouteMetric types.Int64  `tfsdk:"default_route_metric"`
+	Enable             types.Bool   `tfsdk:"enable"`
+	SendHostname       types.Object `tfsdk:"send_hostname"`
 }
 type EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject struct {
 	Enable   types.Bool   `tfsdk:"enable"`
@@ -121,19 +121,19 @@ type EthernetLayer3SubinterfaceDataSourceIpObject struct {
 	SdwanGateway types.String `tfsdk:"sdwan_gateway"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6Object struct {
-	Address           types.List                                                       `tfsdk:"address"`
-	DhcpClient        *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject        `tfsdk:"dhcp_client"`
-	Enabled           types.Bool                                                       `tfsdk:"enabled"`
-	Inherited         *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject         `tfsdk:"inherited"`
-	InterfaceId       types.String                                                     `tfsdk:"interface_id"`
-	NeighborDiscovery *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
+	Address           types.List   `tfsdk:"address"`
+	DhcpClient        types.Object `tfsdk:"dhcp_client"`
+	Enabled           types.Bool   `tfsdk:"enabled"`
+	Inherited         types.Object `tfsdk:"inherited"`
+	InterfaceId       types.String `tfsdk:"interface_id"`
+	NeighborDiscovery types.Object `tfsdk:"neighbor_discovery"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6AddressObject struct {
-	Name              types.String                                                    `tfsdk:"name"`
-	EnableOnInterface types.Bool                                                      `tfsdk:"enable_on_interface"`
-	Prefix            *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject    `tfsdk:"prefix"`
-	Anycast           *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject   `tfsdk:"anycast"`
-	Advertise         *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject `tfsdk:"advertise"`
+	Name              types.String `tfsdk:"name"`
+	EnableOnInterface types.Bool   `tfsdk:"enable_on_interface"`
+	Prefix            types.Object `tfsdk:"prefix"`
+	Anycast           types.Object `tfsdk:"anycast"`
+	Advertise         types.Object `tfsdk:"advertise"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject struct {
 }
@@ -147,31 +147,31 @@ type EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject struct {
 	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject struct {
-	AcceptRaRoute      types.Bool                                                                 `tfsdk:"accept_ra_route"`
-	DefaultRouteMetric types.Int64                                                                `tfsdk:"default_route_metric"`
-	Enable             types.Bool                                                                 `tfsdk:"enable"`
-	NeighborDiscovery  *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
-	Preference         types.String                                                               `tfsdk:"preference"`
-	PrefixDelegation   *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject  `tfsdk:"prefix_delegation"`
-	V6Options          *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject         `tfsdk:"v6_options"`
+	AcceptRaRoute      types.Bool   `tfsdk:"accept_ra_route"`
+	DefaultRouteMetric types.Int64  `tfsdk:"default_route_metric"`
+	Enable             types.Bool   `tfsdk:"enable"`
+	NeighborDiscovery  types.Object `tfsdk:"neighbor_discovery"`
+	Preference         types.String `tfsdk:"preference"`
+	PrefixDelegation   types.Object `tfsdk:"prefix_delegation"`
+	V6Options          types.Object `tfsdk:"v6_options"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject struct {
-	DadAttempts      types.Int64                                                                         `tfsdk:"dad_attempts"`
-	DnsServer        *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject `tfsdk:"dns_server"`
-	DnsSuffix        *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject `tfsdk:"dns_suffix"`
-	EnableDad        types.Bool                                                                          `tfsdk:"enable_dad"`
-	EnableNdpMonitor types.Bool                                                                          `tfsdk:"enable_ndp_monitor"`
-	Neighbor         types.List                                                                          `tfsdk:"neighbor"`
-	NsInterval       types.Int64                                                                         `tfsdk:"ns_interval"`
-	ReachableTime    types.Int64                                                                         `tfsdk:"reachable_time"`
+	DadAttempts      types.Int64  `tfsdk:"dad_attempts"`
+	DnsServer        types.Object `tfsdk:"dns_server"`
+	DnsSuffix        types.Object `tfsdk:"dns_suffix"`
+	EnableDad        types.Bool   `tfsdk:"enable_dad"`
+	EnableNdpMonitor types.Bool   `tfsdk:"enable_ndp_monitor"`
+	Neighbor         types.List   `tfsdk:"neighbor"`
+	NsInterval       types.Int64  `tfsdk:"ns_interval"`
+	ReachableTime    types.Int64  `tfsdk:"reachable_time"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject struct {
-	Enable types.Bool                                                                                `tfsdk:"enable"`
-	Source *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
+	Enable types.Bool   `tfsdk:"enable"`
+	Source types.Object `tfsdk:"source"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 types.Object `tfsdk:"dhcpv6"`
+	Manual types.Object `tfsdk:"manual"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
 }
@@ -183,12 +183,12 @@ type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServe
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject struct {
-	Enable types.Bool                                                                                `tfsdk:"enable"`
-	Source *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject `tfsdk:"source"`
+	Enable types.Bool   `tfsdk:"enable"`
+	Source types.Object `tfsdk:"source"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject struct {
-	Dhcpv6 *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 types.Object `tfsdk:"dhcpv6"`
+	Manual types.Object `tfsdk:"manual"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
 }
@@ -204,11 +204,11 @@ type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighbor
 	HwAddress types.String `tfsdk:"hw_address"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject struct {
-	Enable *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject `tfsdk:"enable"`
+	Enable types.Object `tfsdk:"enable"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject struct {
-	No  *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject  `tfsdk:"no"`
-	Yes *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject `tfsdk:"yes"`
+	No  types.Object `tfsdk:"no"`
+	Yes types.Object `tfsdk:"yes"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject struct {
 }
@@ -218,14 +218,14 @@ type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYes
 	PrefixLenHint types.Bool   `tfsdk:"prefix_len_hint"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject struct {
-	DuidType            types.String                                                             `tfsdk:"duid_type"`
-	Enable              *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject `tfsdk:"enable"`
-	RapidCommit         types.Bool                                                               `tfsdk:"rapid_commit"`
-	SupportSrvrReconfig types.Bool                                                               `tfsdk:"support_srvr_reconfig"`
+	DuidType            types.String `tfsdk:"duid_type"`
+	Enable              types.Object `tfsdk:"enable"`
+	RapidCommit         types.Bool   `tfsdk:"rapid_commit"`
+	SupportSrvrReconfig types.Bool   `tfsdk:"support_srvr_reconfig"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject struct {
-	No  *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject  `tfsdk:"no"`
-	Yes *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject `tfsdk:"yes"`
+	No  types.Object `tfsdk:"no"`
+	Yes types.Object `tfsdk:"yes"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject struct {
 }
@@ -234,27 +234,27 @@ type EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject 
 	TempAddr    types.Bool `tfsdk:"temp_addr"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject struct {
-	AssignAddr        types.List                                                                `tfsdk:"assign_addr"`
-	Enable            types.Bool                                                                `tfsdk:"enable"`
-	NeighborDiscovery *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
+	AssignAddr        types.List   `tfsdk:"assign_addr"`
+	Enable            types.Bool   `tfsdk:"enable"`
+	NeighborDiscovery types.Object `tfsdk:"neighbor_discovery"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject struct {
-	Name types.String                                                           `tfsdk:"name"`
-	Type *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject `tfsdk:"type"`
+	Name types.String `tfsdk:"name"`
+	Type types.Object `tfsdk:"type"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject struct {
-	Gua *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject `tfsdk:"gua"`
-	Ula *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject `tfsdk:"ula"`
+	Gua types.Object `tfsdk:"gua"`
+	Ula types.Object `tfsdk:"ula"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject struct {
-	EnableOnInterface types.Bool                                                                         `tfsdk:"enable_on_interface"`
-	PrefixPool        types.String                                                                       `tfsdk:"prefix_pool"`
-	PoolType          *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject  `tfsdk:"pool_type"`
-	Advertise         *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject `tfsdk:"advertise"`
+	EnableOnInterface types.Bool   `tfsdk:"enable_on_interface"`
+	PrefixPool        types.String `tfsdk:"prefix_pool"`
+	PoolType          types.Object `tfsdk:"pool_type"`
+	Advertise         types.Object `tfsdk:"advertise"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject struct {
-	Dynamic   *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject   `tfsdk:"dynamic"`
-	DynamicId *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject `tfsdk:"dynamic_id"`
+	Dynamic   types.Object `tfsdk:"dynamic"`
+	DynamicId types.Object `tfsdk:"dynamic_id"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject struct {
 }
@@ -267,11 +267,11 @@ type EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertise
 	AutoConfigFlag types.Bool `tfsdk:"auto_config_flag"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject struct {
-	EnableOnInterface types.Bool                                                                         `tfsdk:"enable_on_interface"`
-	Address           types.String                                                                       `tfsdk:"address"`
-	Prefix            types.Bool                                                                         `tfsdk:"prefix"`
-	Anycast           types.Bool                                                                         `tfsdk:"anycast"`
-	Advertise         *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject `tfsdk:"advertise"`
+	EnableOnInterface types.Bool   `tfsdk:"enable_on_interface"`
+	Address           types.String `tfsdk:"address"`
+	Prefix            types.Bool   `tfsdk:"prefix"`
+	Anycast           types.Bool   `tfsdk:"anycast"`
+	Advertise         types.Object `tfsdk:"advertise"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject struct {
 	Enable            types.Bool   `tfsdk:"enable"`
@@ -281,23 +281,23 @@ type EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertise
 	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject struct {
-	DadAttempts         types.Int64                                                                                  `tfsdk:"dad_attempts"`
-	DnsServer           *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject           `tfsdk:"dns_server"`
-	DnsSuffix           *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
-	EnableDad           types.Bool                                                                                   `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                                                   `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                                                   `tfsdk:"neighbor"`
-	NsInterval          types.Int64                                                                                  `tfsdk:"ns_interval"`
-	ReachableTime       types.Int64                                                                                  `tfsdk:"reachable_time"`
-	RouterAdvertisement *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
+	DadAttempts         types.Int64  `tfsdk:"dad_attempts"`
+	DnsServer           types.Object `tfsdk:"dns_server"`
+	DnsSuffix           types.Object `tfsdk:"dns_suffix"`
+	EnableDad           types.Bool   `tfsdk:"enable_dad"`
+	EnableNdpMonitor    types.Bool   `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List   `tfsdk:"neighbor"`
+	NsInterval          types.Int64  `tfsdk:"ns_interval"`
+	ReachableTime       types.Int64  `tfsdk:"reachable_time"`
+	RouterAdvertisement types.Object `tfsdk:"router_advertisement"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject struct {
-	Enable types.Bool                                                                               `tfsdk:"enable"`
-	Source *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
+	Enable types.Bool   `tfsdk:"enable"`
+	Source types.Object `tfsdk:"source"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 types.Object `tfsdk:"dhcpv6"`
+	Manual types.Object `tfsdk:"manual"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
 	PrefixPool types.String `tfsdk:"prefix_pool"`
@@ -310,12 +310,12 @@ type EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServer
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject struct {
-	Enable types.Bool                                                                               `tfsdk:"enable"`
-	Source *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject `tfsdk:"source"`
+	Enable types.Bool   `tfsdk:"enable"`
+	Source types.Object `tfsdk:"source"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject struct {
-	Dhcpv6 *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 types.Object `tfsdk:"dhcpv6"`
+	Manual types.Object `tfsdk:"manual"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
 	PrefixPool types.String `tfsdk:"prefix_pool"`
@@ -346,32 +346,32 @@ type EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdv
 	RouterPreference       types.String `tfsdk:"router_preference"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject struct {
-	DadAttempts         types.Int64                                                                         `tfsdk:"dad_attempts"`
-	EnableDad           types.Bool                                                                          `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                                          `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                                          `tfsdk:"neighbor"`
-	NsInterval          types.Int64                                                                         `tfsdk:"ns_interval"`
-	ReachableTime       types.Int64                                                                         `tfsdk:"reachable_time"`
-	RouterAdvertisement *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
+	DadAttempts         types.Int64  `tfsdk:"dad_attempts"`
+	EnableDad           types.Bool   `tfsdk:"enable_dad"`
+	EnableNdpMonitor    types.Bool   `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List   `tfsdk:"neighbor"`
+	NsInterval          types.Int64  `tfsdk:"ns_interval"`
+	ReachableTime       types.Int64  `tfsdk:"reachable_time"`
+	RouterAdvertisement types.Object `tfsdk:"router_advertisement"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject struct {
 	Name      types.String `tfsdk:"name"`
 	HwAddress types.String `tfsdk:"hw_address"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject struct {
-	DnsSupport             *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
-	Enable                 types.Bool                                                                                    `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool                                                                                    `tfsdk:"enable_consistency_check"`
-	HopLimit               types.String                                                                                  `tfsdk:"hop_limit"`
-	Lifetime               types.Int64                                                                                   `tfsdk:"lifetime"`
-	LinkMtu                types.String                                                                                  `tfsdk:"link_mtu"`
-	ManagedFlag            types.Bool                                                                                    `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64                                                                                   `tfsdk:"max_interval"`
-	MinInterval            types.Int64                                                                                   `tfsdk:"min_interval"`
-	OtherFlag              types.Bool                                                                                    `tfsdk:"other_flag"`
-	ReachableTime          types.String                                                                                  `tfsdk:"reachable_time"`
-	RetransmissionTimer    types.String                                                                                  `tfsdk:"retransmission_timer"`
-	RouterPreference       types.String                                                                                  `tfsdk:"router_preference"`
+	DnsSupport             types.Object `tfsdk:"dns_support"`
+	Enable                 types.Bool   `tfsdk:"enable"`
+	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String `tfsdk:"hop_limit"`
+	Lifetime               types.Int64  `tfsdk:"lifetime"`
+	LinkMtu                types.String `tfsdk:"link_mtu"`
+	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
+	MaxInterval            types.Int64  `tfsdk:"max_interval"`
+	MinInterval            types.Int64  `tfsdk:"min_interval"`
+	OtherFlag              types.Bool   `tfsdk:"other_flag"`
+	ReachableTime          types.String `tfsdk:"reachable_time"`
+	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
+	RouterPreference       types.String `tfsdk:"router_preference"`
 }
 type EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
 	Enable types.Bool `tfsdk:"enable"`
@@ -395,16 +395,16 @@ type EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject struct {
 	Negate types.Bool   `tfsdk:"negate"`
 }
 type EthernetLayer3SubinterfaceDataSourcePppoeObject struct {
-	AccessConcentrator types.String                                                  `tfsdk:"access_concentrator"`
-	Authentication     types.String                                                  `tfsdk:"authentication"`
-	CreateDefaultRoute types.Bool                                                    `tfsdk:"create_default_route"`
-	DefaultRouteMetric types.Int64                                                   `tfsdk:"default_route_metric"`
-	Enable             types.Bool                                                    `tfsdk:"enable"`
-	Passive            *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject       `tfsdk:"passive"`
-	Password           types.String                                                  `tfsdk:"password"`
-	Service            types.String                                                  `tfsdk:"service"`
-	StaticAddress      *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject `tfsdk:"static_address"`
-	Username           types.String                                                  `tfsdk:"username"`
+	AccessConcentrator types.String `tfsdk:"access_concentrator"`
+	Authentication     types.String `tfsdk:"authentication"`
+	CreateDefaultRoute types.Bool   `tfsdk:"create_default_route"`
+	DefaultRouteMetric types.Int64  `tfsdk:"default_route_metric"`
+	Enable             types.Bool   `tfsdk:"enable"`
+	Passive            types.Object `tfsdk:"passive"`
+	Password           types.String `tfsdk:"password"`
+	Service            types.String `tfsdk:"service"`
+	StaticAddress      types.Object `tfsdk:"static_address"`
+	Username           types.String `tfsdk:"username"`
 }
 type EthernetLayer3SubinterfaceDataSourcePppoePassiveObject struct {
 	Enable types.Bool `tfsdk:"enable"`
@@ -413,14 +413,14 @@ type EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject struct {
 	Ip types.String `tfsdk:"ip"`
 }
 type EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject struct {
-	Enable                types.Bool                                                              `tfsdk:"enable"`
-	SdwanInterfaceProfile types.String                                                            `tfsdk:"sdwan_interface_profile"`
-	UpstreamNat           *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject `tfsdk:"upstream_nat"`
+	Enable                types.Bool   `tfsdk:"enable"`
+	SdwanInterfaceProfile types.String `tfsdk:"sdwan_interface_profile"`
+	UpstreamNat           types.Object `tfsdk:"upstream_nat"`
 }
 type EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject struct {
-	Enable   types.Bool                                                                      `tfsdk:"enable"`
-	Ddns     *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject     `tfsdk:"ddns"`
-	StaticIp *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject `tfsdk:"static_ip"`
+	Enable   types.Bool   `tfsdk:"enable"`
+	Ddns     types.Object `tfsdk:"ddns"`
+	StaticIp types.Object `tfsdk:"static_ip"`
 }
 type EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject struct {
 }
@@ -435,11 +435,15 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) AttributeTypes() map[string]
 
 	var adjustTcpMssObj *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject
 
+	var arpObj *EthernetLayer3SubinterfaceDataSourceArpObject
+
 	var bonjourObj *EthernetLayer3SubinterfaceDataSourceBonjourObject
 
 	var ddnsConfigObj *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject
 
 	var dhcpClientObj *EthernetLayer3SubinterfaceDataSourceDhcpClientObject
+
+	var ipObj *EthernetLayer3SubinterfaceDataSourceIpObject
 
 	var ipv6Obj *EthernetLayer3SubinterfaceDataSourceIpv6Object
 
@@ -458,7 +462,11 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) AttributeTypes() map[string]
 		"adjust_tcp_mss": types.ObjectType{
 			AttrTypes: adjustTcpMssObj.AttributeTypes(),
 		},
-		"arp": types.ListType{},
+		"arp": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: arpObj.AttributeTypes(),
+			},
+		},
 		"bonjour": types.ObjectType{
 			AttrTypes: bonjourObj.AttributeTypes(),
 		},
@@ -472,7 +480,11 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) AttributeTypes() map[string]
 			AttrTypes: dhcpClientObj.AttributeTypes(),
 		},
 		"interface_management_profile": types.StringType,
-		"ip":                           types.ListType{},
+		"ip": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: ipObj.AttributeTypes(),
+			},
+		},
 		"ipv6": types.ObjectType{
 			AttrTypes: ipv6Obj.AttributeTypes(),
 		},
@@ -547,15 +559,24 @@ func (o EthernetLayer3SubinterfaceDataSourceBonjourObject) EntryName() *string {
 }
 func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) AttributeTypes() map[string]attr.Type {
 
+	var ddnsVendorConfigObj *EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject
 	return map[string]attr.Type{
-		"ddns_cert_profile":    types.StringType,
-		"ddns_enabled":         types.BoolType,
-		"ddns_hostname":        types.StringType,
-		"ddns_ip":              types.ListType{},
-		"ddns_ipv6":            types.ListType{},
+		"ddns_cert_profile": types.StringType,
+		"ddns_enabled":      types.BoolType,
+		"ddns_hostname":     types.StringType,
+		"ddns_ip": types.ListType{
+			ElemType: types.StringType,
+		},
+		"ddns_ipv6": types.ListType{
+			ElemType: types.StringType,
+		},
 		"ddns_update_interval": types.Int64Type,
 		"ddns_vendor":          types.StringType,
-		"ddns_vendor_config":   types.ListType{},
+		"ddns_vendor_config": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: ddnsVendorConfigObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -633,13 +654,19 @@ func (o EthernetLayer3SubinterfaceDataSourceIpObject) EntryName() *string {
 }
 func (o *EthernetLayer3SubinterfaceDataSourceIpv6Object) AttributeTypes() map[string]attr.Type {
 
+	var addressObj *EthernetLayer3SubinterfaceDataSourceIpv6AddressObject
+
 	var dhcpClientObj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject
 
 	var inheritedObj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject
 
 	var neighborDiscoveryObj *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject
 	return map[string]attr.Type{
-		"address": types.ListType{},
+		"address": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: addressObj.AttributeTypes(),
+			},
+		},
 		"dhcp_client": types.ObjectType{
 			AttrTypes: dhcpClientObj.AttributeTypes(),
 		},
@@ -767,6 +794,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObje
 
 	var dnsSuffixObj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
 
+	var neighborObj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject
+
 	return map[string]attr.Type{
 		"dad_attempts": types.Int64Type,
 		"dns_server": types.ObjectType{
@@ -777,9 +806,13 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObje
 		},
 		"enable_dad":         types.BoolType,
 		"enable_ndp_monitor": types.BoolType,
-		"neighbor":           types.ListType{},
-		"ns_interval":        types.Int64Type,
-		"reachable_time":     types.Int64Type,
+		"neighbor": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: neighborObj.AttributeTypes(),
+			},
+		},
+		"ns_interval":    types.Int64Type,
+		"reachable_time": types.Int64Type,
 	}
 }
 
@@ -843,8 +876,13 @@ func (o EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSe
 }
 func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
 
+	var serverObj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
 	return map[string]attr.Type{
-		"server": types.ListType{},
+		"server": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serverObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -923,8 +961,13 @@ func (o EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSu
 }
 func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
 
+	var suffixObj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
 	return map[string]attr.Type{
-		"suffix": types.ListType{},
+		"suffix": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: suffixObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -1102,10 +1145,16 @@ func (o EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObje
 }
 func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject) AttributeTypes() map[string]attr.Type {
 
+	var assignAddrObj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject
+
 	var neighborDiscoveryObj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject
 	return map[string]attr.Type{
-		"assign_addr": types.ListType{},
-		"enable":      types.BoolType,
+		"assign_addr": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: assignAddrObj.AttributeTypes(),
+			},
+		},
+		"enable": types.BoolType,
 		"neighbor_discovery": types.ObjectType{
 			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
 		},
@@ -1291,6 +1340,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObjec
 
 	var dnsSuffixObj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
 
+	var neighborObj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject
+
 	var routerAdvertisementObj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
 	return map[string]attr.Type{
 		"dad_attempts": types.Int64Type,
@@ -1302,9 +1353,13 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObjec
 		},
 		"enable_dad":         types.BoolType,
 		"enable_ndp_monitor": types.BoolType,
-		"neighbor":           types.ListType{},
-		"ns_interval":        types.Int64Type,
-		"reachable_time":     types.Int64Type,
+		"neighbor": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: neighborObj.AttributeTypes(),
+			},
+		},
+		"ns_interval":    types.Int64Type,
+		"reachable_time": types.Int64Type,
 		"router_advertisement": types.ObjectType{
 			AttrTypes: routerAdvertisementObj.AttributeTypes(),
 		},
@@ -1374,8 +1429,13 @@ func (o EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSer
 }
 func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
 
+	var serverObj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
 	return map[string]attr.Type{
-		"server": types.ListType{},
+		"server": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serverObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -1457,8 +1517,13 @@ func (o EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuf
 }
 func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
 
+	var suffixObj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
 	return map[string]attr.Type{
-		"suffix": types.ListType{},
+		"suffix": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: suffixObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -1526,14 +1591,20 @@ func (o EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouter
 }
 func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
 
+	var neighborObj *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject
+
 	var routerAdvertisementObj *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject
 	return map[string]attr.Type{
 		"dad_attempts":       types.Int64Type,
 		"enable_dad":         types.BoolType,
 		"enable_ndp_monitor": types.BoolType,
-		"neighbor":           types.ListType{},
-		"ns_interval":        types.Int64Type,
-		"reachable_time":     types.Int64Type,
+		"neighbor": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: neighborObj.AttributeTypes(),
+			},
+		},
+		"ns_interval":    types.Int64Type,
+		"reachable_time": types.Int64Type,
 		"router_advertisement": types.ObjectType{
 			AttrTypes: routerAdvertisementObj.AttributeTypes(),
 		},
@@ -1594,10 +1665,21 @@ func (o EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertise
 }
 func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
 
+	var serverObj *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
+
+	var suffixObj *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
 	return map[string]attr.Type{
 		"enable": types.BoolType,
-		"server": types.ListType{},
-		"suffix": types.ListType{},
+		"server": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serverObj.AttributeTypes(),
+			},
+		},
+		"suffix": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: suffixObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -1640,8 +1722,14 @@ func (o EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertise
 }
 func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyObject) AttributeTypes() map[string]attr.Type {
 
+	var addressObj *EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject
+
 	return map[string]attr.Type{
-		"address": types.ListType{},
+		"address": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: addressObj.AttributeTypes(),
+			},
+		},
 		"enabled": types.BoolType,
 	}
 }
@@ -1796,17 +1884,21 @@ func (o EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIp
 	return nil
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var adjustTcpMss_entry *layer3.AdjustTcpMss
-	if o.AdjustTcpMss != nil {
+	if !o.AdjustTcpMss.IsUnknown() && !o.AdjustTcpMss.IsNull() {
 		if *obj != nil && (*obj).AdjustTcpMss != nil {
 			adjustTcpMss_entry = (*obj).AdjustTcpMss
 		} else {
 			adjustTcpMss_entry = new(layer3.AdjustTcpMss)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, ancestors, &adjustTcpMss_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject
+		diags.Append(o.AdjustTcpMss.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &adjustTcpMss_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1821,7 +1913,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Cont
 		}
 		for _, elt := range arp_tf_entries {
 			var entry *layer3.Arp
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1829,28 +1921,36 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Cont
 		}
 	}
 	var bonjour_entry *layer3.Bonjour
-	if o.Bonjour != nil {
+	if !o.Bonjour.IsUnknown() && !o.Bonjour.IsNull() {
 		if *obj != nil && (*obj).Bonjour != nil {
 			bonjour_entry = (*obj).Bonjour
 		} else {
 			bonjour_entry = new(layer3.Bonjour)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Bonjour.CopyToPango(ctx, ancestors, &bonjour_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceBonjourObject
+		diags.Append(o.Bonjour.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &bonjour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	comment_value := o.Comment.ValueStringPointer()
 	var ddnsConfig_entry *layer3.DdnsConfig
-	if o.DdnsConfig != nil {
+	if !o.DdnsConfig.IsUnknown() && !o.DdnsConfig.IsNull() {
 		if *obj != nil && (*obj).DdnsConfig != nil {
 			ddnsConfig_entry = (*obj).DdnsConfig
 		} else {
 			ddnsConfig_entry = new(layer3.DdnsConfig)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.DdnsConfig.CopyToPango(ctx, ancestors, &ddnsConfig_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject
+		diags.Append(o.DdnsConfig.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &ddnsConfig_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1858,14 +1958,18 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Cont
 	decryptForward_value := o.DecryptForward.ValueBoolPointer()
 	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
 	var dhcpClient_entry *layer3.DhcpClient
-	if o.DhcpClient != nil {
+	if !o.DhcpClient.IsUnknown() && !o.DhcpClient.IsNull() {
 		if *obj != nil && (*obj).DhcpClient != nil {
 			dhcpClient_entry = (*obj).DhcpClient
 		} else {
 			dhcpClient_entry = new(layer3.DhcpClient)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.DhcpClient.CopyToPango(ctx, ancestors, &dhcpClient_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceDhcpClientObject
+		diags.Append(o.DhcpClient.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &dhcpClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1881,7 +1985,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Cont
 		}
 		for _, elt := range ip_tf_entries {
 			var entry *layer3.Ip
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1889,55 +1993,71 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Cont
 		}
 	}
 	var ipv6_entry *layer3.Ipv6
-	if o.Ipv6 != nil {
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
 		if *obj != nil && (*obj).Ipv6 != nil {
 			ipv6_entry = (*obj).Ipv6
 		} else {
 			ipv6_entry = new(layer3.Ipv6)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Ipv6.CopyToPango(ctx, ancestors, &ipv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6Object
+		diags.Append(o.Ipv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	mtu_value := o.Mtu.ValueInt64Pointer()
 	var ndpProxy_entry *layer3.NdpProxy
-	if o.NdpProxy != nil {
+	if !o.NdpProxy.IsUnknown() && !o.NdpProxy.IsNull() {
 		if *obj != nil && (*obj).NdpProxy != nil {
 			ndpProxy_entry = (*obj).NdpProxy
 		} else {
 			ndpProxy_entry = new(layer3.NdpProxy)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.NdpProxy.CopyToPango(ctx, ancestors, &ndpProxy_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceNdpProxyObject
+		diags.Append(o.NdpProxy.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &ndpProxy_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 	var pppoe_entry *layer3.Pppoe
-	if o.Pppoe != nil {
+	if !o.Pppoe.IsUnknown() && !o.Pppoe.IsNull() {
 		if *obj != nil && (*obj).Pppoe != nil {
 			pppoe_entry = (*obj).Pppoe
 		} else {
 			pppoe_entry = new(layer3.Pppoe)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Pppoe.CopyToPango(ctx, ancestors, &pppoe_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourcePppoeObject
+		diags.Append(o.Pppoe.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &pppoe_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var sdwanLinkSettings_entry *layer3.SdwanLinkSettings
-	if o.SdwanLinkSettings != nil {
+	if !o.SdwanLinkSettings.IsUnknown() && !o.SdwanLinkSettings.IsNull() {
 		if *obj != nil && (*obj).SdwanLinkSettings != nil {
 			sdwanLinkSettings_entry = (*obj).SdwanLinkSettings
 		} else {
 			sdwanLinkSettings_entry = new(layer3.SdwanLinkSettings)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.SdwanLinkSettings.CopyToPango(ctx, ancestors, &sdwanLinkSettings_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject
+		diags.Append(o.SdwanLinkSettings.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &sdwanLinkSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1968,7 +2088,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
@@ -1983,7 +2103,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceArpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Arp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceArpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Arp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -1995,7 +2115,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceArpObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceBonjourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceBonjourObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	groupId_value := o.GroupId.ValueInt64Pointer()
@@ -2010,20 +2130,36 @@ func (o *EthernetLayer3SubinterfaceDataSourceBonjourObject) CopyToPango(ctx cont
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ddnsCertProfile_value := o.DdnsCertProfile.ValueStringPointer()
 	ddnsEnabled_value := o.DdnsEnabled.ValueBoolPointer()
 	ddnsHostname_value := o.DdnsHostname.ValueStringPointer()
-	ddnsIp_pango_entries := make([]string, 0)
-	diags.Append(o.DdnsIp.ElementsAs(ctx, &ddnsIp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ddnsIp_pango_entries []string
+	if !o.DdnsIp.IsUnknown() && !o.DdnsIp.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DdnsIp.Elements()))
+		diags.Append(o.DdnsIp.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ddnsIp_pango_entries = append(ddnsIp_pango_entries, elt.ValueString())
+		}
 	}
-	ddnsIpv6_pango_entries := make([]string, 0)
-	diags.Append(o.DdnsIpv6.ElementsAs(ctx, &ddnsIpv6_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ddnsIpv6_pango_entries []string
+	if !o.DdnsIpv6.IsUnknown() && !o.DdnsIpv6.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DdnsIpv6.Elements()))
+		diags.Append(o.DdnsIpv6.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ddnsIpv6_pango_entries = append(ddnsIpv6_pango_entries, elt.ValueString())
+		}
 	}
 	ddnsUpdateInterval_value := o.DdnsUpdateInterval.ValueInt64Pointer()
 	ddnsVendor_value := o.DdnsVendor.ValueStringPointer()
@@ -2037,7 +2173,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) CopyToPango(ctx c
 		}
 		for _, elt := range ddnsVendorConfig_tf_entries {
 			var entry *layer3.DdnsConfigDdnsVendorConfig
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2059,7 +2195,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -2071,20 +2207,24 @@ func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject) C
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	var sendHostname_entry *layer3.DhcpClientSendHostname
-	if o.SendHostname != nil {
+	if !o.SendHostname.IsUnknown() && !o.SendHostname.IsNull() {
 		if *obj != nil && (*obj).SendHostname != nil {
 			sendHostname_entry = (*obj).SendHostname
 		} else {
 			sendHostname_entry = new(layer3.DhcpClientSendHostname)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.SendHostname.CopyToPango(ctx, append(ancestors, o), &sendHostname_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject
+		diags.Append(o.SendHostname.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &sendHostname_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2100,7 +2240,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	hostname_value := o.Hostname.ValueStringPointer()
@@ -2113,7 +2253,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject) CopyT
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	sdwanGateway_value := o.SdwanGateway.ValueStringPointer()
 
@@ -2125,7 +2265,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6AddressObject
 	var address_pango_entries []layer3.Ipv6Address
@@ -2137,7 +2277,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6Object) CopyToPango(ctx context
 		}
 		for _, elt := range address_tf_entries {
 			var entry *layer3.Ipv6Address
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2145,42 +2285,54 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6Object) CopyToPango(ctx context
 		}
 	}
 	var dhcpClient_entry *layer3.Ipv6DhcpClient
-	if o.DhcpClient != nil {
+	if !o.DhcpClient.IsUnknown() && !o.DhcpClient.IsNull() {
 		if *obj != nil && (*obj).DhcpClient != nil {
 			dhcpClient_entry = (*obj).DhcpClient
 		} else {
 			dhcpClient_entry = new(layer3.Ipv6DhcpClient)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DhcpClient.CopyToPango(ctx, append(ancestors, o), &dhcpClient_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject
+		diags.Append(o.DhcpClient.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	enabled_value := o.Enabled.ValueBoolPointer()
 	var inherited_entry *layer3.Ipv6Inherited
-	if o.Inherited != nil {
+	if !o.Inherited.IsUnknown() && !o.Inherited.IsNull() {
 		if *obj != nil && (*obj).Inherited != nil {
 			inherited_entry = (*obj).Inherited
 		} else {
 			inherited_entry = new(layer3.Ipv6Inherited)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Inherited.CopyToPango(ctx, append(ancestors, o), &inherited_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject
+		diags.Append(o.Inherited.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &inherited_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	interfaceId_value := o.InterfaceId.ValueStringPointer()
 	var neighborDiscovery_entry *layer3.Ipv6NeighborDiscovery
-	if o.NeighborDiscovery != nil {
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
 		if *obj != nil && (*obj).NeighborDiscovery != nil {
 			neighborDiscovery_entry = (*obj).NeighborDiscovery
 		} else {
 			neighborDiscovery_entry = new(layer3.Ipv6NeighborDiscovery)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject
+		diags.Append(o.NeighborDiscovery.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &neighborDiscovery_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2198,44 +2350,56 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6Object) CopyToPango(ctx context
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *layer3.Ipv6AddressPrefix
-	if o.Prefix != nil {
+	if !o.Prefix.IsUnknown() && !o.Prefix.IsNull() {
 		if *obj != nil && (*obj).Prefix != nil {
 			prefix_entry = (*obj).Prefix
 		} else {
 			prefix_entry = new(layer3.Ipv6AddressPrefix)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Prefix.CopyToPango(ctx, append(ancestors, o), &prefix_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject
+		diags.Append(o.Prefix.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &prefix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var anycast_entry *layer3.Ipv6AddressAnycast
-	if o.Anycast != nil {
+	if !o.Anycast.IsUnknown() && !o.Anycast.IsNull() {
 		if *obj != nil && (*obj).Anycast != nil {
 			anycast_entry = (*obj).Anycast
 		} else {
 			anycast_entry = new(layer3.Ipv6AddressAnycast)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Anycast.CopyToPango(ctx, append(ancestors, o), &anycast_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject
+		diags.Append(o.Anycast.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &anycast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var advertise_entry *layer3.Ipv6AddressAdvertise
-	if o.Advertise != nil {
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
 		if *obj != nil && (*obj).Advertise != nil {
 			advertise_entry = (*obj).Advertise
 		} else {
 			advertise_entry = new(layer3.Ipv6AddressAdvertise)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject
+		diags.Append(o.Advertise.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &advertise_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2252,7 +2416,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2261,7 +2425,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject) CopyToPang
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2270,7 +2434,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject) CopyToPan
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	validLifetime_value := o.ValidLifetime.ValueStringPointer()
@@ -2289,47 +2453,59 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject) CopyToP
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	var neighborDiscovery_entry *layer3.Ipv6DhcpClientNeighborDiscovery
-	if o.NeighborDiscovery != nil {
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
 		if *obj != nil && (*obj).NeighborDiscovery != nil {
 			neighborDiscovery_entry = (*obj).NeighborDiscovery
 		} else {
 			neighborDiscovery_entry = new(layer3.Ipv6DhcpClientNeighborDiscovery)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject
+		diags.Append(o.NeighborDiscovery.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &neighborDiscovery_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	preference_value := o.Preference.ValueStringPointer()
 	var prefixDelegation_entry *layer3.Ipv6DhcpClientPrefixDelegation
-	if o.PrefixDelegation != nil {
+	if !o.PrefixDelegation.IsUnknown() && !o.PrefixDelegation.IsNull() {
 		if *obj != nil && (*obj).PrefixDelegation != nil {
 			prefixDelegation_entry = (*obj).PrefixDelegation
 		} else {
 			prefixDelegation_entry = new(layer3.Ipv6DhcpClientPrefixDelegation)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.PrefixDelegation.CopyToPango(ctx, append(ancestors, o), &prefixDelegation_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject
+		diags.Append(o.PrefixDelegation.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &prefixDelegation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var v6Options_entry *layer3.Ipv6DhcpClientV6Options
-	if o.V6Options != nil {
+	if !o.V6Options.IsUnknown() && !o.V6Options.IsNull() {
 		if *obj != nil && (*obj).V6Options != nil {
 			v6Options_entry = (*obj).V6Options
 		} else {
 			v6Options_entry = new(layer3.Ipv6DhcpClientV6Options)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.V6Options.CopyToPango(ctx, append(ancestors, o), &v6Options_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject
+		diags.Append(o.V6Options.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &v6Options_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2348,31 +2524,39 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject) CopyToPango(c
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	var dnsServer_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
+	if !o.DnsServer.IsUnknown() && !o.DnsServer.IsNull() {
 		if *obj != nil && (*obj).DnsServer != nil {
 			dnsServer_entry = (*obj).DnsServer
 		} else {
 			dnsServer_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsServer.CopyToPango(ctx, append(ancestors, o), &dnsServer_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
+		diags.Append(o.DnsServer.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var dnsSuffix_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
+	if !o.DnsSuffix.IsUnknown() && !o.DnsSuffix.IsNull() {
 		if *obj != nil && (*obj).DnsSuffix != nil {
 			dnsSuffix_entry = (*obj).DnsSuffix
 		} else {
 			dnsSuffix_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, append(ancestors, o), &dnsSuffix_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+		diags.Append(o.DnsSuffix.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsSuffix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2389,7 +2573,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObje
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2413,18 +2597,22 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObje
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var source_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
 		if *obj != nil && (*obj).Source != nil {
 			source_entry = (*obj).Source
 		} else {
 			source_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+		diags.Append(o.Source.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &source_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2438,30 +2626,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhcpv6_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
 		if *obj != nil && (*obj).Dhcpv6 != nil {
 			dhcpv6_entry = (*obj).Dhcpv6
 		} else {
 			dhcpv6_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+		diags.Append(o.Dhcpv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var manual_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
 		if *obj != nil && (*obj).Manual != nil {
 			manual_entry = (*obj).Manual
 		} else {
 			manual_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+		diags.Append(o.Manual.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &manual_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2475,7 +2671,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2484,7 +2680,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
 	var server_pango_entries []layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
@@ -2496,7 +2692,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 		}
 		for _, elt := range server_tf_entries {
 			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2511,7 +2707,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -2523,18 +2719,22 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var source_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
 		if *obj != nil && (*obj).Source != nil {
 			source_entry = (*obj).Source
 		} else {
 			source_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+		diags.Append(o.Source.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &source_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2548,30 +2748,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhcpv6_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
 		if *obj != nil && (*obj).Dhcpv6 != nil {
 			dhcpv6_entry = (*obj).Dhcpv6
 		} else {
 			dhcpv6_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+		diags.Append(o.Dhcpv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var manual_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
 		if *obj != nil && (*obj).Manual != nil {
 			manual_entry = (*obj).Manual
 		} else {
 			manual_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+		diags.Append(o.Manual.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &manual_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2585,7 +2793,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2594,7 +2802,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var suffix_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
 	var suffix_pango_entries []layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
@@ -2606,7 +2814,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 		}
 		for _, elt := range suffix_tf_entries {
 			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2621,7 +2829,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -2633,7 +2841,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -2645,17 +2853,21 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeig
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var enable_entry *layer3.Ipv6DhcpClientPrefixDelegationEnable
-	if o.Enable != nil {
+	if !o.Enable.IsUnknown() && !o.Enable.IsNull() {
 		if *obj != nil && (*obj).Enable != nil {
 			enable_entry = (*obj).Enable
 		} else {
 			enable_entry = new(layer3.Ipv6DhcpClientPrefixDelegationEnable)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Enable.CopyToPango(ctx, append(ancestors, o), &enable_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject
+		diags.Append(o.Enable.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &enable_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2668,30 +2880,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObjec
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var no_entry *layer3.Ipv6DhcpClientPrefixDelegationEnableNo
-	if o.No != nil {
+	if !o.No.IsUnknown() && !o.No.IsNull() {
 		if *obj != nil && (*obj).No != nil {
 			no_entry = (*obj).No
 		} else {
 			no_entry = new(layer3.Ipv6DhcpClientPrefixDelegationEnableNo)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject
+		diags.Append(o.No.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &no_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var yes_entry *layer3.Ipv6DhcpClientPrefixDelegationEnableYes
-	if o.Yes != nil {
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
 		if *obj != nil && (*obj).Yes != nil {
 			yes_entry = (*obj).Yes
 		} else {
 			yes_entry = new(layer3.Ipv6DhcpClientPrefixDelegationEnableYes)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject
+		diags.Append(o.Yes.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &yes_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2705,7 +2925,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnabl
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2714,7 +2934,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnabl
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
 	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
@@ -2729,18 +2949,22 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnabl
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	duidType_value := o.DuidType.ValueStringPointer()
 	var enable_entry *layer3.Ipv6DhcpClientV6OptionsEnable
-	if o.Enable != nil {
+	if !o.Enable.IsUnknown() && !o.Enable.IsNull() {
 		if *obj != nil && (*obj).Enable != nil {
 			enable_entry = (*obj).Enable
 		} else {
 			enable_entry = new(layer3.Ipv6DhcpClientV6OptionsEnable)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Enable.CopyToPango(ctx, append(ancestors, o), &enable_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject
+		diags.Append(o.Enable.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &enable_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2758,30 +2982,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject) Copy
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var no_entry *layer3.Ipv6DhcpClientV6OptionsEnableNo
-	if o.No != nil {
+	if !o.No.IsUnknown() && !o.No.IsNull() {
 		if *obj != nil && (*obj).No != nil {
 			no_entry = (*obj).No
 		} else {
 			no_entry = new(layer3.Ipv6DhcpClientV6OptionsEnableNo)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject
+		diags.Append(o.No.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &no_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var yes_entry *layer3.Ipv6DhcpClientV6OptionsEnableYes
-	if o.Yes != nil {
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
 		if *obj != nil && (*obj).Yes != nil {
 			yes_entry = (*obj).Yes
 		} else {
 			yes_entry = new(layer3.Ipv6DhcpClientV6OptionsEnableYes)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject
+		diags.Append(o.Yes.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &yes_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2795,7 +3027,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -2804,7 +3036,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObje
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
 	tempAddr_value := o.TempAddr.ValueBoolPointer()
@@ -2817,7 +3049,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObj
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var assignAddr_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject
 	var assignAddr_pango_entries []layer3.Ipv6InheritedAssignAddr
@@ -2829,7 +3061,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject) CopyToPango(ct
 		}
 		for _, elt := range assignAddr_tf_entries {
 			var entry *layer3.Ipv6InheritedAssignAddr
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -2838,14 +3070,18 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject) CopyToPango(ct
 	}
 	enable_value := o.Enable.ValueBoolPointer()
 	var neighborDiscovery_entry *layer3.Ipv6InheritedNeighborDiscovery
-	if o.NeighborDiscovery != nil {
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
 		if *obj != nil && (*obj).NeighborDiscovery != nil {
 			neighborDiscovery_entry = (*obj).NeighborDiscovery
 		} else {
 			neighborDiscovery_entry = new(layer3.Ipv6InheritedNeighborDiscovery)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject
+		diags.Append(o.NeighborDiscovery.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &neighborDiscovery_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2860,17 +3096,21 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject) CopyToPango(ct
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_entry *layer3.Ipv6InheritedAssignAddrType
-	if o.Type != nil {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
 		if *obj != nil && (*obj).Type != nil {
 			type_entry = (*obj).Type
 		} else {
 			type_entry = new(layer3.Ipv6InheritedAssignAddrType)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject
+		diags.Append(o.Type.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2884,30 +3124,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject) Copy
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var gua_entry *layer3.Ipv6InheritedAssignAddrTypeGua
-	if o.Gua != nil {
+	if !o.Gua.IsUnknown() && !o.Gua.IsNull() {
 		if *obj != nil && (*obj).Gua != nil {
 			gua_entry = (*obj).Gua
 		} else {
 			gua_entry = new(layer3.Ipv6InheritedAssignAddrTypeGua)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Gua.CopyToPango(ctx, append(ancestors, o), &gua_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject
+		diags.Append(o.Gua.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &gua_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var ula_entry *layer3.Ipv6InheritedAssignAddrTypeUla
-	if o.Ula != nil {
+	if !o.Ula.IsUnknown() && !o.Ula.IsNull() {
 		if *obj != nil && (*obj).Ula != nil {
 			ula_entry = (*obj).Ula
 		} else {
 			ula_entry = new(layer3.Ipv6InheritedAssignAddrTypeUla)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ula.CopyToPango(ctx, append(ancestors, o), &ula_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject
+		diags.Append(o.Ula.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ula_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2921,32 +3169,40 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject) 
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	prefixPool_value := o.PrefixPool.ValueStringPointer()
 	var poolType_entry *layer3.Ipv6InheritedAssignAddrTypeGuaPoolType
-	if o.PoolType != nil {
+	if !o.PoolType.IsUnknown() && !o.PoolType.IsNull() {
 		if *obj != nil && (*obj).PoolType != nil {
 			poolType_entry = (*obj).PoolType
 		} else {
 			poolType_entry = new(layer3.Ipv6InheritedAssignAddrTypeGuaPoolType)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.PoolType.CopyToPango(ctx, append(ancestors, o), &poolType_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+		diags.Append(o.PoolType.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &poolType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var advertise_entry *layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise
-	if o.Advertise != nil {
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
 		if *obj != nil && (*obj).Advertise != nil {
 			advertise_entry = (*obj).Advertise
 		} else {
 			advertise_entry = new(layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+		diags.Append(o.Advertise.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &advertise_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2962,30 +3218,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObjec
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamic_entry *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
-	if o.Dynamic != nil {
+	if !o.Dynamic.IsUnknown() && !o.Dynamic.IsNull() {
 		if *obj != nil && (*obj).Dynamic != nil {
 			dynamic_entry = (*obj).Dynamic
 		} else {
 			dynamic_entry = new(layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dynamic.CopyToPango(ctx, append(ancestors, o), &dynamic_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+		diags.Append(o.Dynamic.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dynamic_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var dynamicId_entry *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
-	if o.DynamicId != nil {
+	if !o.DynamicId.IsUnknown() && !o.DynamicId.IsNull() {
 		if *obj != nil && (*obj).DynamicId != nil {
 			dynamicId_entry = (*obj).DynamicId
 		} else {
 			dynamicId_entry = new(layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DynamicId.CopyToPango(ctx, append(ancestors, o), &dynamicId_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+		diags.Append(o.DynamicId.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dynamicId_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -2999,7 +3263,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolT
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3008,7 +3272,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolT
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	identifier_value := o.Identifier.ValueInt64Pointer()
 
@@ -3019,7 +3283,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolT
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
@@ -3034,21 +3298,25 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdver
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	address_value := o.Address.ValueStringPointer()
 	prefix_value := o.Prefix.ValueBoolPointer()
 	anycast_value := o.Anycast.ValueBoolPointer()
 	var advertise_entry *layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise
-	if o.Advertise != nil {
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
 		if *obj != nil && (*obj).Advertise != nil {
 			advertise_entry = (*obj).Advertise
 		} else {
 			advertise_entry = new(layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+		diags.Append(o.Advertise.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &advertise_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3065,7 +3333,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObjec
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	validLifetime_value := o.ValidLifetime.ValueStringPointer()
@@ -3084,31 +3352,39 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdver
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	var dnsServer_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
+	if !o.DnsServer.IsUnknown() && !o.DnsServer.IsNull() {
 		if *obj != nil && (*obj).DnsServer != nil {
 			dnsServer_entry = (*obj).DnsServer
 		} else {
 			dnsServer_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsServer)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsServer.CopyToPango(ctx, append(ancestors, o), &dnsServer_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject
+		diags.Append(o.DnsServer.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var dnsSuffix_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
+	if !o.DnsSuffix.IsUnknown() && !o.DnsSuffix.IsNull() {
 		if *obj != nil && (*obj).DnsSuffix != nil {
 			dnsSuffix_entry = (*obj).DnsSuffix
 		} else {
 			dnsSuffix_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, append(ancestors, o), &dnsSuffix_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+		diags.Append(o.DnsSuffix.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsSuffix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3125,7 +3401,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObjec
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *layer3.Ipv6InheritedNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3135,14 +3411,18 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObjec
 	nsInterval_value := o.NsInterval.ValueInt64Pointer()
 	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
 	var routerAdvertisement_entry *layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement
-	if o.RouterAdvertisement != nil {
+	if !o.RouterAdvertisement.IsUnknown() && !o.RouterAdvertisement.IsNull() {
 		if *obj != nil && (*obj).RouterAdvertisement != nil {
 			routerAdvertisement_entry = (*obj).RouterAdvertisement
 		} else {
 			routerAdvertisement_entry = new(layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, append(ancestors, o), &routerAdvertisement_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+		diags.Append(o.RouterAdvertisement.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &routerAdvertisement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3163,18 +3443,22 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObjec
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var source_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
 		if *obj != nil && (*obj).Source != nil {
 			source_entry = (*obj).Source
 		} else {
 			source_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+		diags.Append(o.Source.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &source_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3188,30 +3472,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhcpv6_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
 		if *obj != nil && (*obj).Dhcpv6 != nil {
 			dhcpv6_entry = (*obj).Dhcpv6
 		} else {
 			dhcpv6_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+		diags.Append(o.Dhcpv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var manual_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
 		if *obj != nil && (*obj).Manual != nil {
 			manual_entry = (*obj).Manual
 		} else {
 			manual_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+		diags.Append(o.Manual.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &manual_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3225,7 +3517,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	prefixPool_value := o.PrefixPool.ValueStringPointer()
 
@@ -3236,7 +3528,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
 	var server_pango_entries []layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
@@ -3248,7 +3540,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 		}
 		for _, elt := range server_tf_entries {
 			var entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3263,7 +3555,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -3275,18 +3567,22 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var source_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
 		if *obj != nil && (*obj).Source != nil {
 			source_entry = (*obj).Source
 		} else {
 			source_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+		diags.Append(o.Source.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &source_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3300,30 +3596,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhcpv6_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
 		if *obj != nil && (*obj).Dhcpv6 != nil {
 			dhcpv6_entry = (*obj).Dhcpv6
 		} else {
 			dhcpv6_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+		diags.Append(o.Dhcpv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var manual_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
 		if *obj != nil && (*obj).Manual != nil {
 			manual_entry = (*obj).Manual
 		} else {
 			manual_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+		diags.Append(o.Manual.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &manual_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3337,7 +3641,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	prefixPool_value := o.PrefixPool.ValueStringPointer()
 
@@ -3348,7 +3652,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var suffix_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
 	var suffix_pango_entries []layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
@@ -3360,7 +3664,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 		}
 		for _, elt := range suffix_tf_entries {
 			var entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3375,7 +3679,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -3387,7 +3691,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -3399,7 +3703,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeigh
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
@@ -3432,7 +3736,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRoute
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	enableDad_value := o.EnableDad.ValueBoolPointer()
@@ -3447,7 +3751,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) CopyTo
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *layer3.Ipv6NeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3457,14 +3761,18 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) CopyTo
 	nsInterval_value := o.NsInterval.ValueInt64Pointer()
 	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
 	var routerAdvertisement_entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisement
-	if o.RouterAdvertisement != nil {
+	if !o.RouterAdvertisement.IsUnknown() && !o.RouterAdvertisement.IsNull() {
 		if *obj != nil && (*obj).RouterAdvertisement != nil {
 			routerAdvertisement_entry = (*obj).RouterAdvertisement
 		} else {
 			routerAdvertisement_entry = new(layer3.Ipv6NeighborDiscoveryRouterAdvertisement)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, append(ancestors, o), &routerAdvertisement_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject
+		diags.Append(o.RouterAdvertisement.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &routerAdvertisement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3483,7 +3791,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) CopyTo
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -3495,17 +3803,21 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSupport_entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport
-	if o.DnsSupport != nil {
+	if !o.DnsSupport.IsUnknown() && !o.DnsSupport.IsNull() {
 		if *obj != nil && (*obj).DnsSupport != nil {
 			dnsSupport_entry = (*obj).DnsSupport
 		} else {
 			dnsSupport_entry = new(layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsSupport.CopyToPango(ctx, append(ancestors, o), &dnsSupport_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+		diags.Append(o.DnsSupport.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsSupport_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3542,7 +3854,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var server_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
@@ -3555,7 +3867,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 		}
 		for _, elt := range server_tf_entries {
 			var entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3572,7 +3884,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 		}
 		for _, elt := range suffix_tf_entries {
 			var entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3589,7 +3901,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -3601,7 +3913,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -3613,7 +3925,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject
 	var address_pango_entries []layer3.NdpProxyAddress
@@ -3625,7 +3937,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyObject) CopyToPango(ctx con
 		}
 		for _, elt := range address_tf_entries {
 			var entry *layer3.NdpProxyAddress
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3642,7 +3954,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	negate_value := o.Negate.ValueBoolPointer()
 
@@ -3654,7 +3966,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject) CopyToPango(
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourcePppoeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Pppoe, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourcePppoeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Pppoe, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessConcentrator_value := o.AccessConcentrator.ValueStringPointer()
 	authentication_value := o.Authentication.ValueStringPointer()
@@ -3662,41 +3974,51 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoeObject) CopyToPango(ctx contex
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	var passive_entry *layer3.PppoePassive
-	if o.Passive != nil {
+	if !o.Passive.IsUnknown() && !o.Passive.IsNull() {
 		if *obj != nil && (*obj).Passive != nil {
 			passive_entry = (*obj).Passive
 		} else {
 			passive_entry = new(layer3.PppoePassive)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Passive.CopyToPango(ctx, append(ancestors, o), &passive_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject
+		diags.Append(o.Passive.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &passive_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
-	if err != nil {
-		diags.AddError("Failed to create encrypted values state key", err.Error())
-		return diags
-	}
 
 	var password_value *string
-	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
-	if err != nil {
-		diags.AddError("Failed to manage encrypted values state", err.Error())
-		return diags
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		password_value = o.Password.ValueStringPointer()
 	}
-	password_value = o.Password.ValueStringPointer()
 	service_value := o.Service.ValueStringPointer()
 	var staticAddress_entry *layer3.PppoeStaticAddress
-	if o.StaticAddress != nil {
+	if !o.StaticAddress.IsUnknown() && !o.StaticAddress.IsNull() {
 		if *obj != nil && (*obj).StaticAddress != nil {
 			staticAddress_entry = (*obj).StaticAddress
 		} else {
 			staticAddress_entry = new(layer3.PppoeStaticAddress)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.StaticAddress.CopyToPango(ctx, append(ancestors, o), &staticAddress_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject
+		diags.Append(o.StaticAddress.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &staticAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3719,7 +4041,7 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoeObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.PppoePassive, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.PppoePassive, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 
@@ -3730,7 +4052,7 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.PppoeStaticAddress, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.PppoeStaticAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ip_value := o.Ip.ValueStringPointer()
 
@@ -3741,19 +4063,23 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject) CopyToPan
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	sdwanInterfaceProfile_value := o.SdwanInterfaceProfile.ValueStringPointer()
 	var upstreamNat_entry *layer3.SdwanLinkSettingsUpstreamNat
-	if o.UpstreamNat != nil {
+	if !o.UpstreamNat.IsUnknown() && !o.UpstreamNat.IsNull() {
 		if *obj != nil && (*obj).UpstreamNat != nil {
 			upstreamNat_entry = (*obj).UpstreamNat
 		} else {
 			upstreamNat_entry = new(layer3.SdwanLinkSettingsUpstreamNat)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.UpstreamNat.CopyToPango(ctx, append(ancestors, o), &upstreamNat_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject
+		diags.Append(o.UpstreamNat.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &upstreamNat_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3768,31 +4094,39 @@ func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject) CopyToPang
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var ddns_entry *layer3.SdwanLinkSettingsUpstreamNatDdns
-	if o.Ddns != nil {
+	if !o.Ddns.IsUnknown() && !o.Ddns.IsNull() {
 		if *obj != nil && (*obj).Ddns != nil {
 			ddns_entry = (*obj).Ddns
 		} else {
 			ddns_entry = new(layer3.SdwanLinkSettingsUpstreamNatDdns)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ddns.CopyToPango(ctx, append(ancestors, o), &ddns_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject
+		diags.Append(o.Ddns.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ddns_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var staticIp_entry *layer3.SdwanLinkSettingsUpstreamNatStaticIp
-	if o.StaticIp != nil {
+	if !o.StaticIp.IsUnknown() && !o.StaticIp.IsNull() {
 		if *obj != nil && (*obj).StaticIp != nil {
 			staticIp_entry = (*obj).StaticIp
 		} else {
 			staticIp_entry = new(layer3.SdwanLinkSettingsUpstreamNatStaticIp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.StaticIp.CopyToPango(ctx, append(ancestors, o), &staticIp_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject
+		diags.Append(o.StaticIp.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &staticIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3807,7 +4141,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject)
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3816,7 +4150,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObj
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipAddress_value := o.IpAddress.ValueStringPointer()
@@ -3830,20 +4164,36 @@ func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticI
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var arp_list types.List
 	{
 		var arp_tf_entries []EthernetLayer3SubinterfaceDataSourceArpObject
-		for _, elt := range obj.Arp {
-			entry := EthernetLayer3SubinterfaceDataSourceArpObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Arp.IsNull() {
+			diags.Append(o.Arp.ElementsAs(ctx, &arp_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			arp_tf_entries = append(arp_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Arp {
+			entry := EthernetLayer3SubinterfaceDataSourceArpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(arp_tf_entries) {
+				entry = arp_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(arp_tf_entries) {
+				arp_tf_entries[idx] = entry
+			} else {
+				arp_tf_entries = append(arp_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("arp")
@@ -3853,81 +4203,217 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyFromPango(ctx context.Co
 	var ip_list types.List
 	{
 		var ip_tf_entries []EthernetLayer3SubinterfaceDataSourceIpObject
-		for _, elt := range obj.Ip {
-			entry := EthernetLayer3SubinterfaceDataSourceIpObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Ip.IsNull() {
+			diags.Append(o.Ip.ElementsAs(ctx, &ip_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			ip_tf_entries = append(ip_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Ip {
+			entry := EthernetLayer3SubinterfaceDataSourceIpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(ip_tf_entries) {
+				entry = ip_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(ip_tf_entries) {
+				ip_tf_entries[idx] = entry
+			} else {
+				ip_tf_entries = append(ip_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("ip")
 		ip_list, list_diags = types.ListValueFrom(ctx, schemaType, ip_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var adjustTcpMss_object *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject
+
+	var adjustTcpMss_obj *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject
+	if o.AdjustTcpMss.IsNull() {
+		adjustTcpMss_obj = new(EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject)
+	} else {
+		diags.Append(o.AdjustTcpMss.As(ctx, &adjustTcpMss_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	adjustTcpMss_object := types.ObjectNull(adjustTcpMss_obj.AttributeTypes())
 	if obj.AdjustTcpMss != nil {
-		adjustTcpMss_object = new(EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject)
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, ancestors, obj.AdjustTcpMss, ev)...)
+		diags.Append(adjustTcpMss_obj.CopyFromPango(ctx, client, ancestors, obj.AdjustTcpMss, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		adjustTcpMss_object, diags_tmp = types.ObjectValueFrom(ctx, adjustTcpMss_obj.AttributeTypes(), adjustTcpMss_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var bonjour_object *EthernetLayer3SubinterfaceDataSourceBonjourObject
+
+	var bonjour_obj *EthernetLayer3SubinterfaceDataSourceBonjourObject
+	if o.Bonjour.IsNull() {
+		bonjour_obj = new(EthernetLayer3SubinterfaceDataSourceBonjourObject)
+	} else {
+		diags.Append(o.Bonjour.As(ctx, &bonjour_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	bonjour_object := types.ObjectNull(bonjour_obj.AttributeTypes())
 	if obj.Bonjour != nil {
-		bonjour_object = new(EthernetLayer3SubinterfaceDataSourceBonjourObject)
-		diags.Append(bonjour_object.CopyFromPango(ctx, ancestors, obj.Bonjour, ev)...)
+		diags.Append(bonjour_obj.CopyFromPango(ctx, client, ancestors, obj.Bonjour, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		bonjour_object, diags_tmp = types.ObjectValueFrom(ctx, bonjour_obj.AttributeTypes(), bonjour_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ddnsConfig_object *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject
+
+	var ddnsConfig_obj *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject
+	if o.DdnsConfig.IsNull() {
+		ddnsConfig_obj = new(EthernetLayer3SubinterfaceDataSourceDdnsConfigObject)
+	} else {
+		diags.Append(o.DdnsConfig.As(ctx, &ddnsConfig_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ddnsConfig_object := types.ObjectNull(ddnsConfig_obj.AttributeTypes())
 	if obj.DdnsConfig != nil {
-		ddnsConfig_object = new(EthernetLayer3SubinterfaceDataSourceDdnsConfigObject)
-		diags.Append(ddnsConfig_object.CopyFromPango(ctx, ancestors, obj.DdnsConfig, ev)...)
+		diags.Append(ddnsConfig_obj.CopyFromPango(ctx, client, ancestors, obj.DdnsConfig, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ddnsConfig_object, diags_tmp = types.ObjectValueFrom(ctx, ddnsConfig_obj.AttributeTypes(), ddnsConfig_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dhcpClient_object *EthernetLayer3SubinterfaceDataSourceDhcpClientObject
+
+	var dhcpClient_obj *EthernetLayer3SubinterfaceDataSourceDhcpClientObject
+	if o.DhcpClient.IsNull() {
+		dhcpClient_obj = new(EthernetLayer3SubinterfaceDataSourceDhcpClientObject)
+	} else {
+		diags.Append(o.DhcpClient.As(ctx, &dhcpClient_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dhcpClient_object := types.ObjectNull(dhcpClient_obj.AttributeTypes())
 	if obj.DhcpClient != nil {
-		dhcpClient_object = new(EthernetLayer3SubinterfaceDataSourceDhcpClientObject)
-		diags.Append(dhcpClient_object.CopyFromPango(ctx, ancestors, obj.DhcpClient, ev)...)
+		diags.Append(dhcpClient_obj.CopyFromPango(ctx, client, ancestors, obj.DhcpClient, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpClient_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpClient_obj.AttributeTypes(), dhcpClient_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ipv6_object *EthernetLayer3SubinterfaceDataSourceIpv6Object
+
+	var ipv6_obj *EthernetLayer3SubinterfaceDataSourceIpv6Object
+	if o.Ipv6.IsNull() {
+		ipv6_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6Object)
+	} else {
+		diags.Append(o.Ipv6.As(ctx, &ipv6_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ipv6_object := types.ObjectNull(ipv6_obj.AttributeTypes())
 	if obj.Ipv6 != nil {
-		ipv6_object = new(EthernetLayer3SubinterfaceDataSourceIpv6Object)
-		diags.Append(ipv6_object.CopyFromPango(ctx, ancestors, obj.Ipv6, ev)...)
+		diags.Append(ipv6_obj.CopyFromPango(ctx, client, ancestors, obj.Ipv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ipv6_object, diags_tmp = types.ObjectValueFrom(ctx, ipv6_obj.AttributeTypes(), ipv6_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ndpProxy_object *EthernetLayer3SubinterfaceDataSourceNdpProxyObject
+
+	var ndpProxy_obj *EthernetLayer3SubinterfaceDataSourceNdpProxyObject
+	if o.NdpProxy.IsNull() {
+		ndpProxy_obj = new(EthernetLayer3SubinterfaceDataSourceNdpProxyObject)
+	} else {
+		diags.Append(o.NdpProxy.As(ctx, &ndpProxy_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ndpProxy_object := types.ObjectNull(ndpProxy_obj.AttributeTypes())
 	if obj.NdpProxy != nil {
-		ndpProxy_object = new(EthernetLayer3SubinterfaceDataSourceNdpProxyObject)
-		diags.Append(ndpProxy_object.CopyFromPango(ctx, ancestors, obj.NdpProxy, ev)...)
+		diags.Append(ndpProxy_obj.CopyFromPango(ctx, client, ancestors, obj.NdpProxy, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ndpProxy_object, diags_tmp = types.ObjectValueFrom(ctx, ndpProxy_obj.AttributeTypes(), ndpProxy_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var pppoe_object *EthernetLayer3SubinterfaceDataSourcePppoeObject
+
+	var pppoe_obj *EthernetLayer3SubinterfaceDataSourcePppoeObject
+	if o.Pppoe.IsNull() {
+		pppoe_obj = new(EthernetLayer3SubinterfaceDataSourcePppoeObject)
+	} else {
+		diags.Append(o.Pppoe.As(ctx, &pppoe_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	pppoe_object := types.ObjectNull(pppoe_obj.AttributeTypes())
 	if obj.Pppoe != nil {
-		pppoe_object = new(EthernetLayer3SubinterfaceDataSourcePppoeObject)
-		diags.Append(pppoe_object.CopyFromPango(ctx, ancestors, obj.Pppoe, ev)...)
+		diags.Append(pppoe_obj.CopyFromPango(ctx, client, ancestors, obj.Pppoe, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		pppoe_object, diags_tmp = types.ObjectValueFrom(ctx, pppoe_obj.AttributeTypes(), pppoe_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var sdwanLinkSettings_object *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject
+
+	var sdwanLinkSettings_obj *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject
+	if o.SdwanLinkSettings.IsNull() {
+		sdwanLinkSettings_obj = new(EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject)
+	} else {
+		diags.Append(o.SdwanLinkSettings.As(ctx, &sdwanLinkSettings_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	sdwanLinkSettings_object := types.ObjectNull(sdwanLinkSettings_obj.AttributeTypes())
 	if obj.SdwanLinkSettings != nil {
-		sdwanLinkSettings_object = new(EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject)
-		diags.Append(sdwanLinkSettings_object.CopyFromPango(ctx, ancestors, obj.SdwanLinkSettings, ev)...)
+		diags.Append(sdwanLinkSettings_obj.CopyFromPango(ctx, client, ancestors, obj.SdwanLinkSettings, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		sdwanLinkSettings_object, diags_tmp = types.ObjectValueFrom(ctx, sdwanLinkSettings_obj.AttributeTypes(), sdwanLinkSettings_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3983,7 +4469,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4005,7 +4491,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceAdjustTcpMssObject) CopyFromPango(c
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceArpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Arp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceArpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Arp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -4018,7 +4504,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceArpObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceBonjourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceBonjourObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4040,12 +4526,18 @@ func (o *EthernetLayer3SubinterfaceDataSourceBonjourObject) CopyFromPango(ctx co
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ddnsIp_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
+
+		entries := make([]string, 0)
+		if o.DdnsIp.IsNull() || len(obj.DdnsIp) > 0 {
+			entries = obj.DdnsIp
+		}
+
+		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -4054,7 +4546,13 @@ func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) CopyFromPango(ctx
 	var ddnsIpv6_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
+
+		entries := make([]string, 0)
+		if o.DdnsIpv6.IsNull() || len(obj.DdnsIpv6) > 0 {
+			entries = obj.DdnsIpv6
+		}
+
+		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -4063,15 +4561,31 @@ func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) CopyFromPango(ctx
 	var ddnsVendorConfig_list types.List
 	{
 		var ddnsVendorConfig_tf_entries []EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject
-		for _, elt := range obj.DdnsVendorConfig {
-			entry := EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.DdnsVendorConfig.IsNull() {
+			diags.Append(o.DdnsVendorConfig.ElementsAs(ctx, &ddnsVendorConfig_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			ddnsVendorConfig_tf_entries = append(ddnsVendorConfig_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.DdnsVendorConfig {
+			entry := EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(ddnsVendorConfig_tf_entries) {
+				entry = ddnsVendorConfig_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(ddnsVendorConfig_tf_entries) {
+				ddnsVendorConfig_tf_entries[idx] = entry
+			} else {
+				ddnsVendorConfig_tf_entries = append(ddnsVendorConfig_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("ddns_vendor_config")
@@ -4111,7 +4625,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -4124,12 +4638,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject) C
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sendHostname_object *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject
+
+	var sendHostname_obj *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject
+	if o.SendHostname.IsNull() {
+		sendHostname_obj = new(EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject)
+	} else {
+		diags.Append(o.SendHostname.As(ctx, &sendHostname_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	sendHostname_object := types.ObjectNull(sendHostname_obj.AttributeTypes())
 	if obj.SendHostname != nil {
-		sendHostname_object = new(EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject)
-		diags.Append(sendHostname_object.CopyFromPango(ctx, append(ancestors, o), obj.SendHostname, ev)...)
+		diags.Append(sendHostname_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.SendHostname, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		sendHostname_object, diags_tmp = types.ObjectValueFrom(ctx, sendHostname_obj.AttributeTypes(), sendHostname_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4155,7 +4684,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4172,7 +4701,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameObject) CopyF
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var sdwanGateway_value types.String
@@ -4185,46 +4714,107 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpObject) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6AddressObject
-		for _, elt := range obj.Address {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6AddressObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Address.IsNull() {
+			diags.Append(o.Address.ElementsAs(ctx, &address_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			address_tf_entries = append(address_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Address {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6AddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(address_tf_entries) {
+				entry = address_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(address_tf_entries) {
+				address_tf_entries[idx] = entry
+			} else {
+				address_tf_entries = append(address_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("address")
 		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dhcpClient_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject
+
+	var dhcpClient_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject
+	if o.DhcpClient.IsNull() {
+		dhcpClient_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject)
+	} else {
+		diags.Append(o.DhcpClient.As(ctx, &dhcpClient_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dhcpClient_object := types.ObjectNull(dhcpClient_obj.AttributeTypes())
 	if obj.DhcpClient != nil {
-		dhcpClient_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject)
-		diags.Append(dhcpClient_object.CopyFromPango(ctx, append(ancestors, o), obj.DhcpClient, ev)...)
+		diags.Append(dhcpClient_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DhcpClient, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpClient_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpClient_obj.AttributeTypes(), dhcpClient_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var inherited_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject
+
+	var inherited_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject
+	if o.Inherited.IsNull() {
+		inherited_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject)
+	} else {
+		diags.Append(o.Inherited.As(ctx, &inherited_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	inherited_object := types.ObjectNull(inherited_obj.AttributeTypes())
 	if obj.Inherited != nil {
-		inherited_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject)
-		diags.Append(inherited_object.CopyFromPango(ctx, append(ancestors, o), obj.Inherited, ev)...)
+		diags.Append(inherited_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Inherited, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		inherited_object, diags_tmp = types.ObjectValueFrom(ctx, inherited_obj.AttributeTypes(), inherited_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var neighborDiscovery_object *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject
+
+	var neighborDiscovery_obj *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject
+	if o.NeighborDiscovery.IsNull() {
+		neighborDiscovery_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject)
+	} else {
+		diags.Append(o.NeighborDiscovery.As(ctx, &neighborDiscovery_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	neighborDiscovery_object := types.ObjectNull(neighborDiscovery_obj.AttributeTypes())
 	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject)
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		diags.Append(neighborDiscovery_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		neighborDiscovery_object, diags_tmp = types.ObjectValueFrom(ctx, neighborDiscovery_obj.AttributeTypes(), neighborDiscovery_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4248,28 +4838,73 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6Object) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var prefix_object *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject
+
+	var prefix_obj *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject
+	if o.Prefix.IsNull() {
+		prefix_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject)
+	} else {
+		diags.Append(o.Prefix.As(ctx, &prefix_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	prefix_object := types.ObjectNull(prefix_obj.AttributeTypes())
 	if obj.Prefix != nil {
-		prefix_object = new(EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject)
-		diags.Append(prefix_object.CopyFromPango(ctx, append(ancestors, o), obj.Prefix, ev)...)
+		diags.Append(prefix_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Prefix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		prefix_object, diags_tmp = types.ObjectValueFrom(ctx, prefix_obj.AttributeTypes(), prefix_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var anycast_object *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject
+
+	var anycast_obj *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject
+	if o.Anycast.IsNull() {
+		anycast_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject)
+	} else {
+		diags.Append(o.Anycast.As(ctx, &anycast_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	anycast_object := types.ObjectNull(anycast_obj.AttributeTypes())
 	if obj.Anycast != nil {
-		anycast_object = new(EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject)
-		diags.Append(anycast_object.CopyFromPango(ctx, append(ancestors, o), obj.Anycast, ev)...)
+		diags.Append(anycast_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Anycast, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		anycast_object, diags_tmp = types.ObjectValueFrom(ctx, anycast_obj.AttributeTypes(), anycast_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var advertise_object *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject
+
+	var advertise_obj *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject
+	if o.Advertise.IsNull() {
+		advertise_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject)
+	} else {
+		diags.Append(o.Advertise.As(ctx, &advertise_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	advertise_object := types.ObjectNull(advertise_obj.AttributeTypes())
 	if obj.Advertise != nil {
-		advertise_object = new(EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject)
-		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		diags.Append(advertise_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		advertise_object, diags_tmp = types.ObjectValueFrom(ctx, advertise_obj.AttributeTypes(), advertise_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4288,19 +4923,19 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4332,28 +4967,73 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject) CopyFro
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var neighborDiscovery_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject
+
+	var neighborDiscovery_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject
+	if o.NeighborDiscovery.IsNull() {
+		neighborDiscovery_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject)
+	} else {
+		diags.Append(o.NeighborDiscovery.As(ctx, &neighborDiscovery_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	neighborDiscovery_object := types.ObjectNull(neighborDiscovery_obj.AttributeTypes())
 	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject)
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		diags.Append(neighborDiscovery_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		neighborDiscovery_object, diags_tmp = types.ObjectValueFrom(ctx, neighborDiscovery_obj.AttributeTypes(), neighborDiscovery_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var prefixDelegation_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject
+
+	var prefixDelegation_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject
+	if o.PrefixDelegation.IsNull() {
+		prefixDelegation_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject)
+	} else {
+		diags.Append(o.PrefixDelegation.As(ctx, &prefixDelegation_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	prefixDelegation_object := types.ObjectNull(prefixDelegation_obj.AttributeTypes())
 	if obj.PrefixDelegation != nil {
-		prefixDelegation_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject)
-		diags.Append(prefixDelegation_object.CopyFromPango(ctx, append(ancestors, o), obj.PrefixDelegation, ev)...)
+		diags.Append(prefixDelegation_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.PrefixDelegation, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		prefixDelegation_object, diags_tmp = types.ObjectValueFrom(ctx, prefixDelegation_obj.AttributeTypes(), prefixDelegation_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var v6Options_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject
+
+	var v6Options_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject
+	if o.V6Options.IsNull() {
+		v6Options_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject)
+	} else {
+		diags.Append(o.V6Options.As(ctx, &v6Options_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	v6Options_object := types.ObjectNull(v6Options_obj.AttributeTypes())
 	if obj.V6Options != nil {
-		v6Options_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject)
-		diags.Append(v6Options_object.CopyFromPango(ctx, append(ancestors, o), obj.V6Options, ev)...)
+		diags.Append(v6Options_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.V6Options, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		v6Options_object, diags_tmp = types.ObjectValueFrom(ctx, v6Options_obj.AttributeTypes(), v6Options_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4386,38 +5066,84 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject) CopyFromPango
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Neighbor.IsNull() {
+			diags.Append(o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Neighbor {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(neighbor_tf_entries) {
+				entry = neighbor_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(neighbor_tf_entries) {
+				neighbor_tf_entries[idx] = entry
+			} else {
+				neighbor_tf_entries = append(neighbor_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("neighbor")
 		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dnsServer_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
-	if obj.DnsServer != nil {
-		dnsServer_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject)
-		diags.Append(dnsServer_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsServer, ev)...)
+
+	var dnsServer_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
+	if o.DnsServer.IsNull() {
+		dnsServer_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject)
+	} else {
+		diags.Append(o.DnsServer.As(ctx, &dnsServer_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dnsSuffix_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+	dnsServer_object := types.ObjectNull(dnsServer_obj.AttributeTypes())
+	if obj.DnsServer != nil {
+		diags.Append(dnsServer_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsServer_object, diags_tmp = types.ObjectValueFrom(ctx, dnsServer_obj.AttributeTypes(), dnsServer_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dnsSuffix_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+	if o.DnsSuffix.IsNull() {
+		dnsSuffix_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject)
+	} else {
+		diags.Append(o.DnsSuffix.As(ctx, &dnsSuffix_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsSuffix_object := types.ObjectNull(dnsSuffix_obj.AttributeTypes())
 	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject)
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSuffix, ev)...)
+		diags.Append(dnsSuffix_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsSuffix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsSuffix_object, diags_tmp = types.ObjectValueFrom(ctx, dnsSuffix_obj.AttributeTypes(), dnsSuffix_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4455,12 +5181,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObje
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var source_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+
+	var source_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+	if o.Source.IsNull() {
+		source_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
+	} else {
+		diags.Append(o.Source.As(ctx, &source_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	source_object := types.ObjectNull(source_obj.AttributeTypes())
 	if obj.Source != nil {
-		source_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
-		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		diags.Append(source_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		source_object, diags_tmp = types.ObjectValueFrom(ctx, source_obj.AttributeTypes(), source_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4476,20 +5217,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+
+	var dhcpv6_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if o.Dhcpv6.IsNull() {
+		dhcpv6_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
+	} else {
+		diags.Append(o.Dhcpv6.As(ctx, &dhcpv6_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var manual_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	dhcpv6_object := types.ObjectNull(dhcpv6_obj.AttributeTypes())
+	if obj.Dhcpv6 != nil {
+		diags.Append(dhcpv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpv6_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpv6_obj.AttributeTypes(), dhcpv6_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var manual_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	if o.Manual.IsNull() {
+		manual_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
+	} else {
+		diags.Append(o.Manual.As(ctx, &manual_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	manual_object := types.ObjectNull(manual_obj.AttributeTypes())
 	if obj.Manual != nil {
-		manual_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
-		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		diags.Append(manual_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		manual_object, diags_tmp = types.ObjectValueFrom(ctx, manual_obj.AttributeTypes(), manual_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4501,26 +5272,42 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Server.IsNull() {
+			diags.Append(o.Server.ElementsAs(ctx, &server_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			server_tf_entries = append(server_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(server_tf_entries) {
+				entry = server_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(server_tf_entries) {
+				server_tf_entries[idx] = entry
+			} else {
+				server_tf_entries = append(server_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("server")
@@ -4533,7 +5320,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -4546,12 +5333,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var source_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+
+	var source_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+	if o.Source.IsNull() {
+		source_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject)
+	} else {
+		diags.Append(o.Source.As(ctx, &source_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	source_object := types.ObjectNull(source_obj.AttributeTypes())
 	if obj.Source != nil {
-		source_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject)
-		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		diags.Append(source_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		source_object, diags_tmp = types.ObjectValueFrom(ctx, source_obj.AttributeTypes(), source_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4567,20 +5369,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+
+	var dhcpv6_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if o.Dhcpv6.IsNull() {
+		dhcpv6_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+	} else {
+		diags.Append(o.Dhcpv6.As(ctx, &dhcpv6_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var manual_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	dhcpv6_object := types.ObjectNull(dhcpv6_obj.AttributeTypes())
+	if obj.Dhcpv6 != nil {
+		diags.Append(dhcpv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpv6_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpv6_obj.AttributeTypes(), dhcpv6_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var manual_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	if o.Manual.IsNull() {
+		manual_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject)
+	} else {
+		diags.Append(o.Manual.As(ctx, &manual_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	manual_object := types.ObjectNull(manual_obj.AttributeTypes())
 	if obj.Manual != nil {
-		manual_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject)
-		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		diags.Append(manual_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		manual_object, diags_tmp = types.ObjectValueFrom(ctx, manual_obj.AttributeTypes(), manual_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4592,26 +5424,42 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var suffix_list types.List
 	{
 		var suffix_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Suffix.IsNull() {
+			diags.Append(o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Suffix {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(suffix_tf_entries) {
+				entry = suffix_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(suffix_tf_entries) {
+				suffix_tf_entries[idx] = entry
+			} else {
+				suffix_tf_entries = append(suffix_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("suffix")
@@ -4624,7 +5472,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -4637,7 +5485,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -4650,12 +5498,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeig
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var enable_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject
+
+	var enable_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject
+	if o.Enable.IsNull() {
+		enable_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject)
+	} else {
+		diags.Append(o.Enable.As(ctx, &enable_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enable_object := types.ObjectNull(enable_obj.AttributeTypes())
 	if obj.Enable != nil {
-		enable_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject)
-		diags.Append(enable_object.CopyFromPango(ctx, append(ancestors, o), obj.Enable, ev)...)
+		diags.Append(enable_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Enable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		enable_object, diags_tmp = types.ObjectValueFrom(ctx, enable_obj.AttributeTypes(), enable_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4666,20 +5529,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObjec
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var no_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject
-	if obj.No != nil {
-		no_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject)
-		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
+
+	var no_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject
+	if o.No.IsNull() {
+		no_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject)
+	} else {
+		diags.Append(o.No.As(ctx, &no_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var yes_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject
+	no_object := types.ObjectNull(no_obj.AttributeTypes())
+	if obj.No != nil {
+		diags.Append(no_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.No, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		no_object, diags_tmp = types.ObjectValueFrom(ctx, no_obj.AttributeTypes(), no_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var yes_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject
+	if o.Yes.IsNull() {
+		yes_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject)
+	} else {
+		diags.Append(o.Yes.As(ctx, &yes_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	yes_object := types.ObjectNull(yes_obj.AttributeTypes())
 	if obj.Yes != nil {
-		yes_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject)
-		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
+		diags.Append(yes_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Yes, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		yes_object, diags_tmp = types.ObjectValueFrom(ctx, yes_obj.AttributeTypes(), yes_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4691,13 +5584,13 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnabl
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var pfxPoolName_value types.String
@@ -4719,12 +5612,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnabl
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var enable_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject
+
+	var enable_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject
+	if o.Enable.IsNull() {
+		enable_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject)
+	} else {
+		diags.Append(o.Enable.As(ctx, &enable_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enable_object := types.ObjectNull(enable_obj.AttributeTypes())
 	if obj.Enable != nil {
-		enable_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject)
-		diags.Append(enable_object.CopyFromPango(ctx, append(ancestors, o), obj.Enable, ev)...)
+		diags.Append(enable_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Enable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		enable_object, diags_tmp = types.ObjectValueFrom(ctx, enable_obj.AttributeTypes(), enable_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4750,20 +5658,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject) Copy
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var no_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject
-	if obj.No != nil {
-		no_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject)
-		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
+
+	var no_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject
+	if o.No.IsNull() {
+		no_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject)
+	} else {
+		diags.Append(o.No.As(ctx, &no_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var yes_object *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject
+	no_object := types.ObjectNull(no_obj.AttributeTypes())
+	if obj.No != nil {
+		diags.Append(no_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.No, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		no_object, diags_tmp = types.ObjectValueFrom(ctx, no_obj.AttributeTypes(), no_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var yes_obj *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject
+	if o.Yes.IsNull() {
+		yes_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject)
+	} else {
+		diags.Append(o.Yes.As(ctx, &yes_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	yes_object := types.ObjectNull(yes_obj.AttributeTypes())
 	if obj.Yes != nil {
-		yes_object = new(EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject)
-		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
+		diags.Append(yes_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Yes, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		yes_object, diags_tmp = types.ObjectValueFrom(ctx, yes_obj.AttributeTypes(), yes_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4775,13 +5713,13 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var nonTempAddr_value types.Bool
@@ -4798,30 +5736,61 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObj
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var assignAddr_list types.List
 	{
 		var assignAddr_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject
-		for _, elt := range obj.AssignAddr {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.AssignAddr.IsNull() {
+			diags.Append(o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.AssignAddr {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(assignAddr_tf_entries) {
+				entry = assignAddr_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(assignAddr_tf_entries) {
+				assignAddr_tf_entries[idx] = entry
+			} else {
+				assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("assign_addr")
 		assignAddr_list, list_diags = types.ListValueFrom(ctx, schemaType, assignAddr_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var neighborDiscovery_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject
+
+	var neighborDiscovery_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject
+	if o.NeighborDiscovery.IsNull() {
+		neighborDiscovery_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject)
+	} else {
+		diags.Append(o.NeighborDiscovery.As(ctx, &neighborDiscovery_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	neighborDiscovery_object := types.ObjectNull(neighborDiscovery_obj.AttributeTypes())
 	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject)
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		diags.Append(neighborDiscovery_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		neighborDiscovery_object, diags_tmp = types.ObjectValueFrom(ctx, neighborDiscovery_obj.AttributeTypes(), neighborDiscovery_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4838,12 +5807,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedObject) CopyFromPango(
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var type_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject
+
+	var type_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject
+	if o.Type.IsNull() {
+		type_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject)
+	} else {
+		diags.Append(o.Type.As(ctx, &type_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	type_object := types.ObjectNull(type_obj.AttributeTypes())
 	if obj.Type != nil {
-		type_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject)
-		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
+		diags.Append(type_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Type, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		type_object, diags_tmp = types.ObjectValueFrom(ctx, type_obj.AttributeTypes(), type_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4855,20 +5839,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject) Copy
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var gua_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject
-	if obj.Gua != nil {
-		gua_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject)
-		diags.Append(gua_object.CopyFromPango(ctx, append(ancestors, o), obj.Gua, ev)...)
+
+	var gua_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject
+	if o.Gua.IsNull() {
+		gua_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject)
+	} else {
+		diags.Append(o.Gua.As(ctx, &gua_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ula_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject
+	gua_object := types.ObjectNull(gua_obj.AttributeTypes())
+	if obj.Gua != nil {
+		diags.Append(gua_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Gua, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		gua_object, diags_tmp = types.ObjectValueFrom(ctx, gua_obj.AttributeTypes(), gua_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ula_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject
+	if o.Ula.IsNull() {
+		ula_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject)
+	} else {
+		diags.Append(o.Ula.As(ctx, &ula_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ula_object := types.ObjectNull(ula_obj.AttributeTypes())
 	if obj.Ula != nil {
-		ula_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject)
-		diags.Append(ula_object.CopyFromPango(ctx, append(ancestors, o), obj.Ula, ev)...)
+		diags.Append(ula_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ula, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ula_object, diags_tmp = types.ObjectValueFrom(ctx, ula_obj.AttributeTypes(), ula_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4880,20 +5894,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject) 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var poolType_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
-	if obj.PoolType != nil {
-		poolType_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject)
-		diags.Append(poolType_object.CopyFromPango(ctx, append(ancestors, o), obj.PoolType, ev)...)
+
+	var poolType_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+	if o.PoolType.IsNull() {
+		poolType_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject)
+	} else {
+		diags.Append(o.PoolType.As(ctx, &poolType_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var advertise_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+	poolType_object := types.ObjectNull(poolType_obj.AttributeTypes())
+	if obj.PoolType != nil {
+		diags.Append(poolType_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.PoolType, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		poolType_object, diags_tmp = types.ObjectValueFrom(ctx, poolType_obj.AttributeTypes(), poolType_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var advertise_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+	if o.Advertise.IsNull() {
+		advertise_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject)
+	} else {
+		diags.Append(o.Advertise.As(ctx, &advertise_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	advertise_object := types.ObjectNull(advertise_obj.AttributeTypes())
 	if obj.Advertise != nil {
-		advertise_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject)
-		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		diags.Append(advertise_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		advertise_object, diags_tmp = types.ObjectValueFrom(ctx, advertise_obj.AttributeTypes(), advertise_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4915,20 +5959,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObjec
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dynamic_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
-	if obj.Dynamic != nil {
-		dynamic_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
-		diags.Append(dynamic_object.CopyFromPango(ctx, append(ancestors, o), obj.Dynamic, ev)...)
+
+	var dynamic_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+	if o.Dynamic.IsNull() {
+		dynamic_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
+	} else {
+		diags.Append(o.Dynamic.As(ctx, &dynamic_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dynamicId_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	dynamic_object := types.ObjectNull(dynamic_obj.AttributeTypes())
+	if obj.Dynamic != nil {
+		diags.Append(dynamic_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dynamic, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dynamic_object, diags_tmp = types.ObjectValueFrom(ctx, dynamic_obj.AttributeTypes(), dynamic_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dynamicId_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	if o.DynamicId.IsNull() {
+		dynamicId_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
+	} else {
+		diags.Append(o.DynamicId.As(ctx, &dynamicId_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dynamicId_object := types.ObjectNull(dynamicId_obj.AttributeTypes())
 	if obj.DynamicId != nil {
-		dynamicId_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
-		diags.Append(dynamicId_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicId, ev)...)
+		diags.Append(dynamicId_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DynamicId, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dynamicId_object, diags_tmp = types.ObjectValueFrom(ctx, dynamicId_obj.AttributeTypes(), dynamicId_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4940,13 +6014,13 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolT
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var identifier_value types.Int64
@@ -4958,7 +6032,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolT
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -4980,12 +6054,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdver
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var advertise_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+
+	var advertise_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+	if o.Advertise.IsNull() {
+		advertise_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject)
+	} else {
+		diags.Append(o.Advertise.As(ctx, &advertise_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	advertise_object := types.ObjectNull(advertise_obj.AttributeTypes())
 	if obj.Advertise != nil {
-		advertise_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject)
-		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		diags.Append(advertise_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		advertise_object, diags_tmp = types.ObjectValueFrom(ctx, advertise_obj.AttributeTypes(), advertise_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5016,7 +6105,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObjec
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -5048,46 +6137,107 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdver
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Neighbor.IsNull() {
+			diags.Append(o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Neighbor {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(neighbor_tf_entries) {
+				entry = neighbor_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(neighbor_tf_entries) {
+				neighbor_tf_entries[idx] = entry
+			} else {
+				neighbor_tf_entries = append(neighbor_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("neighbor")
 		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dnsServer_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject
+
+	var dnsServer_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject
+	if o.DnsServer.IsNull() {
+		dnsServer_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject)
+	} else {
+		diags.Append(o.DnsServer.As(ctx, &dnsServer_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsServer_object := types.ObjectNull(dnsServer_obj.AttributeTypes())
 	if obj.DnsServer != nil {
-		dnsServer_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject)
-		diags.Append(dnsServer_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsServer, ev)...)
+		diags.Append(dnsServer_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsServer_object, diags_tmp = types.ObjectValueFrom(ctx, dnsServer_obj.AttributeTypes(), dnsServer_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dnsSuffix_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+
+	var dnsSuffix_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+	if o.DnsSuffix.IsNull() {
+		dnsSuffix_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject)
+	} else {
+		diags.Append(o.DnsSuffix.As(ctx, &dnsSuffix_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsSuffix_object := types.ObjectNull(dnsSuffix_obj.AttributeTypes())
 	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject)
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSuffix, ev)...)
+		diags.Append(dnsSuffix_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsSuffix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsSuffix_object, diags_tmp = types.ObjectValueFrom(ctx, dnsSuffix_obj.AttributeTypes(), dnsSuffix_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var routerAdvertisement_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+
+	var routerAdvertisement_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+	if o.RouterAdvertisement.IsNull() {
+		routerAdvertisement_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject)
+	} else {
+		diags.Append(o.RouterAdvertisement.As(ctx, &routerAdvertisement_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	routerAdvertisement_object := types.ObjectNull(routerAdvertisement_obj.AttributeTypes())
 	if obj.RouterAdvertisement != nil {
-		routerAdvertisement_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject)
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		diags.Append(routerAdvertisement_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		routerAdvertisement_object, diags_tmp = types.ObjectValueFrom(ctx, routerAdvertisement_obj.AttributeTypes(), routerAdvertisement_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5126,12 +6276,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObjec
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var source_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+
+	var source_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+	if o.Source.IsNull() {
+		source_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject)
+	} else {
+		diags.Append(o.Source.As(ctx, &source_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	source_object := types.ObjectNull(source_obj.AttributeTypes())
 	if obj.Source != nil {
-		source_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject)
-		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		diags.Append(source_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		source_object, diags_tmp = types.ObjectValueFrom(ctx, source_obj.AttributeTypes(), source_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5147,20 +6312,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+
+	var dhcpv6_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if o.Dhcpv6.IsNull() {
+		dhcpv6_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
+	} else {
+		diags.Append(o.Dhcpv6.As(ctx, &dhcpv6_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var manual_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	dhcpv6_object := types.ObjectNull(dhcpv6_obj.AttributeTypes())
+	if obj.Dhcpv6 != nil {
+		diags.Append(dhcpv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpv6_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpv6_obj.AttributeTypes(), dhcpv6_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var manual_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	if o.Manual.IsNull() {
+		manual_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
+	} else {
+		diags.Append(o.Manual.As(ctx, &manual_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	manual_object := types.ObjectNull(manual_obj.AttributeTypes())
 	if obj.Manual != nil {
-		manual_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
-		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		diags.Append(manual_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		manual_object, diags_tmp = types.ObjectValueFrom(ctx, manual_obj.AttributeTypes(), manual_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5172,7 +6367,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var prefixPool_value types.String
@@ -5184,20 +6379,36 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Server.IsNull() {
+			diags.Append(o.Server.ElementsAs(ctx, &server_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			server_tf_entries = append(server_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(server_tf_entries) {
+				entry = server_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(server_tf_entries) {
+				server_tf_entries[idx] = entry
+			} else {
+				server_tf_entries = append(server_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("server")
@@ -5210,7 +6421,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -5223,12 +6434,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var source_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+
+	var source_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	if o.Source.IsNull() {
+		source_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
+	} else {
+		diags.Append(o.Source.As(ctx, &source_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	source_object := types.ObjectNull(source_obj.AttributeTypes())
 	if obj.Source != nil {
-		source_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
-		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		diags.Append(source_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		source_object, diags_tmp = types.ObjectValueFrom(ctx, source_obj.AttributeTypes(), source_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5244,20 +6470,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+
+	var dhcpv6_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if o.Dhcpv6.IsNull() {
+		dhcpv6_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+	} else {
+		diags.Append(o.Dhcpv6.As(ctx, &dhcpv6_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var manual_object *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	dhcpv6_object := types.ObjectNull(dhcpv6_obj.AttributeTypes())
+	if obj.Dhcpv6 != nil {
+		diags.Append(dhcpv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpv6_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpv6_obj.AttributeTypes(), dhcpv6_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var manual_obj *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	if o.Manual.IsNull() {
+		manual_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
+	} else {
+		diags.Append(o.Manual.As(ctx, &manual_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	manual_object := types.ObjectNull(manual_obj.AttributeTypes())
 	if obj.Manual != nil {
-		manual_object = new(EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
-		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		diags.Append(manual_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		manual_object, diags_tmp = types.ObjectValueFrom(ctx, manual_obj.AttributeTypes(), manual_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5269,7 +6525,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var prefixPool_value types.String
@@ -5281,20 +6537,36 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var suffix_list types.List
 	{
 		var suffix_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Suffix.IsNull() {
+			diags.Append(o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Suffix {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(suffix_tf_entries) {
+				entry = suffix_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(suffix_tf_entries) {
+				suffix_tf_entries[idx] = entry
+			} else {
+				suffix_tf_entries = append(suffix_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("suffix")
@@ -5307,7 +6579,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -5320,7 +6592,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -5333,7 +6605,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeigh
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -5400,30 +6672,61 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRoute
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Neighbor.IsNull() {
+			diags.Append(o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Neighbor {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(neighbor_tf_entries) {
+				entry = neighbor_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(neighbor_tf_entries) {
+				neighbor_tf_entries[idx] = entry
+			} else {
+				neighbor_tf_entries = append(neighbor_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("neighbor")
 		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var routerAdvertisement_object *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject
+
+	var routerAdvertisement_obj *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject
+	if o.RouterAdvertisement.IsNull() {
+		routerAdvertisement_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject)
+	} else {
+		diags.Append(o.RouterAdvertisement.As(ctx, &routerAdvertisement_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	routerAdvertisement_object := types.ObjectNull(routerAdvertisement_obj.AttributeTypes())
 	if obj.RouterAdvertisement != nil {
-		routerAdvertisement_object = new(EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject)
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		diags.Append(routerAdvertisement_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		routerAdvertisement_object, diags_tmp = types.ObjectValueFrom(ctx, routerAdvertisement_obj.AttributeTypes(), routerAdvertisement_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5460,7 +6763,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) CopyFr
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -5473,12 +6776,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dnsSupport_object *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+
+	var dnsSupport_obj *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+	if o.DnsSupport.IsNull() {
+		dnsSupport_obj = new(EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
+	} else {
+		diags.Append(o.DnsSupport.As(ctx, &dnsSupport_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsSupport_object := types.ObjectNull(dnsSupport_obj.AttributeTypes())
 	if obj.DnsSupport != nil {
-		dnsSupport_object = new(EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
-		diags.Append(dnsSupport_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSupport, ev)...)
+		diags.Append(dnsSupport_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsSupport, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsSupport_object, diags_tmp = types.ObjectValueFrom(ctx, dnsSupport_obj.AttributeTypes(), dnsSupport_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5549,20 +6867,36 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
-		for _, elt := range obj.Server {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Server.IsNull() {
+			diags.Append(o.Server.ElementsAs(ctx, &server_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			server_tf_entries = append(server_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(server_tf_entries) {
+				entry = server_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(server_tf_entries) {
+				server_tf_entries[idx] = entry
+			} else {
+				server_tf_entries = append(server_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("server")
@@ -5572,15 +6906,31 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 	var suffix_list types.List
 	{
 		var suffix_tf_entries []EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
-		for _, elt := range obj.Suffix {
-			entry := EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Suffix.IsNull() {
+			diags.Append(o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Suffix {
+			entry := EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(suffix_tf_entries) {
+				entry = suffix_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(suffix_tf_entries) {
+				suffix_tf_entries[idx] = entry
+			} else {
+				suffix_tf_entries = append(suffix_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("suffix")
@@ -5599,7 +6949,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -5612,7 +6962,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -5625,20 +6975,36 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject
-		for _, elt := range obj.Address {
-			entry := EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Address.IsNull() {
+			diags.Append(o.Address.ElementsAs(ctx, &address_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			address_tf_entries = append(address_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Address {
+			entry := EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(address_tf_entries) {
+				entry = address_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(address_tf_entries) {
+				address_tf_entries[idx] = entry
+			} else {
+				address_tf_entries = append(address_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("address")
@@ -5656,7 +7022,7 @@ func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var negate_value types.Bool
@@ -5669,20 +7035,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject) CopyFromPang
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourcePppoeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Pppoe, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourcePppoeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Pppoe, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var passive_object *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject
-	if obj.Passive != nil {
-		passive_object = new(EthernetLayer3SubinterfaceDataSourcePppoePassiveObject)
-		diags.Append(passive_object.CopyFromPango(ctx, append(ancestors, o), obj.Passive, ev)...)
+
+	var passive_obj *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject
+	if o.Passive.IsNull() {
+		passive_obj = new(EthernetLayer3SubinterfaceDataSourcePppoePassiveObject)
+	} else {
+		diags.Append(o.Passive.As(ctx, &passive_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var staticAddress_object *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject
+	passive_object := types.ObjectNull(passive_obj.AttributeTypes())
+	if obj.Passive != nil {
+		diags.Append(passive_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Passive, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		passive_object, diags_tmp = types.ObjectValueFrom(ctx, passive_obj.AttributeTypes(), passive_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var staticAddress_obj *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject
+	if o.StaticAddress.IsNull() {
+		staticAddress_obj = new(EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject)
+	} else {
+		diags.Append(o.StaticAddress.As(ctx, &staticAddress_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	staticAddress_object := types.ObjectNull(staticAddress_obj.AttributeTypes())
 	if obj.StaticAddress != nil {
-		staticAddress_object = new(EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject)
-		diags.Append(staticAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticAddress, ev)...)
+		diags.Append(staticAddress_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.StaticAddress, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		staticAddress_object, diags_tmp = types.ObjectValueFrom(ctx, staticAddress_obj.AttributeTypes(), staticAddress_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5755,7 +7151,7 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoeObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.PppoePassive, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.PppoePassive, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -5767,7 +7163,7 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject) CopyFromPango(c
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.PppoeStaticAddress, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.PppoeStaticAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ip_value types.String
@@ -5779,12 +7175,27 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject) CopyFromP
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var upstreamNat_object *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject
+
+	var upstreamNat_obj *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject
+	if o.UpstreamNat.IsNull() {
+		upstreamNat_obj = new(EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject)
+	} else {
+		diags.Append(o.UpstreamNat.As(ctx, &upstreamNat_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	upstreamNat_object := types.ObjectNull(upstreamNat_obj.AttributeTypes())
 	if obj.UpstreamNat != nil {
-		upstreamNat_object = new(EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject)
-		diags.Append(upstreamNat_object.CopyFromPango(ctx, append(ancestors, o), obj.UpstreamNat, ev)...)
+		diags.Append(upstreamNat_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.UpstreamNat, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		upstreamNat_object, diags_tmp = types.ObjectValueFrom(ctx, upstreamNat_obj.AttributeTypes(), upstreamNat_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5805,20 +7216,50 @@ func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject) CopyFromPa
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ddns_object *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject
-	if obj.Ddns != nil {
-		ddns_object = new(EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject)
-		diags.Append(ddns_object.CopyFromPango(ctx, append(ancestors, o), obj.Ddns, ev)...)
+
+	var ddns_obj *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject
+	if o.Ddns.IsNull() {
+		ddns_obj = new(EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject)
+	} else {
+		diags.Append(o.Ddns.As(ctx, &ddns_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var staticIp_object *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject
+	ddns_object := types.ObjectNull(ddns_obj.AttributeTypes())
+	if obj.Ddns != nil {
+		diags.Append(ddns_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ddns, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ddns_object, diags_tmp = types.ObjectValueFrom(ctx, ddns_obj.AttributeTypes(), ddns_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var staticIp_obj *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject
+	if o.StaticIp.IsNull() {
+		staticIp_obj = new(EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject)
+	} else {
+		diags.Append(o.StaticIp.As(ctx, &staticIp_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	staticIp_object := types.ObjectNull(staticIp_obj.AttributeTypes())
 	if obj.StaticIp != nil {
-		staticIp_object = new(EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject)
-		diags.Append(staticIp_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticIp, ev)...)
+		diags.Append(staticIp_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.StaticIp, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		staticIp_object, diags_tmp = types.ObjectValueFrom(ctx, staticIp_obj.AttributeTypes(), staticIp_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -5835,13 +7276,13 @@ func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject)
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var fqdn_value types.String
@@ -9601,8 +11042,8 @@ func (d *EthernetLayer3SubinterfaceDataSource) Configure(_ context.Context, req 
 }
 func (o *EthernetLayer3SubinterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state EthernetLayer3SubinterfaceDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state EthernetLayer3SubinterfaceDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -9618,7 +11059,7 @@ func (o *EthernetLayer3SubinterfaceDataSource) Read(ctx context.Context, req dat
 
 	{
 		var terraformLocation EthernetLayer3SubinterfaceLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -9671,15 +11112,15 @@ func (o *EthernetLayer3SubinterfaceDataSource) Read(ctx context.Context, req dat
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_ethernet_layer3_subinterface_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -9689,16 +11130,16 @@ func (o *EthernetLayer3SubinterfaceDataSource) Read(ctx context.Context, req dat
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	{
 		component := components[0]
@@ -9738,26 +11179,26 @@ func EthernetLayer3SubinterfaceResourceLocationSchema() rsschema.Attribute {
 }
 
 type EthernetLayer3SubinterfaceResourceModel struct {
-	Location                   types.Object                                               `tfsdk:"location"`
-	Name                       types.String                                               `tfsdk:"name"`
-	Parent                     types.String                                               `tfsdk:"parent"`
-	AdjustTcpMss               *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject      `tfsdk:"adjust_tcp_mss"`
-	Arp                        types.List                                                 `tfsdk:"arp"`
-	Bonjour                    *EthernetLayer3SubinterfaceResourceBonjourObject           `tfsdk:"bonjour"`
-	Comment                    types.String                                               `tfsdk:"comment"`
-	DdnsConfig                 *EthernetLayer3SubinterfaceResourceDdnsConfigObject        `tfsdk:"ddns_config"`
-	DecryptForward             types.Bool                                                 `tfsdk:"decrypt_forward"`
-	DfIgnore                   types.Bool                                                 `tfsdk:"df_ignore"`
-	DhcpClient                 *EthernetLayer3SubinterfaceResourceDhcpClientObject        `tfsdk:"dhcp_client"`
-	InterfaceManagementProfile types.String                                               `tfsdk:"interface_management_profile"`
-	Ip                         types.List                                                 `tfsdk:"ip"`
-	Ipv6                       *EthernetLayer3SubinterfaceResourceIpv6Object              `tfsdk:"ipv6"`
-	Mtu                        types.Int64                                                `tfsdk:"mtu"`
-	NdpProxy                   *EthernetLayer3SubinterfaceResourceNdpProxyObject          `tfsdk:"ndp_proxy"`
-	NetflowProfile             types.String                                               `tfsdk:"netflow_profile"`
-	Pppoe                      *EthernetLayer3SubinterfaceResourcePppoeObject             `tfsdk:"pppoe"`
-	SdwanLinkSettings          *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject `tfsdk:"sdwan_link_settings"`
-	Tag                        types.Int64                                                `tfsdk:"tag"`
+	Location                   types.Object `tfsdk:"location"`
+	Name                       types.String `tfsdk:"name"`
+	Parent                     types.String `tfsdk:"parent"`
+	AdjustTcpMss               types.Object `tfsdk:"adjust_tcp_mss"`
+	Arp                        types.List   `tfsdk:"arp"`
+	Bonjour                    types.Object `tfsdk:"bonjour"`
+	Comment                    types.String `tfsdk:"comment"`
+	DdnsConfig                 types.Object `tfsdk:"ddns_config"`
+	DecryptForward             types.Bool   `tfsdk:"decrypt_forward"`
+	DfIgnore                   types.Bool   `tfsdk:"df_ignore"`
+	DhcpClient                 types.Object `tfsdk:"dhcp_client"`
+	InterfaceManagementProfile types.String `tfsdk:"interface_management_profile"`
+	Ip                         types.List   `tfsdk:"ip"`
+	Ipv6                       types.Object `tfsdk:"ipv6"`
+	Mtu                        types.Int64  `tfsdk:"mtu"`
+	NdpProxy                   types.Object `tfsdk:"ndp_proxy"`
+	NetflowProfile             types.String `tfsdk:"netflow_profile"`
+	Pppoe                      types.Object `tfsdk:"pppoe"`
+	SdwanLinkSettings          types.Object `tfsdk:"sdwan_link_settings"`
+	Tag                        types.Int64  `tfsdk:"tag"`
 }
 type EthernetLayer3SubinterfaceResourceAdjustTcpMssObject struct {
 	Enable            types.Bool  `tfsdk:"enable"`
@@ -9788,10 +11229,10 @@ type EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject struct {
 	Value types.String `tfsdk:"value"`
 }
 type EthernetLayer3SubinterfaceResourceDhcpClientObject struct {
-	CreateDefaultRoute types.Bool                                                      `tfsdk:"create_default_route"`
-	DefaultRouteMetric types.Int64                                                     `tfsdk:"default_route_metric"`
-	Enable             types.Bool                                                      `tfsdk:"enable"`
-	SendHostname       *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject `tfsdk:"send_hostname"`
+	CreateDefaultRoute types.Bool   `tfsdk:"create_default_route"`
+	DefaultRouteMetric types.Int64  `tfsdk:"default_route_metric"`
+	Enable             types.Bool   `tfsdk:"enable"`
+	SendHostname       types.Object `tfsdk:"send_hostname"`
 }
 type EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject struct {
 	Enable   types.Bool   `tfsdk:"enable"`
@@ -9802,19 +11243,19 @@ type EthernetLayer3SubinterfaceResourceIpObject struct {
 	SdwanGateway types.String `tfsdk:"sdwan_gateway"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6Object struct {
-	Address           types.List                                                     `tfsdk:"address"`
-	DhcpClient        *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject        `tfsdk:"dhcp_client"`
-	Enabled           types.Bool                                                     `tfsdk:"enabled"`
-	Inherited         *EthernetLayer3SubinterfaceResourceIpv6InheritedObject         `tfsdk:"inherited"`
-	InterfaceId       types.String                                                   `tfsdk:"interface_id"`
-	NeighborDiscovery *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
+	Address           types.List   `tfsdk:"address"`
+	DhcpClient        types.Object `tfsdk:"dhcp_client"`
+	Enabled           types.Bool   `tfsdk:"enabled"`
+	Inherited         types.Object `tfsdk:"inherited"`
+	InterfaceId       types.String `tfsdk:"interface_id"`
+	NeighborDiscovery types.Object `tfsdk:"neighbor_discovery"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6AddressObject struct {
-	Name              types.String                                                  `tfsdk:"name"`
-	EnableOnInterface types.Bool                                                    `tfsdk:"enable_on_interface"`
-	Prefix            *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject    `tfsdk:"prefix"`
-	Anycast           *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject   `tfsdk:"anycast"`
-	Advertise         *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject `tfsdk:"advertise"`
+	Name              types.String `tfsdk:"name"`
+	EnableOnInterface types.Bool   `tfsdk:"enable_on_interface"`
+	Prefix            types.Object `tfsdk:"prefix"`
+	Anycast           types.Object `tfsdk:"anycast"`
+	Advertise         types.Object `tfsdk:"advertise"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject struct {
 }
@@ -9828,31 +11269,31 @@ type EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject struct {
 	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject struct {
-	AcceptRaRoute      types.Bool                                                               `tfsdk:"accept_ra_route"`
-	DefaultRouteMetric types.Int64                                                              `tfsdk:"default_route_metric"`
-	Enable             types.Bool                                                               `tfsdk:"enable"`
-	NeighborDiscovery  *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
-	Preference         types.String                                                             `tfsdk:"preference"`
-	PrefixDelegation   *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject  `tfsdk:"prefix_delegation"`
-	V6Options          *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject         `tfsdk:"v6_options"`
+	AcceptRaRoute      types.Bool   `tfsdk:"accept_ra_route"`
+	DefaultRouteMetric types.Int64  `tfsdk:"default_route_metric"`
+	Enable             types.Bool   `tfsdk:"enable"`
+	NeighborDiscovery  types.Object `tfsdk:"neighbor_discovery"`
+	Preference         types.String `tfsdk:"preference"`
+	PrefixDelegation   types.Object `tfsdk:"prefix_delegation"`
+	V6Options          types.Object `tfsdk:"v6_options"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject struct {
-	DadAttempts      types.Int64                                                                       `tfsdk:"dad_attempts"`
-	DnsServer        *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject `tfsdk:"dns_server"`
-	DnsSuffix        *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject `tfsdk:"dns_suffix"`
-	EnableDad        types.Bool                                                                        `tfsdk:"enable_dad"`
-	EnableNdpMonitor types.Bool                                                                        `tfsdk:"enable_ndp_monitor"`
-	Neighbor         types.List                                                                        `tfsdk:"neighbor"`
-	NsInterval       types.Int64                                                                       `tfsdk:"ns_interval"`
-	ReachableTime    types.Int64                                                                       `tfsdk:"reachable_time"`
+	DadAttempts      types.Int64  `tfsdk:"dad_attempts"`
+	DnsServer        types.Object `tfsdk:"dns_server"`
+	DnsSuffix        types.Object `tfsdk:"dns_suffix"`
+	EnableDad        types.Bool   `tfsdk:"enable_dad"`
+	EnableNdpMonitor types.Bool   `tfsdk:"enable_ndp_monitor"`
+	Neighbor         types.List   `tfsdk:"neighbor"`
+	NsInterval       types.Int64  `tfsdk:"ns_interval"`
+	ReachableTime    types.Int64  `tfsdk:"reachable_time"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject struct {
-	Enable types.Bool                                                                              `tfsdk:"enable"`
-	Source *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
+	Enable types.Bool   `tfsdk:"enable"`
+	Source types.Object `tfsdk:"source"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 types.Object `tfsdk:"dhcpv6"`
+	Manual types.Object `tfsdk:"manual"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
 }
@@ -9864,12 +11305,12 @@ type EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerS
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject struct {
-	Enable types.Bool                                                                              `tfsdk:"enable"`
-	Source *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject `tfsdk:"source"`
+	Enable types.Bool   `tfsdk:"enable"`
+	Source types.Object `tfsdk:"source"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject struct {
-	Dhcpv6 *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 types.Object `tfsdk:"dhcpv6"`
+	Manual types.Object `tfsdk:"manual"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
 }
@@ -9885,11 +11326,11 @@ type EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborOb
 	HwAddress types.String `tfsdk:"hw_address"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject struct {
-	Enable *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject `tfsdk:"enable"`
+	Enable types.Object `tfsdk:"enable"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject struct {
-	No  *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject  `tfsdk:"no"`
-	Yes *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject `tfsdk:"yes"`
+	No  types.Object `tfsdk:"no"`
+	Yes types.Object `tfsdk:"yes"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject struct {
 }
@@ -9899,14 +11340,14 @@ type EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesOb
 	PrefixLenHint types.Bool   `tfsdk:"prefix_len_hint"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject struct {
-	DuidType            types.String                                                           `tfsdk:"duid_type"`
-	Enable              *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject `tfsdk:"enable"`
-	RapidCommit         types.Bool                                                             `tfsdk:"rapid_commit"`
-	SupportSrvrReconfig types.Bool                                                             `tfsdk:"support_srvr_reconfig"`
+	DuidType            types.String `tfsdk:"duid_type"`
+	Enable              types.Object `tfsdk:"enable"`
+	RapidCommit         types.Bool   `tfsdk:"rapid_commit"`
+	SupportSrvrReconfig types.Bool   `tfsdk:"support_srvr_reconfig"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject struct {
-	No  *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject  `tfsdk:"no"`
-	Yes *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject `tfsdk:"yes"`
+	No  types.Object `tfsdk:"no"`
+	Yes types.Object `tfsdk:"yes"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject struct {
 }
@@ -9915,27 +11356,27 @@ type EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject st
 	TempAddr    types.Bool `tfsdk:"temp_addr"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedObject struct {
-	AssignAddr        types.List                                                              `tfsdk:"assign_addr"`
-	Enable            types.Bool                                                              `tfsdk:"enable"`
-	NeighborDiscovery *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject `tfsdk:"neighbor_discovery"`
+	AssignAddr        types.List   `tfsdk:"assign_addr"`
+	Enable            types.Bool   `tfsdk:"enable"`
+	NeighborDiscovery types.Object `tfsdk:"neighbor_discovery"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject struct {
-	Name types.String                                                         `tfsdk:"name"`
-	Type *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject `tfsdk:"type"`
+	Name types.String `tfsdk:"name"`
+	Type types.Object `tfsdk:"type"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject struct {
-	Gua *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject `tfsdk:"gua"`
-	Ula *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject `tfsdk:"ula"`
+	Gua types.Object `tfsdk:"gua"`
+	Ula types.Object `tfsdk:"ula"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject struct {
-	EnableOnInterface types.Bool                                                                       `tfsdk:"enable_on_interface"`
-	PrefixPool        types.String                                                                     `tfsdk:"prefix_pool"`
-	PoolType          *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject  `tfsdk:"pool_type"`
-	Advertise         *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject `tfsdk:"advertise"`
+	EnableOnInterface types.Bool   `tfsdk:"enable_on_interface"`
+	PrefixPool        types.String `tfsdk:"prefix_pool"`
+	PoolType          types.Object `tfsdk:"pool_type"`
+	Advertise         types.Object `tfsdk:"advertise"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject struct {
-	Dynamic   *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject   `tfsdk:"dynamic"`
-	DynamicId *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject `tfsdk:"dynamic_id"`
+	Dynamic   types.Object `tfsdk:"dynamic"`
+	DynamicId types.Object `tfsdk:"dynamic_id"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject struct {
 }
@@ -9948,11 +11389,11 @@ type EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseOb
 	AutoConfigFlag types.Bool `tfsdk:"auto_config_flag"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject struct {
-	EnableOnInterface types.Bool                                                                       `tfsdk:"enable_on_interface"`
-	Address           types.String                                                                     `tfsdk:"address"`
-	Prefix            types.Bool                                                                       `tfsdk:"prefix"`
-	Anycast           types.Bool                                                                       `tfsdk:"anycast"`
-	Advertise         *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject `tfsdk:"advertise"`
+	EnableOnInterface types.Bool   `tfsdk:"enable_on_interface"`
+	Address           types.String `tfsdk:"address"`
+	Prefix            types.Bool   `tfsdk:"prefix"`
+	Anycast           types.Bool   `tfsdk:"anycast"`
+	Advertise         types.Object `tfsdk:"advertise"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject struct {
 	Enable            types.Bool   `tfsdk:"enable"`
@@ -9962,23 +11403,23 @@ type EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseOb
 	AutoConfigFlag    types.Bool   `tfsdk:"auto_config_flag"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject struct {
-	DadAttempts         types.Int64                                                                                `tfsdk:"dad_attempts"`
-	DnsServer           *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject           `tfsdk:"dns_server"`
-	DnsSuffix           *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject           `tfsdk:"dns_suffix"`
-	EnableDad           types.Bool                                                                                 `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                                                 `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                                                 `tfsdk:"neighbor"`
-	NsInterval          types.Int64                                                                                `tfsdk:"ns_interval"`
-	ReachableTime       types.Int64                                                                                `tfsdk:"reachable_time"`
-	RouterAdvertisement *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
+	DadAttempts         types.Int64  `tfsdk:"dad_attempts"`
+	DnsServer           types.Object `tfsdk:"dns_server"`
+	DnsSuffix           types.Object `tfsdk:"dns_suffix"`
+	EnableDad           types.Bool   `tfsdk:"enable_dad"`
+	EnableNdpMonitor    types.Bool   `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List   `tfsdk:"neighbor"`
+	NsInterval          types.Int64  `tfsdk:"ns_interval"`
+	ReachableTime       types.Int64  `tfsdk:"reachable_time"`
+	RouterAdvertisement types.Object `tfsdk:"router_advertisement"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject struct {
-	Enable types.Bool                                                                             `tfsdk:"enable"`
-	Source *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject `tfsdk:"source"`
+	Enable types.Bool   `tfsdk:"enable"`
+	Source types.Object `tfsdk:"source"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject struct {
-	Dhcpv6 *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 types.Object `tfsdk:"dhcpv6"`
+	Manual types.Object `tfsdk:"manual"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object struct {
 	PrefixPool types.String `tfsdk:"prefix_pool"`
@@ -9991,12 +11432,12 @@ type EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSo
 	Lifetime types.Int64  `tfsdk:"lifetime"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject struct {
-	Enable types.Bool                                                                             `tfsdk:"enable"`
-	Source *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject `tfsdk:"source"`
+	Enable types.Bool   `tfsdk:"enable"`
+	Source types.Object `tfsdk:"source"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject struct {
-	Dhcpv6 *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object `tfsdk:"dhcpv6"`
-	Manual *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject `tfsdk:"manual"`
+	Dhcpv6 types.Object `tfsdk:"dhcpv6"`
+	Manual types.Object `tfsdk:"manual"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object struct {
 	PrefixPool types.String `tfsdk:"prefix_pool"`
@@ -10027,32 +11468,32 @@ type EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdver
 	RouterPreference       types.String `tfsdk:"router_preference"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject struct {
-	DadAttempts         types.Int64                                                                       `tfsdk:"dad_attempts"`
-	EnableDad           types.Bool                                                                        `tfsdk:"enable_dad"`
-	EnableNdpMonitor    types.Bool                                                                        `tfsdk:"enable_ndp_monitor"`
-	Neighbor            types.List                                                                        `tfsdk:"neighbor"`
-	NsInterval          types.Int64                                                                       `tfsdk:"ns_interval"`
-	ReachableTime       types.Int64                                                                       `tfsdk:"reachable_time"`
-	RouterAdvertisement *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject `tfsdk:"router_advertisement"`
+	DadAttempts         types.Int64  `tfsdk:"dad_attempts"`
+	EnableDad           types.Bool   `tfsdk:"enable_dad"`
+	EnableNdpMonitor    types.Bool   `tfsdk:"enable_ndp_monitor"`
+	Neighbor            types.List   `tfsdk:"neighbor"`
+	NsInterval          types.Int64  `tfsdk:"ns_interval"`
+	ReachableTime       types.Int64  `tfsdk:"reachable_time"`
+	RouterAdvertisement types.Object `tfsdk:"router_advertisement"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject struct {
 	Name      types.String `tfsdk:"name"`
 	HwAddress types.String `tfsdk:"hw_address"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject struct {
-	DnsSupport             *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject `tfsdk:"dns_support"`
-	Enable                 types.Bool                                                                                  `tfsdk:"enable"`
-	EnableConsistencyCheck types.Bool                                                                                  `tfsdk:"enable_consistency_check"`
-	HopLimit               types.String                                                                                `tfsdk:"hop_limit"`
-	Lifetime               types.Int64                                                                                 `tfsdk:"lifetime"`
-	LinkMtu                types.String                                                                                `tfsdk:"link_mtu"`
-	ManagedFlag            types.Bool                                                                                  `tfsdk:"managed_flag"`
-	MaxInterval            types.Int64                                                                                 `tfsdk:"max_interval"`
-	MinInterval            types.Int64                                                                                 `tfsdk:"min_interval"`
-	OtherFlag              types.Bool                                                                                  `tfsdk:"other_flag"`
-	ReachableTime          types.String                                                                                `tfsdk:"reachable_time"`
-	RetransmissionTimer    types.String                                                                                `tfsdk:"retransmission_timer"`
-	RouterPreference       types.String                                                                                `tfsdk:"router_preference"`
+	DnsSupport             types.Object `tfsdk:"dns_support"`
+	Enable                 types.Bool   `tfsdk:"enable"`
+	EnableConsistencyCheck types.Bool   `tfsdk:"enable_consistency_check"`
+	HopLimit               types.String `tfsdk:"hop_limit"`
+	Lifetime               types.Int64  `tfsdk:"lifetime"`
+	LinkMtu                types.String `tfsdk:"link_mtu"`
+	ManagedFlag            types.Bool   `tfsdk:"managed_flag"`
+	MaxInterval            types.Int64  `tfsdk:"max_interval"`
+	MinInterval            types.Int64  `tfsdk:"min_interval"`
+	OtherFlag              types.Bool   `tfsdk:"other_flag"`
+	ReachableTime          types.String `tfsdk:"reachable_time"`
+	RetransmissionTimer    types.String `tfsdk:"retransmission_timer"`
+	RouterPreference       types.String `tfsdk:"router_preference"`
 }
 type EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject struct {
 	Enable types.Bool `tfsdk:"enable"`
@@ -10076,16 +11517,16 @@ type EthernetLayer3SubinterfaceResourceNdpProxyAddressObject struct {
 	Negate types.Bool   `tfsdk:"negate"`
 }
 type EthernetLayer3SubinterfaceResourcePppoeObject struct {
-	AccessConcentrator types.String                                                `tfsdk:"access_concentrator"`
-	Authentication     types.String                                                `tfsdk:"authentication"`
-	CreateDefaultRoute types.Bool                                                  `tfsdk:"create_default_route"`
-	DefaultRouteMetric types.Int64                                                 `tfsdk:"default_route_metric"`
-	Enable             types.Bool                                                  `tfsdk:"enable"`
-	Passive            *EthernetLayer3SubinterfaceResourcePppoePassiveObject       `tfsdk:"passive"`
-	Password           types.String                                                `tfsdk:"password"`
-	Service            types.String                                                `tfsdk:"service"`
-	StaticAddress      *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject `tfsdk:"static_address"`
-	Username           types.String                                                `tfsdk:"username"`
+	AccessConcentrator types.String `tfsdk:"access_concentrator"`
+	Authentication     types.String `tfsdk:"authentication"`
+	CreateDefaultRoute types.Bool   `tfsdk:"create_default_route"`
+	DefaultRouteMetric types.Int64  `tfsdk:"default_route_metric"`
+	Enable             types.Bool   `tfsdk:"enable"`
+	Passive            types.Object `tfsdk:"passive"`
+	Password           types.String `tfsdk:"password"`
+	Service            types.String `tfsdk:"service"`
+	StaticAddress      types.Object `tfsdk:"static_address"`
+	Username           types.String `tfsdk:"username"`
 }
 type EthernetLayer3SubinterfaceResourcePppoePassiveObject struct {
 	Enable types.Bool `tfsdk:"enable"`
@@ -10094,14 +11535,14 @@ type EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject struct {
 	Ip types.String `tfsdk:"ip"`
 }
 type EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject struct {
-	Enable                types.Bool                                                            `tfsdk:"enable"`
-	SdwanInterfaceProfile types.String                                                          `tfsdk:"sdwan_interface_profile"`
-	UpstreamNat           *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject `tfsdk:"upstream_nat"`
+	Enable                types.Bool   `tfsdk:"enable"`
+	SdwanInterfaceProfile types.String `tfsdk:"sdwan_interface_profile"`
+	UpstreamNat           types.Object `tfsdk:"upstream_nat"`
 }
 type EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject struct {
-	Enable   types.Bool                                                                    `tfsdk:"enable"`
-	Ddns     *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject     `tfsdk:"ddns"`
-	StaticIp *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject `tfsdk:"static_ip"`
+	Enable   types.Bool   `tfsdk:"enable"`
+	Ddns     types.Object `tfsdk:"ddns"`
+	StaticIp types.Object `tfsdk:"static_ip"`
 }
 type EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject struct {
 }
@@ -10110,7 +11551,7 @@ type EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObjec
 	IpAddress types.String `tfsdk:"ip_address"`
 }
 
-func (r *EthernetLayer3SubinterfaceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *EthernetLayer3SubinterfaceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -13874,32 +15315,32 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpO
 	panic("unreachable")
 }
 
-func (r *EthernetLayer3SubinterfaceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *EthernetLayer3SubinterfaceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_ethernet_layer3_subinterface"
 }
 
-func (r *EthernetLayer3SubinterfaceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *EthernetLayer3SubinterfaceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = EthernetLayer3SubinterfaceResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *EthernetLayer3SubinterfaceResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *EthernetLayer3SubinterfaceResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := layer3.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := layer3.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewImportableEntryObjectManager(r.client, layer3.NewService(r.client), batchSize, specifier, layer3.SpecMatches)
+	o.manager = sdkmanager.NewImportableEntryObjectManager(o.client, layer3.NewService(o.client), batchSize, specifier, layer3.SpecMatches)
 }
 
 func (o *EthernetLayer3SubinterfaceResourceModel) AttributeTypes() map[string]attr.Type {
@@ -13908,11 +15349,15 @@ func (o *EthernetLayer3SubinterfaceResourceModel) AttributeTypes() map[string]at
 
 	var adjustTcpMssObj *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject
 
+	var arpObj *EthernetLayer3SubinterfaceResourceArpObject
+
 	var bonjourObj *EthernetLayer3SubinterfaceResourceBonjourObject
 
 	var ddnsConfigObj *EthernetLayer3SubinterfaceResourceDdnsConfigObject
 
 	var dhcpClientObj *EthernetLayer3SubinterfaceResourceDhcpClientObject
+
+	var ipObj *EthernetLayer3SubinterfaceResourceIpObject
 
 	var ipv6Obj *EthernetLayer3SubinterfaceResourceIpv6Object
 
@@ -13931,7 +15376,11 @@ func (o *EthernetLayer3SubinterfaceResourceModel) AttributeTypes() map[string]at
 		"adjust_tcp_mss": types.ObjectType{
 			AttrTypes: adjustTcpMssObj.AttributeTypes(),
 		},
-		"arp": types.ListType{},
+		"arp": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: arpObj.AttributeTypes(),
+			},
+		},
 		"bonjour": types.ObjectType{
 			AttrTypes: bonjourObj.AttributeTypes(),
 		},
@@ -13945,7 +15394,11 @@ func (o *EthernetLayer3SubinterfaceResourceModel) AttributeTypes() map[string]at
 			AttrTypes: dhcpClientObj.AttributeTypes(),
 		},
 		"interface_management_profile": types.StringType,
-		"ip":                           types.ListType{},
+		"ip": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: ipObj.AttributeTypes(),
+			},
+		},
 		"ipv6": types.ObjectType{
 			AttrTypes: ipv6Obj.AttributeTypes(),
 		},
@@ -14020,15 +15473,24 @@ func (o EthernetLayer3SubinterfaceResourceBonjourObject) EntryName() *string {
 }
 func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) AttributeTypes() map[string]attr.Type {
 
+	var ddnsVendorConfigObj *EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject
 	return map[string]attr.Type{
-		"ddns_cert_profile":    types.StringType,
-		"ddns_enabled":         types.BoolType,
-		"ddns_hostname":        types.StringType,
-		"ddns_ip":              types.ListType{},
-		"ddns_ipv6":            types.ListType{},
+		"ddns_cert_profile": types.StringType,
+		"ddns_enabled":      types.BoolType,
+		"ddns_hostname":     types.StringType,
+		"ddns_ip": types.ListType{
+			ElemType: types.StringType,
+		},
+		"ddns_ipv6": types.ListType{
+			ElemType: types.StringType,
+		},
 		"ddns_update_interval": types.Int64Type,
 		"ddns_vendor":          types.StringType,
-		"ddns_vendor_config":   types.ListType{},
+		"ddns_vendor_config": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: ddnsVendorConfigObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -14106,13 +15568,19 @@ func (o EthernetLayer3SubinterfaceResourceIpObject) EntryName() *string {
 }
 func (o *EthernetLayer3SubinterfaceResourceIpv6Object) AttributeTypes() map[string]attr.Type {
 
+	var addressObj *EthernetLayer3SubinterfaceResourceIpv6AddressObject
+
 	var dhcpClientObj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject
 
 	var inheritedObj *EthernetLayer3SubinterfaceResourceIpv6InheritedObject
 
 	var neighborDiscoveryObj *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject
 	return map[string]attr.Type{
-		"address": types.ListType{},
+		"address": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: addressObj.AttributeTypes(),
+			},
+		},
 		"dhcp_client": types.ObjectType{
 			AttrTypes: dhcpClientObj.AttributeTypes(),
 		},
@@ -14240,6 +15708,8 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
 
 	var dnsSuffixObj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
 
+	var neighborObj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject
+
 	return map[string]attr.Type{
 		"dad_attempts": types.Int64Type,
 		"dns_server": types.ObjectType{
@@ -14250,9 +15720,13 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
 		},
 		"enable_dad":         types.BoolType,
 		"enable_ndp_monitor": types.BoolType,
-		"neighbor":           types.ListType{},
-		"ns_interval":        types.Int64Type,
-		"reachable_time":     types.Int64Type,
+		"neighbor": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: neighborObj.AttributeTypes(),
+			},
+		},
+		"ns_interval":    types.Int64Type,
+		"reachable_time": types.Int64Type,
 	}
 }
 
@@ -14316,8 +15790,13 @@ func (o EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServ
 }
 func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
 
+	var serverObj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
 	return map[string]attr.Type{
-		"server": types.ListType{},
+		"server": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serverObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -14396,8 +15875,13 @@ func (o EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuff
 }
 func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
 
+	var suffixObj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
 	return map[string]attr.Type{
-		"suffix": types.ListType{},
+		"suffix": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: suffixObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -14575,10 +16059,16 @@ func (o EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject
 }
 func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) AttributeTypes() map[string]attr.Type {
 
+	var assignAddrObj *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject
+
 	var neighborDiscoveryObj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject
 	return map[string]attr.Type{
-		"assign_addr": types.ListType{},
-		"enable":      types.BoolType,
+		"assign_addr": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: assignAddrObj.AttributeTypes(),
+			},
+		},
+		"enable": types.BoolType,
 		"neighbor_discovery": types.ObjectType{
 			AttrTypes: neighborDiscoveryObj.AttributeTypes(),
 		},
@@ -14764,6 +16254,8 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject)
 
 	var dnsSuffixObj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
 
+	var neighborObj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject
+
 	var routerAdvertisementObj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
 	return map[string]attr.Type{
 		"dad_attempts": types.Int64Type,
@@ -14775,9 +16267,13 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject)
 		},
 		"enable_dad":         types.BoolType,
 		"enable_ndp_monitor": types.BoolType,
-		"neighbor":           types.ListType{},
-		"ns_interval":        types.Int64Type,
-		"reachable_time":     types.Int64Type,
+		"neighbor": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: neighborObj.AttributeTypes(),
+			},
+		},
+		"ns_interval":    types.Int64Type,
+		"reachable_time": types.Int64Type,
 		"router_advertisement": types.ObjectType{
 			AttrTypes: routerAdvertisementObj.AttributeTypes(),
 		},
@@ -14847,8 +16343,13 @@ func (o EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServe
 }
 func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) AttributeTypes() map[string]attr.Type {
 
+	var serverObj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
 	return map[string]attr.Type{
-		"server": types.ListType{},
+		"server": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serverObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -14930,8 +16431,13 @@ func (o EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffi
 }
 func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) AttributeTypes() map[string]attr.Type {
 
+	var suffixObj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
 	return map[string]attr.Type{
-		"suffix": types.ListType{},
+		"suffix": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: suffixObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -14999,14 +16505,20 @@ func (o EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAd
 }
 func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) AttributeTypes() map[string]attr.Type {
 
+	var neighborObj *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject
+
 	var routerAdvertisementObj *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject
 	return map[string]attr.Type{
 		"dad_attempts":       types.Int64Type,
 		"enable_dad":         types.BoolType,
 		"enable_ndp_monitor": types.BoolType,
-		"neighbor":           types.ListType{},
-		"ns_interval":        types.Int64Type,
-		"reachable_time":     types.Int64Type,
+		"neighbor": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: neighborObj.AttributeTypes(),
+			},
+		},
+		"ns_interval":    types.Int64Type,
+		"reachable_time": types.Int64Type,
 		"router_advertisement": types.ObjectType{
 			AttrTypes: routerAdvertisementObj.AttributeTypes(),
 		},
@@ -15067,10 +16579,21 @@ func (o EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertiseme
 }
 func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) AttributeTypes() map[string]attr.Type {
 
+	var serverObj *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
+
+	var suffixObj *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
 	return map[string]attr.Type{
 		"enable": types.BoolType,
-		"server": types.ListType{},
-		"suffix": types.ListType{},
+		"server": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serverObj.AttributeTypes(),
+			},
+		},
+		"suffix": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: suffixObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -15113,8 +16636,14 @@ func (o EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertiseme
 }
 func (o *EthernetLayer3SubinterfaceResourceNdpProxyObject) AttributeTypes() map[string]attr.Type {
 
+	var addressObj *EthernetLayer3SubinterfaceResourceNdpProxyAddressObject
+
 	return map[string]attr.Type{
-		"address": types.ListType{},
+		"address": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: addressObj.AttributeTypes(),
+			},
+		},
 		"enabled": types.BoolType,
 	}
 }
@@ -15269,17 +16798,21 @@ func (o EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpOb
 	return nil
 }
 
-func (o *EthernetLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var adjustTcpMss_entry *layer3.AdjustTcpMss
-	if o.AdjustTcpMss != nil {
+	if !o.AdjustTcpMss.IsUnknown() && !o.AdjustTcpMss.IsNull() {
 		if *obj != nil && (*obj).AdjustTcpMss != nil {
 			adjustTcpMss_entry = (*obj).AdjustTcpMss
 		} else {
 			adjustTcpMss_entry = new(layer3.AdjustTcpMss)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.AdjustTcpMss.CopyToPango(ctx, ancestors, &adjustTcpMss_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject
+		diags.Append(o.AdjustTcpMss.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &adjustTcpMss_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15294,7 +16827,7 @@ func (o *EthernetLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Contex
 		}
 		for _, elt := range arp_tf_entries {
 			var entry *layer3.Arp
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -15302,28 +16835,36 @@ func (o *EthernetLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Contex
 		}
 	}
 	var bonjour_entry *layer3.Bonjour
-	if o.Bonjour != nil {
+	if !o.Bonjour.IsUnknown() && !o.Bonjour.IsNull() {
 		if *obj != nil && (*obj).Bonjour != nil {
 			bonjour_entry = (*obj).Bonjour
 		} else {
 			bonjour_entry = new(layer3.Bonjour)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Bonjour.CopyToPango(ctx, ancestors, &bonjour_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceBonjourObject
+		diags.Append(o.Bonjour.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &bonjour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	comment_value := o.Comment.ValueStringPointer()
 	var ddnsConfig_entry *layer3.DdnsConfig
-	if o.DdnsConfig != nil {
+	if !o.DdnsConfig.IsUnknown() && !o.DdnsConfig.IsNull() {
 		if *obj != nil && (*obj).DdnsConfig != nil {
 			ddnsConfig_entry = (*obj).DdnsConfig
 		} else {
 			ddnsConfig_entry = new(layer3.DdnsConfig)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.DdnsConfig.CopyToPango(ctx, ancestors, &ddnsConfig_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceDdnsConfigObject
+		diags.Append(o.DdnsConfig.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &ddnsConfig_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15331,14 +16872,18 @@ func (o *EthernetLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Contex
 	decryptForward_value := o.DecryptForward.ValueBoolPointer()
 	dfIgnore_value := o.DfIgnore.ValueBoolPointer()
 	var dhcpClient_entry *layer3.DhcpClient
-	if o.DhcpClient != nil {
+	if !o.DhcpClient.IsUnknown() && !o.DhcpClient.IsNull() {
 		if *obj != nil && (*obj).DhcpClient != nil {
 			dhcpClient_entry = (*obj).DhcpClient
 		} else {
 			dhcpClient_entry = new(layer3.DhcpClient)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.DhcpClient.CopyToPango(ctx, ancestors, &dhcpClient_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceDhcpClientObject
+		diags.Append(o.DhcpClient.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &dhcpClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15354,7 +16899,7 @@ func (o *EthernetLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Contex
 		}
 		for _, elt := range ip_tf_entries {
 			var entry *layer3.Ip
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -15362,55 +16907,71 @@ func (o *EthernetLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Contex
 		}
 	}
 	var ipv6_entry *layer3.Ipv6
-	if o.Ipv6 != nil {
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
 		if *obj != nil && (*obj).Ipv6 != nil {
 			ipv6_entry = (*obj).Ipv6
 		} else {
 			ipv6_entry = new(layer3.Ipv6)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Ipv6.CopyToPango(ctx, ancestors, &ipv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6Object
+		diags.Append(o.Ipv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	mtu_value := o.Mtu.ValueInt64Pointer()
 	var ndpProxy_entry *layer3.NdpProxy
-	if o.NdpProxy != nil {
+	if !o.NdpProxy.IsUnknown() && !o.NdpProxy.IsNull() {
 		if *obj != nil && (*obj).NdpProxy != nil {
 			ndpProxy_entry = (*obj).NdpProxy
 		} else {
 			ndpProxy_entry = new(layer3.NdpProxy)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.NdpProxy.CopyToPango(ctx, ancestors, &ndpProxy_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceNdpProxyObject
+		diags.Append(o.NdpProxy.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &ndpProxy_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	netflowProfile_value := o.NetflowProfile.ValueStringPointer()
 	var pppoe_entry *layer3.Pppoe
-	if o.Pppoe != nil {
+	if !o.Pppoe.IsUnknown() && !o.Pppoe.IsNull() {
 		if *obj != nil && (*obj).Pppoe != nil {
 			pppoe_entry = (*obj).Pppoe
 		} else {
 			pppoe_entry = new(layer3.Pppoe)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Pppoe.CopyToPango(ctx, ancestors, &pppoe_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourcePppoeObject
+		diags.Append(o.Pppoe.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &pppoe_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var sdwanLinkSettings_entry *layer3.SdwanLinkSettings
-	if o.SdwanLinkSettings != nil {
+	if !o.SdwanLinkSettings.IsUnknown() && !o.SdwanLinkSettings.IsNull() {
 		if *obj != nil && (*obj).SdwanLinkSettings != nil {
 			sdwanLinkSettings_entry = (*obj).SdwanLinkSettings
 		} else {
 			sdwanLinkSettings_entry = new(layer3.SdwanLinkSettings)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.SdwanLinkSettings.CopyToPango(ctx, ancestors, &sdwanLinkSettings_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject
+		diags.Append(o.SdwanLinkSettings.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &sdwanLinkSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15441,7 +17002,7 @@ func (o *EthernetLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	ipv4MssAdjustment_value := o.Ipv4MssAdjustment.ValueInt64Pointer()
@@ -15456,7 +17017,7 @@ func (o *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceArpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Arp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceArpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Arp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -15468,7 +17029,7 @@ func (o *EthernetLayer3SubinterfaceResourceArpObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceBonjourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceBonjourObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	groupId_value := o.GroupId.ValueInt64Pointer()
@@ -15483,20 +17044,36 @@ func (o *EthernetLayer3SubinterfaceResourceBonjourObject) CopyToPango(ctx contex
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ddnsCertProfile_value := o.DdnsCertProfile.ValueStringPointer()
 	ddnsEnabled_value := o.DdnsEnabled.ValueBoolPointer()
 	ddnsHostname_value := o.DdnsHostname.ValueStringPointer()
-	ddnsIp_pango_entries := make([]string, 0)
-	diags.Append(o.DdnsIp.ElementsAs(ctx, &ddnsIp_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ddnsIp_pango_entries []string
+	if !o.DdnsIp.IsUnknown() && !o.DdnsIp.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DdnsIp.Elements()))
+		diags.Append(o.DdnsIp.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ddnsIp_pango_entries = append(ddnsIp_pango_entries, elt.ValueString())
+		}
 	}
-	ddnsIpv6_pango_entries := make([]string, 0)
-	diags.Append(o.DdnsIpv6.ElementsAs(ctx, &ddnsIpv6_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ddnsIpv6_pango_entries []string
+	if !o.DdnsIpv6.IsUnknown() && !o.DdnsIpv6.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DdnsIpv6.Elements()))
+		diags.Append(o.DdnsIpv6.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ddnsIpv6_pango_entries = append(ddnsIpv6_pango_entries, elt.ValueString())
+		}
 	}
 	ddnsUpdateInterval_value := o.DdnsUpdateInterval.ValueInt64Pointer()
 	ddnsVendor_value := o.DdnsVendor.ValueStringPointer()
@@ -15510,7 +17087,7 @@ func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) CopyToPango(ctx con
 		}
 		for _, elt := range ddnsVendorConfig_tf_entries {
 			var entry *layer3.DdnsConfigDdnsVendorConfig
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -15532,7 +17109,7 @@ func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	value_value := o.Value.ValueStringPointer()
 
@@ -15544,20 +17121,24 @@ func (o *EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject) Cop
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceDhcpClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceDhcpClientObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	createDefaultRoute_value := o.CreateDefaultRoute.ValueBoolPointer()
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	var sendHostname_entry *layer3.DhcpClientSendHostname
-	if o.SendHostname != nil {
+	if !o.SendHostname.IsUnknown() && !o.SendHostname.IsNull() {
 		if *obj != nil && (*obj).SendHostname != nil {
 			sendHostname_entry = (*obj).SendHostname
 		} else {
 			sendHostname_entry = new(layer3.DhcpClientSendHostname)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.SendHostname.CopyToPango(ctx, append(ancestors, o), &sendHostname_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject
+		diags.Append(o.SendHostname.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &sendHostname_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15573,7 +17154,7 @@ func (o *EthernetLayer3SubinterfaceResourceDhcpClientObject) CopyToPango(ctx con
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	hostname_value := o.Hostname.ValueStringPointer()
@@ -15586,7 +17167,7 @@ func (o *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject) CopyToP
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	sdwanGateway_value := o.SdwanGateway.ValueStringPointer()
 
@@ -15598,7 +17179,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []EthernetLayer3SubinterfaceResourceIpv6AddressObject
 	var address_pango_entries []layer3.Ipv6Address
@@ -15610,7 +17191,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6Object) CopyToPango(ctx context.C
 		}
 		for _, elt := range address_tf_entries {
 			var entry *layer3.Ipv6Address
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -15618,42 +17199,54 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6Object) CopyToPango(ctx context.C
 		}
 	}
 	var dhcpClient_entry *layer3.Ipv6DhcpClient
-	if o.DhcpClient != nil {
+	if !o.DhcpClient.IsUnknown() && !o.DhcpClient.IsNull() {
 		if *obj != nil && (*obj).DhcpClient != nil {
 			dhcpClient_entry = (*obj).DhcpClient
 		} else {
 			dhcpClient_entry = new(layer3.Ipv6DhcpClient)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DhcpClient.CopyToPango(ctx, append(ancestors, o), &dhcpClient_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject
+		diags.Append(o.DhcpClient.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpClient_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	enabled_value := o.Enabled.ValueBoolPointer()
 	var inherited_entry *layer3.Ipv6Inherited
-	if o.Inherited != nil {
+	if !o.Inherited.IsUnknown() && !o.Inherited.IsNull() {
 		if *obj != nil && (*obj).Inherited != nil {
 			inherited_entry = (*obj).Inherited
 		} else {
 			inherited_entry = new(layer3.Ipv6Inherited)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Inherited.CopyToPango(ctx, append(ancestors, o), &inherited_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedObject
+		diags.Append(o.Inherited.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &inherited_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	interfaceId_value := o.InterfaceId.ValueStringPointer()
 	var neighborDiscovery_entry *layer3.Ipv6NeighborDiscovery
-	if o.NeighborDiscovery != nil {
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
 		if *obj != nil && (*obj).NeighborDiscovery != nil {
 			neighborDiscovery_entry = (*obj).NeighborDiscovery
 		} else {
 			neighborDiscovery_entry = new(layer3.Ipv6NeighborDiscovery)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject
+		diags.Append(o.NeighborDiscovery.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &neighborDiscovery_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15671,44 +17264,56 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6Object) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *layer3.Ipv6AddressPrefix
-	if o.Prefix != nil {
+	if !o.Prefix.IsUnknown() && !o.Prefix.IsNull() {
 		if *obj != nil && (*obj).Prefix != nil {
 			prefix_entry = (*obj).Prefix
 		} else {
 			prefix_entry = new(layer3.Ipv6AddressPrefix)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Prefix.CopyToPango(ctx, append(ancestors, o), &prefix_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject
+		diags.Append(o.Prefix.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &prefix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var anycast_entry *layer3.Ipv6AddressAnycast
-	if o.Anycast != nil {
+	if !o.Anycast.IsUnknown() && !o.Anycast.IsNull() {
 		if *obj != nil && (*obj).Anycast != nil {
 			anycast_entry = (*obj).Anycast
 		} else {
 			anycast_entry = new(layer3.Ipv6AddressAnycast)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Anycast.CopyToPango(ctx, append(ancestors, o), &anycast_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject
+		diags.Append(o.Anycast.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &anycast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var advertise_entry *layer3.Ipv6AddressAdvertise
-	if o.Advertise != nil {
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
 		if *obj != nil && (*obj).Advertise != nil {
 			advertise_entry = (*obj).Advertise
 		} else {
 			advertise_entry = new(layer3.Ipv6AddressAdvertise)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject
+		diags.Append(o.Advertise.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &advertise_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15725,7 +17330,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressObject) CopyToPango(ctx co
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -15734,7 +17339,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject) CopyToPango(
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -15743,7 +17348,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject) CopyToPango
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	validLifetime_value := o.ValidLifetime.ValueStringPointer()
@@ -15762,47 +17367,59 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject) CopyToPan
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	acceptRaRoute_value := o.AcceptRaRoute.ValueBoolPointer()
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	var neighborDiscovery_entry *layer3.Ipv6DhcpClientNeighborDiscovery
-	if o.NeighborDiscovery != nil {
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
 		if *obj != nil && (*obj).NeighborDiscovery != nil {
 			neighborDiscovery_entry = (*obj).NeighborDiscovery
 		} else {
 			neighborDiscovery_entry = new(layer3.Ipv6DhcpClientNeighborDiscovery)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
+		diags.Append(o.NeighborDiscovery.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &neighborDiscovery_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	preference_value := o.Preference.ValueStringPointer()
 	var prefixDelegation_entry *layer3.Ipv6DhcpClientPrefixDelegation
-	if o.PrefixDelegation != nil {
+	if !o.PrefixDelegation.IsUnknown() && !o.PrefixDelegation.IsNull() {
 		if *obj != nil && (*obj).PrefixDelegation != nil {
 			prefixDelegation_entry = (*obj).PrefixDelegation
 		} else {
 			prefixDelegation_entry = new(layer3.Ipv6DhcpClientPrefixDelegation)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.PrefixDelegation.CopyToPango(ctx, append(ancestors, o), &prefixDelegation_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject
+		diags.Append(o.PrefixDelegation.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &prefixDelegation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var v6Options_entry *layer3.Ipv6DhcpClientV6Options
-	if o.V6Options != nil {
+	if !o.V6Options.IsUnknown() && !o.V6Options.IsNull() {
 		if *obj != nil && (*obj).V6Options != nil {
 			v6Options_entry = (*obj).V6Options
 		} else {
 			v6Options_entry = new(layer3.Ipv6DhcpClientV6Options)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.V6Options.CopyToPango(ctx, append(ancestors, o), &v6Options_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject
+		diags.Append(o.V6Options.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &v6Options_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15821,31 +17438,39 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject) CopyToPango(ctx
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	var dnsServer_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
+	if !o.DnsServer.IsUnknown() && !o.DnsServer.IsNull() {
 		if *obj != nil && (*obj).DnsServer != nil {
 			dnsServer_entry = (*obj).DnsServer
 		} else {
 			dnsServer_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsServer.CopyToPango(ctx, append(ancestors, o), &dnsServer_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
+		diags.Append(o.DnsServer.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var dnsSuffix_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
+	if !o.DnsSuffix.IsUnknown() && !o.DnsSuffix.IsNull() {
 		if *obj != nil && (*obj).DnsSuffix != nil {
 			dnsSuffix_entry = (*obj).DnsSuffix
 		} else {
 			dnsSuffix_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, append(ancestors, o), &dnsSuffix_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+		diags.Append(o.DnsSuffix.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsSuffix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15862,7 +17487,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -15886,18 +17511,22 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var source_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
 		if *obj != nil && (*obj).Source != nil {
 			source_entry = (*obj).Source
 		} else {
 			source_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+		diags.Append(o.Source.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &source_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15911,30 +17540,38 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhcpv6_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
 		if *obj != nil && (*obj).Dhcpv6 != nil {
 			dhcpv6_entry = (*obj).Dhcpv6
 		} else {
 			dhcpv6_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+		diags.Append(o.Dhcpv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var manual_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
 		if *obj != nil && (*obj).Manual != nil {
 			manual_entry = (*obj).Manual
 		} else {
 			manual_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+		diags.Append(o.Manual.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &manual_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -15948,7 +17585,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -15957,7 +17594,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_tf_entries []EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
 	var server_pango_entries []layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
@@ -15969,7 +17606,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 		}
 		for _, elt := range server_tf_entries {
 			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -15984,7 +17621,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -15996,18 +17633,22 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var source_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
 		if *obj != nil && (*obj).Source != nil {
 			source_entry = (*obj).Source
 		} else {
 			source_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+		diags.Append(o.Source.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &source_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16021,30 +17662,38 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhcpv6_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
 		if *obj != nil && (*obj).Dhcpv6 != nil {
 			dhcpv6_entry = (*obj).Dhcpv6
 		} else {
 			dhcpv6_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+		diags.Append(o.Dhcpv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var manual_entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
 		if *obj != nil && (*obj).Manual != nil {
 			manual_entry = (*obj).Manual
 		} else {
 			manual_entry = new(layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+		diags.Append(o.Manual.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &manual_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16058,7 +17707,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -16067,7 +17716,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var suffix_tf_entries []EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
 	var suffix_pango_entries []layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
@@ -16079,7 +17728,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 		}
 		for _, elt := range suffix_tf_entries {
 			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -16094,7 +17743,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -16106,7 +17755,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -16118,17 +17767,21 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighb
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var enable_entry *layer3.Ipv6DhcpClientPrefixDelegationEnable
-	if o.Enable != nil {
+	if !o.Enable.IsUnknown() && !o.Enable.IsNull() {
 		if *obj != nil && (*obj).Enable != nil {
 			enable_entry = (*obj).Enable
 		} else {
 			enable_entry = new(layer3.Ipv6DhcpClientPrefixDelegationEnable)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Enable.CopyToPango(ctx, append(ancestors, o), &enable_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject
+		diags.Append(o.Enable.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &enable_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16141,30 +17794,38 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject)
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var no_entry *layer3.Ipv6DhcpClientPrefixDelegationEnableNo
-	if o.No != nil {
+	if !o.No.IsUnknown() && !o.No.IsNull() {
 		if *obj != nil && (*obj).No != nil {
 			no_entry = (*obj).No
 		} else {
 			no_entry = new(layer3.Ipv6DhcpClientPrefixDelegationEnableNo)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject
+		diags.Append(o.No.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &no_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var yes_entry *layer3.Ipv6DhcpClientPrefixDelegationEnableYes
-	if o.Yes != nil {
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
 		if *obj != nil && (*obj).Yes != nil {
 			yes_entry = (*obj).Yes
 		} else {
 			yes_entry = new(layer3.Ipv6DhcpClientPrefixDelegationEnableYes)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject
+		diags.Append(o.Yes.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &yes_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16178,7 +17839,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableO
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -16187,7 +17848,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableN
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	pfxPoolName_value := o.PfxPoolName.ValueStringPointer()
 	prefixLen_value := o.PrefixLen.ValueInt64Pointer()
@@ -16202,18 +17863,22 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableY
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	duidType_value := o.DuidType.ValueStringPointer()
 	var enable_entry *layer3.Ipv6DhcpClientV6OptionsEnable
-	if o.Enable != nil {
+	if !o.Enable.IsUnknown() && !o.Enable.IsNull() {
 		if *obj != nil && (*obj).Enable != nil {
 			enable_entry = (*obj).Enable
 		} else {
 			enable_entry = new(layer3.Ipv6DhcpClientV6OptionsEnable)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Enable.CopyToPango(ctx, append(ancestors, o), &enable_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject
+		diags.Append(o.Enable.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &enable_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16231,30 +17896,38 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject) CopyTo
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var no_entry *layer3.Ipv6DhcpClientV6OptionsEnableNo
-	if o.No != nil {
+	if !o.No.IsUnknown() && !o.No.IsNull() {
 		if *obj != nil && (*obj).No != nil {
 			no_entry = (*obj).No
 		} else {
 			no_entry = new(layer3.Ipv6DhcpClientV6OptionsEnableNo)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.No.CopyToPango(ctx, append(ancestors, o), &no_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject
+		diags.Append(o.No.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &no_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var yes_entry *layer3.Ipv6DhcpClientV6OptionsEnableYes
-	if o.Yes != nil {
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
 		if *obj != nil && (*obj).Yes != nil {
 			yes_entry = (*obj).Yes
 		} else {
 			yes_entry = new(layer3.Ipv6DhcpClientV6OptionsEnableYes)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Yes.CopyToPango(ctx, append(ancestors, o), &yes_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject
+		diags.Append(o.Yes.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &yes_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16268,7 +17941,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject) 
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -16277,7 +17950,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	nonTempAddr_value := o.NonTempAddr.ValueBoolPointer()
 	tempAddr_value := o.TempAddr.ValueBoolPointer()
@@ -16290,7 +17963,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObjec
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var assignAddr_tf_entries []EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject
 	var assignAddr_pango_entries []layer3.Ipv6InheritedAssignAddr
@@ -16302,7 +17975,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) CopyToPango(ctx 
 		}
 		for _, elt := range assignAddr_tf_entries {
 			var entry *layer3.Ipv6InheritedAssignAddr
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -16311,14 +17984,18 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) CopyToPango(ctx 
 	}
 	enable_value := o.Enable.ValueBoolPointer()
 	var neighborDiscovery_entry *layer3.Ipv6InheritedNeighborDiscovery
-	if o.NeighborDiscovery != nil {
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
 		if *obj != nil && (*obj).NeighborDiscovery != nil {
 			neighborDiscovery_entry = (*obj).NeighborDiscovery
 		} else {
 			neighborDiscovery_entry = new(layer3.Ipv6InheritedNeighborDiscovery)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.NeighborDiscovery.CopyToPango(ctx, append(ancestors, o), &neighborDiscovery_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject
+		diags.Append(o.NeighborDiscovery.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &neighborDiscovery_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16333,17 +18010,21 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) CopyToPango(ctx 
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var type_entry *layer3.Ipv6InheritedAssignAddrType
-	if o.Type != nil {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
 		if *obj != nil && (*obj).Type != nil {
 			type_entry = (*obj).Type
 		} else {
 			type_entry = new(layer3.Ipv6InheritedAssignAddrType)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Type.CopyToPango(ctx, append(ancestors, o), &type_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject
+		diags.Append(o.Type.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16357,30 +18038,38 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject) CopyTo
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var gua_entry *layer3.Ipv6InheritedAssignAddrTypeGua
-	if o.Gua != nil {
+	if !o.Gua.IsUnknown() && !o.Gua.IsNull() {
 		if *obj != nil && (*obj).Gua != nil {
 			gua_entry = (*obj).Gua
 		} else {
 			gua_entry = new(layer3.Ipv6InheritedAssignAddrTypeGua)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Gua.CopyToPango(ctx, append(ancestors, o), &gua_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject
+		diags.Append(o.Gua.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &gua_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var ula_entry *layer3.Ipv6InheritedAssignAddrTypeUla
-	if o.Ula != nil {
+	if !o.Ula.IsUnknown() && !o.Ula.IsNull() {
 		if *obj != nil && (*obj).Ula != nil {
 			ula_entry = (*obj).Ula
 		} else {
 			ula_entry = new(layer3.Ipv6InheritedAssignAddrTypeUla)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ula.CopyToPango(ctx, append(ancestors, o), &ula_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject
+		diags.Append(o.Ula.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ula_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16394,32 +18083,40 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject) Co
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	prefixPool_value := o.PrefixPool.ValueStringPointer()
 	var poolType_entry *layer3.Ipv6InheritedAssignAddrTypeGuaPoolType
-	if o.PoolType != nil {
+	if !o.PoolType.IsUnknown() && !o.PoolType.IsNull() {
 		if *obj != nil && (*obj).PoolType != nil {
 			poolType_entry = (*obj).PoolType
 		} else {
 			poolType_entry = new(layer3.Ipv6InheritedAssignAddrTypeGuaPoolType)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.PoolType.CopyToPango(ctx, append(ancestors, o), &poolType_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+		diags.Append(o.PoolType.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &poolType_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var advertise_entry *layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise
-	if o.Advertise != nil {
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
 		if *obj != nil && (*obj).Advertise != nil {
 			advertise_entry = (*obj).Advertise
 		} else {
 			advertise_entry = new(layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+		diags.Append(o.Advertise.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &advertise_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16435,30 +18132,38 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject)
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dynamic_entry *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic
-	if o.Dynamic != nil {
+	if !o.Dynamic.IsUnknown() && !o.Dynamic.IsNull() {
 		if *obj != nil && (*obj).Dynamic != nil {
 			dynamic_entry = (*obj).Dynamic
 		} else {
 			dynamic_entry = new(layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dynamic.CopyToPango(ctx, append(ancestors, o), &dynamic_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+		diags.Append(o.Dynamic.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dynamic_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var dynamicId_entry *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId
-	if o.DynamicId != nil {
+	if !o.DynamicId.IsUnknown() && !o.DynamicId.IsNull() {
 		if *obj != nil && (*obj).DynamicId != nil {
 			dynamicId_entry = (*obj).DynamicId
 		} else {
 			dynamicId_entry = new(layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DynamicId.CopyToPango(ctx, append(ancestors, o), &dynamicId_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+		diags.Append(o.DynamicId.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dynamicId_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16472,7 +18177,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTyp
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -16481,7 +18186,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTyp
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	identifier_value := o.Identifier.ValueInt64Pointer()
 
@@ -16492,7 +18197,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTyp
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	onlinkFlag_value := o.OnlinkFlag.ValueBoolPointer()
@@ -16507,21 +18212,25 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdverti
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	address_value := o.Address.ValueStringPointer()
 	prefix_value := o.Prefix.ValueBoolPointer()
 	anycast_value := o.Anycast.ValueBoolPointer()
 	var advertise_entry *layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise
-	if o.Advertise != nil {
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
 		if *obj != nil && (*obj).Advertise != nil {
 			advertise_entry = (*obj).Advertise
 		} else {
 			advertise_entry = new(layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Advertise.CopyToPango(ctx, append(ancestors, o), &advertise_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+		diags.Append(o.Advertise.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &advertise_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16538,7 +18247,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject)
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	validLifetime_value := o.ValidLifetime.ValueStringPointer()
@@ -16557,31 +18266,39 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdverti
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	var dnsServer_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServer
-	if o.DnsServer != nil {
+	if !o.DnsServer.IsUnknown() && !o.DnsServer.IsNull() {
 		if *obj != nil && (*obj).DnsServer != nil {
 			dnsServer_entry = (*obj).DnsServer
 		} else {
 			dnsServer_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsServer)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsServer.CopyToPango(ctx, append(ancestors, o), &dnsServer_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject
+		diags.Append(o.DnsServer.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsServer_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var dnsSuffix_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix
-	if o.DnsSuffix != nil {
+	if !o.DnsSuffix.IsUnknown() && !o.DnsSuffix.IsNull() {
 		if *obj != nil && (*obj).DnsSuffix != nil {
 			dnsSuffix_entry = (*obj).DnsSuffix
 		} else {
 			dnsSuffix_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsSuffix.CopyToPango(ctx, append(ancestors, o), &dnsSuffix_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+		diags.Append(o.DnsSuffix.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsSuffix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16598,7 +18315,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject)
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *layer3.Ipv6InheritedNeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -16608,14 +18325,18 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject)
 	nsInterval_value := o.NsInterval.ValueInt64Pointer()
 	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
 	var routerAdvertisement_entry *layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement
-	if o.RouterAdvertisement != nil {
+	if !o.RouterAdvertisement.IsUnknown() && !o.RouterAdvertisement.IsNull() {
 		if *obj != nil && (*obj).RouterAdvertisement != nil {
 			routerAdvertisement_entry = (*obj).RouterAdvertisement
 		} else {
 			routerAdvertisement_entry = new(layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, append(ancestors, o), &routerAdvertisement_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+		diags.Append(o.RouterAdvertisement.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &routerAdvertisement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16636,18 +18357,22 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject)
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var source_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource
-	if o.Source != nil {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
 		if *obj != nil && (*obj).Source != nil {
 			source_entry = (*obj).Source
 		} else {
 			source_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+		diags.Append(o.Source.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &source_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16661,30 +18386,38 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhcpv6_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6
-	if o.Dhcpv6 != nil {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
 		if *obj != nil && (*obj).Dhcpv6 != nil {
 			dhcpv6_entry = (*obj).Dhcpv6
 		} else {
 			dhcpv6_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+		diags.Append(o.Dhcpv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var manual_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual
-	if o.Manual != nil {
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
 		if *obj != nil && (*obj).Manual != nil {
 			manual_entry = (*obj).Manual
 		} else {
 			manual_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+		diags.Append(o.Manual.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &manual_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16698,7 +18431,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	prefixPool_value := o.PrefixPool.ValueStringPointer()
 
@@ -16709,7 +18442,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_tf_entries []EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
 	var server_pango_entries []layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
@@ -16721,7 +18454,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 		}
 		for _, elt := range server_tf_entries {
 			var entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -16736,7 +18469,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -16748,18 +18481,22 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var source_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource
-	if o.Source != nil {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
 		if *obj != nil && (*obj).Source != nil {
 			source_entry = (*obj).Source
 		} else {
 			source_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Source.CopyToPango(ctx, append(ancestors, o), &source_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+		diags.Append(o.Source.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &source_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16773,30 +18510,38 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhcpv6_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6
-	if o.Dhcpv6 != nil {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
 		if *obj != nil && (*obj).Dhcpv6 != nil {
 			dhcpv6_entry = (*obj).Dhcpv6
 		} else {
 			dhcpv6_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dhcpv6.CopyToPango(ctx, append(ancestors, o), &dhcpv6_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+		diags.Append(o.Dhcpv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dhcpv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var manual_entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual
-	if o.Manual != nil {
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
 		if *obj != nil && (*obj).Manual != nil {
 			manual_entry = (*obj).Manual
 		} else {
 			manual_entry = new(layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Manual.CopyToPango(ctx, append(ancestors, o), &manual_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+		diags.Append(o.Manual.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &manual_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16810,7 +18555,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	prefixPool_value := o.PrefixPool.ValueStringPointer()
 
@@ -16821,7 +18566,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var suffix_tf_entries []EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
 	var suffix_pango_entries []layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
@@ -16833,7 +18578,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 		}
 		for _, elt := range suffix_tf_entries {
 			var entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -16848,7 +18593,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -16860,7 +18605,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -16872,7 +18617,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighbo
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	enableConsistencyCheck_value := o.EnableConsistencyCheck.ValueBoolPointer()
@@ -16905,7 +18650,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterA
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	dadAttempts_value := o.DadAttempts.ValueInt64Pointer()
 	enableDad_value := o.EnableDad.ValueBoolPointer()
@@ -16920,7 +18665,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) CopyToPa
 		}
 		for _, elt := range neighbor_tf_entries {
 			var entry *layer3.Ipv6NeighborDiscoveryNeighbor
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -16930,14 +18675,18 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) CopyToPa
 	nsInterval_value := o.NsInterval.ValueInt64Pointer()
 	reachableTime_value := o.ReachableTime.ValueInt64Pointer()
 	var routerAdvertisement_entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisement
-	if o.RouterAdvertisement != nil {
+	if !o.RouterAdvertisement.IsUnknown() && !o.RouterAdvertisement.IsNull() {
 		if *obj != nil && (*obj).RouterAdvertisement != nil {
 			routerAdvertisement_entry = (*obj).RouterAdvertisement
 		} else {
 			routerAdvertisement_entry = new(layer3.Ipv6NeighborDiscoveryRouterAdvertisement)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.RouterAdvertisement.CopyToPango(ctx, append(ancestors, o), &routerAdvertisement_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject
+		diags.Append(o.RouterAdvertisement.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &routerAdvertisement_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -16956,7 +18705,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) CopyToPa
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	hwAddress_value := o.HwAddress.ValueStringPointer()
 
@@ -16968,17 +18717,21 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject) 
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSupport_entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport
-	if o.DnsSupport != nil {
+	if !o.DnsSupport.IsUnknown() && !o.DnsSupport.IsNull() {
 		if *obj != nil && (*obj).DnsSupport != nil {
 			dnsSupport_entry = (*obj).DnsSupport
 		} else {
 			dnsSupport_entry = new(layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.DnsSupport.CopyToPango(ctx, append(ancestors, o), &dnsSupport_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+		diags.Append(o.DnsSupport.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dnsSupport_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17015,7 +18768,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var server_tf_entries []EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
@@ -17028,7 +18781,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 		}
 		for _, elt := range server_tf_entries {
 			var entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -17045,7 +18798,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 		}
 		for _, elt := range suffix_tf_entries {
 			var entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -17062,7 +18815,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -17074,7 +18827,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	lifetime_value := o.Lifetime.ValueInt64Pointer()
 
@@ -17086,7 +18839,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceNdpProxyObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceNdpProxyObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []EthernetLayer3SubinterfaceResourceNdpProxyAddressObject
 	var address_pango_entries []layer3.NdpProxyAddress
@@ -17098,7 +18851,7 @@ func (o *EthernetLayer3SubinterfaceResourceNdpProxyObject) CopyToPango(ctx conte
 		}
 		for _, elt := range address_tf_entries {
 			var entry *layer3.NdpProxyAddress
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -17115,7 +18868,7 @@ func (o *EthernetLayer3SubinterfaceResourceNdpProxyObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceNdpProxyAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceNdpProxyAddressObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	negate_value := o.Negate.ValueBoolPointer()
 
@@ -17127,7 +18880,7 @@ func (o *EthernetLayer3SubinterfaceResourceNdpProxyAddressObject) CopyToPango(ct
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourcePppoeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.Pppoe, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourcePppoeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.Pppoe, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	accessConcentrator_value := o.AccessConcentrator.ValueStringPointer()
 	authentication_value := o.Authentication.ValueStringPointer()
@@ -17135,41 +18888,51 @@ func (o *EthernetLayer3SubinterfaceResourcePppoeObject) CopyToPango(ctx context.
 	defaultRouteMetric_value := o.DefaultRouteMetric.ValueInt64Pointer()
 	enable_value := o.Enable.ValueBoolPointer()
 	var passive_entry *layer3.PppoePassive
-	if o.Passive != nil {
+	if !o.Passive.IsUnknown() && !o.Passive.IsNull() {
 		if *obj != nil && (*obj).Passive != nil {
 			passive_entry = (*obj).Passive
 		} else {
 			passive_entry = new(layer3.PppoePassive)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Passive.CopyToPango(ctx, append(ancestors, o), &passive_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourcePppoePassiveObject
+		diags.Append(o.Passive.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &passive_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
-	if err != nil {
-		diags.AddError("Failed to create encrypted values state key", err.Error())
-		return diags
-	}
 
 	var password_value *string
-	err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
-	if err != nil {
-		diags.AddError("Failed to manage encrypted values state", err.Error())
-		return diags
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		password_value = o.Password.ValueStringPointer()
 	}
-	password_value = o.Password.ValueStringPointer()
 	service_value := o.Service.ValueStringPointer()
 	var staticAddress_entry *layer3.PppoeStaticAddress
-	if o.StaticAddress != nil {
+	if !o.StaticAddress.IsUnknown() && !o.StaticAddress.IsNull() {
 		if *obj != nil && (*obj).StaticAddress != nil {
 			staticAddress_entry = (*obj).StaticAddress
 		} else {
 			staticAddress_entry = new(layer3.PppoeStaticAddress)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.StaticAddress.CopyToPango(ctx, append(ancestors, o), &staticAddress_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject
+		diags.Append(o.StaticAddress.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &staticAddress_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17192,7 +18955,7 @@ func (o *EthernetLayer3SubinterfaceResourcePppoeObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourcePppoePassiveObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.PppoePassive, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourcePppoePassiveObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.PppoePassive, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 
@@ -17203,7 +18966,7 @@ func (o *EthernetLayer3SubinterfaceResourcePppoePassiveObject) CopyToPango(ctx c
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.PppoeStaticAddress, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.PppoeStaticAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ip_value := o.Ip.ValueStringPointer()
 
@@ -17214,19 +18977,23 @@ func (o *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject) CopyToPango
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	sdwanInterfaceProfile_value := o.SdwanInterfaceProfile.ValueStringPointer()
 	var upstreamNat_entry *layer3.SdwanLinkSettingsUpstreamNat
-	if o.UpstreamNat != nil {
+	if !o.UpstreamNat.IsUnknown() && !o.UpstreamNat.IsNull() {
 		if *obj != nil && (*obj).UpstreamNat != nil {
 			upstreamNat_entry = (*obj).UpstreamNat
 		} else {
 			upstreamNat_entry = new(layer3.SdwanLinkSettingsUpstreamNat)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.UpstreamNat.CopyToPango(ctx, append(ancestors, o), &upstreamNat_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject
+		diags.Append(o.UpstreamNat.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &upstreamNat_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17241,31 +19008,39 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject) CopyToPango(
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	var ddns_entry *layer3.SdwanLinkSettingsUpstreamNatDdns
-	if o.Ddns != nil {
+	if !o.Ddns.IsUnknown() && !o.Ddns.IsNull() {
 		if *obj != nil && (*obj).Ddns != nil {
 			ddns_entry = (*obj).Ddns
 		} else {
 			ddns_entry = new(layer3.SdwanLinkSettingsUpstreamNatDdns)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ddns.CopyToPango(ctx, append(ancestors, o), &ddns_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject
+		diags.Append(o.Ddns.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ddns_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var staticIp_entry *layer3.SdwanLinkSettingsUpstreamNatStaticIp
-	if o.StaticIp != nil {
+	if !o.StaticIp.IsUnknown() && !o.StaticIp.IsNull() {
 		if *obj != nil && (*obj).StaticIp != nil {
 			staticIp_entry = (*obj).StaticIp
 		} else {
 			staticIp_entry = new(layer3.SdwanLinkSettingsUpstreamNatStaticIp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.StaticIp.CopyToPango(ctx, append(ancestors, o), &staticIp_entry, ev)...)
+		var object *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject
+		diags.Append(o.StaticIp.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &staticIp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17280,7 +19055,7 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject) C
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -17289,7 +19064,7 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObjec
 
 	return diags
 }
-func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **layer3.SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipAddress_value := o.IpAddress.ValueStringPointer()
@@ -17303,20 +19078,36 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpO
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var arp_list types.List
 	{
 		var arp_tf_entries []EthernetLayer3SubinterfaceResourceArpObject
-		for _, elt := range obj.Arp {
-			entry := EthernetLayer3SubinterfaceResourceArpObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Arp.IsNull() {
+			diags.Append(o.Arp.ElementsAs(ctx, &arp_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			arp_tf_entries = append(arp_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Arp {
+			entry := EthernetLayer3SubinterfaceResourceArpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(arp_tf_entries) {
+				entry = arp_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(arp_tf_entries) {
+				arp_tf_entries[idx] = entry
+			} else {
+				arp_tf_entries = append(arp_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("arp")
@@ -17326,81 +19117,217 @@ func (o *EthernetLayer3SubinterfaceResourceModel) CopyFromPango(ctx context.Cont
 	var ip_list types.List
 	{
 		var ip_tf_entries []EthernetLayer3SubinterfaceResourceIpObject
-		for _, elt := range obj.Ip {
-			entry := EthernetLayer3SubinterfaceResourceIpObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Ip.IsNull() {
+			diags.Append(o.Ip.ElementsAs(ctx, &ip_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			ip_tf_entries = append(ip_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Ip {
+			entry := EthernetLayer3SubinterfaceResourceIpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(ip_tf_entries) {
+				entry = ip_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(ip_tf_entries) {
+				ip_tf_entries[idx] = entry
+			} else {
+				ip_tf_entries = append(ip_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("ip")
 		ip_list, list_diags = types.ListValueFrom(ctx, schemaType, ip_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var adjustTcpMss_object *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject
+
+	var adjustTcpMss_obj *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject
+	if o.AdjustTcpMss.IsNull() {
+		adjustTcpMss_obj = new(EthernetLayer3SubinterfaceResourceAdjustTcpMssObject)
+	} else {
+		diags.Append(o.AdjustTcpMss.As(ctx, &adjustTcpMss_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	adjustTcpMss_object := types.ObjectNull(adjustTcpMss_obj.AttributeTypes())
 	if obj.AdjustTcpMss != nil {
-		adjustTcpMss_object = new(EthernetLayer3SubinterfaceResourceAdjustTcpMssObject)
-		diags.Append(adjustTcpMss_object.CopyFromPango(ctx, ancestors, obj.AdjustTcpMss, ev)...)
+		diags.Append(adjustTcpMss_obj.CopyFromPango(ctx, client, ancestors, obj.AdjustTcpMss, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		adjustTcpMss_object, diags_tmp = types.ObjectValueFrom(ctx, adjustTcpMss_obj.AttributeTypes(), adjustTcpMss_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var bonjour_object *EthernetLayer3SubinterfaceResourceBonjourObject
+
+	var bonjour_obj *EthernetLayer3SubinterfaceResourceBonjourObject
+	if o.Bonjour.IsNull() {
+		bonjour_obj = new(EthernetLayer3SubinterfaceResourceBonjourObject)
+	} else {
+		diags.Append(o.Bonjour.As(ctx, &bonjour_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	bonjour_object := types.ObjectNull(bonjour_obj.AttributeTypes())
 	if obj.Bonjour != nil {
-		bonjour_object = new(EthernetLayer3SubinterfaceResourceBonjourObject)
-		diags.Append(bonjour_object.CopyFromPango(ctx, ancestors, obj.Bonjour, ev)...)
+		diags.Append(bonjour_obj.CopyFromPango(ctx, client, ancestors, obj.Bonjour, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		bonjour_object, diags_tmp = types.ObjectValueFrom(ctx, bonjour_obj.AttributeTypes(), bonjour_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ddnsConfig_object *EthernetLayer3SubinterfaceResourceDdnsConfigObject
+
+	var ddnsConfig_obj *EthernetLayer3SubinterfaceResourceDdnsConfigObject
+	if o.DdnsConfig.IsNull() {
+		ddnsConfig_obj = new(EthernetLayer3SubinterfaceResourceDdnsConfigObject)
+	} else {
+		diags.Append(o.DdnsConfig.As(ctx, &ddnsConfig_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ddnsConfig_object := types.ObjectNull(ddnsConfig_obj.AttributeTypes())
 	if obj.DdnsConfig != nil {
-		ddnsConfig_object = new(EthernetLayer3SubinterfaceResourceDdnsConfigObject)
-		diags.Append(ddnsConfig_object.CopyFromPango(ctx, ancestors, obj.DdnsConfig, ev)...)
+		diags.Append(ddnsConfig_obj.CopyFromPango(ctx, client, ancestors, obj.DdnsConfig, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ddnsConfig_object, diags_tmp = types.ObjectValueFrom(ctx, ddnsConfig_obj.AttributeTypes(), ddnsConfig_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dhcpClient_object *EthernetLayer3SubinterfaceResourceDhcpClientObject
+
+	var dhcpClient_obj *EthernetLayer3SubinterfaceResourceDhcpClientObject
+	if o.DhcpClient.IsNull() {
+		dhcpClient_obj = new(EthernetLayer3SubinterfaceResourceDhcpClientObject)
+	} else {
+		diags.Append(o.DhcpClient.As(ctx, &dhcpClient_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dhcpClient_object := types.ObjectNull(dhcpClient_obj.AttributeTypes())
 	if obj.DhcpClient != nil {
-		dhcpClient_object = new(EthernetLayer3SubinterfaceResourceDhcpClientObject)
-		diags.Append(dhcpClient_object.CopyFromPango(ctx, ancestors, obj.DhcpClient, ev)...)
+		diags.Append(dhcpClient_obj.CopyFromPango(ctx, client, ancestors, obj.DhcpClient, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpClient_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpClient_obj.AttributeTypes(), dhcpClient_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ipv6_object *EthernetLayer3SubinterfaceResourceIpv6Object
+
+	var ipv6_obj *EthernetLayer3SubinterfaceResourceIpv6Object
+	if o.Ipv6.IsNull() {
+		ipv6_obj = new(EthernetLayer3SubinterfaceResourceIpv6Object)
+	} else {
+		diags.Append(o.Ipv6.As(ctx, &ipv6_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ipv6_object := types.ObjectNull(ipv6_obj.AttributeTypes())
 	if obj.Ipv6 != nil {
-		ipv6_object = new(EthernetLayer3SubinterfaceResourceIpv6Object)
-		diags.Append(ipv6_object.CopyFromPango(ctx, ancestors, obj.Ipv6, ev)...)
+		diags.Append(ipv6_obj.CopyFromPango(ctx, client, ancestors, obj.Ipv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ipv6_object, diags_tmp = types.ObjectValueFrom(ctx, ipv6_obj.AttributeTypes(), ipv6_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ndpProxy_object *EthernetLayer3SubinterfaceResourceNdpProxyObject
+
+	var ndpProxy_obj *EthernetLayer3SubinterfaceResourceNdpProxyObject
+	if o.NdpProxy.IsNull() {
+		ndpProxy_obj = new(EthernetLayer3SubinterfaceResourceNdpProxyObject)
+	} else {
+		diags.Append(o.NdpProxy.As(ctx, &ndpProxy_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ndpProxy_object := types.ObjectNull(ndpProxy_obj.AttributeTypes())
 	if obj.NdpProxy != nil {
-		ndpProxy_object = new(EthernetLayer3SubinterfaceResourceNdpProxyObject)
-		diags.Append(ndpProxy_object.CopyFromPango(ctx, ancestors, obj.NdpProxy, ev)...)
+		diags.Append(ndpProxy_obj.CopyFromPango(ctx, client, ancestors, obj.NdpProxy, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ndpProxy_object, diags_tmp = types.ObjectValueFrom(ctx, ndpProxy_obj.AttributeTypes(), ndpProxy_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var pppoe_object *EthernetLayer3SubinterfaceResourcePppoeObject
+
+	var pppoe_obj *EthernetLayer3SubinterfaceResourcePppoeObject
+	if o.Pppoe.IsNull() {
+		pppoe_obj = new(EthernetLayer3SubinterfaceResourcePppoeObject)
+	} else {
+		diags.Append(o.Pppoe.As(ctx, &pppoe_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	pppoe_object := types.ObjectNull(pppoe_obj.AttributeTypes())
 	if obj.Pppoe != nil {
-		pppoe_object = new(EthernetLayer3SubinterfaceResourcePppoeObject)
-		diags.Append(pppoe_object.CopyFromPango(ctx, ancestors, obj.Pppoe, ev)...)
+		diags.Append(pppoe_obj.CopyFromPango(ctx, client, ancestors, obj.Pppoe, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		pppoe_object, diags_tmp = types.ObjectValueFrom(ctx, pppoe_obj.AttributeTypes(), pppoe_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var sdwanLinkSettings_object *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject
+
+	var sdwanLinkSettings_obj *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject
+	if o.SdwanLinkSettings.IsNull() {
+		sdwanLinkSettings_obj = new(EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject)
+	} else {
+		diags.Append(o.SdwanLinkSettings.As(ctx, &sdwanLinkSettings_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	sdwanLinkSettings_object := types.ObjectNull(sdwanLinkSettings_obj.AttributeTypes())
 	if obj.SdwanLinkSettings != nil {
-		sdwanLinkSettings_object = new(EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject)
-		diags.Append(sdwanLinkSettings_object.CopyFromPango(ctx, ancestors, obj.SdwanLinkSettings, ev)...)
+		diags.Append(sdwanLinkSettings_obj.CopyFromPango(ctx, client, ancestors, obj.SdwanLinkSettings, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		sdwanLinkSettings_object, diags_tmp = types.ObjectValueFrom(ctx, sdwanLinkSettings_obj.AttributeTypes(), sdwanLinkSettings_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17456,7 +19383,7 @@ func (o *EthernetLayer3SubinterfaceResourceModel) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.AdjustTcpMss, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -17478,7 +19405,7 @@ func (o *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceArpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Arp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceArpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Arp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -17491,7 +19418,7 @@ func (o *EthernetLayer3SubinterfaceResourceArpObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceBonjourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceBonjourObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -17513,12 +19440,18 @@ func (o *EthernetLayer3SubinterfaceResourceBonjourObject) CopyFromPango(ctx cont
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.DdnsConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ddnsIp_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIp)
+
+		entries := make([]string, 0)
+		if o.DdnsIp.IsNull() || len(obj.DdnsIp) > 0 {
+			entries = obj.DdnsIp
+		}
+
+		ddnsIp_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -17527,7 +19460,13 @@ func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) CopyFromPango(ctx c
 	var ddnsIpv6_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DdnsIpv6)
+
+		entries := make([]string, 0)
+		if o.DdnsIpv6.IsNull() || len(obj.DdnsIpv6) > 0 {
+			entries = obj.DdnsIpv6
+		}
+
+		ddnsIpv6_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -17536,15 +19475,31 @@ func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) CopyFromPango(ctx c
 	var ddnsVendorConfig_list types.List
 	{
 		var ddnsVendorConfig_tf_entries []EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject
-		for _, elt := range obj.DdnsVendorConfig {
-			entry := EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.DdnsVendorConfig.IsNull() {
+			diags.Append(o.DdnsVendorConfig.ElementsAs(ctx, &ddnsVendorConfig_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			ddnsVendorConfig_tf_entries = append(ddnsVendorConfig_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.DdnsVendorConfig {
+			entry := EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(ddnsVendorConfig_tf_entries) {
+				entry = ddnsVendorConfig_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(ddnsVendorConfig_tf_entries) {
+				ddnsVendorConfig_tf_entries[idx] = entry
+			} else {
+				ddnsVendorConfig_tf_entries = append(ddnsVendorConfig_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("ddns_vendor_config")
@@ -17584,7 +19539,7 @@ func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.DdnsConfigDdnsVendorConfig, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var value_value types.String
@@ -17597,12 +19552,27 @@ func (o *EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject) Cop
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceDhcpClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceDhcpClientObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var sendHostname_object *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject
+
+	var sendHostname_obj *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject
+	if o.SendHostname.IsNull() {
+		sendHostname_obj = new(EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject)
+	} else {
+		diags.Append(o.SendHostname.As(ctx, &sendHostname_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	sendHostname_object := types.ObjectNull(sendHostname_obj.AttributeTypes())
 	if obj.SendHostname != nil {
-		sendHostname_object = new(EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject)
-		diags.Append(sendHostname_object.CopyFromPango(ctx, append(ancestors, o), obj.SendHostname, ev)...)
+		diags.Append(sendHostname_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.SendHostname, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		sendHostname_object, diags_tmp = types.ObjectValueFrom(ctx, sendHostname_obj.AttributeTypes(), sendHostname_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17628,7 +19598,7 @@ func (o *EthernetLayer3SubinterfaceResourceDhcpClientObject) CopyFromPango(ctx c
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.DhcpClientSendHostname, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -17645,7 +19615,7 @@ func (o *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject) CopyFro
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var sdwanGateway_value types.String
@@ -17658,46 +19628,107 @@ func (o *EthernetLayer3SubinterfaceResourceIpObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []EthernetLayer3SubinterfaceResourceIpv6AddressObject
-		for _, elt := range obj.Address {
-			entry := EthernetLayer3SubinterfaceResourceIpv6AddressObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Address.IsNull() {
+			diags.Append(o.Address.ElementsAs(ctx, &address_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			address_tf_entries = append(address_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Address {
+			entry := EthernetLayer3SubinterfaceResourceIpv6AddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(address_tf_entries) {
+				entry = address_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(address_tf_entries) {
+				address_tf_entries[idx] = entry
+			} else {
+				address_tf_entries = append(address_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("address")
 		address_list, list_diags = types.ListValueFrom(ctx, schemaType, address_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dhcpClient_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject
+
+	var dhcpClient_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject
+	if o.DhcpClient.IsNull() {
+		dhcpClient_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject)
+	} else {
+		diags.Append(o.DhcpClient.As(ctx, &dhcpClient_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dhcpClient_object := types.ObjectNull(dhcpClient_obj.AttributeTypes())
 	if obj.DhcpClient != nil {
-		dhcpClient_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject)
-		diags.Append(dhcpClient_object.CopyFromPango(ctx, append(ancestors, o), obj.DhcpClient, ev)...)
+		diags.Append(dhcpClient_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DhcpClient, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpClient_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpClient_obj.AttributeTypes(), dhcpClient_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var inherited_object *EthernetLayer3SubinterfaceResourceIpv6InheritedObject
+
+	var inherited_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedObject
+	if o.Inherited.IsNull() {
+		inherited_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedObject)
+	} else {
+		diags.Append(o.Inherited.As(ctx, &inherited_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	inherited_object := types.ObjectNull(inherited_obj.AttributeTypes())
 	if obj.Inherited != nil {
-		inherited_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedObject)
-		diags.Append(inherited_object.CopyFromPango(ctx, append(ancestors, o), obj.Inherited, ev)...)
+		diags.Append(inherited_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Inherited, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		inherited_object, diags_tmp = types.ObjectValueFrom(ctx, inherited_obj.AttributeTypes(), inherited_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var neighborDiscovery_object *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject
+
+	var neighborDiscovery_obj *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject
+	if o.NeighborDiscovery.IsNull() {
+		neighborDiscovery_obj = new(EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject)
+	} else {
+		diags.Append(o.NeighborDiscovery.As(ctx, &neighborDiscovery_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	neighborDiscovery_object := types.ObjectNull(neighborDiscovery_obj.AttributeTypes())
 	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject)
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		diags.Append(neighborDiscovery_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		neighborDiscovery_object, diags_tmp = types.ObjectValueFrom(ctx, neighborDiscovery_obj.AttributeTypes(), neighborDiscovery_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17721,28 +19752,73 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6Object) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var prefix_object *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject
+
+	var prefix_obj *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject
+	if o.Prefix.IsNull() {
+		prefix_obj = new(EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject)
+	} else {
+		diags.Append(o.Prefix.As(ctx, &prefix_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	prefix_object := types.ObjectNull(prefix_obj.AttributeTypes())
 	if obj.Prefix != nil {
-		prefix_object = new(EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject)
-		diags.Append(prefix_object.CopyFromPango(ctx, append(ancestors, o), obj.Prefix, ev)...)
+		diags.Append(prefix_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Prefix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		prefix_object, diags_tmp = types.ObjectValueFrom(ctx, prefix_obj.AttributeTypes(), prefix_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var anycast_object *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject
+
+	var anycast_obj *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject
+	if o.Anycast.IsNull() {
+		anycast_obj = new(EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject)
+	} else {
+		diags.Append(o.Anycast.As(ctx, &anycast_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	anycast_object := types.ObjectNull(anycast_obj.AttributeTypes())
 	if obj.Anycast != nil {
-		anycast_object = new(EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject)
-		diags.Append(anycast_object.CopyFromPango(ctx, append(ancestors, o), obj.Anycast, ev)...)
+		diags.Append(anycast_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Anycast, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		anycast_object, diags_tmp = types.ObjectValueFrom(ctx, anycast_obj.AttributeTypes(), anycast_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var advertise_object *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject
+
+	var advertise_obj *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject
+	if o.Advertise.IsNull() {
+		advertise_obj = new(EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject)
+	} else {
+		diags.Append(o.Advertise.As(ctx, &advertise_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	advertise_object := types.ObjectNull(advertise_obj.AttributeTypes())
 	if obj.Advertise != nil {
-		advertise_object = new(EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject)
-		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		diags.Append(advertise_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		advertise_object, diags_tmp = types.ObjectValueFrom(ctx, advertise_obj.AttributeTypes(), advertise_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17761,19 +19837,19 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressObject) CopyFromPango(ctx 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6AddressAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -17805,28 +19881,73 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject) CopyFromP
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClient, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var neighborDiscovery_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
+
+	var neighborDiscovery_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
+	if o.NeighborDiscovery.IsNull() {
+		neighborDiscovery_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject)
+	} else {
+		diags.Append(o.NeighborDiscovery.As(ctx, &neighborDiscovery_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	neighborDiscovery_object := types.ObjectNull(neighborDiscovery_obj.AttributeTypes())
 	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject)
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		diags.Append(neighborDiscovery_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		neighborDiscovery_object, diags_tmp = types.ObjectValueFrom(ctx, neighborDiscovery_obj.AttributeTypes(), neighborDiscovery_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var prefixDelegation_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject
+
+	var prefixDelegation_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject
+	if o.PrefixDelegation.IsNull() {
+		prefixDelegation_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject)
+	} else {
+		diags.Append(o.PrefixDelegation.As(ctx, &prefixDelegation_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	prefixDelegation_object := types.ObjectNull(prefixDelegation_obj.AttributeTypes())
 	if obj.PrefixDelegation != nil {
-		prefixDelegation_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject)
-		diags.Append(prefixDelegation_object.CopyFromPango(ctx, append(ancestors, o), obj.PrefixDelegation, ev)...)
+		diags.Append(prefixDelegation_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.PrefixDelegation, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		prefixDelegation_object, diags_tmp = types.ObjectValueFrom(ctx, prefixDelegation_obj.AttributeTypes(), prefixDelegation_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var v6Options_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject
+
+	var v6Options_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject
+	if o.V6Options.IsNull() {
+		v6Options_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject)
+	} else {
+		diags.Append(o.V6Options.As(ctx, &v6Options_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	v6Options_object := types.ObjectNull(v6Options_obj.AttributeTypes())
 	if obj.V6Options != nil {
-		v6Options_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject)
-		diags.Append(v6Options_object.CopyFromPango(ctx, append(ancestors, o), obj.V6Options, ev)...)
+		diags.Append(v6Options_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.V6Options, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		v6Options_object, diags_tmp = types.ObjectValueFrom(ctx, v6Options_obj.AttributeTypes(), v6Options_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17859,38 +19980,84 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject) CopyFromPango(c
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			entry := EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Neighbor.IsNull() {
+			diags.Append(o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Neighbor {
+			entry := EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(neighbor_tf_entries) {
+				entry = neighbor_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(neighbor_tf_entries) {
+				neighbor_tf_entries[idx] = entry
+			} else {
+				neighbor_tf_entries = append(neighbor_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("neighbor")
 		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dnsServer_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
-	if obj.DnsServer != nil {
-		dnsServer_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject)
-		diags.Append(dnsServer_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsServer, ev)...)
+
+	var dnsServer_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
+	if o.DnsServer.IsNull() {
+		dnsServer_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject)
+	} else {
+		diags.Append(o.DnsServer.As(ctx, &dnsServer_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dnsSuffix_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+	dnsServer_object := types.ObjectNull(dnsServer_obj.AttributeTypes())
+	if obj.DnsServer != nil {
+		diags.Append(dnsServer_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsServer_object, diags_tmp = types.ObjectValueFrom(ctx, dnsServer_obj.AttributeTypes(), dnsServer_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dnsSuffix_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+	if o.DnsSuffix.IsNull() {
+		dnsSuffix_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject)
+	} else {
+		diags.Append(o.DnsSuffix.As(ctx, &dnsSuffix_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsSuffix_object := types.ObjectNull(dnsSuffix_obj.AttributeTypes())
 	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject)
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSuffix, ev)...)
+		diags.Append(dnsSuffix_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsSuffix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsSuffix_object, diags_tmp = types.ObjectValueFrom(ctx, dnsSuffix_obj.AttributeTypes(), dnsSuffix_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17928,12 +20095,27 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var source_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+
+	var source_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+	if o.Source.IsNull() {
+		source_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
+	} else {
+		diags.Append(o.Source.As(ctx, &source_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	source_object := types.ObjectNull(source_obj.AttributeTypes())
 	if obj.Source != nil {
-		source_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject)
-		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		diags.Append(source_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		source_object, diags_tmp = types.ObjectValueFrom(ctx, source_obj.AttributeTypes(), source_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17949,20 +20131,50 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+
+	var dhcpv6_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if o.Dhcpv6.IsNull() {
+		dhcpv6_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object)
+	} else {
+		diags.Append(o.Dhcpv6.As(ctx, &dhcpv6_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var manual_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	dhcpv6_object := types.ObjectNull(dhcpv6_obj.AttributeTypes())
+	if obj.Dhcpv6 != nil {
+		diags.Append(dhcpv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpv6_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpv6_obj.AttributeTypes(), dhcpv6_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var manual_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+	if o.Manual.IsNull() {
+		manual_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
+	} else {
+		diags.Append(o.Manual.As(ctx, &manual_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	manual_object := types.ObjectNull(manual_obj.AttributeTypes())
 	if obj.Manual != nil {
-		manual_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject)
-		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		diags.Append(manual_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		manual_object, diags_tmp = types.ObjectValueFrom(ctx, manual_obj.AttributeTypes(), manual_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -17974,26 +20186,42 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			entry := EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Server.IsNull() {
+			diags.Append(o.Server.ElementsAs(ctx, &server_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			server_tf_entries = append(server_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(server_tf_entries) {
+				entry = server_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(server_tf_entries) {
+				server_tf_entries[idx] = entry
+			} else {
+				server_tf_entries = append(server_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("server")
@@ -18006,7 +20234,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -18019,12 +20247,27 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var source_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+
+	var source_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+	if o.Source.IsNull() {
+		source_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject)
+	} else {
+		diags.Append(o.Source.As(ctx, &source_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	source_object := types.ObjectNull(source_obj.AttributeTypes())
 	if obj.Source != nil {
-		source_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject)
-		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		diags.Append(source_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		source_object, diags_tmp = types.ObjectValueFrom(ctx, source_obj.AttributeTypes(), source_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18040,20 +20283,50 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+
+	var dhcpv6_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if o.Dhcpv6.IsNull() {
+		dhcpv6_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+	} else {
+		diags.Append(o.Dhcpv6.As(ctx, &dhcpv6_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var manual_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	dhcpv6_object := types.ObjectNull(dhcpv6_obj.AttributeTypes())
+	if obj.Dhcpv6 != nil {
+		diags.Append(dhcpv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpv6_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpv6_obj.AttributeTypes(), dhcpv6_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var manual_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+	if o.Manual.IsNull() {
+		manual_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject)
+	} else {
+		diags.Append(o.Manual.As(ctx, &manual_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	manual_object := types.ObjectNull(manual_obj.AttributeTypes())
 	if obj.Manual != nil {
-		manual_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject)
-		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		diags.Append(manual_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		manual_object, diags_tmp = types.ObjectValueFrom(ctx, manual_obj.AttributeTypes(), manual_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18065,26 +20338,42 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var suffix_list types.List
 	{
 		var suffix_tf_entries []EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			entry := EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Suffix.IsNull() {
+			diags.Append(o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Suffix {
+			entry := EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(suffix_tf_entries) {
+				entry = suffix_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(suffix_tf_entries) {
+				suffix_tf_entries[idx] = entry
+			} else {
+				suffix_tf_entries = append(suffix_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("suffix")
@@ -18097,7 +20386,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -18110,7 +20399,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -18123,12 +20412,27 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighb
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var enable_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject
+
+	var enable_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject
+	if o.Enable.IsNull() {
+		enable_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject)
+	} else {
+		diags.Append(o.Enable.As(ctx, &enable_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enable_object := types.ObjectNull(enable_obj.AttributeTypes())
 	if obj.Enable != nil {
-		enable_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject)
-		diags.Append(enable_object.CopyFromPango(ctx, append(ancestors, o), obj.Enable, ev)...)
+		diags.Append(enable_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Enable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		enable_object, diags_tmp = types.ObjectValueFrom(ctx, enable_obj.AttributeTypes(), enable_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18139,20 +20443,50 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject)
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var no_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject
-	if obj.No != nil {
-		no_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject)
-		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
+
+	var no_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject
+	if o.No.IsNull() {
+		no_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject)
+	} else {
+		diags.Append(o.No.As(ctx, &no_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var yes_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject
+	no_object := types.ObjectNull(no_obj.AttributeTypes())
+	if obj.No != nil {
+		diags.Append(no_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.No, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		no_object, diags_tmp = types.ObjectValueFrom(ctx, no_obj.AttributeTypes(), no_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var yes_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject
+	if o.Yes.IsNull() {
+		yes_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject)
+	} else {
+		diags.Append(o.Yes.As(ctx, &yes_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	yes_object := types.ObjectNull(yes_obj.AttributeTypes())
 	if obj.Yes != nil {
-		yes_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject)
-		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
+		diags.Append(yes_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Yes, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		yes_object, diags_tmp = types.ObjectValueFrom(ctx, yes_obj.AttributeTypes(), yes_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18164,13 +20498,13 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableO
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientPrefixDelegationEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var pfxPoolName_value types.String
@@ -18192,12 +20526,27 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableY
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6Options, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var enable_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject
+
+	var enable_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject
+	if o.Enable.IsNull() {
+		enable_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject)
+	} else {
+		diags.Append(o.Enable.As(ctx, &enable_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	enable_object := types.ObjectNull(enable_obj.AttributeTypes())
 	if obj.Enable != nil {
-		enable_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject)
-		diags.Append(enable_object.CopyFromPango(ctx, append(ancestors, o), obj.Enable, ev)...)
+		diags.Append(enable_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Enable, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		enable_object, diags_tmp = types.ObjectValueFrom(ctx, enable_obj.AttributeTypes(), enable_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18223,20 +20572,50 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject) CopyFr
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnable, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var no_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject
-	if obj.No != nil {
-		no_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject)
-		diags.Append(no_object.CopyFromPango(ctx, append(ancestors, o), obj.No, ev)...)
+
+	var no_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject
+	if o.No.IsNull() {
+		no_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject)
+	} else {
+		diags.Append(o.No.As(ctx, &no_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var yes_object *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject
+	no_object := types.ObjectNull(no_obj.AttributeTypes())
+	if obj.No != nil {
+		diags.Append(no_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.No, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		no_object, diags_tmp = types.ObjectValueFrom(ctx, no_obj.AttributeTypes(), no_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var yes_obj *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject
+	if o.Yes.IsNull() {
+		yes_obj = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject)
+	} else {
+		diags.Append(o.Yes.As(ctx, &yes_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	yes_object := types.ObjectNull(yes_obj.AttributeTypes())
 	if obj.Yes != nil {
-		yes_object = new(EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject)
-		diags.Append(yes_object.CopyFromPango(ctx, append(ancestors, o), obj.Yes, ev)...)
+		diags.Append(yes_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Yes, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		yes_object, diags_tmp = types.ObjectValueFrom(ctx, yes_obj.AttributeTypes(), yes_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18248,13 +20627,13 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject) 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnableNo, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6DhcpClientV6OptionsEnableYes, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var nonTempAddr_value types.Bool
@@ -18271,30 +20650,61 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObjec
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6Inherited, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var assignAddr_list types.List
 	{
 		var assignAddr_tf_entries []EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject
-		for _, elt := range obj.AssignAddr {
-			entry := EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.AssignAddr.IsNull() {
+			diags.Append(o.AssignAddr.ElementsAs(ctx, &assignAddr_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.AssignAddr {
+			entry := EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(assignAddr_tf_entries) {
+				entry = assignAddr_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(assignAddr_tf_entries) {
+				assignAddr_tf_entries[idx] = entry
+			} else {
+				assignAddr_tf_entries = append(assignAddr_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("assign_addr")
 		assignAddr_list, list_diags = types.ListValueFrom(ctx, schemaType, assignAddr_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var neighborDiscovery_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject
+
+	var neighborDiscovery_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject
+	if o.NeighborDiscovery.IsNull() {
+		neighborDiscovery_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject)
+	} else {
+		diags.Append(o.NeighborDiscovery.As(ctx, &neighborDiscovery_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	neighborDiscovery_object := types.ObjectNull(neighborDiscovery_obj.AttributeTypes())
 	if obj.NeighborDiscovery != nil {
-		neighborDiscovery_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject)
-		diags.Append(neighborDiscovery_object.CopyFromPango(ctx, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		diags.Append(neighborDiscovery_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.NeighborDiscovery, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		neighborDiscovery_object, diags_tmp = types.ObjectValueFrom(ctx, neighborDiscovery_obj.AttributeTypes(), neighborDiscovery_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18311,12 +20721,27 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) CopyFromPango(ct
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddr, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var type_object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject
+
+	var type_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject
+	if o.Type.IsNull() {
+		type_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject)
+	} else {
+		diags.Append(o.Type.As(ctx, &type_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	type_object := types.ObjectNull(type_obj.AttributeTypes())
 	if obj.Type != nil {
-		type_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject)
-		diags.Append(type_object.CopyFromPango(ctx, append(ancestors, o), obj.Type, ev)...)
+		diags.Append(type_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Type, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		type_object, diags_tmp = types.ObjectValueFrom(ctx, type_obj.AttributeTypes(), type_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18328,20 +20753,50 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject) CopyFr
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var gua_object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject
-	if obj.Gua != nil {
-		gua_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject)
-		diags.Append(gua_object.CopyFromPango(ctx, append(ancestors, o), obj.Gua, ev)...)
+
+	var gua_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject
+	if o.Gua.IsNull() {
+		gua_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject)
+	} else {
+		diags.Append(o.Gua.As(ctx, &gua_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ula_object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject
+	gua_object := types.ObjectNull(gua_obj.AttributeTypes())
+	if obj.Gua != nil {
+		diags.Append(gua_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Gua, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		gua_object, diags_tmp = types.ObjectValueFrom(ctx, gua_obj.AttributeTypes(), gua_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ula_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject
+	if o.Ula.IsNull() {
+		ula_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject)
+	} else {
+		diags.Append(o.Ula.As(ctx, &ula_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ula_object := types.ObjectNull(ula_obj.AttributeTypes())
 	if obj.Ula != nil {
-		ula_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject)
-		diags.Append(ula_object.CopyFromPango(ctx, append(ancestors, o), obj.Ula, ev)...)
+		diags.Append(ula_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ula, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ula_object, diags_tmp = types.ObjectValueFrom(ctx, ula_obj.AttributeTypes(), ula_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18353,20 +20808,50 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject) Co
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGua, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var poolType_object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
-	if obj.PoolType != nil {
-		poolType_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject)
-		diags.Append(poolType_object.CopyFromPango(ctx, append(ancestors, o), obj.PoolType, ev)...)
+
+	var poolType_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+	if o.PoolType.IsNull() {
+		poolType_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject)
+	} else {
+		diags.Append(o.PoolType.As(ctx, &poolType_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var advertise_object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+	poolType_object := types.ObjectNull(poolType_obj.AttributeTypes())
+	if obj.PoolType != nil {
+		diags.Append(poolType_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.PoolType, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		poolType_object, diags_tmp = types.ObjectValueFrom(ctx, poolType_obj.AttributeTypes(), poolType_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var advertise_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+	if o.Advertise.IsNull() {
+		advertise_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject)
+	} else {
+		diags.Append(o.Advertise.As(ctx, &advertise_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	advertise_object := types.ObjectNull(advertise_obj.AttributeTypes())
 	if obj.Advertise != nil {
-		advertise_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject)
-		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		diags.Append(advertise_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		advertise_object, diags_tmp = types.ObjectValueFrom(ctx, advertise_obj.AttributeTypes(), advertise_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18388,20 +20873,50 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject)
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolType, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dynamic_object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
-	if obj.Dynamic != nil {
-		dynamic_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
-		diags.Append(dynamic_object.CopyFromPango(ctx, append(ancestors, o), obj.Dynamic, ev)...)
+
+	var dynamic_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+	if o.Dynamic.IsNull() {
+		dynamic_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject)
+	} else {
+		diags.Append(o.Dynamic.As(ctx, &dynamic_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dynamicId_object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	dynamic_object := types.ObjectNull(dynamic_obj.AttributeTypes())
+	if obj.Dynamic != nil {
+		diags.Append(dynamic_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dynamic, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dynamic_object, diags_tmp = types.ObjectValueFrom(ctx, dynamic_obj.AttributeTypes(), dynamic_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var dynamicId_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+	if o.DynamicId.IsNull() {
+		dynamicId_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
+	} else {
+		diags.Append(o.DynamicId.As(ctx, &dynamicId_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dynamicId_object := types.ObjectNull(dynamicId_obj.AttributeTypes())
 	if obj.DynamicId != nil {
-		dynamicId_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject)
-		diags.Append(dynamicId_object.CopyFromPango(ctx, append(ancestors, o), obj.DynamicId, ev)...)
+		diags.Append(dynamicId_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DynamicId, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dynamicId_object, diags_tmp = types.ObjectValueFrom(ctx, dynamicId_obj.AttributeTypes(), dynamicId_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18413,13 +20928,13 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTyp
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamic, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaPoolTypeDynamicId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var identifier_value types.Int64
@@ -18431,7 +20946,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTyp
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeGuaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -18453,12 +20968,27 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdverti
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeUla, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var advertise_object *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+
+	var advertise_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+	if o.Advertise.IsNull() {
+		advertise_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject)
+	} else {
+		diags.Append(o.Advertise.As(ctx, &advertise_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	advertise_object := types.ObjectNull(advertise_obj.AttributeTypes())
 	if obj.Advertise != nil {
-		advertise_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject)
-		diags.Append(advertise_object.CopyFromPango(ctx, append(ancestors, o), obj.Advertise, ev)...)
+		diags.Append(advertise_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Advertise, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		advertise_object, diags_tmp = types.ObjectValueFrom(ctx, advertise_obj.AttributeTypes(), advertise_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18489,7 +21019,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject)
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedAssignAddrTypeUlaAdvertise, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -18521,46 +21051,107 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdverti
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			entry := EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Neighbor.IsNull() {
+			diags.Append(o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Neighbor {
+			entry := EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(neighbor_tf_entries) {
+				entry = neighbor_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(neighbor_tf_entries) {
+				neighbor_tf_entries[idx] = entry
+			} else {
+				neighbor_tf_entries = append(neighbor_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("neighbor")
 		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dnsServer_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject
+
+	var dnsServer_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject
+	if o.DnsServer.IsNull() {
+		dnsServer_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject)
+	} else {
+		diags.Append(o.DnsServer.As(ctx, &dnsServer_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsServer_object := types.ObjectNull(dnsServer_obj.AttributeTypes())
 	if obj.DnsServer != nil {
-		dnsServer_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject)
-		diags.Append(dnsServer_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsServer, ev)...)
+		diags.Append(dnsServer_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsServer, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsServer_object, diags_tmp = types.ObjectValueFrom(ctx, dnsServer_obj.AttributeTypes(), dnsServer_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var dnsSuffix_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+
+	var dnsSuffix_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+	if o.DnsSuffix.IsNull() {
+		dnsSuffix_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject)
+	} else {
+		diags.Append(o.DnsSuffix.As(ctx, &dnsSuffix_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsSuffix_object := types.ObjectNull(dnsSuffix_obj.AttributeTypes())
 	if obj.DnsSuffix != nil {
-		dnsSuffix_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject)
-		diags.Append(dnsSuffix_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSuffix, ev)...)
+		diags.Append(dnsSuffix_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsSuffix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsSuffix_object, diags_tmp = types.ObjectValueFrom(ctx, dnsSuffix_obj.AttributeTypes(), dnsSuffix_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var routerAdvertisement_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+
+	var routerAdvertisement_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+	if o.RouterAdvertisement.IsNull() {
+		routerAdvertisement_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject)
+	} else {
+		diags.Append(o.RouterAdvertisement.As(ctx, &routerAdvertisement_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	routerAdvertisement_object := types.ObjectNull(routerAdvertisement_obj.AttributeTypes())
 	if obj.RouterAdvertisement != nil {
-		routerAdvertisement_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject)
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		diags.Append(routerAdvertisement_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		routerAdvertisement_object, diags_tmp = types.ObjectValueFrom(ctx, routerAdvertisement_obj.AttributeTypes(), routerAdvertisement_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18599,12 +21190,27 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject)
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var source_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+
+	var source_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+	if o.Source.IsNull() {
+		source_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject)
+	} else {
+		diags.Append(o.Source.As(ctx, &source_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	source_object := types.ObjectNull(source_obj.AttributeTypes())
 	if obj.Source != nil {
-		source_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject)
-		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		diags.Append(source_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		source_object, diags_tmp = types.ObjectValueFrom(ctx, source_obj.AttributeTypes(), source_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18620,20 +21226,50 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+
+	var dhcpv6_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+	if o.Dhcpv6.IsNull() {
+		dhcpv6_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object)
+	} else {
+		diags.Append(o.Dhcpv6.As(ctx, &dhcpv6_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var manual_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	dhcpv6_object := types.ObjectNull(dhcpv6_obj.AttributeTypes())
+	if obj.Dhcpv6 != nil {
+		diags.Append(dhcpv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpv6_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpv6_obj.AttributeTypes(), dhcpv6_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var manual_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+	if o.Manual.IsNull() {
+		manual_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
+	} else {
+		diags.Append(o.Manual.As(ctx, &manual_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	manual_object := types.ObjectNull(manual_obj.AttributeTypes())
 	if obj.Manual != nil {
-		manual_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject)
-		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		diags.Append(manual_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		manual_object, diags_tmp = types.ObjectValueFrom(ctx, manual_obj.AttributeTypes(), manual_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18645,7 +21281,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var prefixPool_value types.String
@@ -18657,20 +21293,36 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
-		for _, elt := range obj.Server {
-			entry := EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Server.IsNull() {
+			diags.Append(o.Server.ElementsAs(ctx, &server_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			server_tf_entries = append(server_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(server_tf_entries) {
+				entry = server_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(server_tf_entries) {
+				server_tf_entries[idx] = entry
+			} else {
+				server_tf_entries = append(server_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("server")
@@ -18683,7 +21335,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -18696,12 +21348,27 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var source_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+
+	var source_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+	if o.Source.IsNull() {
+		source_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
+	} else {
+		diags.Append(o.Source.As(ctx, &source_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	source_object := types.ObjectNull(source_obj.AttributeTypes())
 	if obj.Source != nil {
-		source_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject)
-		diags.Append(source_object.CopyFromPango(ctx, append(ancestors, o), obj.Source, ev)...)
+		diags.Append(source_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Source, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		source_object, diags_tmp = types.ObjectValueFrom(ctx, source_obj.AttributeTypes(), source_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18717,20 +21384,50 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dhcpv6_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
-	if obj.Dhcpv6 != nil {
-		dhcpv6_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
-		diags.Append(dhcpv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Dhcpv6, ev)...)
+
+	var dhcpv6_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+	if o.Dhcpv6.IsNull() {
+		dhcpv6_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object)
+	} else {
+		diags.Append(o.Dhcpv6.As(ctx, &dhcpv6_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var manual_object *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	dhcpv6_object := types.ObjectNull(dhcpv6_obj.AttributeTypes())
+	if obj.Dhcpv6 != nil {
+		diags.Append(dhcpv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dhcpv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dhcpv6_object, diags_tmp = types.ObjectValueFrom(ctx, dhcpv6_obj.AttributeTypes(), dhcpv6_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var manual_obj *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+	if o.Manual.IsNull() {
+		manual_obj = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
+	} else {
+		diags.Append(o.Manual.As(ctx, &manual_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	manual_object := types.ObjectNull(manual_obj.AttributeTypes())
 	if obj.Manual != nil {
-		manual_object = new(EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject)
-		diags.Append(manual_object.CopyFromPango(ctx, append(ancestors, o), obj.Manual, ev)...)
+		diags.Append(manual_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Manual, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		manual_object, diags_tmp = types.ObjectValueFrom(ctx, manual_obj.AttributeTypes(), manual_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18742,7 +21439,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var prefixPool_value types.String
@@ -18754,20 +21451,36 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManual, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var suffix_list types.List
 	{
 		var suffix_tf_entries []EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
-		for _, elt := range obj.Suffix {
-			entry := EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Suffix.IsNull() {
+			diags.Append(o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Suffix {
+			entry := EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(suffix_tf_entries) {
+				entry = suffix_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(suffix_tf_entries) {
+				suffix_tf_entries[idx] = entry
+			} else {
+				suffix_tf_entries = append(suffix_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("suffix")
@@ -18780,7 +21493,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -18793,7 +21506,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -18806,7 +21519,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighbo
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6InheritedNeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -18873,30 +21586,61 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterA
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscovery, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var neighbor_list types.List
 	{
 		var neighbor_tf_entries []EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject
-		for _, elt := range obj.Neighbor {
-			entry := EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Neighbor.IsNull() {
+			diags.Append(o.Neighbor.ElementsAs(ctx, &neighbor_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			neighbor_tf_entries = append(neighbor_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Neighbor {
+			entry := EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(neighbor_tf_entries) {
+				entry = neighbor_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(neighbor_tf_entries) {
+				neighbor_tf_entries[idx] = entry
+			} else {
+				neighbor_tf_entries = append(neighbor_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("neighbor")
 		neighbor_list, list_diags = types.ListValueFrom(ctx, schemaType, neighbor_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var routerAdvertisement_object *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject
+
+	var routerAdvertisement_obj *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject
+	if o.RouterAdvertisement.IsNull() {
+		routerAdvertisement_obj = new(EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject)
+	} else {
+		diags.Append(o.RouterAdvertisement.As(ctx, &routerAdvertisement_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	routerAdvertisement_object := types.ObjectNull(routerAdvertisement_obj.AttributeTypes())
 	if obj.RouterAdvertisement != nil {
-		routerAdvertisement_object = new(EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject)
-		diags.Append(routerAdvertisement_object.CopyFromPango(ctx, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		diags.Append(routerAdvertisement_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.RouterAdvertisement, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		routerAdvertisement_object, diags_tmp = types.ObjectValueFrom(ctx, routerAdvertisement_obj.AttributeTypes(), routerAdvertisement_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -18933,7 +21677,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) CopyFrom
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryNeighbor, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var hwAddress_value types.String
@@ -18946,12 +21690,27 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject) 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisement, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dnsSupport_object *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+
+	var dnsSupport_obj *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+	if o.DnsSupport.IsNull() {
+		dnsSupport_obj = new(EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
+	} else {
+		diags.Append(o.DnsSupport.As(ctx, &dnsSupport_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsSupport_object := types.ObjectNull(dnsSupport_obj.AttributeTypes())
 	if obj.DnsSupport != nil {
-		dnsSupport_object = new(EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject)
-		diags.Append(dnsSupport_object.CopyFromPango(ctx, append(ancestors, o), obj.DnsSupport, ev)...)
+		diags.Append(dnsSupport_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.DnsSupport, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsSupport_object, diags_tmp = types.ObjectValueFrom(ctx, dnsSupport_obj.AttributeTypes(), dnsSupport_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19022,20 +21781,36 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupport, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
-		for _, elt := range obj.Server {
-			entry := EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Server.IsNull() {
+			diags.Append(o.Server.ElementsAs(ctx, &server_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			server_tf_entries = append(server_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(server_tf_entries) {
+				entry = server_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(server_tf_entries) {
+				server_tf_entries[idx] = entry
+			} else {
+				server_tf_entries = append(server_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("server")
@@ -19045,15 +21820,31 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 	var suffix_list types.List
 	{
 		var suffix_tf_entries []EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
-		for _, elt := range obj.Suffix {
-			entry := EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Suffix.IsNull() {
+			diags.Append(o.Suffix.ElementsAs(ctx, &suffix_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			suffix_tf_entries = append(suffix_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Suffix {
+			entry := EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(suffix_tf_entries) {
+				entry = suffix_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(suffix_tf_entries) {
+				suffix_tf_entries[idx] = entry
+			} else {
+				suffix_tf_entries = append(suffix_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("suffix")
@@ -19072,7 +21863,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -19085,7 +21876,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var lifetime_value types.Int64
@@ -19098,20 +21889,36 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceNdpProxyObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceNdpProxyObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.NdpProxy, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []EthernetLayer3SubinterfaceResourceNdpProxyAddressObject
-		for _, elt := range obj.Address {
-			entry := EthernetLayer3SubinterfaceResourceNdpProxyAddressObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Address.IsNull() {
+			diags.Append(o.Address.ElementsAs(ctx, &address_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			address_tf_entries = append(address_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Address {
+			entry := EthernetLayer3SubinterfaceResourceNdpProxyAddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(address_tf_entries) {
+				entry = address_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(address_tf_entries) {
+				address_tf_entries[idx] = entry
+			} else {
+				address_tf_entries = append(address_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("address")
@@ -19129,7 +21936,7 @@ func (o *EthernetLayer3SubinterfaceResourceNdpProxyObject) CopyFromPango(ctx con
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceNdpProxyAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceNdpProxyAddressObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.NdpProxyAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var negate_value types.Bool
@@ -19142,20 +21949,50 @@ func (o *EthernetLayer3SubinterfaceResourceNdpProxyAddressObject) CopyFromPango(
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourcePppoeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.Pppoe, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourcePppoeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.Pppoe, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var passive_object *EthernetLayer3SubinterfaceResourcePppoePassiveObject
-	if obj.Passive != nil {
-		passive_object = new(EthernetLayer3SubinterfaceResourcePppoePassiveObject)
-		diags.Append(passive_object.CopyFromPango(ctx, append(ancestors, o), obj.Passive, ev)...)
+
+	var passive_obj *EthernetLayer3SubinterfaceResourcePppoePassiveObject
+	if o.Passive.IsNull() {
+		passive_obj = new(EthernetLayer3SubinterfaceResourcePppoePassiveObject)
+	} else {
+		diags.Append(o.Passive.As(ctx, &passive_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var staticAddress_object *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject
+	passive_object := types.ObjectNull(passive_obj.AttributeTypes())
+	if obj.Passive != nil {
+		diags.Append(passive_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Passive, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		passive_object, diags_tmp = types.ObjectValueFrom(ctx, passive_obj.AttributeTypes(), passive_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var staticAddress_obj *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject
+	if o.StaticAddress.IsNull() {
+		staticAddress_obj = new(EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject)
+	} else {
+		diags.Append(o.StaticAddress.As(ctx, &staticAddress_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	staticAddress_object := types.ObjectNull(staticAddress_obj.AttributeTypes())
 	if obj.StaticAddress != nil {
-		staticAddress_object = new(EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject)
-		diags.Append(staticAddress_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticAddress, ev)...)
+		diags.Append(staticAddress_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.StaticAddress, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		staticAddress_object, diags_tmp = types.ObjectValueFrom(ctx, staticAddress_obj.AttributeTypes(), staticAddress_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19228,7 +22065,7 @@ func (o *EthernetLayer3SubinterfaceResourcePppoeObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourcePppoePassiveObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.PppoePassive, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourcePppoePassiveObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.PppoePassive, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -19240,7 +22077,7 @@ func (o *EthernetLayer3SubinterfaceResourcePppoePassiveObject) CopyFromPango(ctx
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.PppoeStaticAddress, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.PppoeStaticAddress, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ip_value types.String
@@ -19252,12 +22089,27 @@ func (o *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject) CopyFromPan
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.SdwanLinkSettings, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var upstreamNat_object *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject
+
+	var upstreamNat_obj *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject
+	if o.UpstreamNat.IsNull() {
+		upstreamNat_obj = new(EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject)
+	} else {
+		diags.Append(o.UpstreamNat.As(ctx, &upstreamNat_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	upstreamNat_object := types.ObjectNull(upstreamNat_obj.AttributeTypes())
 	if obj.UpstreamNat != nil {
-		upstreamNat_object = new(EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject)
-		diags.Append(upstreamNat_object.CopyFromPango(ctx, append(ancestors, o), obj.UpstreamNat, ev)...)
+		diags.Append(upstreamNat_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.UpstreamNat, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		upstreamNat_object, diags_tmp = types.ObjectValueFrom(ctx, upstreamNat_obj.AttributeTypes(), upstreamNat_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19278,20 +22130,50 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject) CopyFromPang
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNat, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ddns_object *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject
-	if obj.Ddns != nil {
-		ddns_object = new(EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject)
-		diags.Append(ddns_object.CopyFromPango(ctx, append(ancestors, o), obj.Ddns, ev)...)
+
+	var ddns_obj *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject
+	if o.Ddns.IsNull() {
+		ddns_obj = new(EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject)
+	} else {
+		diags.Append(o.Ddns.As(ctx, &ddns_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var staticIp_object *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject
+	ddns_object := types.ObjectNull(ddns_obj.AttributeTypes())
+	if obj.Ddns != nil {
+		diags.Append(ddns_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ddns, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ddns_object, diags_tmp = types.ObjectValueFrom(ctx, ddns_obj.AttributeTypes(), ddns_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var staticIp_obj *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject
+	if o.StaticIp.IsNull() {
+		staticIp_obj = new(EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject)
+	} else {
+		diags.Append(o.StaticIp.As(ctx, &staticIp_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	staticIp_object := types.ObjectNull(staticIp_obj.AttributeTypes())
 	if obj.StaticIp != nil {
-		staticIp_object = new(EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject)
-		diags.Append(staticIp_object.CopyFromPango(ctx, append(ancestors, o), obj.StaticIp, ev)...)
+		diags.Append(staticIp_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.StaticIp, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		staticIp_object, diags_tmp = types.ObjectValueFrom(ctx, staticIp_obj.AttributeTypes(), staticIp_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -19308,13 +22190,13 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject) C
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNatDdns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *layer3.SdwanLinkSettingsUpstreamNatStaticIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var fqdn_value types.String
@@ -19337,7 +22219,7 @@ func (o *EthernetLayer3SubinterfaceResourceModel) resourceXpathParentComponents(
 	return components, nil
 }
 
-func (r *EthernetLayer3SubinterfaceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *EthernetLayer3SubinterfaceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state EthernetLayer3SubinterfaceResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -19352,7 +22234,7 @@ func (r *EthernetLayer3SubinterfaceResource) Create(ctx context.Context, req res
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -19426,7 +22308,7 @@ func (r *EthernetLayer3SubinterfaceResource) Create(ctx context.Context, req res
 
 	// Load the desired config.
 	var obj *layer3.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -19467,21 +22349,21 @@ func (r *EthernetLayer3SubinterfaceResource) Create(ctx context.Context, req res
 		}
 	}
 
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
 	if importLocation != nil {
-		err = r.manager.ImportToLocations(ctx, location, []layer3.ImportLocation{importLocation}, obj.Name)
+		err = o.manager.ImportToLocations(ctx, location, []layer3.ImportLocation{importLocation}, obj.Name)
 		if err != nil {
 			resp.Diagnostics.AddError("Failed to import resource into location", err.Error())
 			return
 		}
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -19498,8 +22380,8 @@ func (r *EthernetLayer3SubinterfaceResource) Create(ctx context.Context, req res
 }
 func (o *EthernetLayer3SubinterfaceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state EthernetLayer3SubinterfaceResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state EthernetLayer3SubinterfaceResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -19519,7 +22401,7 @@ func (o *EthernetLayer3SubinterfaceResource) Read(ctx context.Context, req resou
 
 	{
 		var terraformLocation EthernetLayer3SubinterfaceLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -19572,15 +22454,15 @@ func (o *EthernetLayer3SubinterfaceResource) Read(ctx context.Context, req resou
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_ethernet_layer3_subinterface_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -19590,16 +22472,16 @@ func (o *EthernetLayer3SubinterfaceResource) Read(ctx context.Context, req resou
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	{
 		component := components[0]
@@ -19619,7 +22501,7 @@ func (o *EthernetLayer3SubinterfaceResource) Read(ctx context.Context, req resou
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *EthernetLayer3SubinterfaceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *EthernetLayer3SubinterfaceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state EthernetLayer3SubinterfaceResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -19699,7 +22581,7 @@ func (r *EthernetLayer3SubinterfaceResource) Update(ctx context.Context, req res
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -19709,13 +22591,13 @@ func (r *EthernetLayer3SubinterfaceResource) Update(ctx context.Context, req res
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	obj, err := o.manager.Read(ctx, location, components, plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -19726,22 +22608,19 @@ func (r *EthernetLayer3SubinterfaceResource) Update(ctx context.Context, req res
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	updated, err := o.manager.Update(ctx, location, components, obj, obj.Name)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -19755,10 +22634,10 @@ func (r *EthernetLayer3SubinterfaceResource) Update(ctx context.Context, req res
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *EthernetLayer3SubinterfaceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *EthernetLayer3SubinterfaceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state EthernetLayer3SubinterfaceResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -19774,7 +22653,7 @@ func (r *EthernetLayer3SubinterfaceResource) Delete(ctx context.Context, req res
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -19861,13 +22740,13 @@ func (r *EthernetLayer3SubinterfaceResource) Delete(ctx context.Context, req res
 	}
 
 	if importLocation != nil {
-		err = r.manager.UnimportFromLocations(ctx, location, []layer3.ImportLocation{importLocation}, state.Name.ValueString())
+		err = o.manager.UnimportFromLocations(ctx, location, []layer3.ImportLocation{importLocation}, state.Name.ValueString())
 	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, []layer3.ImportLocation{importLocation}, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, []layer3.ImportLocation{importLocation}, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -19969,7 +22848,7 @@ func EthernetLayer3SubinterfaceImportStateCreator(ctx context.Context, resource 
 	return json.Marshal(importStruct)
 }
 
-func (r *EthernetLayer3SubinterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *EthernetLayer3SubinterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj EthernetLayer3SubinterfaceImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)
