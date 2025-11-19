@@ -1,0 +1,12 @@
+# A userid log setting can be imported by providing the following base64 encoded object as the ID
+# {
+#   location = {
+#     template = {
+#       name            = "example-template"
+#       panorama_device = "localhost.localdomain"
+#     }
+#   }
+#
+#   name = "example-userid-settings"
+# }
+terraform import panos_userid_log_settings.example $(echo '{"location":{"template":{"name":"example-template","panorama_device":"localhost.localdomain"}},"name":"example-userid-settings"}' | base64)

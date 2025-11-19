@@ -74,7 +74,7 @@ type MockUuidClient[E manager.UuidObject] struct {
 	Uuid             int
 	Initial          *list.List
 	Current          *list.List
-	MultiConfigOpers []MultiConfigOper
+	MultiConfigOpers [][]MultiConfigOper
 }
 
 func NewMockUuidClient[E manager.UuidObject](initial []E) *MockUuidClient[E] {
@@ -115,7 +115,9 @@ func (o *MockUuidClient[E]) ChunkedMultiConfig(ctx context.Context, updates *xml
 }
 
 func (o *MockUuidClient[E]) MultiConfig(ctx context.Context, updates *xmlapi.MultiConfig, arg1 bool, arg2 url.Values) ([]byte, *http.Response, *xmlapi.MultiConfigResponse, error) {
-	o.MultiConfigOpers, o.Uuid = MultiConfig[E](updates, &o.Current, multiConfigUuid, o.Uuid)
+	opers, uuid := MultiConfig[E](updates, &o.Current, multiConfigUuid, o.Uuid)
+	o.Uuid = uuid
+	o.MultiConfigOpers = append(o.MultiConfigOpers, opers)
 
 	return nil, nil, nil, nil
 }
@@ -230,6 +232,7 @@ func (o *MockUuidService[E, T]) MoveGroup(ctx context.Context, location MockLoca
 
 	updates := xmlapi.NewMultiConfig(len(movements))
 	for _, elt := range movements {
+		slog.Debug("MoveGroup()", "elt", elt)
 		path, err := location.XpathWithComponents(o.client.Versioning(), elt.Movable.EntryName())
 		if err != nil {
 			return err
@@ -252,10 +255,13 @@ func (o *MockUuidService[E, T]) MoveGroup(ctx context.Context, location MockLoca
 				Destination: elt.Destination.EntryName(),
 				Target:      o.client.GetTarget(),
 			})
+		default:
+			panic(fmt.Sprintf("unsupported action '%s'", elt.Where))
 		}
 	}
 
 	if len(updates.Operations) > 0 {
+		slog.Debug("MoveGroup()", "updates.Operations", updates.Operations)
 		_, _, _, err = o.client.MultiConfig(ctx, updates, false, nil)
 		if err != nil {
 			return err

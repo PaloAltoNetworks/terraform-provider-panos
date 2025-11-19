@@ -11,6 +11,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/services/dns"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -53,12 +54,12 @@ type DnsSettingsDataSourceFilter struct {
 }
 
 type DnsSettingsDataSourceModel struct {
-	Location        types.Object                            `tfsdk:"location"`
-	DnsSettings     *DnsSettingsDataSourceDnsSettingsObject `tfsdk:"dns_settings"`
-	FqdnRefreshTime types.Int64                             `tfsdk:"fqdn_refresh_time"`
+	Location        types.Object `tfsdk:"location"`
+	DnsSettings     types.Object `tfsdk:"dns_settings"`
+	FqdnRefreshTime types.Int64  `tfsdk:"fqdn_refresh_time"`
 }
 type DnsSettingsDataSourceDnsSettingsObject struct {
-	Servers *DnsSettingsDataSourceDnsSettingsServersObject `tfsdk:"servers"`
+	Servers types.Object `tfsdk:"servers"`
 }
 type DnsSettingsDataSourceDnsSettingsServersObject struct {
 	Primary   types.String `tfsdk:"primary"`
@@ -122,17 +123,21 @@ func (o DnsSettingsDataSourceDnsSettingsServersObject) EntryName() *string {
 	return nil
 }
 
-func (o *DnsSettingsDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dns.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dns.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSettings_entry *dns.DnsSetting
-	if o.DnsSettings != nil {
+	if !o.DnsSettings.IsUnknown() && !o.DnsSettings.IsNull() {
 		if *obj != nil && (*obj).DnsSetting != nil {
 			dnsSettings_entry = (*obj).DnsSetting
 		} else {
 			dnsSettings_entry = new(dns.DnsSetting)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.DnsSettings.CopyToPango(ctx, ancestors, &dnsSettings_entry, ev)...)
+		var object *DnsSettingsDataSourceDnsSettingsObject
+		diags.Append(o.DnsSettings.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &dnsSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -147,17 +152,21 @@ func (o *DnsSettingsDataSourceModel) CopyToPango(ctx context.Context, ancestors 
 
 	return diags
 }
-func (o *DnsSettingsDataSourceDnsSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dns.DnsSetting, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsDataSourceDnsSettingsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dns.DnsSetting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var servers_entry *dns.DnsSettingServers
-	if o.Servers != nil {
+	if !o.Servers.IsUnknown() && !o.Servers.IsNull() {
 		if *obj != nil && (*obj).Servers != nil {
 			servers_entry = (*obj).Servers
 		} else {
 			servers_entry = new(dns.DnsSettingServers)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Servers.CopyToPango(ctx, append(ancestors, o), &servers_entry, ev)...)
+		var object *DnsSettingsDataSourceDnsSettingsServersObject
+		diags.Append(o.Servers.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &servers_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -170,7 +179,7 @@ func (o *DnsSettingsDataSourceDnsSettingsObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *DnsSettingsDataSourceDnsSettingsServersObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dns.DnsSettingServers, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsDataSourceDnsSettingsServersObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dns.DnsSettingServers, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -184,12 +193,27 @@ func (o *DnsSettingsDataSourceDnsSettingsServersObject) CopyToPango(ctx context.
 	return diags
 }
 
-func (o *DnsSettingsDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dns.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dns.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dnsSettings_object *DnsSettingsDataSourceDnsSettingsObject
+
+	var dnsSettings_obj *DnsSettingsDataSourceDnsSettingsObject
+	if o.DnsSettings.IsNull() {
+		dnsSettings_obj = new(DnsSettingsDataSourceDnsSettingsObject)
+	} else {
+		diags.Append(o.DnsSettings.As(ctx, &dnsSettings_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsSettings_object := types.ObjectNull(dnsSettings_obj.AttributeTypes())
 	if obj.DnsSetting != nil {
-		dnsSettings_object = new(DnsSettingsDataSourceDnsSettingsObject)
-		diags.Append(dnsSettings_object.CopyFromPango(ctx, ancestors, obj.DnsSetting, ev)...)
+		diags.Append(dnsSettings_obj.CopyFromPango(ctx, client, ancestors, obj.DnsSetting, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsSettings_object, diags_tmp = types.ObjectValueFrom(ctx, dnsSettings_obj.AttributeTypes(), dnsSettings_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -205,12 +229,27 @@ func (o *DnsSettingsDataSourceModel) CopyFromPango(ctx context.Context, ancestor
 	return diags
 }
 
-func (o *DnsSettingsDataSourceDnsSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dns.DnsSetting, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsDataSourceDnsSettingsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dns.DnsSetting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var servers_object *DnsSettingsDataSourceDnsSettingsServersObject
+
+	var servers_obj *DnsSettingsDataSourceDnsSettingsServersObject
+	if o.Servers.IsNull() {
+		servers_obj = new(DnsSettingsDataSourceDnsSettingsServersObject)
+	} else {
+		diags.Append(o.Servers.As(ctx, &servers_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	servers_object := types.ObjectNull(servers_obj.AttributeTypes())
 	if obj.Servers != nil {
-		servers_object = new(DnsSettingsDataSourceDnsSettingsServersObject)
-		diags.Append(servers_object.CopyFromPango(ctx, append(ancestors, o), obj.Servers, ev)...)
+		diags.Append(servers_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Servers, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		servers_object, diags_tmp = types.ObjectValueFrom(ctx, servers_obj.AttributeTypes(), servers_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -221,7 +260,7 @@ func (o *DnsSettingsDataSourceDnsSettingsObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *DnsSettingsDataSourceDnsSettingsServersObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dns.DnsSettingServers, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsDataSourceDnsSettingsServersObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dns.DnsSettingServers, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var primary_value types.String
@@ -389,8 +428,8 @@ func (d *DnsSettingsDataSource) Configure(_ context.Context, req datasource.Conf
 }
 func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state DnsSettingsDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state DnsSettingsDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -406,7 +445,7 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	{
 		var terraformLocation DnsSettingsLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -452,7 +491,7 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 		"function":      "Read",
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
@@ -467,16 +506,16 @@ func (o *DnsSettingsDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -504,19 +543,19 @@ func DnsSettingsResourceLocationSchema() rsschema.Attribute {
 }
 
 type DnsSettingsResourceModel struct {
-	Location        types.Object                          `tfsdk:"location"`
-	DnsSettings     *DnsSettingsResourceDnsSettingsObject `tfsdk:"dns_settings"`
-	FqdnRefreshTime types.Int64                           `tfsdk:"fqdn_refresh_time"`
+	Location        types.Object `tfsdk:"location"`
+	DnsSettings     types.Object `tfsdk:"dns_settings"`
+	FqdnRefreshTime types.Int64  `tfsdk:"fqdn_refresh_time"`
 }
 type DnsSettingsResourceDnsSettingsObject struct {
-	Servers *DnsSettingsResourceDnsSettingsServersObject `tfsdk:"servers"`
+	Servers types.Object `tfsdk:"servers"`
 }
 type DnsSettingsResourceDnsSettingsServersObject struct {
 	Primary   types.String `tfsdk:"primary"`
 	Secondary types.String `tfsdk:"secondary"`
 }
 
-func (r *DnsSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *DnsSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -637,30 +676,30 @@ func (o *DnsSettingsResourceDnsSettingsServersObject) getTypeFor(name string) at
 	panic("unreachable")
 }
 
-func (r *DnsSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *DnsSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_dns_settings"
 }
 
-func (r *DnsSettingsResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *DnsSettingsResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = DnsSettingsResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *DnsSettingsResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *DnsSettingsResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := dns.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := dns.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewConfigObjectManager(r.client, dns.NewService(r.client), specifier)
+	o.manager = sdkmanager.NewConfigObjectManager(o.client, dns.NewService(o.client), specifier)
 }
 
 func (o *DnsSettingsResourceModel) AttributeTypes() map[string]attr.Type {
@@ -720,17 +759,21 @@ func (o DnsSettingsResourceDnsSettingsServersObject) EntryName() *string {
 	return nil
 }
 
-func (o *DnsSettingsResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dns.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dns.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dnsSettings_entry *dns.DnsSetting
-	if o.DnsSettings != nil {
+	if !o.DnsSettings.IsUnknown() && !o.DnsSettings.IsNull() {
 		if *obj != nil && (*obj).DnsSetting != nil {
 			dnsSettings_entry = (*obj).DnsSetting
 		} else {
 			dnsSettings_entry = new(dns.DnsSetting)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.DnsSettings.CopyToPango(ctx, ancestors, &dnsSettings_entry, ev)...)
+		var object *DnsSettingsResourceDnsSettingsObject
+		diags.Append(o.DnsSettings.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &dnsSettings_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -745,17 +788,21 @@ func (o *DnsSettingsResourceModel) CopyToPango(ctx context.Context, ancestors []
 
 	return diags
 }
-func (o *DnsSettingsResourceDnsSettingsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dns.DnsSetting, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsResourceDnsSettingsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dns.DnsSetting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var servers_entry *dns.DnsSettingServers
-	if o.Servers != nil {
+	if !o.Servers.IsUnknown() && !o.Servers.IsNull() {
 		if *obj != nil && (*obj).Servers != nil {
 			servers_entry = (*obj).Servers
 		} else {
 			servers_entry = new(dns.DnsSettingServers)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Servers.CopyToPango(ctx, append(ancestors, o), &servers_entry, ev)...)
+		var object *DnsSettingsResourceDnsSettingsServersObject
+		diags.Append(o.Servers.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &servers_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -768,7 +815,7 @@ func (o *DnsSettingsResourceDnsSettingsObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *DnsSettingsResourceDnsSettingsServersObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dns.DnsSettingServers, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsResourceDnsSettingsServersObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dns.DnsSettingServers, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -782,12 +829,27 @@ func (o *DnsSettingsResourceDnsSettingsServersObject) CopyToPango(ctx context.Co
 	return diags
 }
 
-func (o *DnsSettingsResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dns.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dns.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var dnsSettings_object *DnsSettingsResourceDnsSettingsObject
+
+	var dnsSettings_obj *DnsSettingsResourceDnsSettingsObject
+	if o.DnsSettings.IsNull() {
+		dnsSettings_obj = new(DnsSettingsResourceDnsSettingsObject)
+	} else {
+		diags.Append(o.DnsSettings.As(ctx, &dnsSettings_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dnsSettings_object := types.ObjectNull(dnsSettings_obj.AttributeTypes())
 	if obj.DnsSetting != nil {
-		dnsSettings_object = new(DnsSettingsResourceDnsSettingsObject)
-		diags.Append(dnsSettings_object.CopyFromPango(ctx, ancestors, obj.DnsSetting, ev)...)
+		diags.Append(dnsSettings_obj.CopyFromPango(ctx, client, ancestors, obj.DnsSetting, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dnsSettings_object, diags_tmp = types.ObjectValueFrom(ctx, dnsSettings_obj.AttributeTypes(), dnsSettings_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -803,12 +865,27 @@ func (o *DnsSettingsResourceModel) CopyFromPango(ctx context.Context, ancestors 
 	return diags
 }
 
-func (o *DnsSettingsResourceDnsSettingsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dns.DnsSetting, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsResourceDnsSettingsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dns.DnsSetting, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var servers_object *DnsSettingsResourceDnsSettingsServersObject
+
+	var servers_obj *DnsSettingsResourceDnsSettingsServersObject
+	if o.Servers.IsNull() {
+		servers_obj = new(DnsSettingsResourceDnsSettingsServersObject)
+	} else {
+		diags.Append(o.Servers.As(ctx, &servers_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	servers_object := types.ObjectNull(servers_obj.AttributeTypes())
 	if obj.Servers != nil {
-		servers_object = new(DnsSettingsResourceDnsSettingsServersObject)
-		diags.Append(servers_object.CopyFromPango(ctx, append(ancestors, o), obj.Servers, ev)...)
+		diags.Append(servers_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Servers, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		servers_object, diags_tmp = types.ObjectValueFrom(ctx, servers_obj.AttributeTypes(), servers_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -819,7 +896,7 @@ func (o *DnsSettingsResourceDnsSettingsObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *DnsSettingsResourceDnsSettingsServersObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dns.DnsSettingServers, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DnsSettingsResourceDnsSettingsServersObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dns.DnsSettingServers, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var primary_value types.String
@@ -841,7 +918,7 @@ func (o *DnsSettingsResourceModel) resourceXpathParentComponents() ([]string, er
 	return components, nil
 }
 
-func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *DnsSettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state DnsSettingsResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -855,7 +932,7 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -920,7 +997,7 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Load the desired config.
 	var obj *dns.Config
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -938,13 +1015,13 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -961,8 +1038,8 @@ func (r *DnsSettingsResource) Create(ctx context.Context, req resource.CreateReq
 }
 func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state DnsSettingsResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state DnsSettingsResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -982,7 +1059,7 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 
 	{
 		var terraformLocation DnsSettingsLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1028,7 +1105,7 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 		"function":      "Read",
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
@@ -1043,16 +1120,16 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1065,7 +1142,7 @@ func (o *DnsSettingsResource) Read(ctx context.Context, req resource.ReadRequest
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state DnsSettingsResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1136,7 +1213,7 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1146,13 +1223,13 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1163,22 +1240,19 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj)
+	updated, err := o.manager.Update(ctx, location, components, obj)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1192,10 +1266,10 @@ func (r *DnsSettingsResource) Update(ctx context.Context, req resource.UpdateReq
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state DnsSettingsResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1210,7 +1284,7 @@ func (r *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1265,7 +1339,7 @@ func (r *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 		return
 	}
 
-	existing, err := r.manager.Read(ctx, location, components)
+	existing, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error while deleting resource", err.Error())
 		return
@@ -1274,7 +1348,7 @@ func (r *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 	var obj dns.Config
 	obj.Misc = existing.Misc
 
-	err = r.manager.Delete(ctx, location, &obj)
+	err = o.manager.Delete(ctx, location, &obj)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1282,7 +1356,7 @@ func (r *DnsSettingsResource) Delete(ctx context.Context, req resource.DeleteReq
 
 }
 
-func (r *DnsSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *DnsSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 }
 

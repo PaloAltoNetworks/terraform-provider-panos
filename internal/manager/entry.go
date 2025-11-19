@@ -253,22 +253,50 @@ func (o *EntryObjectManager[E, T, S]) Delete(ctx context.Context, location T, pa
 	return nil
 }
 
-func (o *EntryObjectManager[E, L, S]) Update(ctx context.Context, location L, components []string, entry E, name string) (E, error) {
-	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(components, util.AsEntryXpath(name))...)
+func (o *EntryObjectManager[E, L, S]) Update(ctx context.Context, location L, components []string, entry E, newName string) (E, error) {
+	updates := xmlapi.NewMultiConfig(2)
+
+	var xpath, renamedXpath []string
+	var err error
+
+	spec, err := o.specifier(entry)
 	if err != nil {
 		return *new(E), err
 	}
 
-	err = o.service.UpdateWithXpath(ctx, util.AsXpath(xpath), entry, name)
-	if err != nil {
-		if sdkerrors.IsObjectNotFound(err) {
-			return *new(E), ErrObjectNotFound
-		} else {
-			return *new(E), &Error{err: err, message: "sdk error while updating"}
+	xpath, err = location.XpathWithComponents(o.client.Versioning(), append(components, util.AsEntryXpath(entry.EntryName()))...)
+	updates.Add(&xmlapi.Config{
+		Action:  "edit",
+		Xpath:   util.AsXpath(xpath),
+		Element: spec,
+		Target:  o.client.GetTarget(),
+	})
+
+	if newName != "" {
+		renamedXpath, err = location.XpathWithComponents(o.client.Versioning(), append(components, util.AsEntryXpath(newName))...)
+		_, err = o.service.ReadWithXpath(ctx, util.AsXpath(renamedXpath), "get")
+		if err == nil {
+			return *new(E), &Error{err: ErrConflict, message: fmt.Sprintf("entry '%s' already exists", newName)}
 		}
+
+		updates.Add(&xmlapi.Config{
+			Action:  "rename",
+			Xpath:   util.AsXpath(xpath),
+			NewName: newName,
+			Target:  o.client.GetTarget(),
+		})
 	}
 
-	return o.service.ReadWithXpath(ctx, util.AsXpath(xpath), "get")
+	_, _, _, err = o.client.MultiConfig(ctx, updates, false, nil)
+	if err != nil {
+		return *new(E), err
+	}
+
+	if renamedXpath != nil {
+		return o.service.ReadWithXpath(ctx, util.AsXpath(renamedXpath), "get")
+	} else {
+		return o.service.ReadWithXpath(ctx, util.AsXpath(xpath), "get")
+	}
 }
 
 func (o *EntryObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L, components []string, stateEntries []E, planEntries []E) ([]E, error) {

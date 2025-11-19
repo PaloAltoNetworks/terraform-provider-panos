@@ -11,6 +11,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/certificate"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -51,29 +52,29 @@ type CertificateDataSourceFilter struct {
 }
 
 type CertificateDataSourceModel struct {
-	Location        types.Object                                `tfsdk:"location"`
-	Name            types.String                                `tfsdk:"name"`
-	Algorithm       types.String                                `tfsdk:"algorithm"`
-	Ca              types.Bool                                  `tfsdk:"ca"`
-	ExpiryEpoch     types.String                                `tfsdk:"expiry_epoch"`
-	Issuer          types.String                                `tfsdk:"issuer"`
-	IssuerHash      types.String                                `tfsdk:"issuer_hash"`
-	NotValidAfter   types.String                                `tfsdk:"not_valid_after"`
-	NotValidBefore  types.String                                `tfsdk:"not_valid_before"`
-	RevokeDateEpoch types.String                                `tfsdk:"revoke_date_epoch"`
-	Status          types.String                                `tfsdk:"status"`
-	Subject         types.String                                `tfsdk:"subject"`
-	SubjectHash     types.String                                `tfsdk:"subject_hash"`
-	CloudResourceId *CertificateDataSourceCloudResourceIdObject `tfsdk:"cloud_resource_id"`
-	CommonName      types.String                                `tfsdk:"common_name"`
-	Csr             types.String                                `tfsdk:"csr"`
-	PrivateKey      types.String                                `tfsdk:"private_key"`
-	PrivateKeyOnHsm types.Bool                                  `tfsdk:"private_key_on_hsm"`
-	PublicKey       types.String                                `tfsdk:"public_key"`
+	Location        types.Object `tfsdk:"location"`
+	Name            types.String `tfsdk:"name"`
+	Algorithm       types.String `tfsdk:"algorithm"`
+	Ca              types.Bool   `tfsdk:"ca"`
+	ExpiryEpoch     types.String `tfsdk:"expiry_epoch"`
+	Issuer          types.String `tfsdk:"issuer"`
+	IssuerHash      types.String `tfsdk:"issuer_hash"`
+	NotValidAfter   types.String `tfsdk:"not_valid_after"`
+	NotValidBefore  types.String `tfsdk:"not_valid_before"`
+	RevokeDateEpoch types.String `tfsdk:"revoke_date_epoch"`
+	Status          types.String `tfsdk:"status"`
+	Subject         types.String `tfsdk:"subject"`
+	SubjectHash     types.String `tfsdk:"subject_hash"`
+	CloudResourceId types.Object `tfsdk:"cloud_resource_id"`
+	CommonName      types.String `tfsdk:"common_name"`
+	Csr             types.String `tfsdk:"csr"`
+	PrivateKey      types.String `tfsdk:"private_key"`
+	PrivateKeyOnHsm types.Bool   `tfsdk:"private_key_on_hsm"`
+	PublicKey       types.String `tfsdk:"public_key"`
 }
 type CertificateDataSourceCloudResourceIdObject struct {
-	Aws   *CertificateDataSourceCloudResourceIdAwsObject   `tfsdk:"aws"`
-	Azure *CertificateDataSourceCloudResourceIdAzureObject `tfsdk:"azure"`
+	Aws   types.Object `tfsdk:"aws"`
+	Azure types.Object `tfsdk:"azure"`
 }
 type CertificateDataSourceCloudResourceIdAwsObject struct {
 	Secret types.String `tfsdk:"secret"`
@@ -175,7 +176,7 @@ func (o CertificateDataSourceCloudResourceIdAzureObject) EntryName() *string {
 	return nil
 }
 
-func (o *CertificateDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *CertificateDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **certificate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	algorithm_value := o.Algorithm.ValueStringPointer()
 	ca_value := o.Ca.ValueBoolPointer()
@@ -189,14 +190,18 @@ func (o *CertificateDataSourceModel) CopyToPango(ctx context.Context, ancestors 
 	subject_value := o.Subject.ValueStringPointer()
 	subjectHash_value := o.SubjectHash.ValueStringPointer()
 	var cloudResourceId_entry *certificate.CloudResourceId
-	if o.CloudResourceId != nil {
+	if !o.CloudResourceId.IsUnknown() && !o.CloudResourceId.IsNull() {
 		if *obj != nil && (*obj).CloudResourceId != nil {
 			cloudResourceId_entry = (*obj).CloudResourceId
 		} else {
 			cloudResourceId_entry = new(certificate.CloudResourceId)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.CloudResourceId.CopyToPango(ctx, ancestors, &cloudResourceId_entry, ev)...)
+		var object *CertificateDataSourceCloudResourceIdObject
+		diags.Append(o.CloudResourceId.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &cloudResourceId_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -231,30 +236,38 @@ func (o *CertificateDataSourceModel) CopyToPango(ctx context.Context, ancestors 
 
 	return diags
 }
-func (o *CertificateDataSourceCloudResourceIdObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.CloudResourceId, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *CertificateDataSourceCloudResourceIdObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **certificate.CloudResourceId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var aws_entry *certificate.CloudResourceIdAws
-	if o.Aws != nil {
+	if !o.Aws.IsUnknown() && !o.Aws.IsNull() {
 		if *obj != nil && (*obj).Aws != nil {
 			aws_entry = (*obj).Aws
 		} else {
 			aws_entry = new(certificate.CloudResourceIdAws)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Aws.CopyToPango(ctx, append(ancestors, o), &aws_entry, ev)...)
+		var object *CertificateDataSourceCloudResourceIdAwsObject
+		diags.Append(o.Aws.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &aws_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var azure_entry *certificate.CloudResourceIdAzure
-	if o.Azure != nil {
+	if !o.Azure.IsUnknown() && !o.Azure.IsNull() {
 		if *obj != nil && (*obj).Azure != nil {
 			azure_entry = (*obj).Azure
 		} else {
 			azure_entry = new(certificate.CloudResourceIdAzure)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Azure.CopyToPango(ctx, append(ancestors, o), &azure_entry, ev)...)
+		var object *CertificateDataSourceCloudResourceIdAzureObject
+		diags.Append(o.Azure.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &azure_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -268,7 +281,7 @@ func (o *CertificateDataSourceCloudResourceIdObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *CertificateDataSourceCloudResourceIdAwsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.CloudResourceIdAws, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *CertificateDataSourceCloudResourceIdAwsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **certificate.CloudResourceIdAws, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	secret_value := o.Secret.ValueStringPointer()
 
@@ -279,7 +292,7 @@ func (o *CertificateDataSourceCloudResourceIdAwsObject) CopyToPango(ctx context.
 
 	return diags
 }
-func (o *CertificateDataSourceCloudResourceIdAzureObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **certificate.CloudResourceIdAzure, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *CertificateDataSourceCloudResourceIdAzureObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **certificate.CloudResourceIdAzure, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	keyVaultUri_value := o.KeyVaultUri.ValueStringPointer()
 	secret_value := o.Secret.ValueStringPointer()
@@ -293,12 +306,27 @@ func (o *CertificateDataSourceCloudResourceIdAzureObject) CopyToPango(ctx contex
 	return diags
 }
 
-func (o *CertificateDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *CertificateDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *certificate.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var cloudResourceId_object *CertificateDataSourceCloudResourceIdObject
+
+	var cloudResourceId_obj *CertificateDataSourceCloudResourceIdObject
+	if o.CloudResourceId.IsNull() {
+		cloudResourceId_obj = new(CertificateDataSourceCloudResourceIdObject)
+	} else {
+		diags.Append(o.CloudResourceId.As(ctx, &cloudResourceId_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	cloudResourceId_object := types.ObjectNull(cloudResourceId_obj.AttributeTypes())
 	if obj.CloudResourceId != nil {
-		cloudResourceId_object = new(CertificateDataSourceCloudResourceIdObject)
-		diags.Append(cloudResourceId_object.CopyFromPango(ctx, ancestors, obj.CloudResourceId, ev)...)
+		diags.Append(cloudResourceId_obj.CopyFromPango(ctx, client, ancestors, obj.CloudResourceId, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		cloudResourceId_object, diags_tmp = types.ObjectValueFrom(ctx, cloudResourceId_obj.AttributeTypes(), cloudResourceId_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -390,20 +418,50 @@ func (o *CertificateDataSourceModel) CopyFromPango(ctx context.Context, ancestor
 	return diags
 }
 
-func (o *CertificateDataSourceCloudResourceIdObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.CloudResourceId, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *CertificateDataSourceCloudResourceIdObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *certificate.CloudResourceId, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var aws_object *CertificateDataSourceCloudResourceIdAwsObject
-	if obj.Aws != nil {
-		aws_object = new(CertificateDataSourceCloudResourceIdAwsObject)
-		diags.Append(aws_object.CopyFromPango(ctx, append(ancestors, o), obj.Aws, ev)...)
+
+	var aws_obj *CertificateDataSourceCloudResourceIdAwsObject
+	if o.Aws.IsNull() {
+		aws_obj = new(CertificateDataSourceCloudResourceIdAwsObject)
+	} else {
+		diags.Append(o.Aws.As(ctx, &aws_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var azure_object *CertificateDataSourceCloudResourceIdAzureObject
+	aws_object := types.ObjectNull(aws_obj.AttributeTypes())
+	if obj.Aws != nil {
+		diags.Append(aws_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Aws, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		aws_object, diags_tmp = types.ObjectValueFrom(ctx, aws_obj.AttributeTypes(), aws_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var azure_obj *CertificateDataSourceCloudResourceIdAzureObject
+	if o.Azure.IsNull() {
+		azure_obj = new(CertificateDataSourceCloudResourceIdAzureObject)
+	} else {
+		diags.Append(o.Azure.As(ctx, &azure_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	azure_object := types.ObjectNull(azure_obj.AttributeTypes())
 	if obj.Azure != nil {
-		azure_object = new(CertificateDataSourceCloudResourceIdAzureObject)
-		diags.Append(azure_object.CopyFromPango(ctx, append(ancestors, o), obj.Azure, ev)...)
+		diags.Append(azure_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Azure, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		azure_object, diags_tmp = types.ObjectValueFrom(ctx, azure_obj.AttributeTypes(), azure_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -415,7 +473,7 @@ func (o *CertificateDataSourceCloudResourceIdObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *CertificateDataSourceCloudResourceIdAwsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.CloudResourceIdAws, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *CertificateDataSourceCloudResourceIdAwsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *certificate.CloudResourceIdAws, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var secret_value types.String
@@ -427,7 +485,7 @@ func (o *CertificateDataSourceCloudResourceIdAwsObject) CopyFromPango(ctx contex
 	return diags
 }
 
-func (o *CertificateDataSourceCloudResourceIdAzureObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *certificate.CloudResourceIdAzure, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *CertificateDataSourceCloudResourceIdAzureObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *certificate.CloudResourceIdAzure, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var keyVaultUri_value types.String
@@ -778,8 +836,8 @@ func (d *CertificateDataSource) Configure(_ context.Context, req datasource.Conf
 }
 func (o *CertificateDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state CertificateDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state CertificateDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -795,7 +853,7 @@ func (o *CertificateDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	{
 		var terraformLocation CertificateLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -873,15 +931,15 @@ func (o *CertificateDataSource) Read(ctx context.Context, req datasource.ReadReq
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_certificate_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -891,16 +949,16 @@ func (o *CertificateDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)

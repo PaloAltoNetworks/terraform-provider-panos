@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/profiles/interface_management"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -76,15 +77,21 @@ func (o *InterfaceManagementProfileDataSourceModel) AttributeTypes() map[string]
 
 	var locationObj InterfaceManagementProfileLocation
 
+	var permittedIpsObj *InterfaceManagementProfileDataSourcePermittedIpsObject
+
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":                       types.StringType,
-		"http":                       types.BoolType,
-		"http_ocsp":                  types.BoolType,
-		"https":                      types.BoolType,
-		"permitted_ips":              types.ListType{},
+		"name":      types.StringType,
+		"http":      types.BoolType,
+		"http_ocsp": types.BoolType,
+		"https":     types.BoolType,
+		"permitted_ips": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: permittedIpsObj.AttributeTypes(),
+			},
+		},
 		"ping":                       types.BoolType,
 		"response_pages":             types.BoolType,
 		"snmp":                       types.BoolType,
@@ -118,7 +125,7 @@ func (o InterfaceManagementProfileDataSourcePermittedIpsObject) EntryName() *str
 	return o.Name.ValueStringPointer()
 }
 
-func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	http_value := o.Http.ValueBoolPointer()
 	httpOcsp_value := o.HttpOcsp.ValueBoolPointer()
@@ -133,7 +140,7 @@ func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Cont
 		}
 		for _, elt := range permittedIps_tf_entries {
 			var entry *interface_management.PermittedIp
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -168,7 +175,7 @@ func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -179,20 +186,36 @@ func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyToPango(ctx
 	return diags
 }
 
-func (o *InterfaceManagementProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *InterfaceManagementProfileDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var permittedIps_list types.List
 	{
 		var permittedIps_tf_entries []InterfaceManagementProfileDataSourcePermittedIpsObject
-		for _, elt := range obj.PermittedIp {
-			entry := InterfaceManagementProfileDataSourcePermittedIpsObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.PermittedIps.IsNull() {
+			diags.Append(o.PermittedIps.ElementsAs(ctx, &permittedIps_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			permittedIps_tf_entries = append(permittedIps_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.PermittedIp {
+			entry := InterfaceManagementProfileDataSourcePermittedIpsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(permittedIps_tf_entries) {
+				entry = permittedIps_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(permittedIps_tf_entries) {
+				permittedIps_tf_entries[idx] = entry
+			} else {
+				permittedIps_tf_entries = append(permittedIps_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("permitted_ips")
@@ -261,7 +284,7 @@ func (o *InterfaceManagementProfileDataSourceModel) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *InterfaceManagementProfileDataSourcePermittedIpsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
@@ -470,8 +493,8 @@ func (d *InterfaceManagementProfileDataSource) Configure(_ context.Context, req 
 }
 func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state InterfaceManagementProfileDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state InterfaceManagementProfileDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -487,7 +510,7 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 
 	{
 		var terraformLocation InterfaceManagementProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -531,15 +554,15 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_interface_management_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -549,16 +572,16 @@ func (o *InterfaceManagementProfileDataSource) Read(ctx context.Context, req dat
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -610,7 +633,7 @@ type InterfaceManagementProfileResourcePermittedIpsObject struct {
 	Name types.String `tfsdk:"name"`
 }
 
-func (r *InterfaceManagementProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *InterfaceManagementProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -780,46 +803,52 @@ func (o *InterfaceManagementProfileResourcePermittedIpsObject) getTypeFor(name s
 	panic("unreachable")
 }
 
-func (r *InterfaceManagementProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *InterfaceManagementProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_interface_management_profile"
 }
 
-func (r *InterfaceManagementProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *InterfaceManagementProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = InterfaceManagementProfileResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *InterfaceManagementProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *InterfaceManagementProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := interface_management.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := interface_management.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*interface_management.Entry, interface_management.Location, *interface_management.Service](r.client, interface_management.NewService(r.client), batchSize, specifier, interface_management.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*interface_management.Entry, interface_management.Location, *interface_management.Service](o.client, interface_management.NewService(o.client), batchSize, specifier, interface_management.SpecMatches)
 }
 
 func (o *InterfaceManagementProfileResourceModel) AttributeTypes() map[string]attr.Type {
 
 	var locationObj InterfaceManagementProfileLocation
 
+	var permittedIpsObj *InterfaceManagementProfileResourcePermittedIpsObject
+
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":                       types.StringType,
-		"http":                       types.BoolType,
-		"http_ocsp":                  types.BoolType,
-		"https":                      types.BoolType,
-		"permitted_ips":              types.ListType{},
+		"name":      types.StringType,
+		"http":      types.BoolType,
+		"http_ocsp": types.BoolType,
+		"https":     types.BoolType,
+		"permitted_ips": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: permittedIpsObj.AttributeTypes(),
+			},
+		},
 		"ping":                       types.BoolType,
 		"response_pages":             types.BoolType,
 		"snmp":                       types.BoolType,
@@ -853,7 +882,7 @@ func (o InterfaceManagementProfileResourcePermittedIpsObject) EntryName() *strin
 	return o.Name.ValueStringPointer()
 }
 
-func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	http_value := o.Http.ValueBoolPointer()
 	httpOcsp_value := o.HttpOcsp.ValueBoolPointer()
@@ -868,7 +897,7 @@ func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Contex
 		}
 		for _, elt := range permittedIps_tf_entries {
 			var entry *interface_management.PermittedIp
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -903,7 +932,7 @@ func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Contex
 
 	return diags
 }
-func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -914,20 +943,36 @@ func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyToPango(ctx c
 	return diags
 }
 
-func (o *InterfaceManagementProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *InterfaceManagementProfileResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *interface_management.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var permittedIps_list types.List
 	{
 		var permittedIps_tf_entries []InterfaceManagementProfileResourcePermittedIpsObject
-		for _, elt := range obj.PermittedIp {
-			entry := InterfaceManagementProfileResourcePermittedIpsObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.PermittedIps.IsNull() {
+			diags.Append(o.PermittedIps.ElementsAs(ctx, &permittedIps_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			permittedIps_tf_entries = append(permittedIps_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.PermittedIp {
+			entry := InterfaceManagementProfileResourcePermittedIpsObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(permittedIps_tf_entries) {
+				entry = permittedIps_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(permittedIps_tf_entries) {
+				permittedIps_tf_entries[idx] = entry
+			} else {
+				permittedIps_tf_entries = append(permittedIps_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("permitted_ips")
@@ -996,7 +1041,7 @@ func (o *InterfaceManagementProfileResourceModel) CopyFromPango(ctx context.Cont
 	return diags
 }
 
-func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *InterfaceManagementProfileResourcePermittedIpsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *interface_management.PermittedIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
@@ -1008,7 +1053,7 @@ func (o *InterfaceManagementProfileResourceModel) resourceXpathParentComponents(
 	return components, nil
 }
 
-func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *InterfaceManagementProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state InterfaceManagementProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1023,7 +1068,7 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1088,7 +1133,7 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 
 	// Load the desired config.
 	var obj *interface_management.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1106,13 +1151,13 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1129,8 +1174,8 @@ func (r *InterfaceManagementProfileResource) Create(ctx context.Context, req res
 }
 func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state InterfaceManagementProfileResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state InterfaceManagementProfileResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1150,7 +1195,7 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 
 	{
 		var terraformLocation InterfaceManagementProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1194,15 +1239,15 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_interface_management_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1212,16 +1257,16 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1234,7 +1279,7 @@ func (o *InterfaceManagementProfileResource) Read(ctx context.Context, req resou
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *InterfaceManagementProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state InterfaceManagementProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1305,7 +1350,7 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1315,13 +1360,18 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *interface_management.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1332,22 +1382,27 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1361,10 +1416,10 @@ func (r *InterfaceManagementProfileResource) Update(ctx context.Context, req res
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *InterfaceManagementProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *InterfaceManagementProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state InterfaceManagementProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1380,7 +1435,7 @@ func (r *InterfaceManagementProfileResource) Delete(ctx context.Context, req res
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1434,7 +1489,7 @@ func (r *InterfaceManagementProfileResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1531,7 +1586,7 @@ func InterfaceManagementProfileImportStateCreator(ctx context.Context, resource 
 	return json.Marshal(importStruct)
 }
 
-func (r *InterfaceManagementProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *InterfaceManagementProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj InterfaceManagementProfileImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

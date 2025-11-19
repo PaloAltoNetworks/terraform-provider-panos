@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/dhcp"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
@@ -55,14 +56,14 @@ type DhcpDataSourceFilter struct {
 }
 
 type DhcpDataSourceModel struct {
-	Location types.Object                `tfsdk:"location"`
-	Name     types.String                `tfsdk:"name"`
-	Relay    *DhcpDataSourceRelayObject  `tfsdk:"relay"`
-	Server   *DhcpDataSourceServerObject `tfsdk:"server"`
+	Location types.Object `tfsdk:"location"`
+	Name     types.String `tfsdk:"name"`
+	Relay    types.Object `tfsdk:"relay"`
+	Server   types.Object `tfsdk:"server"`
 }
 type DhcpDataSourceRelayObject struct {
-	Ip   *DhcpDataSourceRelayIpObject   `tfsdk:"ip"`
-	Ipv6 *DhcpDataSourceRelayIpv6Object `tfsdk:"ipv6"`
+	Ip   types.Object `tfsdk:"ip"`
+	Ipv6 types.Object `tfsdk:"ipv6"`
 }
 type DhcpDataSourceRelayIpObject struct {
 	Enabled types.Bool `tfsdk:"enabled"`
@@ -77,25 +78,25 @@ type DhcpDataSourceRelayIpv6ServerObject struct {
 	Interface types.String `tfsdk:"interface"`
 }
 type DhcpDataSourceServerObject struct {
-	IpPool   types.List                        `tfsdk:"ip_pool"`
-	Mode     types.String                      `tfsdk:"mode"`
-	Option   *DhcpDataSourceServerOptionObject `tfsdk:"option"`
-	ProbeIp  types.Bool                        `tfsdk:"probe_ip"`
-	Reserved types.List                        `tfsdk:"reserved"`
+	IpPool   types.List   `tfsdk:"ip_pool"`
+	Mode     types.String `tfsdk:"mode"`
+	Option   types.Object `tfsdk:"option"`
+	ProbeIp  types.Bool   `tfsdk:"probe_ip"`
+	Reserved types.List   `tfsdk:"reserved"`
 }
 type DhcpDataSourceServerOptionObject struct {
-	Dns         *DhcpDataSourceServerOptionDnsObject         `tfsdk:"dns"`
-	DnsSuffix   types.String                                 `tfsdk:"dns_suffix"`
-	Gateway     types.String                                 `tfsdk:"gateway"`
-	Inheritance *DhcpDataSourceServerOptionInheritanceObject `tfsdk:"inheritance"`
-	Lease       *DhcpDataSourceServerOptionLeaseObject       `tfsdk:"lease"`
-	Nis         *DhcpDataSourceServerOptionNisObject         `tfsdk:"nis"`
-	Ntp         *DhcpDataSourceServerOptionNtpObject         `tfsdk:"ntp"`
-	Pop3Server  types.String                                 `tfsdk:"pop3_server"`
-	SmtpServer  types.String                                 `tfsdk:"smtp_server"`
-	SubnetMask  types.String                                 `tfsdk:"subnet_mask"`
-	UserDefined types.List                                   `tfsdk:"user_defined"`
-	Wins        *DhcpDataSourceServerOptionWinsObject        `tfsdk:"wins"`
+	Dns         types.Object `tfsdk:"dns"`
+	DnsSuffix   types.String `tfsdk:"dns_suffix"`
+	Gateway     types.String `tfsdk:"gateway"`
+	Inheritance types.Object `tfsdk:"inheritance"`
+	Lease       types.Object `tfsdk:"lease"`
+	Nis         types.Object `tfsdk:"nis"`
+	Ntp         types.Object `tfsdk:"ntp"`
+	Pop3Server  types.String `tfsdk:"pop3_server"`
+	SmtpServer  types.String `tfsdk:"smtp_server"`
+	SubnetMask  types.String `tfsdk:"subnet_mask"`
+	UserDefined types.List   `tfsdk:"user_defined"`
+	Wins        types.Object `tfsdk:"wins"`
 }
 type DhcpDataSourceServerOptionDnsObject struct {
 	Primary   types.String `tfsdk:"primary"`
@@ -105,8 +106,8 @@ type DhcpDataSourceServerOptionInheritanceObject struct {
 	Source types.String `tfsdk:"source"`
 }
 type DhcpDataSourceServerOptionLeaseObject struct {
-	Timeout   types.Int64                                     `tfsdk:"timeout"`
-	Unlimited *DhcpDataSourceServerOptionLeaseUnlimitedObject `tfsdk:"unlimited"`
+	Timeout   types.Int64  `tfsdk:"timeout"`
+	Unlimited types.Object `tfsdk:"unlimited"`
 }
 type DhcpDataSourceServerOptionLeaseUnlimitedObject struct {
 }
@@ -191,7 +192,9 @@ func (o *DhcpDataSourceRelayIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enabled": types.BoolType,
-		"server":  types.ListType{},
+		"server": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -204,9 +207,14 @@ func (o DhcpDataSourceRelayIpObject) EntryName() *string {
 }
 func (o *DhcpDataSourceRelayIpv6Object) AttributeTypes() map[string]attr.Type {
 
+	var serverObj *DhcpDataSourceRelayIpv6ServerObject
 	return map[string]attr.Type{
 		"enabled": types.BoolType,
-		"server":  types.ListType{},
+		"server": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serverObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -236,14 +244,21 @@ func (o *DhcpDataSourceServerObject) AttributeTypes() map[string]attr.Type {
 
 	var optionObj *DhcpDataSourceServerOptionObject
 
+	var reservedObj *DhcpDataSourceServerReservedObject
 	return map[string]attr.Type{
-		"ip_pool": types.ListType{},
-		"mode":    types.StringType,
+		"ip_pool": types.ListType{
+			ElemType: types.StringType,
+		},
+		"mode": types.StringType,
 		"option": types.ObjectType{
 			AttrTypes: optionObj.AttributeTypes(),
 		},
 		"probe_ip": types.BoolType,
-		"reserved": types.ListType{},
+		"reserved": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: reservedObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -266,6 +281,8 @@ func (o *DhcpDataSourceServerOptionObject) AttributeTypes() map[string]attr.Type
 
 	var ntpObj *DhcpDataSourceServerOptionNtpObject
 
+	var userDefinedObj *DhcpDataSourceServerOptionUserDefinedObject
+
 	var winsObj *DhcpDataSourceServerOptionWinsObject
 	return map[string]attr.Type{
 		"dns": types.ObjectType{
@@ -285,10 +302,14 @@ func (o *DhcpDataSourceServerOptionObject) AttributeTypes() map[string]attr.Type
 		"ntp": types.ObjectType{
 			AttrTypes: ntpObj.AttributeTypes(),
 		},
-		"pop3_server":  types.StringType,
-		"smtp_server":  types.StringType,
-		"subnet_mask":  types.StringType,
-		"user_defined": types.ListType{},
+		"pop3_server": types.StringType,
+		"smtp_server": types.StringType,
+		"subnet_mask": types.StringType,
+		"user_defined": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: userDefinedObj.AttributeTypes(),
+			},
+		},
 		"wins": types.ObjectType{
 			AttrTypes: winsObj.AttributeTypes(),
 		},
@@ -397,9 +418,15 @@ func (o *DhcpDataSourceServerOptionUserDefinedObject) AttributeTypes() map[strin
 		"code":                    types.Int64Type,
 		"vendor_class_identifier": types.StringType,
 		"inherited":               types.BoolType,
-		"ip":                      types.ListType{},
-		"ascii":                   types.ListType{},
-		"hex":                     types.ListType{},
+		"ip": types.ListType{
+			ElemType: types.StringType,
+		},
+		"ascii": types.ListType{
+			ElemType: types.StringType,
+		},
+		"hex": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -442,30 +469,38 @@ func (o DhcpDataSourceServerReservedObject) EntryName() *string {
 	return o.Name.ValueStringPointer()
 }
 
-func (o *DhcpDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var relay_entry *dhcp.Relay
-	if o.Relay != nil {
+	if !o.Relay.IsUnknown() && !o.Relay.IsNull() {
 		if *obj != nil && (*obj).Relay != nil {
 			relay_entry = (*obj).Relay
 		} else {
 			relay_entry = new(dhcp.Relay)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Relay.CopyToPango(ctx, ancestors, &relay_entry, ev)...)
+		var object *DhcpDataSourceRelayObject
+		diags.Append(o.Relay.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &relay_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var server_entry *dhcp.Server
-	if o.Server != nil {
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
 		if *obj != nil && (*obj).Server != nil {
 			server_entry = (*obj).Server
 		} else {
 			server_entry = new(dhcp.Server)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Server.CopyToPango(ctx, ancestors, &server_entry, ev)...)
+		var object *DhcpDataSourceServerObject
+		diags.Append(o.Server.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &server_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -480,30 +515,38 @@ func (o *DhcpDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ances
 
 	return diags
 }
-func (o *DhcpDataSourceRelayObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.Relay, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceRelayObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.Relay, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_entry *dhcp.RelayIp
-	if o.Ip != nil {
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
 		if *obj != nil && (*obj).Ip != nil {
 			ip_entry = (*obj).Ip
 		} else {
 			ip_entry = new(dhcp.RelayIp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ip.CopyToPango(ctx, append(ancestors, o), &ip_entry, ev)...)
+		var object *DhcpDataSourceRelayIpObject
+		diags.Append(o.Ip.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var ipv6_entry *dhcp.RelayIpv6
-	if o.Ipv6 != nil {
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
 		if *obj != nil && (*obj).Ipv6 != nil {
 			ipv6_entry = (*obj).Ipv6
 		} else {
 			ipv6_entry = new(dhcp.RelayIpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
+		var object *DhcpDataSourceRelayIpv6Object
+		diags.Append(o.Ipv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -517,13 +560,21 @@ func (o *DhcpDataSourceRelayObject) CopyToPango(ctx context.Context, ancestors [
 
 	return diags
 }
-func (o *DhcpDataSourceRelayIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.RelayIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceRelayIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.RelayIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enabled_value := o.Enabled.ValueBoolPointer()
-	server_pango_entries := make([]string, 0)
-	diags.Append(o.Server.ElementsAs(ctx, &server_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var server_pango_entries []string
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Server.Elements()))
+		diags.Append(o.Server.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			server_pango_entries = append(server_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -534,7 +585,7 @@ func (o *DhcpDataSourceRelayIpObject) CopyToPango(ctx context.Context, ancestors
 
 	return diags
 }
-func (o *DhcpDataSourceRelayIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.RelayIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceRelayIpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.RelayIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enabled_value := o.Enabled.ValueBoolPointer()
 	var server_tf_entries []DhcpDataSourceRelayIpv6ServerObject
@@ -547,7 +598,7 @@ func (o *DhcpDataSourceRelayIpv6Object) CopyToPango(ctx context.Context, ancesto
 		}
 		for _, elt := range server_tf_entries {
 			var entry *dhcp.RelayIpv6Server
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -563,7 +614,7 @@ func (o *DhcpDataSourceRelayIpv6Object) CopyToPango(ctx context.Context, ancesto
 
 	return diags
 }
-func (o *DhcpDataSourceRelayIpv6ServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.RelayIpv6Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceRelayIpv6ServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.RelayIpv6Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 
@@ -575,23 +626,35 @@ func (o *DhcpDataSourceRelayIpv6ServerObject) CopyToPango(ctx context.Context, a
 
 	return diags
 }
-func (o *DhcpDataSourceServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ipPool_pango_entries := make([]string, 0)
-	diags.Append(o.IpPool.ElementsAs(ctx, &ipPool_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ipPool_pango_entries []string
+	if !o.IpPool.IsUnknown() && !o.IpPool.IsNull() {
+		object_entries := make([]types.String, 0, len(o.IpPool.Elements()))
+		diags.Append(o.IpPool.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ipPool_pango_entries = append(ipPool_pango_entries, elt.ValueString())
+		}
 	}
 	mode_value := o.Mode.ValueStringPointer()
 	var option_entry *dhcp.ServerOption
-	if o.Option != nil {
+	if !o.Option.IsUnknown() && !o.Option.IsNull() {
 		if *obj != nil && (*obj).Option != nil {
 			option_entry = (*obj).Option
 		} else {
 			option_entry = new(dhcp.ServerOption)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Option.CopyToPango(ctx, append(ancestors, o), &option_entry, ev)...)
+		var object *DhcpDataSourceServerOptionObject
+		diags.Append(o.Option.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &option_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -607,7 +670,7 @@ func (o *DhcpDataSourceServerObject) CopyToPango(ctx context.Context, ancestors 
 		}
 		for _, elt := range reserved_tf_entries {
 			var entry *dhcp.ServerReserved
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -626,17 +689,21 @@ func (o *DhcpDataSourceServerObject) CopyToPango(ctx context.Context, ancestors 
 
 	return diags
 }
-func (o *DhcpDataSourceServerOptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOption, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dns_entry *dhcp.ServerOptionDns
-	if o.Dns != nil {
+	if !o.Dns.IsUnknown() && !o.Dns.IsNull() {
 		if *obj != nil && (*obj).Dns != nil {
 			dns_entry = (*obj).Dns
 		} else {
 			dns_entry = new(dhcp.ServerOptionDns)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dns.CopyToPango(ctx, append(ancestors, o), &dns_entry, ev)...)
+		var object *DhcpDataSourceServerOptionDnsObject
+		diags.Append(o.Dns.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dns_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -644,53 +711,69 @@ func (o *DhcpDataSourceServerOptionObject) CopyToPango(ctx context.Context, ance
 	dnsSuffix_value := o.DnsSuffix.ValueStringPointer()
 	gateway_value := o.Gateway.ValueStringPointer()
 	var inheritance_entry *dhcp.ServerOptionInheritance
-	if o.Inheritance != nil {
+	if !o.Inheritance.IsUnknown() && !o.Inheritance.IsNull() {
 		if *obj != nil && (*obj).Inheritance != nil {
 			inheritance_entry = (*obj).Inheritance
 		} else {
 			inheritance_entry = new(dhcp.ServerOptionInheritance)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Inheritance.CopyToPango(ctx, append(ancestors, o), &inheritance_entry, ev)...)
+		var object *DhcpDataSourceServerOptionInheritanceObject
+		diags.Append(o.Inheritance.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &inheritance_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var lease_entry *dhcp.ServerOptionLease
-	if o.Lease != nil {
+	if !o.Lease.IsUnknown() && !o.Lease.IsNull() {
 		if *obj != nil && (*obj).Lease != nil {
 			lease_entry = (*obj).Lease
 		} else {
 			lease_entry = new(dhcp.ServerOptionLease)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Lease.CopyToPango(ctx, append(ancestors, o), &lease_entry, ev)...)
+		var object *DhcpDataSourceServerOptionLeaseObject
+		diags.Append(o.Lease.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &lease_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var nis_entry *dhcp.ServerOptionNis
-	if o.Nis != nil {
+	if !o.Nis.IsUnknown() && !o.Nis.IsNull() {
 		if *obj != nil && (*obj).Nis != nil {
 			nis_entry = (*obj).Nis
 		} else {
 			nis_entry = new(dhcp.ServerOptionNis)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Nis.CopyToPango(ctx, append(ancestors, o), &nis_entry, ev)...)
+		var object *DhcpDataSourceServerOptionNisObject
+		diags.Append(o.Nis.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &nis_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var ntp_entry *dhcp.ServerOptionNtp
-	if o.Ntp != nil {
+	if !o.Ntp.IsUnknown() && !o.Ntp.IsNull() {
 		if *obj != nil && (*obj).Ntp != nil {
 			ntp_entry = (*obj).Ntp
 		} else {
 			ntp_entry = new(dhcp.ServerOptionNtp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ntp.CopyToPango(ctx, append(ancestors, o), &ntp_entry, ev)...)
+		var object *DhcpDataSourceServerOptionNtpObject
+		diags.Append(o.Ntp.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ntp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -708,7 +791,7 @@ func (o *DhcpDataSourceServerOptionObject) CopyToPango(ctx context.Context, ance
 		}
 		for _, elt := range userDefined_tf_entries {
 			var entry *dhcp.ServerOptionUserDefined
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -716,14 +799,18 @@ func (o *DhcpDataSourceServerOptionObject) CopyToPango(ctx context.Context, ance
 		}
 	}
 	var wins_entry *dhcp.ServerOptionWins
-	if o.Wins != nil {
+	if !o.Wins.IsUnknown() && !o.Wins.IsNull() {
 		if *obj != nil && (*obj).Wins != nil {
 			wins_entry = (*obj).Wins
 		} else {
 			wins_entry = new(dhcp.ServerOptionWins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Wins.CopyToPango(ctx, append(ancestors, o), &wins_entry, ev)...)
+		var object *DhcpDataSourceServerOptionWinsObject
+		diags.Append(o.Wins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &wins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -747,7 +834,7 @@ func (o *DhcpDataSourceServerOptionObject) CopyToPango(ctx context.Context, ance
 
 	return diags
 }
-func (o *DhcpDataSourceServerOptionDnsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionDns, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionDnsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionDns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -760,7 +847,7 @@ func (o *DhcpDataSourceServerOptionDnsObject) CopyToPango(ctx context.Context, a
 
 	return diags
 }
-func (o *DhcpDataSourceServerOptionInheritanceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionInheritance, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionInheritanceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionInheritance, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	source_value := o.Source.ValueStringPointer()
 
@@ -771,18 +858,22 @@ func (o *DhcpDataSourceServerOptionInheritanceObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *DhcpDataSourceServerOptionLeaseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionLease, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionLeaseObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionLease, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	timeout_value := o.Timeout.ValueInt64Pointer()
 	var unlimited_entry *dhcp.ServerOptionLeaseUnlimited
-	if o.Unlimited != nil {
+	if !o.Unlimited.IsUnknown() && !o.Unlimited.IsNull() {
 		if *obj != nil && (*obj).Unlimited != nil {
 			unlimited_entry = (*obj).Unlimited
 		} else {
 			unlimited_entry = new(dhcp.ServerOptionLeaseUnlimited)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Unlimited.CopyToPango(ctx, append(ancestors, o), &unlimited_entry, ev)...)
+		var object *DhcpDataSourceServerOptionLeaseUnlimitedObject
+		diags.Append(o.Unlimited.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &unlimited_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -796,7 +887,7 @@ func (o *DhcpDataSourceServerOptionLeaseObject) CopyToPango(ctx context.Context,
 
 	return diags
 }
-func (o *DhcpDataSourceServerOptionLeaseUnlimitedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionLeaseUnlimited, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionLeaseUnlimitedObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionLeaseUnlimited, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -805,7 +896,7 @@ func (o *DhcpDataSourceServerOptionLeaseUnlimitedObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *DhcpDataSourceServerOptionNisObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionNis, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionNisObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionNis, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -818,7 +909,7 @@ func (o *DhcpDataSourceServerOptionNisObject) CopyToPango(ctx context.Context, a
 
 	return diags
 }
-func (o *DhcpDataSourceServerOptionNtpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionNtp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionNtpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionNtp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -831,25 +922,49 @@ func (o *DhcpDataSourceServerOptionNtpObject) CopyToPango(ctx context.Context, a
 
 	return diags
 }
-func (o *DhcpDataSourceServerOptionUserDefinedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionUserDefined, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionUserDefinedObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionUserDefined, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	code_value := o.Code.ValueInt64Pointer()
 	vendorClassIdentifier_value := o.VendorClassIdentifier.ValueStringPointer()
 	inherited_value := o.Inherited.ValueBoolPointer()
-	ip_pango_entries := make([]string, 0)
-	diags.Append(o.Ip.ElementsAs(ctx, &ip_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ip_pango_entries []string
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Ip.Elements()))
+		diags.Append(o.Ip.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ip_pango_entries = append(ip_pango_entries, elt.ValueString())
+		}
 	}
-	ascii_pango_entries := make([]string, 0)
-	diags.Append(o.Ascii.ElementsAs(ctx, &ascii_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ascii_pango_entries []string
+	if !o.Ascii.IsUnknown() && !o.Ascii.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Ascii.Elements()))
+		diags.Append(o.Ascii.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ascii_pango_entries = append(ascii_pango_entries, elt.ValueString())
+		}
 	}
-	hex_pango_entries := make([]string, 0)
-	diags.Append(o.Hex.ElementsAs(ctx, &hex_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var hex_pango_entries []string
+	if !o.Hex.IsUnknown() && !o.Hex.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Hex.Elements()))
+		diags.Append(o.Hex.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			hex_pango_entries = append(hex_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -865,7 +980,7 @@ func (o *DhcpDataSourceServerOptionUserDefinedObject) CopyToPango(ctx context.Co
 
 	return diags
 }
-func (o *DhcpDataSourceServerOptionWinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionWins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionWinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionWins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -878,7 +993,7 @@ func (o *DhcpDataSourceServerOptionWinsObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *DhcpDataSourceServerReservedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerReserved, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerReservedObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerReserved, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	mac_value := o.Mac.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
@@ -893,20 +1008,50 @@ func (o *DhcpDataSourceServerReservedObject) CopyToPango(ctx context.Context, an
 	return diags
 }
 
-func (o *DhcpDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var relay_object *DhcpDataSourceRelayObject
-	if obj.Relay != nil {
-		relay_object = new(DhcpDataSourceRelayObject)
-		diags.Append(relay_object.CopyFromPango(ctx, ancestors, obj.Relay, ev)...)
+
+	var relay_obj *DhcpDataSourceRelayObject
+	if o.Relay.IsNull() {
+		relay_obj = new(DhcpDataSourceRelayObject)
+	} else {
+		diags.Append(o.Relay.As(ctx, &relay_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var server_object *DhcpDataSourceServerObject
+	relay_object := types.ObjectNull(relay_obj.AttributeTypes())
+	if obj.Relay != nil {
+		diags.Append(relay_obj.CopyFromPango(ctx, client, ancestors, obj.Relay, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		relay_object, diags_tmp = types.ObjectValueFrom(ctx, relay_obj.AttributeTypes(), relay_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var server_obj *DhcpDataSourceServerObject
+	if o.Server.IsNull() {
+		server_obj = new(DhcpDataSourceServerObject)
+	} else {
+		diags.Append(o.Server.As(ctx, &server_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	server_object := types.ObjectNull(server_obj.AttributeTypes())
 	if obj.Server != nil {
-		server_object = new(DhcpDataSourceServerObject)
-		diags.Append(server_object.CopyFromPango(ctx, ancestors, obj.Server, ev)...)
+		diags.Append(server_obj.CopyFromPango(ctx, client, ancestors, obj.Server, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		server_object, diags_tmp = types.ObjectValueFrom(ctx, server_obj.AttributeTypes(), server_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -919,20 +1064,50 @@ func (o *DhcpDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Anc
 	return diags
 }
 
-func (o *DhcpDataSourceRelayObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.Relay, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceRelayObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.Relay, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ip_object *DhcpDataSourceRelayIpObject
-	if obj.Ip != nil {
-		ip_object = new(DhcpDataSourceRelayIpObject)
-		diags.Append(ip_object.CopyFromPango(ctx, append(ancestors, o), obj.Ip, ev)...)
+
+	var ip_obj *DhcpDataSourceRelayIpObject
+	if o.Ip.IsNull() {
+		ip_obj = new(DhcpDataSourceRelayIpObject)
+	} else {
+		diags.Append(o.Ip.As(ctx, &ip_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ipv6_object *DhcpDataSourceRelayIpv6Object
+	ip_object := types.ObjectNull(ip_obj.AttributeTypes())
+	if obj.Ip != nil {
+		diags.Append(ip_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ip, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ip_object, diags_tmp = types.ObjectValueFrom(ctx, ip_obj.AttributeTypes(), ip_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ipv6_obj *DhcpDataSourceRelayIpv6Object
+	if o.Ipv6.IsNull() {
+		ipv6_obj = new(DhcpDataSourceRelayIpv6Object)
+	} else {
+		diags.Append(o.Ipv6.As(ctx, &ipv6_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ipv6_object := types.ObjectNull(ipv6_obj.AttributeTypes())
 	if obj.Ipv6 != nil {
-		ipv6_object = new(DhcpDataSourceRelayIpv6Object)
-		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
+		diags.Append(ipv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ipv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ipv6_object, diags_tmp = types.ObjectValueFrom(ctx, ipv6_obj.AttributeTypes(), ipv6_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -944,12 +1119,18 @@ func (o *DhcpDataSourceRelayObject) CopyFromPango(ctx context.Context, ancestors
 	return diags
 }
 
-func (o *DhcpDataSourceRelayIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.RelayIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceRelayIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.RelayIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var list_diags diag.Diagnostics
-		server_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Server)
+
+		entries := make([]string, 0)
+		if o.Server.IsNull() || len(obj.Server) > 0 {
+			entries = obj.Server
+		}
+
+		server_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -966,20 +1147,36 @@ func (o *DhcpDataSourceRelayIpObject) CopyFromPango(ctx context.Context, ancesto
 	return diags
 }
 
-func (o *DhcpDataSourceRelayIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.RelayIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceRelayIpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.RelayIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []DhcpDataSourceRelayIpv6ServerObject
-		for _, elt := range obj.Server {
-			entry := DhcpDataSourceRelayIpv6ServerObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Server.IsNull() {
+			diags.Append(o.Server.ElementsAs(ctx, &server_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			server_tf_entries = append(server_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := DhcpDataSourceRelayIpv6ServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(server_tf_entries) {
+				entry = server_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(server_tf_entries) {
+				server_tf_entries[idx] = entry
+			} else {
+				server_tf_entries = append(server_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("server")
@@ -997,7 +1194,7 @@ func (o *DhcpDataSourceRelayIpv6Object) CopyFromPango(ctx context.Context, ances
 	return diags
 }
 
-func (o *DhcpDataSourceRelayIpv6ServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.RelayIpv6Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceRelayIpv6ServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.RelayIpv6Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -1010,12 +1207,18 @@ func (o *DhcpDataSourceRelayIpv6ServerObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *DhcpDataSourceServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipPool_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ipPool_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.IpPool)
+
+		entries := make([]string, 0)
+		if o.IpPool.IsNull() || len(obj.IpPool) > 0 {
+			entries = obj.IpPool
+		}
+
+		ipPool_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -1024,25 +1227,56 @@ func (o *DhcpDataSourceServerObject) CopyFromPango(ctx context.Context, ancestor
 	var reserved_list types.List
 	{
 		var reserved_tf_entries []DhcpDataSourceServerReservedObject
-		for _, elt := range obj.Reserved {
-			entry := DhcpDataSourceServerReservedObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Reserved.IsNull() {
+			diags.Append(o.Reserved.ElementsAs(ctx, &reserved_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			reserved_tf_entries = append(reserved_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Reserved {
+			entry := DhcpDataSourceServerReservedObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(reserved_tf_entries) {
+				entry = reserved_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(reserved_tf_entries) {
+				reserved_tf_entries[idx] = entry
+			} else {
+				reserved_tf_entries = append(reserved_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("reserved")
 		reserved_list, list_diags = types.ListValueFrom(ctx, schemaType, reserved_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var option_object *DhcpDataSourceServerOptionObject
+
+	var option_obj *DhcpDataSourceServerOptionObject
+	if o.Option.IsNull() {
+		option_obj = new(DhcpDataSourceServerOptionObject)
+	} else {
+		diags.Append(o.Option.As(ctx, &option_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	option_object := types.ObjectNull(option_obj.AttributeTypes())
 	if obj.Option != nil {
-		option_object = new(DhcpDataSourceServerOptionObject)
-		diags.Append(option_object.CopyFromPango(ctx, append(ancestors, o), obj.Option, ev)...)
+		diags.Append(option_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Option, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		option_object, diags_tmp = types.ObjectValueFrom(ctx, option_obj.AttributeTypes(), option_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1065,70 +1299,176 @@ func (o *DhcpDataSourceServerObject) CopyFromPango(ctx context.Context, ancestor
 	return diags
 }
 
-func (o *DhcpDataSourceServerOptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOption, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var userDefined_list types.List
 	{
 		var userDefined_tf_entries []DhcpDataSourceServerOptionUserDefinedObject
-		for _, elt := range obj.UserDefined {
-			entry := DhcpDataSourceServerOptionUserDefinedObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.UserDefined.IsNull() {
+			diags.Append(o.UserDefined.ElementsAs(ctx, &userDefined_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			userDefined_tf_entries = append(userDefined_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.UserDefined {
+			entry := DhcpDataSourceServerOptionUserDefinedObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(userDefined_tf_entries) {
+				entry = userDefined_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(userDefined_tf_entries) {
+				userDefined_tf_entries[idx] = entry
+			} else {
+				userDefined_tf_entries = append(userDefined_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("user_defined")
 		userDefined_list, list_diags = types.ListValueFrom(ctx, schemaType, userDefined_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dns_object *DhcpDataSourceServerOptionDnsObject
+
+	var dns_obj *DhcpDataSourceServerOptionDnsObject
+	if o.Dns.IsNull() {
+		dns_obj = new(DhcpDataSourceServerOptionDnsObject)
+	} else {
+		diags.Append(o.Dns.As(ctx, &dns_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dns_object := types.ObjectNull(dns_obj.AttributeTypes())
 	if obj.Dns != nil {
-		dns_object = new(DhcpDataSourceServerOptionDnsObject)
-		diags.Append(dns_object.CopyFromPango(ctx, append(ancestors, o), obj.Dns, ev)...)
+		diags.Append(dns_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dns, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dns_object, diags_tmp = types.ObjectValueFrom(ctx, dns_obj.AttributeTypes(), dns_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var inheritance_object *DhcpDataSourceServerOptionInheritanceObject
+
+	var inheritance_obj *DhcpDataSourceServerOptionInheritanceObject
+	if o.Inheritance.IsNull() {
+		inheritance_obj = new(DhcpDataSourceServerOptionInheritanceObject)
+	} else {
+		diags.Append(o.Inheritance.As(ctx, &inheritance_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	inheritance_object := types.ObjectNull(inheritance_obj.AttributeTypes())
 	if obj.Inheritance != nil {
-		inheritance_object = new(DhcpDataSourceServerOptionInheritanceObject)
-		diags.Append(inheritance_object.CopyFromPango(ctx, append(ancestors, o), obj.Inheritance, ev)...)
+		diags.Append(inheritance_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Inheritance, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		inheritance_object, diags_tmp = types.ObjectValueFrom(ctx, inheritance_obj.AttributeTypes(), inheritance_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var lease_object *DhcpDataSourceServerOptionLeaseObject
+
+	var lease_obj *DhcpDataSourceServerOptionLeaseObject
+	if o.Lease.IsNull() {
+		lease_obj = new(DhcpDataSourceServerOptionLeaseObject)
+	} else {
+		diags.Append(o.Lease.As(ctx, &lease_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	lease_object := types.ObjectNull(lease_obj.AttributeTypes())
 	if obj.Lease != nil {
-		lease_object = new(DhcpDataSourceServerOptionLeaseObject)
-		diags.Append(lease_object.CopyFromPango(ctx, append(ancestors, o), obj.Lease, ev)...)
+		diags.Append(lease_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Lease, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		lease_object, diags_tmp = types.ObjectValueFrom(ctx, lease_obj.AttributeTypes(), lease_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var nis_object *DhcpDataSourceServerOptionNisObject
+
+	var nis_obj *DhcpDataSourceServerOptionNisObject
+	if o.Nis.IsNull() {
+		nis_obj = new(DhcpDataSourceServerOptionNisObject)
+	} else {
+		diags.Append(o.Nis.As(ctx, &nis_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	nis_object := types.ObjectNull(nis_obj.AttributeTypes())
 	if obj.Nis != nil {
-		nis_object = new(DhcpDataSourceServerOptionNisObject)
-		diags.Append(nis_object.CopyFromPango(ctx, append(ancestors, o), obj.Nis, ev)...)
+		diags.Append(nis_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Nis, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		nis_object, diags_tmp = types.ObjectValueFrom(ctx, nis_obj.AttributeTypes(), nis_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ntp_object *DhcpDataSourceServerOptionNtpObject
+
+	var ntp_obj *DhcpDataSourceServerOptionNtpObject
+	if o.Ntp.IsNull() {
+		ntp_obj = new(DhcpDataSourceServerOptionNtpObject)
+	} else {
+		diags.Append(o.Ntp.As(ctx, &ntp_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ntp_object := types.ObjectNull(ntp_obj.AttributeTypes())
 	if obj.Ntp != nil {
-		ntp_object = new(DhcpDataSourceServerOptionNtpObject)
-		diags.Append(ntp_object.CopyFromPango(ctx, append(ancestors, o), obj.Ntp, ev)...)
+		diags.Append(ntp_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ntp, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ntp_object, diags_tmp = types.ObjectValueFrom(ctx, ntp_obj.AttributeTypes(), ntp_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var wins_object *DhcpDataSourceServerOptionWinsObject
+
+	var wins_obj *DhcpDataSourceServerOptionWinsObject
+	if o.Wins.IsNull() {
+		wins_obj = new(DhcpDataSourceServerOptionWinsObject)
+	} else {
+		diags.Append(o.Wins.As(ctx, &wins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	wins_object := types.ObjectNull(wins_obj.AttributeTypes())
 	if obj.Wins != nil {
-		wins_object = new(DhcpDataSourceServerOptionWinsObject)
-		diags.Append(wins_object.CopyFromPango(ctx, append(ancestors, o), obj.Wins, ev)...)
+		diags.Append(wins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Wins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		wins_object, diags_tmp = types.ObjectValueFrom(ctx, wins_obj.AttributeTypes(), wins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1170,7 +1510,7 @@ func (o *DhcpDataSourceServerOptionObject) CopyFromPango(ctx context.Context, an
 	return diags
 }
 
-func (o *DhcpDataSourceServerOptionDnsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionDns, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionDnsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionDns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var primary_value types.String
@@ -1187,7 +1527,7 @@ func (o *DhcpDataSourceServerOptionDnsObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *DhcpDataSourceServerOptionInheritanceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionInheritance, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionInheritanceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionInheritance, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var source_value types.String
@@ -1199,12 +1539,27 @@ func (o *DhcpDataSourceServerOptionInheritanceObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *DhcpDataSourceServerOptionLeaseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionLease, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionLeaseObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionLease, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var unlimited_object *DhcpDataSourceServerOptionLeaseUnlimitedObject
+
+	var unlimited_obj *DhcpDataSourceServerOptionLeaseUnlimitedObject
+	if o.Unlimited.IsNull() {
+		unlimited_obj = new(DhcpDataSourceServerOptionLeaseUnlimitedObject)
+	} else {
+		diags.Append(o.Unlimited.As(ctx, &unlimited_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	unlimited_object := types.ObjectNull(unlimited_obj.AttributeTypes())
 	if obj.Unlimited != nil {
-		unlimited_object = new(DhcpDataSourceServerOptionLeaseUnlimitedObject)
-		diags.Append(unlimited_object.CopyFromPango(ctx, append(ancestors, o), obj.Unlimited, ev)...)
+		diags.Append(unlimited_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Unlimited, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		unlimited_object, diags_tmp = types.ObjectValueFrom(ctx, unlimited_obj.AttributeTypes(), unlimited_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1220,30 +1575,13 @@ func (o *DhcpDataSourceServerOptionLeaseObject) CopyFromPango(ctx context.Contex
 	return diags
 }
 
-func (o *DhcpDataSourceServerOptionLeaseUnlimitedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionLeaseUnlimited, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionLeaseUnlimitedObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionLeaseUnlimited, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DhcpDataSourceServerOptionNisObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionNis, ev *EncryptedValuesManager) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var primary_value types.String
-	if obj.Primary != nil {
-		primary_value = types.StringValue(*obj.Primary)
-	}
-	var secondary_value types.String
-	if obj.Secondary != nil {
-		secondary_value = types.StringValue(*obj.Secondary)
-	}
-	o.Primary = primary_value
-	o.Secondary = secondary_value
-
-	return diags
-}
-
-func (o *DhcpDataSourceServerOptionNtpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionNtp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionNisObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionNis, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var primary_value types.String
@@ -1260,12 +1598,35 @@ func (o *DhcpDataSourceServerOptionNtpObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *DhcpDataSourceServerOptionUserDefinedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionUserDefined, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionNtpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionNtp, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var primary_value types.String
+	if obj.Primary != nil {
+		primary_value = types.StringValue(*obj.Primary)
+	}
+	var secondary_value types.String
+	if obj.Secondary != nil {
+		secondary_value = types.StringValue(*obj.Secondary)
+	}
+	o.Primary = primary_value
+	o.Secondary = secondary_value
+
+	return diags
+}
+
+func (o *DhcpDataSourceServerOptionUserDefinedObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionUserDefined, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Ip)
+
+		entries := make([]string, 0)
+		if o.Ip.IsNull() || len(obj.Ip) > 0 {
+			entries = obj.Ip
+		}
+
+		ip_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -1274,7 +1635,13 @@ func (o *DhcpDataSourceServerOptionUserDefinedObject) CopyFromPango(ctx context.
 	var ascii_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ascii_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Ascii)
+
+		entries := make([]string, 0)
+		if o.Ascii.IsNull() || len(obj.Ascii) > 0 {
+			entries = obj.Ascii
+		}
+
+		ascii_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -1283,7 +1650,13 @@ func (o *DhcpDataSourceServerOptionUserDefinedObject) CopyFromPango(ctx context.
 	var hex_list types.List
 	{
 		var list_diags diag.Diagnostics
-		hex_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Hex)
+
+		entries := make([]string, 0)
+		if o.Hex.IsNull() || len(obj.Hex) > 0 {
+			entries = obj.Hex
+		}
+
+		hex_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -1313,7 +1686,7 @@ func (o *DhcpDataSourceServerOptionUserDefinedObject) CopyFromPango(ctx context.
 	return diags
 }
 
-func (o *DhcpDataSourceServerOptionWinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionWins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerOptionWinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionWins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var primary_value types.String
@@ -1330,7 +1703,7 @@ func (o *DhcpDataSourceServerOptionWinsObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *DhcpDataSourceServerReservedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerReserved, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpDataSourceServerReservedObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerReserved, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var mac_value types.String
@@ -2181,8 +2554,8 @@ func (d *DhcpDataSource) Configure(_ context.Context, req datasource.ConfigureRe
 }
 func (o *DhcpDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state DhcpDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state DhcpDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -2198,7 +2571,7 @@ func (o *DhcpDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	{
 		var terraformLocation DhcpLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -2242,15 +2615,15 @@ func (o *DhcpDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_dhcp_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -2260,16 +2633,16 @@ func (o *DhcpDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -2302,14 +2675,14 @@ func DhcpResourceLocationSchema() rsschema.Attribute {
 }
 
 type DhcpResourceModel struct {
-	Location types.Object              `tfsdk:"location"`
-	Name     types.String              `tfsdk:"name"`
-	Relay    *DhcpResourceRelayObject  `tfsdk:"relay"`
-	Server   *DhcpResourceServerObject `tfsdk:"server"`
+	Location types.Object `tfsdk:"location"`
+	Name     types.String `tfsdk:"name"`
+	Relay    types.Object `tfsdk:"relay"`
+	Server   types.Object `tfsdk:"server"`
 }
 type DhcpResourceRelayObject struct {
-	Ip   *DhcpResourceRelayIpObject   `tfsdk:"ip"`
-	Ipv6 *DhcpResourceRelayIpv6Object `tfsdk:"ipv6"`
+	Ip   types.Object `tfsdk:"ip"`
+	Ipv6 types.Object `tfsdk:"ipv6"`
 }
 type DhcpResourceRelayIpObject struct {
 	Enabled types.Bool `tfsdk:"enabled"`
@@ -2324,25 +2697,25 @@ type DhcpResourceRelayIpv6ServerObject struct {
 	Interface types.String `tfsdk:"interface"`
 }
 type DhcpResourceServerObject struct {
-	IpPool   types.List                      `tfsdk:"ip_pool"`
-	Mode     types.String                    `tfsdk:"mode"`
-	Option   *DhcpResourceServerOptionObject `tfsdk:"option"`
-	ProbeIp  types.Bool                      `tfsdk:"probe_ip"`
-	Reserved types.List                      `tfsdk:"reserved"`
+	IpPool   types.List   `tfsdk:"ip_pool"`
+	Mode     types.String `tfsdk:"mode"`
+	Option   types.Object `tfsdk:"option"`
+	ProbeIp  types.Bool   `tfsdk:"probe_ip"`
+	Reserved types.List   `tfsdk:"reserved"`
 }
 type DhcpResourceServerOptionObject struct {
-	Dns         *DhcpResourceServerOptionDnsObject         `tfsdk:"dns"`
-	DnsSuffix   types.String                               `tfsdk:"dns_suffix"`
-	Gateway     types.String                               `tfsdk:"gateway"`
-	Inheritance *DhcpResourceServerOptionInheritanceObject `tfsdk:"inheritance"`
-	Lease       *DhcpResourceServerOptionLeaseObject       `tfsdk:"lease"`
-	Nis         *DhcpResourceServerOptionNisObject         `tfsdk:"nis"`
-	Ntp         *DhcpResourceServerOptionNtpObject         `tfsdk:"ntp"`
-	Pop3Server  types.String                               `tfsdk:"pop3_server"`
-	SmtpServer  types.String                               `tfsdk:"smtp_server"`
-	SubnetMask  types.String                               `tfsdk:"subnet_mask"`
-	UserDefined types.List                                 `tfsdk:"user_defined"`
-	Wins        *DhcpResourceServerOptionWinsObject        `tfsdk:"wins"`
+	Dns         types.Object `tfsdk:"dns"`
+	DnsSuffix   types.String `tfsdk:"dns_suffix"`
+	Gateway     types.String `tfsdk:"gateway"`
+	Inheritance types.Object `tfsdk:"inheritance"`
+	Lease       types.Object `tfsdk:"lease"`
+	Nis         types.Object `tfsdk:"nis"`
+	Ntp         types.Object `tfsdk:"ntp"`
+	Pop3Server  types.String `tfsdk:"pop3_server"`
+	SmtpServer  types.String `tfsdk:"smtp_server"`
+	SubnetMask  types.String `tfsdk:"subnet_mask"`
+	UserDefined types.List   `tfsdk:"user_defined"`
+	Wins        types.Object `tfsdk:"wins"`
 }
 type DhcpResourceServerOptionDnsObject struct {
 	Primary   types.String `tfsdk:"primary"`
@@ -2352,8 +2725,8 @@ type DhcpResourceServerOptionInheritanceObject struct {
 	Source types.String `tfsdk:"source"`
 }
 type DhcpResourceServerOptionLeaseObject struct {
-	Timeout   types.Int64                                   `tfsdk:"timeout"`
-	Unlimited *DhcpResourceServerOptionLeaseUnlimitedObject `tfsdk:"unlimited"`
+	Timeout   types.Int64  `tfsdk:"timeout"`
+	Unlimited types.Object `tfsdk:"unlimited"`
 }
 type DhcpResourceServerOptionLeaseUnlimitedObject struct {
 }
@@ -2384,7 +2757,7 @@ type DhcpResourceServerReservedObject struct {
 	Description types.String `tfsdk:"description"`
 }
 
-func (r *DhcpResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *DhcpResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -3207,31 +3580,31 @@ func (o *DhcpResourceServerReservedObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func (r *DhcpResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *DhcpResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_dhcp"
 }
 
-func (r *DhcpResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *DhcpResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = DhcpResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *DhcpResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *DhcpResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := dhcp.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := dhcp.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*dhcp.Entry, dhcp.Location, *dhcp.Service](r.client, dhcp.NewService(r.client), batchSize, specifier, dhcp.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*dhcp.Entry, dhcp.Location, *dhcp.Service](o.client, dhcp.NewService(o.client), batchSize, specifier, dhcp.SpecMatches)
 }
 
 func (o *DhcpResourceModel) AttributeTypes() map[string]attr.Type {
@@ -3288,7 +3661,9 @@ func (o *DhcpResourceRelayIpObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
 		"enabled": types.BoolType,
-		"server":  types.ListType{},
+		"server": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -3301,9 +3676,14 @@ func (o DhcpResourceRelayIpObject) EntryName() *string {
 }
 func (o *DhcpResourceRelayIpv6Object) AttributeTypes() map[string]attr.Type {
 
+	var serverObj *DhcpResourceRelayIpv6ServerObject
 	return map[string]attr.Type{
 		"enabled": types.BoolType,
-		"server":  types.ListType{},
+		"server": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serverObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -3333,14 +3713,21 @@ func (o *DhcpResourceServerObject) AttributeTypes() map[string]attr.Type {
 
 	var optionObj *DhcpResourceServerOptionObject
 
+	var reservedObj *DhcpResourceServerReservedObject
 	return map[string]attr.Type{
-		"ip_pool": types.ListType{},
-		"mode":    types.StringType,
+		"ip_pool": types.ListType{
+			ElemType: types.StringType,
+		},
+		"mode": types.StringType,
 		"option": types.ObjectType{
 			AttrTypes: optionObj.AttributeTypes(),
 		},
 		"probe_ip": types.BoolType,
-		"reserved": types.ListType{},
+		"reserved": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: reservedObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -3363,6 +3750,8 @@ func (o *DhcpResourceServerOptionObject) AttributeTypes() map[string]attr.Type {
 
 	var ntpObj *DhcpResourceServerOptionNtpObject
 
+	var userDefinedObj *DhcpResourceServerOptionUserDefinedObject
+
 	var winsObj *DhcpResourceServerOptionWinsObject
 	return map[string]attr.Type{
 		"dns": types.ObjectType{
@@ -3382,10 +3771,14 @@ func (o *DhcpResourceServerOptionObject) AttributeTypes() map[string]attr.Type {
 		"ntp": types.ObjectType{
 			AttrTypes: ntpObj.AttributeTypes(),
 		},
-		"pop3_server":  types.StringType,
-		"smtp_server":  types.StringType,
-		"subnet_mask":  types.StringType,
-		"user_defined": types.ListType{},
+		"pop3_server": types.StringType,
+		"smtp_server": types.StringType,
+		"subnet_mask": types.StringType,
+		"user_defined": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: userDefinedObj.AttributeTypes(),
+			},
+		},
 		"wins": types.ObjectType{
 			AttrTypes: winsObj.AttributeTypes(),
 		},
@@ -3494,9 +3887,15 @@ func (o *DhcpResourceServerOptionUserDefinedObject) AttributeTypes() map[string]
 		"code":                    types.Int64Type,
 		"vendor_class_identifier": types.StringType,
 		"inherited":               types.BoolType,
-		"ip":                      types.ListType{},
-		"ascii":                   types.ListType{},
-		"hex":                     types.ListType{},
+		"ip": types.ListType{
+			ElemType: types.StringType,
+		},
+		"ascii": types.ListType{
+			ElemType: types.StringType,
+		},
+		"hex": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -3539,30 +3938,38 @@ func (o DhcpResourceServerReservedObject) EntryName() *string {
 	return o.Name.ValueStringPointer()
 }
 
-func (o *DhcpResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var relay_entry *dhcp.Relay
-	if o.Relay != nil {
+	if !o.Relay.IsUnknown() && !o.Relay.IsNull() {
 		if *obj != nil && (*obj).Relay != nil {
 			relay_entry = (*obj).Relay
 		} else {
 			relay_entry = new(dhcp.Relay)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Relay.CopyToPango(ctx, ancestors, &relay_entry, ev)...)
+		var object *DhcpResourceRelayObject
+		diags.Append(o.Relay.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &relay_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var server_entry *dhcp.Server
-	if o.Server != nil {
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
 		if *obj != nil && (*obj).Server != nil {
 			server_entry = (*obj).Server
 		} else {
 			server_entry = new(dhcp.Server)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Server.CopyToPango(ctx, ancestors, &server_entry, ev)...)
+		var object *DhcpResourceServerObject
+		diags.Append(o.Server.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &server_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3577,30 +3984,38 @@ func (o *DhcpResourceModel) CopyToPango(ctx context.Context, ancestors []Ancesto
 
 	return diags
 }
-func (o *DhcpResourceRelayObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.Relay, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceRelayObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.Relay, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_entry *dhcp.RelayIp
-	if o.Ip != nil {
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
 		if *obj != nil && (*obj).Ip != nil {
 			ip_entry = (*obj).Ip
 		} else {
 			ip_entry = new(dhcp.RelayIp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ip.CopyToPango(ctx, append(ancestors, o), &ip_entry, ev)...)
+		var object *DhcpResourceRelayIpObject
+		diags.Append(o.Ip.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ip_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var ipv6_entry *dhcp.RelayIpv6
-	if o.Ipv6 != nil {
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
 		if *obj != nil && (*obj).Ipv6 != nil {
 			ipv6_entry = (*obj).Ipv6
 		} else {
 			ipv6_entry = new(dhcp.RelayIpv6)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ipv6.CopyToPango(ctx, append(ancestors, o), &ipv6_entry, ev)...)
+		var object *DhcpResourceRelayIpv6Object
+		diags.Append(o.Ipv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3614,13 +4029,21 @@ func (o *DhcpResourceRelayObject) CopyToPango(ctx context.Context, ancestors []A
 
 	return diags
 }
-func (o *DhcpResourceRelayIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.RelayIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceRelayIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.RelayIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enabled_value := o.Enabled.ValueBoolPointer()
-	server_pango_entries := make([]string, 0)
-	diags.Append(o.Server.ElementsAs(ctx, &server_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var server_pango_entries []string
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Server.Elements()))
+		diags.Append(o.Server.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			server_pango_entries = append(server_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -3631,7 +4054,7 @@ func (o *DhcpResourceRelayIpObject) CopyToPango(ctx context.Context, ancestors [
 
 	return diags
 }
-func (o *DhcpResourceRelayIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.RelayIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceRelayIpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.RelayIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enabled_value := o.Enabled.ValueBoolPointer()
 	var server_tf_entries []DhcpResourceRelayIpv6ServerObject
@@ -3644,7 +4067,7 @@ func (o *DhcpResourceRelayIpv6Object) CopyToPango(ctx context.Context, ancestors
 		}
 		for _, elt := range server_tf_entries {
 			var entry *dhcp.RelayIpv6Server
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3660,7 +4083,7 @@ func (o *DhcpResourceRelayIpv6Object) CopyToPango(ctx context.Context, ancestors
 
 	return diags
 }
-func (o *DhcpResourceRelayIpv6ServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.RelayIpv6Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceRelayIpv6ServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.RelayIpv6Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	interface_value := o.Interface.ValueStringPointer()
 
@@ -3672,23 +4095,35 @@ func (o *DhcpResourceRelayIpv6ServerObject) CopyToPango(ctx context.Context, anc
 
 	return diags
 }
-func (o *DhcpResourceServerObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	ipPool_pango_entries := make([]string, 0)
-	diags.Append(o.IpPool.ElementsAs(ctx, &ipPool_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ipPool_pango_entries []string
+	if !o.IpPool.IsUnknown() && !o.IpPool.IsNull() {
+		object_entries := make([]types.String, 0, len(o.IpPool.Elements()))
+		diags.Append(o.IpPool.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ipPool_pango_entries = append(ipPool_pango_entries, elt.ValueString())
+		}
 	}
 	mode_value := o.Mode.ValueStringPointer()
 	var option_entry *dhcp.ServerOption
-	if o.Option != nil {
+	if !o.Option.IsUnknown() && !o.Option.IsNull() {
 		if *obj != nil && (*obj).Option != nil {
 			option_entry = (*obj).Option
 		} else {
 			option_entry = new(dhcp.ServerOption)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Option.CopyToPango(ctx, append(ancestors, o), &option_entry, ev)...)
+		var object *DhcpResourceServerOptionObject
+		diags.Append(o.Option.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &option_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3704,7 +4139,7 @@ func (o *DhcpResourceServerObject) CopyToPango(ctx context.Context, ancestors []
 		}
 		for _, elt := range reserved_tf_entries {
 			var entry *dhcp.ServerReserved
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3723,17 +4158,21 @@ func (o *DhcpResourceServerObject) CopyToPango(ctx context.Context, ancestors []
 
 	return diags
 }
-func (o *DhcpResourceServerOptionObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOption, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dns_entry *dhcp.ServerOptionDns
-	if o.Dns != nil {
+	if !o.Dns.IsUnknown() && !o.Dns.IsNull() {
 		if *obj != nil && (*obj).Dns != nil {
 			dns_entry = (*obj).Dns
 		} else {
 			dns_entry = new(dhcp.ServerOptionDns)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Dns.CopyToPango(ctx, append(ancestors, o), &dns_entry, ev)...)
+		var object *DhcpResourceServerOptionDnsObject
+		diags.Append(o.Dns.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &dns_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3741,53 +4180,69 @@ func (o *DhcpResourceServerOptionObject) CopyToPango(ctx context.Context, ancest
 	dnsSuffix_value := o.DnsSuffix.ValueStringPointer()
 	gateway_value := o.Gateway.ValueStringPointer()
 	var inheritance_entry *dhcp.ServerOptionInheritance
-	if o.Inheritance != nil {
+	if !o.Inheritance.IsUnknown() && !o.Inheritance.IsNull() {
 		if *obj != nil && (*obj).Inheritance != nil {
 			inheritance_entry = (*obj).Inheritance
 		} else {
 			inheritance_entry = new(dhcp.ServerOptionInheritance)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Inheritance.CopyToPango(ctx, append(ancestors, o), &inheritance_entry, ev)...)
+		var object *DhcpResourceServerOptionInheritanceObject
+		diags.Append(o.Inheritance.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &inheritance_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var lease_entry *dhcp.ServerOptionLease
-	if o.Lease != nil {
+	if !o.Lease.IsUnknown() && !o.Lease.IsNull() {
 		if *obj != nil && (*obj).Lease != nil {
 			lease_entry = (*obj).Lease
 		} else {
 			lease_entry = new(dhcp.ServerOptionLease)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Lease.CopyToPango(ctx, append(ancestors, o), &lease_entry, ev)...)
+		var object *DhcpResourceServerOptionLeaseObject
+		diags.Append(o.Lease.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &lease_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var nis_entry *dhcp.ServerOptionNis
-	if o.Nis != nil {
+	if !o.Nis.IsUnknown() && !o.Nis.IsNull() {
 		if *obj != nil && (*obj).Nis != nil {
 			nis_entry = (*obj).Nis
 		} else {
 			nis_entry = new(dhcp.ServerOptionNis)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Nis.CopyToPango(ctx, append(ancestors, o), &nis_entry, ev)...)
+		var object *DhcpResourceServerOptionNisObject
+		diags.Append(o.Nis.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &nis_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var ntp_entry *dhcp.ServerOptionNtp
-	if o.Ntp != nil {
+	if !o.Ntp.IsUnknown() && !o.Ntp.IsNull() {
 		if *obj != nil && (*obj).Ntp != nil {
 			ntp_entry = (*obj).Ntp
 		} else {
 			ntp_entry = new(dhcp.ServerOptionNtp)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Ntp.CopyToPango(ctx, append(ancestors, o), &ntp_entry, ev)...)
+		var object *DhcpResourceServerOptionNtpObject
+		diags.Append(o.Ntp.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &ntp_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3805,7 +4260,7 @@ func (o *DhcpResourceServerOptionObject) CopyToPango(ctx context.Context, ancest
 		}
 		for _, elt := range userDefined_tf_entries {
 			var entry *dhcp.ServerOptionUserDefined
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -3813,14 +4268,18 @@ func (o *DhcpResourceServerOptionObject) CopyToPango(ctx context.Context, ancest
 		}
 	}
 	var wins_entry *dhcp.ServerOptionWins
-	if o.Wins != nil {
+	if !o.Wins.IsUnknown() && !o.Wins.IsNull() {
 		if *obj != nil && (*obj).Wins != nil {
 			wins_entry = (*obj).Wins
 		} else {
 			wins_entry = new(dhcp.ServerOptionWins)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Wins.CopyToPango(ctx, append(ancestors, o), &wins_entry, ev)...)
+		var object *DhcpResourceServerOptionWinsObject
+		diags.Append(o.Wins.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &wins_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3844,7 +4303,7 @@ func (o *DhcpResourceServerOptionObject) CopyToPango(ctx context.Context, ancest
 
 	return diags
 }
-func (o *DhcpResourceServerOptionDnsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionDns, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionDnsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionDns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -3857,7 +4316,7 @@ func (o *DhcpResourceServerOptionDnsObject) CopyToPango(ctx context.Context, anc
 
 	return diags
 }
-func (o *DhcpResourceServerOptionInheritanceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionInheritance, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionInheritanceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionInheritance, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	source_value := o.Source.ValueStringPointer()
 
@@ -3868,18 +4327,22 @@ func (o *DhcpResourceServerOptionInheritanceObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *DhcpResourceServerOptionLeaseObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionLease, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionLeaseObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionLease, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	timeout_value := o.Timeout.ValueInt64Pointer()
 	var unlimited_entry *dhcp.ServerOptionLeaseUnlimited
-	if o.Unlimited != nil {
+	if !o.Unlimited.IsUnknown() && !o.Unlimited.IsNull() {
 		if *obj != nil && (*obj).Unlimited != nil {
 			unlimited_entry = (*obj).Unlimited
 		} else {
 			unlimited_entry = new(dhcp.ServerOptionLeaseUnlimited)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Unlimited.CopyToPango(ctx, append(ancestors, o), &unlimited_entry, ev)...)
+		var object *DhcpResourceServerOptionLeaseUnlimitedObject
+		diags.Append(o.Unlimited.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &unlimited_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -3893,7 +4356,7 @@ func (o *DhcpResourceServerOptionLeaseObject) CopyToPango(ctx context.Context, a
 
 	return diags
 }
-func (o *DhcpResourceServerOptionLeaseUnlimitedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionLeaseUnlimited, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionLeaseUnlimitedObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionLeaseUnlimited, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -3902,7 +4365,7 @@ func (o *DhcpResourceServerOptionLeaseUnlimitedObject) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *DhcpResourceServerOptionNisObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionNis, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionNisObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionNis, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -3915,7 +4378,7 @@ func (o *DhcpResourceServerOptionNisObject) CopyToPango(ctx context.Context, anc
 
 	return diags
 }
-func (o *DhcpResourceServerOptionNtpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionNtp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionNtpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionNtp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -3928,25 +4391,49 @@ func (o *DhcpResourceServerOptionNtpObject) CopyToPango(ctx context.Context, anc
 
 	return diags
 }
-func (o *DhcpResourceServerOptionUserDefinedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionUserDefined, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionUserDefinedObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionUserDefined, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	code_value := o.Code.ValueInt64Pointer()
 	vendorClassIdentifier_value := o.VendorClassIdentifier.ValueStringPointer()
 	inherited_value := o.Inherited.ValueBoolPointer()
-	ip_pango_entries := make([]string, 0)
-	diags.Append(o.Ip.ElementsAs(ctx, &ip_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ip_pango_entries []string
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Ip.Elements()))
+		diags.Append(o.Ip.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ip_pango_entries = append(ip_pango_entries, elt.ValueString())
+		}
 	}
-	ascii_pango_entries := make([]string, 0)
-	diags.Append(o.Ascii.ElementsAs(ctx, &ascii_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var ascii_pango_entries []string
+	if !o.Ascii.IsUnknown() && !o.Ascii.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Ascii.Elements()))
+		diags.Append(o.Ascii.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			ascii_pango_entries = append(ascii_pango_entries, elt.ValueString())
+		}
 	}
-	hex_pango_entries := make([]string, 0)
-	diags.Append(o.Hex.ElementsAs(ctx, &hex_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var hex_pango_entries []string
+	if !o.Hex.IsUnknown() && !o.Hex.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Hex.Elements()))
+		diags.Append(o.Hex.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			hex_pango_entries = append(hex_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -3962,7 +4449,7 @@ func (o *DhcpResourceServerOptionUserDefinedObject) CopyToPango(ctx context.Cont
 
 	return diags
 }
-func (o *DhcpResourceServerOptionWinsObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerOptionWins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionWinsObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerOptionWins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	primary_value := o.Primary.ValueStringPointer()
 	secondary_value := o.Secondary.ValueStringPointer()
@@ -3975,7 +4462,7 @@ func (o *DhcpResourceServerOptionWinsObject) CopyToPango(ctx context.Context, an
 
 	return diags
 }
-func (o *DhcpResourceServerReservedObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **dhcp.ServerReserved, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerReservedObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **dhcp.ServerReserved, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	mac_value := o.Mac.ValueStringPointer()
 	description_value := o.Description.ValueStringPointer()
@@ -3990,20 +4477,50 @@ func (o *DhcpResourceServerReservedObject) CopyToPango(ctx context.Context, ance
 	return diags
 }
 
-func (o *DhcpResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var relay_object *DhcpResourceRelayObject
-	if obj.Relay != nil {
-		relay_object = new(DhcpResourceRelayObject)
-		diags.Append(relay_object.CopyFromPango(ctx, ancestors, obj.Relay, ev)...)
+
+	var relay_obj *DhcpResourceRelayObject
+	if o.Relay.IsNull() {
+		relay_obj = new(DhcpResourceRelayObject)
+	} else {
+		diags.Append(o.Relay.As(ctx, &relay_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var server_object *DhcpResourceServerObject
+	relay_object := types.ObjectNull(relay_obj.AttributeTypes())
+	if obj.Relay != nil {
+		diags.Append(relay_obj.CopyFromPango(ctx, client, ancestors, obj.Relay, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		relay_object, diags_tmp = types.ObjectValueFrom(ctx, relay_obj.AttributeTypes(), relay_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var server_obj *DhcpResourceServerObject
+	if o.Server.IsNull() {
+		server_obj = new(DhcpResourceServerObject)
+	} else {
+		diags.Append(o.Server.As(ctx, &server_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	server_object := types.ObjectNull(server_obj.AttributeTypes())
 	if obj.Server != nil {
-		server_object = new(DhcpResourceServerObject)
-		diags.Append(server_object.CopyFromPango(ctx, ancestors, obj.Server, ev)...)
+		diags.Append(server_obj.CopyFromPango(ctx, client, ancestors, obj.Server, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		server_object, diags_tmp = types.ObjectValueFrom(ctx, server_obj.AttributeTypes(), server_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4016,20 +4533,50 @@ func (o *DhcpResourceModel) CopyFromPango(ctx context.Context, ancestors []Ances
 	return diags
 }
 
-func (o *DhcpResourceRelayObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.Relay, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceRelayObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.Relay, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var ip_object *DhcpResourceRelayIpObject
-	if obj.Ip != nil {
-		ip_object = new(DhcpResourceRelayIpObject)
-		diags.Append(ip_object.CopyFromPango(ctx, append(ancestors, o), obj.Ip, ev)...)
+
+	var ip_obj *DhcpResourceRelayIpObject
+	if o.Ip.IsNull() {
+		ip_obj = new(DhcpResourceRelayIpObject)
+	} else {
+		diags.Append(o.Ip.As(ctx, &ip_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ipv6_object *DhcpResourceRelayIpv6Object
+	ip_object := types.ObjectNull(ip_obj.AttributeTypes())
+	if obj.Ip != nil {
+		diags.Append(ip_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ip, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ip_object, diags_tmp = types.ObjectValueFrom(ctx, ip_obj.AttributeTypes(), ip_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ipv6_obj *DhcpResourceRelayIpv6Object
+	if o.Ipv6.IsNull() {
+		ipv6_obj = new(DhcpResourceRelayIpv6Object)
+	} else {
+		diags.Append(o.Ipv6.As(ctx, &ipv6_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ipv6_object := types.ObjectNull(ipv6_obj.AttributeTypes())
 	if obj.Ipv6 != nil {
-		ipv6_object = new(DhcpResourceRelayIpv6Object)
-		diags.Append(ipv6_object.CopyFromPango(ctx, append(ancestors, o), obj.Ipv6, ev)...)
+		diags.Append(ipv6_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ipv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ipv6_object, diags_tmp = types.ObjectValueFrom(ctx, ipv6_obj.AttributeTypes(), ipv6_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4041,12 +4588,18 @@ func (o *DhcpResourceRelayObject) CopyFromPango(ctx context.Context, ancestors [
 	return diags
 }
 
-func (o *DhcpResourceRelayIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.RelayIp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceRelayIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.RelayIp, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var list_diags diag.Diagnostics
-		server_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Server)
+
+		entries := make([]string, 0)
+		if o.Server.IsNull() || len(obj.Server) > 0 {
+			entries = obj.Server
+		}
+
+		server_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -4063,20 +4616,36 @@ func (o *DhcpResourceRelayIpObject) CopyFromPango(ctx context.Context, ancestors
 	return diags
 }
 
-func (o *DhcpResourceRelayIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.RelayIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceRelayIpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.RelayIpv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var server_list types.List
 	{
 		var server_tf_entries []DhcpResourceRelayIpv6ServerObject
-		for _, elt := range obj.Server {
-			entry := DhcpResourceRelayIpv6ServerObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Server.IsNull() {
+			diags.Append(o.Server.ElementsAs(ctx, &server_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			server_tf_entries = append(server_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := DhcpResourceRelayIpv6ServerObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(server_tf_entries) {
+				entry = server_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(server_tf_entries) {
+				server_tf_entries[idx] = entry
+			} else {
+				server_tf_entries = append(server_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("server")
@@ -4094,7 +4663,7 @@ func (o *DhcpResourceRelayIpv6Object) CopyFromPango(ctx context.Context, ancesto
 	return diags
 }
 
-func (o *DhcpResourceRelayIpv6ServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.RelayIpv6Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceRelayIpv6ServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.RelayIpv6Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var interface_value types.String
@@ -4107,12 +4676,18 @@ func (o *DhcpResourceRelayIpv6ServerObject) CopyFromPango(ctx context.Context, a
 	return diags
 }
 
-func (o *DhcpResourceServerObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ipPool_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ipPool_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.IpPool)
+
+		entries := make([]string, 0)
+		if o.IpPool.IsNull() || len(obj.IpPool) > 0 {
+			entries = obj.IpPool
+		}
+
+		ipPool_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -4121,25 +4696,56 @@ func (o *DhcpResourceServerObject) CopyFromPango(ctx context.Context, ancestors 
 	var reserved_list types.List
 	{
 		var reserved_tf_entries []DhcpResourceServerReservedObject
-		for _, elt := range obj.Reserved {
-			entry := DhcpResourceServerReservedObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Reserved.IsNull() {
+			diags.Append(o.Reserved.ElementsAs(ctx, &reserved_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			reserved_tf_entries = append(reserved_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Reserved {
+			entry := DhcpResourceServerReservedObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(reserved_tf_entries) {
+				entry = reserved_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(reserved_tf_entries) {
+				reserved_tf_entries[idx] = entry
+			} else {
+				reserved_tf_entries = append(reserved_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("reserved")
 		reserved_list, list_diags = types.ListValueFrom(ctx, schemaType, reserved_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var option_object *DhcpResourceServerOptionObject
+
+	var option_obj *DhcpResourceServerOptionObject
+	if o.Option.IsNull() {
+		option_obj = new(DhcpResourceServerOptionObject)
+	} else {
+		diags.Append(o.Option.As(ctx, &option_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	option_object := types.ObjectNull(option_obj.AttributeTypes())
 	if obj.Option != nil {
-		option_object = new(DhcpResourceServerOptionObject)
-		diags.Append(option_object.CopyFromPango(ctx, append(ancestors, o), obj.Option, ev)...)
+		diags.Append(option_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Option, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		option_object, diags_tmp = types.ObjectValueFrom(ctx, option_obj.AttributeTypes(), option_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4162,70 +4768,176 @@ func (o *DhcpResourceServerObject) CopyFromPango(ctx context.Context, ancestors 
 	return diags
 }
 
-func (o *DhcpResourceServerOptionObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOption, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var userDefined_list types.List
 	{
 		var userDefined_tf_entries []DhcpResourceServerOptionUserDefinedObject
-		for _, elt := range obj.UserDefined {
-			entry := DhcpResourceServerOptionUserDefinedObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.UserDefined.IsNull() {
+			diags.Append(o.UserDefined.ElementsAs(ctx, &userDefined_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			userDefined_tf_entries = append(userDefined_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.UserDefined {
+			entry := DhcpResourceServerOptionUserDefinedObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(userDefined_tf_entries) {
+				entry = userDefined_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(userDefined_tf_entries) {
+				userDefined_tf_entries[idx] = entry
+			} else {
+				userDefined_tf_entries = append(userDefined_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("user_defined")
 		userDefined_list, list_diags = types.ListValueFrom(ctx, schemaType, userDefined_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var dns_object *DhcpResourceServerOptionDnsObject
+
+	var dns_obj *DhcpResourceServerOptionDnsObject
+	if o.Dns.IsNull() {
+		dns_obj = new(DhcpResourceServerOptionDnsObject)
+	} else {
+		diags.Append(o.Dns.As(ctx, &dns_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	dns_object := types.ObjectNull(dns_obj.AttributeTypes())
 	if obj.Dns != nil {
-		dns_object = new(DhcpResourceServerOptionDnsObject)
-		diags.Append(dns_object.CopyFromPango(ctx, append(ancestors, o), obj.Dns, ev)...)
+		diags.Append(dns_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Dns, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		dns_object, diags_tmp = types.ObjectValueFrom(ctx, dns_obj.AttributeTypes(), dns_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var inheritance_object *DhcpResourceServerOptionInheritanceObject
+
+	var inheritance_obj *DhcpResourceServerOptionInheritanceObject
+	if o.Inheritance.IsNull() {
+		inheritance_obj = new(DhcpResourceServerOptionInheritanceObject)
+	} else {
+		diags.Append(o.Inheritance.As(ctx, &inheritance_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	inheritance_object := types.ObjectNull(inheritance_obj.AttributeTypes())
 	if obj.Inheritance != nil {
-		inheritance_object = new(DhcpResourceServerOptionInheritanceObject)
-		diags.Append(inheritance_object.CopyFromPango(ctx, append(ancestors, o), obj.Inheritance, ev)...)
+		diags.Append(inheritance_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Inheritance, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		inheritance_object, diags_tmp = types.ObjectValueFrom(ctx, inheritance_obj.AttributeTypes(), inheritance_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var lease_object *DhcpResourceServerOptionLeaseObject
+
+	var lease_obj *DhcpResourceServerOptionLeaseObject
+	if o.Lease.IsNull() {
+		lease_obj = new(DhcpResourceServerOptionLeaseObject)
+	} else {
+		diags.Append(o.Lease.As(ctx, &lease_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	lease_object := types.ObjectNull(lease_obj.AttributeTypes())
 	if obj.Lease != nil {
-		lease_object = new(DhcpResourceServerOptionLeaseObject)
-		diags.Append(lease_object.CopyFromPango(ctx, append(ancestors, o), obj.Lease, ev)...)
+		diags.Append(lease_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Lease, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		lease_object, diags_tmp = types.ObjectValueFrom(ctx, lease_obj.AttributeTypes(), lease_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var nis_object *DhcpResourceServerOptionNisObject
+
+	var nis_obj *DhcpResourceServerOptionNisObject
+	if o.Nis.IsNull() {
+		nis_obj = new(DhcpResourceServerOptionNisObject)
+	} else {
+		diags.Append(o.Nis.As(ctx, &nis_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	nis_object := types.ObjectNull(nis_obj.AttributeTypes())
 	if obj.Nis != nil {
-		nis_object = new(DhcpResourceServerOptionNisObject)
-		diags.Append(nis_object.CopyFromPango(ctx, append(ancestors, o), obj.Nis, ev)...)
+		diags.Append(nis_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Nis, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		nis_object, diags_tmp = types.ObjectValueFrom(ctx, nis_obj.AttributeTypes(), nis_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ntp_object *DhcpResourceServerOptionNtpObject
+
+	var ntp_obj *DhcpResourceServerOptionNtpObject
+	if o.Ntp.IsNull() {
+		ntp_obj = new(DhcpResourceServerOptionNtpObject)
+	} else {
+		diags.Append(o.Ntp.As(ctx, &ntp_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ntp_object := types.ObjectNull(ntp_obj.AttributeTypes())
 	if obj.Ntp != nil {
-		ntp_object = new(DhcpResourceServerOptionNtpObject)
-		diags.Append(ntp_object.CopyFromPango(ctx, append(ancestors, o), obj.Ntp, ev)...)
+		diags.Append(ntp_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Ntp, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ntp_object, diags_tmp = types.ObjectValueFrom(ctx, ntp_obj.AttributeTypes(), ntp_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var wins_object *DhcpResourceServerOptionWinsObject
+
+	var wins_obj *DhcpResourceServerOptionWinsObject
+	if o.Wins.IsNull() {
+		wins_obj = new(DhcpResourceServerOptionWinsObject)
+	} else {
+		diags.Append(o.Wins.As(ctx, &wins_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	wins_object := types.ObjectNull(wins_obj.AttributeTypes())
 	if obj.Wins != nil {
-		wins_object = new(DhcpResourceServerOptionWinsObject)
-		diags.Append(wins_object.CopyFromPango(ctx, append(ancestors, o), obj.Wins, ev)...)
+		diags.Append(wins_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Wins, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		wins_object, diags_tmp = types.ObjectValueFrom(ctx, wins_obj.AttributeTypes(), wins_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4267,7 +4979,7 @@ func (o *DhcpResourceServerOptionObject) CopyFromPango(ctx context.Context, ance
 	return diags
 }
 
-func (o *DhcpResourceServerOptionDnsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionDns, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionDnsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionDns, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var primary_value types.String
@@ -4284,7 +4996,7 @@ func (o *DhcpResourceServerOptionDnsObject) CopyFromPango(ctx context.Context, a
 	return diags
 }
 
-func (o *DhcpResourceServerOptionInheritanceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionInheritance, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionInheritanceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionInheritance, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var source_value types.String
@@ -4296,12 +5008,27 @@ func (o *DhcpResourceServerOptionInheritanceObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *DhcpResourceServerOptionLeaseObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionLease, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionLeaseObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionLease, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var unlimited_object *DhcpResourceServerOptionLeaseUnlimitedObject
+
+	var unlimited_obj *DhcpResourceServerOptionLeaseUnlimitedObject
+	if o.Unlimited.IsNull() {
+		unlimited_obj = new(DhcpResourceServerOptionLeaseUnlimitedObject)
+	} else {
+		diags.Append(o.Unlimited.As(ctx, &unlimited_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	unlimited_object := types.ObjectNull(unlimited_obj.AttributeTypes())
 	if obj.Unlimited != nil {
-		unlimited_object = new(DhcpResourceServerOptionLeaseUnlimitedObject)
-		diags.Append(unlimited_object.CopyFromPango(ctx, append(ancestors, o), obj.Unlimited, ev)...)
+		diags.Append(unlimited_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Unlimited, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		unlimited_object, diags_tmp = types.ObjectValueFrom(ctx, unlimited_obj.AttributeTypes(), unlimited_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -4317,30 +5044,13 @@ func (o *DhcpResourceServerOptionLeaseObject) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *DhcpResourceServerOptionLeaseUnlimitedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionLeaseUnlimited, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionLeaseUnlimitedObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionLeaseUnlimited, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *DhcpResourceServerOptionNisObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionNis, ev *EncryptedValuesManager) diag.Diagnostics {
-	var diags diag.Diagnostics
-
-	var primary_value types.String
-	if obj.Primary != nil {
-		primary_value = types.StringValue(*obj.Primary)
-	}
-	var secondary_value types.String
-	if obj.Secondary != nil {
-		secondary_value = types.StringValue(*obj.Secondary)
-	}
-	o.Primary = primary_value
-	o.Secondary = secondary_value
-
-	return diags
-}
-
-func (o *DhcpResourceServerOptionNtpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionNtp, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionNisObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionNis, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var primary_value types.String
@@ -4357,12 +5067,35 @@ func (o *DhcpResourceServerOptionNtpObject) CopyFromPango(ctx context.Context, a
 	return diags
 }
 
-func (o *DhcpResourceServerOptionUserDefinedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionUserDefined, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionNtpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionNtp, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	var primary_value types.String
+	if obj.Primary != nil {
+		primary_value = types.StringValue(*obj.Primary)
+	}
+	var secondary_value types.String
+	if obj.Secondary != nil {
+		secondary_value = types.StringValue(*obj.Secondary)
+	}
+	o.Primary = primary_value
+	o.Secondary = secondary_value
+
+	return diags
+}
+
+func (o *DhcpResourceServerOptionUserDefinedObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionUserDefined, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ip_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Ip)
+
+		entries := make([]string, 0)
+		if o.Ip.IsNull() || len(obj.Ip) > 0 {
+			entries = obj.Ip
+		}
+
+		ip_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -4371,7 +5104,13 @@ func (o *DhcpResourceServerOptionUserDefinedObject) CopyFromPango(ctx context.Co
 	var ascii_list types.List
 	{
 		var list_diags diag.Diagnostics
-		ascii_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Ascii)
+
+		entries := make([]string, 0)
+		if o.Ascii.IsNull() || len(obj.Ascii) > 0 {
+			entries = obj.Ascii
+		}
+
+		ascii_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -4380,7 +5119,13 @@ func (o *DhcpResourceServerOptionUserDefinedObject) CopyFromPango(ctx context.Co
 	var hex_list types.List
 	{
 		var list_diags diag.Diagnostics
-		hex_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Hex)
+
+		entries := make([]string, 0)
+		if o.Hex.IsNull() || len(obj.Hex) > 0 {
+			entries = obj.Hex
+		}
+
+		hex_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -4410,7 +5155,7 @@ func (o *DhcpResourceServerOptionUserDefinedObject) CopyFromPango(ctx context.Co
 	return diags
 }
 
-func (o *DhcpResourceServerOptionWinsObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerOptionWins, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerOptionWinsObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerOptionWins, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var primary_value types.String
@@ -4427,7 +5172,7 @@ func (o *DhcpResourceServerOptionWinsObject) CopyFromPango(ctx context.Context, 
 	return diags
 }
 
-func (o *DhcpResourceServerReservedObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *dhcp.ServerReserved, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *DhcpResourceServerReservedObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *dhcp.ServerReserved, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var mac_value types.String
@@ -4450,7 +5195,7 @@ func (o *DhcpResourceModel) resourceXpathParentComponents() ([]string, error) {
 	return components, nil
 }
 
-func (r *DhcpResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *DhcpResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state DhcpResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -4465,7 +5210,7 @@ func (r *DhcpResource) Create(ctx context.Context, req resource.CreateRequest, r
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -4530,7 +5275,7 @@ func (r *DhcpResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	// Load the desired config.
 	var obj *dhcp.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -4548,13 +5293,13 @@ func (r *DhcpResource) Create(ctx context.Context, req resource.CreateRequest, r
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -4571,8 +5316,8 @@ func (r *DhcpResource) Create(ctx context.Context, req resource.CreateRequest, r
 }
 func (o *DhcpResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state DhcpResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state DhcpResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -4592,7 +5337,7 @@ func (o *DhcpResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	{
 		var terraformLocation DhcpLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -4636,15 +5381,15 @@ func (o *DhcpResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_dhcp_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -4654,16 +5399,16 @@ func (o *DhcpResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -4676,7 +5421,7 @@ func (o *DhcpResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *DhcpResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *DhcpResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state DhcpResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -4747,7 +5492,7 @@ func (r *DhcpResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -4757,13 +5502,18 @@ func (r *DhcpResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *dhcp.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -4774,22 +5524,27 @@ func (r *DhcpResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -4803,10 +5558,10 @@ func (r *DhcpResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *DhcpResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *DhcpResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state DhcpResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -4822,7 +5577,7 @@ func (r *DhcpResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -4876,7 +5631,7 @@ func (r *DhcpResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -4973,7 +5728,7 @@ func DhcpImportStateCreator(ctx context.Context, resource types.Object) ([]byte,
 	return json.Marshal(importStruct)
 }
 
-func (r *DhcpResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *DhcpResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj DhcpImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/panorama/template_stack"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
@@ -51,13 +52,13 @@ type TemplateStackDataSourceFilter struct {
 }
 
 type TemplateStackDataSourceModel struct {
-	Location        types.Object                                  `tfsdk:"location"`
-	Name            types.String                                  `tfsdk:"name"`
-	Description     types.String                                  `tfsdk:"description"`
-	Templates       types.List                                    `tfsdk:"templates"`
-	Devices         types.List                                    `tfsdk:"devices"`
-	DefaultVsys     types.String                                  `tfsdk:"default_vsys"`
-	UserGroupSource *TemplateStackDataSourceUserGroupSourceObject `tfsdk:"user_group_source"`
+	Location        types.Object `tfsdk:"location"`
+	Name            types.String `tfsdk:"name"`
+	Description     types.String `tfsdk:"description"`
+	Templates       types.List   `tfsdk:"templates"`
+	Devices         types.List   `tfsdk:"devices"`
+	DefaultVsys     types.String `tfsdk:"default_vsys"`
+	UserGroupSource types.Object `tfsdk:"user_group_source"`
 }
 type TemplateStackDataSourceUserGroupSourceObject struct {
 	MasterDevice types.String `tfsdk:"master_device"`
@@ -72,10 +73,14 @@ func (o *TemplateStackDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":         types.StringType,
-		"description":  types.StringType,
-		"templates":    types.ListType{},
-		"devices":      types.ListType{},
+		"name":        types.StringType,
+		"description": types.StringType,
+		"templates": types.ListType{
+			ElemType: types.StringType,
+		},
+		"devices": types.ListType{
+			ElemType: types.StringType,
+		},
 		"default_vsys": types.StringType,
 		"user_group_source": types.ObjectType{
 			AttrTypes: userGroupSourceObj.AttributeTypes(),
@@ -105,29 +110,49 @@ func (o TemplateStackDataSourceUserGroupSourceObject) EntryName() *string {
 	return nil
 }
 
-func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
-	templates_pango_entries := make([]string, 0)
-	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var templates_pango_entries []string
+	if !o.Templates.IsUnknown() && !o.Templates.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Templates.Elements()))
+		diags.Append(o.Templates.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			templates_pango_entries = append(templates_pango_entries, elt.ValueString())
+		}
 	}
-	devices_pango_entries := make([]string, 0)
-	diags.Append(o.Devices.ElementsAs(ctx, &devices_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var devices_pango_entries []string
+	if !o.Devices.IsUnknown() && !o.Devices.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Devices.Elements()))
+		diags.Append(o.Devices.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			devices_pango_entries = append(devices_pango_entries, elt.ValueString())
+		}
 	}
 	defaultVsys_value := o.DefaultVsys.ValueStringPointer()
 	var userGroupSource_entry *template_stack.UserGroupSource
-	if o.UserGroupSource != nil {
+	if !o.UserGroupSource.IsUnknown() && !o.UserGroupSource.IsNull() {
 		if *obj != nil && (*obj).UserGroupSource != nil {
 			userGroupSource_entry = (*obj).UserGroupSource
 		} else {
 			userGroupSource_entry = new(template_stack.UserGroupSource)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.UserGroupSource.CopyToPango(ctx, ancestors, &userGroupSource_entry, ev)...)
+		var object *TemplateStackDataSourceUserGroupSourceObject
+		diags.Append(o.UserGroupSource.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &userGroupSource_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -145,7 +170,7 @@ func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, ancestor
 
 	return diags
 }
-func (o *TemplateStackDataSourceUserGroupSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateStackDataSourceUserGroupSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	masterDevice_value := o.MasterDevice.ValueStringPointer()
 
@@ -157,12 +182,18 @@ func (o *TemplateStackDataSourceUserGroupSourceObject) CopyToPango(ctx context.C
 	return diags
 }
 
-func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var templates_list types.List
 	{
 		var list_diags diag.Diagnostics
-		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
+
+		entries := make([]string, 0)
+		if o.Templates.IsNull() || len(obj.Templates) > 0 {
+			entries = obj.Templates
+		}
+
+		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -171,16 +202,37 @@ func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, ancest
 	var devices_list types.List
 	{
 		var list_diags diag.Diagnostics
-		devices_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Devices)
+
+		entries := make([]string, 0)
+		if o.Devices.IsNull() || len(obj.Devices) > 0 {
+			entries = obj.Devices
+		}
+
+		devices_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var userGroupSource_object *TemplateStackDataSourceUserGroupSourceObject
+
+	var userGroupSource_obj *TemplateStackDataSourceUserGroupSourceObject
+	if o.UserGroupSource.IsNull() {
+		userGroupSource_obj = new(TemplateStackDataSourceUserGroupSourceObject)
+	} else {
+		diags.Append(o.UserGroupSource.As(ctx, &userGroupSource_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	userGroupSource_object := types.ObjectNull(userGroupSource_obj.AttributeTypes())
 	if obj.UserGroupSource != nil {
-		userGroupSource_object = new(TemplateStackDataSourceUserGroupSourceObject)
-		diags.Append(userGroupSource_object.CopyFromPango(ctx, ancestors, obj.UserGroupSource, ev)...)
+		diags.Append(userGroupSource_obj.CopyFromPango(ctx, client, ancestors, obj.UserGroupSource, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		userGroupSource_object, diags_tmp = types.ObjectValueFrom(ctx, userGroupSource_obj.AttributeTypes(), userGroupSource_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -204,7 +256,7 @@ func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, ancest
 	return diags
 }
 
-func (o *TemplateStackDataSourceUserGroupSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateStackDataSourceUserGroupSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var masterDevice_value types.String
@@ -362,8 +414,8 @@ func (d *TemplateStackDataSource) Configure(_ context.Context, req datasource.Co
 }
 func (o *TemplateStackDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state TemplateStackDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state TemplateStackDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -379,7 +431,7 @@ func (o *TemplateStackDataSource) Read(ctx context.Context, req datasource.ReadR
 
 	{
 		var terraformLocation TemplateStackLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -399,15 +451,15 @@ func (o *TemplateStackDataSource) Read(ctx context.Context, req datasource.ReadR
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_template_stack_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -417,16 +469,16 @@ func (o *TemplateStackDataSource) Read(ctx context.Context, req datasource.ReadR
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -459,19 +511,19 @@ func TemplateStackResourceLocationSchema() rsschema.Attribute {
 }
 
 type TemplateStackResourceModel struct {
-	Location        types.Object                                `tfsdk:"location"`
-	Name            types.String                                `tfsdk:"name"`
-	Description     types.String                                `tfsdk:"description"`
-	Templates       types.List                                  `tfsdk:"templates"`
-	Devices         types.List                                  `tfsdk:"devices"`
-	DefaultVsys     types.String                                `tfsdk:"default_vsys"`
-	UserGroupSource *TemplateStackResourceUserGroupSourceObject `tfsdk:"user_group_source"`
+	Location        types.Object `tfsdk:"location"`
+	Name            types.String `tfsdk:"name"`
+	Description     types.String `tfsdk:"description"`
+	Templates       types.List   `tfsdk:"templates"`
+	Devices         types.List   `tfsdk:"devices"`
+	DefaultVsys     types.String `tfsdk:"default_vsys"`
+	UserGroupSource types.Object `tfsdk:"user_group_source"`
 }
 type TemplateStackResourceUserGroupSourceObject struct {
 	MasterDevice types.String `tfsdk:"master_device"`
 }
 
-func (r *TemplateStackResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *TemplateStackResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -585,31 +637,31 @@ func (o *TemplateStackResourceUserGroupSourceObject) getTypeFor(name string) att
 	panic("unreachable")
 }
 
-func (r *TemplateStackResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *TemplateStackResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_template_stack"
 }
 
-func (r *TemplateStackResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *TemplateStackResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = TemplateStackResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *TemplateStackResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *TemplateStackResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := template_stack.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := template_stack.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*template_stack.Entry, template_stack.Location, *template_stack.Service](r.client, template_stack.NewService(r.client), batchSize, specifier, template_stack.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*template_stack.Entry, template_stack.Location, *template_stack.Service](o.client, template_stack.NewService(o.client), batchSize, specifier, template_stack.SpecMatches)
 }
 
 func (o *TemplateStackResourceModel) AttributeTypes() map[string]attr.Type {
@@ -621,10 +673,14 @@ func (o *TemplateStackResourceModel) AttributeTypes() map[string]attr.Type {
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":         types.StringType,
-		"description":  types.StringType,
-		"templates":    types.ListType{},
-		"devices":      types.ListType{},
+		"name":        types.StringType,
+		"description": types.StringType,
+		"templates": types.ListType{
+			ElemType: types.StringType,
+		},
+		"devices": types.ListType{
+			ElemType: types.StringType,
+		},
 		"default_vsys": types.StringType,
 		"user_group_source": types.ObjectType{
 			AttrTypes: userGroupSourceObj.AttributeTypes(),
@@ -654,29 +710,49 @@ func (o TemplateStackResourceUserGroupSourceObject) EntryName() *string {
 	return nil
 }
 
-func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
-	templates_pango_entries := make([]string, 0)
-	diags.Append(o.Templates.ElementsAs(ctx, &templates_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var templates_pango_entries []string
+	if !o.Templates.IsUnknown() && !o.Templates.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Templates.Elements()))
+		diags.Append(o.Templates.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			templates_pango_entries = append(templates_pango_entries, elt.ValueString())
+		}
 	}
-	devices_pango_entries := make([]string, 0)
-	diags.Append(o.Devices.ElementsAs(ctx, &devices_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var devices_pango_entries []string
+	if !o.Devices.IsUnknown() && !o.Devices.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Devices.Elements()))
+		diags.Append(o.Devices.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			devices_pango_entries = append(devices_pango_entries, elt.ValueString())
+		}
 	}
 	defaultVsys_value := o.DefaultVsys.ValueStringPointer()
 	var userGroupSource_entry *template_stack.UserGroupSource
-	if o.UserGroupSource != nil {
+	if !o.UserGroupSource.IsUnknown() && !o.UserGroupSource.IsNull() {
 		if *obj != nil && (*obj).UserGroupSource != nil {
 			userGroupSource_entry = (*obj).UserGroupSource
 		} else {
 			userGroupSource_entry = new(template_stack.UserGroupSource)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.UserGroupSource.CopyToPango(ctx, ancestors, &userGroupSource_entry, ev)...)
+		var object *TemplateStackResourceUserGroupSourceObject
+		diags.Append(o.UserGroupSource.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &userGroupSource_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -694,7 +770,7 @@ func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, ancestors 
 
 	return diags
 }
-func (o *TemplateStackResourceUserGroupSourceObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateStackResourceUserGroupSourceObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	masterDevice_value := o.MasterDevice.ValueStringPointer()
 
@@ -706,12 +782,18 @@ func (o *TemplateStackResourceUserGroupSourceObject) CopyToPango(ctx context.Con
 	return diags
 }
 
-func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_stack.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var templates_list types.List
 	{
 		var list_diags diag.Diagnostics
-		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Templates)
+
+		entries := make([]string, 0)
+		if o.Templates.IsNull() || len(obj.Templates) > 0 {
+			entries = obj.Templates
+		}
+
+		templates_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -720,16 +802,37 @@ func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, ancestor
 	var devices_list types.List
 	{
 		var list_diags diag.Diagnostics
-		devices_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Devices)
+
+		entries := make([]string, 0)
+		if o.Devices.IsNull() || len(obj.Devices) > 0 {
+			entries = obj.Devices
+		}
+
+		devices_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var userGroupSource_object *TemplateStackResourceUserGroupSourceObject
+
+	var userGroupSource_obj *TemplateStackResourceUserGroupSourceObject
+	if o.UserGroupSource.IsNull() {
+		userGroupSource_obj = new(TemplateStackResourceUserGroupSourceObject)
+	} else {
+		diags.Append(o.UserGroupSource.As(ctx, &userGroupSource_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	userGroupSource_object := types.ObjectNull(userGroupSource_obj.AttributeTypes())
 	if obj.UserGroupSource != nil {
-		userGroupSource_object = new(TemplateStackResourceUserGroupSourceObject)
-		diags.Append(userGroupSource_object.CopyFromPango(ctx, ancestors, obj.UserGroupSource, ev)...)
+		diags.Append(userGroupSource_obj.CopyFromPango(ctx, client, ancestors, obj.UserGroupSource, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		userGroupSource_object, diags_tmp = types.ObjectValueFrom(ctx, userGroupSource_obj.AttributeTypes(), userGroupSource_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -753,7 +856,7 @@ func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, ancestor
 	return diags
 }
 
-func (o *TemplateStackResourceUserGroupSourceObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateStackResourceUserGroupSourceObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_stack.UserGroupSource, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var masterDevice_value types.String
@@ -770,7 +873,7 @@ func (o *TemplateStackResourceModel) resourceXpathParentComponents() ([]string, 
 	return components, nil
 }
 
-func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *TemplateStackResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state TemplateStackResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -785,7 +888,7 @@ func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateR
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -826,7 +929,7 @@ func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateR
 
 	// Load the desired config.
 	var obj *template_stack.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -844,13 +947,13 @@ func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateR
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -867,8 +970,8 @@ func (r *TemplateStackResource) Create(ctx context.Context, req resource.CreateR
 }
 func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state TemplateStackResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state TemplateStackResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -888,7 +991,7 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 
 	{
 		var terraformLocation TemplateStackLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -908,15 +1011,15 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_template_stack_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -926,16 +1029,16 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -948,7 +1051,7 @@ func (o *TemplateStackResource) Read(ctx context.Context, req resource.ReadReque
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *TemplateStackResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state TemplateStackResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -995,7 +1098,7 @@ func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateR
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1005,13 +1108,18 @@ func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateR
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *template_stack.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1022,22 +1130,27 @@ func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateR
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1051,10 +1164,10 @@ func (r *TemplateStackResource) Update(ctx context.Context, req resource.UpdateR
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *TemplateStackResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *TemplateStackResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state TemplateStackResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1070,7 +1183,7 @@ func (r *TemplateStackResource) Delete(ctx context.Context, req resource.DeleteR
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1100,7 +1213,7 @@ func (r *TemplateStackResource) Delete(ctx context.Context, req resource.DeleteR
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1197,7 +1310,7 @@ func TemplateStackImportStateCreator(ctx context.Context, resource types.Object)
 	return json.Marshal(importStruct)
 }
 
-func (r *TemplateStackResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *TemplateStackResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj TemplateStackImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

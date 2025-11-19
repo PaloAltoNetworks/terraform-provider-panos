@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/ikecrypto"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
@@ -55,13 +56,13 @@ type IkeCryptoProfileDataSourceFilter struct {
 }
 
 type IkeCryptoProfileDataSourceModel struct {
-	Location               types.Object                              `tfsdk:"location"`
-	Name                   types.String                              `tfsdk:"name"`
-	AuthenticationMultiple types.Int64                               `tfsdk:"authentication_multiple"`
-	DhGroup                types.List                                `tfsdk:"dh_group"`
-	Encryption             types.List                                `tfsdk:"encryption"`
-	Hash                   types.List                                `tfsdk:"hash"`
-	Lifetime               *IkeCryptoProfileDataSourceLifetimeObject `tfsdk:"lifetime"`
+	Location               types.Object `tfsdk:"location"`
+	Name                   types.String `tfsdk:"name"`
+	AuthenticationMultiple types.Int64  `tfsdk:"authentication_multiple"`
+	DhGroup                types.List   `tfsdk:"dh_group"`
+	Encryption             types.List   `tfsdk:"encryption"`
+	Hash                   types.List   `tfsdk:"hash"`
+	Lifetime               types.Object `tfsdk:"lifetime"`
 }
 type IkeCryptoProfileDataSourceLifetimeObject struct {
 	Days    types.Int64 `tfsdk:"days"`
@@ -81,9 +82,15 @@ func (o *IkeCryptoProfileDataSourceModel) AttributeTypes() map[string]attr.Type 
 		},
 		"name":                    types.StringType,
 		"authentication_multiple": types.Int64Type,
-		"dh_group":                types.ListType{},
-		"encryption":              types.ListType{},
-		"hash":                    types.ListType{},
+		"dh_group": types.ListType{
+			ElemType: types.StringType,
+		},
+		"encryption": types.ListType{
+			ElemType: types.StringType,
+		},
+		"hash": types.ListType{
+			ElemType: types.StringType,
+		},
 		"lifetime": types.ObjectType{
 			AttrTypes: lifetimeObj.AttributeTypes(),
 		},
@@ -115,33 +122,61 @@ func (o IkeCryptoProfileDataSourceLifetimeObject) EntryName() *string {
 	return nil
 }
 
-func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authenticationMultiple_value := o.AuthenticationMultiple.ValueInt64Pointer()
-	dhGroup_pango_entries := make([]string, 0)
-	diags.Append(o.DhGroup.ElementsAs(ctx, &dhGroup_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var dhGroup_pango_entries []string
+	if !o.DhGroup.IsUnknown() && !o.DhGroup.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DhGroup.Elements()))
+		diags.Append(o.DhGroup.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			dhGroup_pango_entries = append(dhGroup_pango_entries, elt.ValueString())
+		}
 	}
-	encryption_pango_entries := make([]string, 0)
-	diags.Append(o.Encryption.ElementsAs(ctx, &encryption_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var encryption_pango_entries []string
+	if !o.Encryption.IsUnknown() && !o.Encryption.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Encryption.Elements()))
+		diags.Append(o.Encryption.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			encryption_pango_entries = append(encryption_pango_entries, elt.ValueString())
+		}
 	}
-	hash_pango_entries := make([]string, 0)
-	diags.Append(o.Hash.ElementsAs(ctx, &hash_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var hash_pango_entries []string
+	if !o.Hash.IsUnknown() && !o.Hash.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Hash.Elements()))
+		diags.Append(o.Hash.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			hash_pango_entries = append(hash_pango_entries, elt.ValueString())
+		}
 	}
 	var lifetime_entry *ikecrypto.Lifetime
-	if o.Lifetime != nil {
+	if !o.Lifetime.IsUnknown() && !o.Lifetime.IsNull() {
 		if *obj != nil && (*obj).Lifetime != nil {
 			lifetime_entry = (*obj).Lifetime
 		} else {
 			lifetime_entry = new(ikecrypto.Lifetime)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Lifetime.CopyToPango(ctx, ancestors, &lifetime_entry, ev)...)
+		var object *IkeCryptoProfileDataSourceLifetimeObject
+		diags.Append(o.Lifetime.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &lifetime_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -159,7 +194,7 @@ func (o *IkeCryptoProfileDataSourceModel) CopyToPango(ctx context.Context, ances
 
 	return diags
 }
-func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	days_value := o.Days.ValueInt64Pointer()
 	hours_value := o.Hours.ValueInt64Pointer()
@@ -177,12 +212,18 @@ func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyToPango(ctx context.Conte
 	return diags
 }
 
-func (o *IkeCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *IkeCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhGroup_list types.List
 	{
 		var list_diags diag.Diagnostics
-		dhGroup_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DhGroup)
+
+		entries := make([]string, 0)
+		if o.DhGroup.IsNull() || len(obj.DhGroup) > 0 {
+			entries = obj.DhGroup
+		}
+
+		dhGroup_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -191,7 +232,13 @@ func (o *IkeCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, anc
 	var encryption_list types.List
 	{
 		var list_diags diag.Diagnostics
-		encryption_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Encryption)
+
+		entries := make([]string, 0)
+		if o.Encryption.IsNull() || len(obj.Encryption) > 0 {
+			entries = obj.Encryption
+		}
+
+		encryption_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -200,16 +247,37 @@ func (o *IkeCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, anc
 	var hash_list types.List
 	{
 		var list_diags diag.Diagnostics
-		hash_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Hash)
+
+		entries := make([]string, 0)
+		if o.Hash.IsNull() || len(obj.Hash) > 0 {
+			entries = obj.Hash
+		}
+
+		hash_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var lifetime_object *IkeCryptoProfileDataSourceLifetimeObject
+
+	var lifetime_obj *IkeCryptoProfileDataSourceLifetimeObject
+	if o.Lifetime.IsNull() {
+		lifetime_obj = new(IkeCryptoProfileDataSourceLifetimeObject)
+	} else {
+		diags.Append(o.Lifetime.As(ctx, &lifetime_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	lifetime_object := types.ObjectNull(lifetime_obj.AttributeTypes())
 	if obj.Lifetime != nil {
-		lifetime_object = new(IkeCryptoProfileDataSourceLifetimeObject)
-		diags.Append(lifetime_object.CopyFromPango(ctx, ancestors, obj.Lifetime, ev)...)
+		diags.Append(lifetime_obj.CopyFromPango(ctx, client, ancestors, obj.Lifetime, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		lifetime_object, diags_tmp = types.ObjectValueFrom(ctx, lifetime_obj.AttributeTypes(), lifetime_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -229,7 +297,7 @@ func (o *IkeCryptoProfileDataSourceModel) CopyFromPango(ctx context.Context, anc
 	return diags
 }
 
-func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *IkeCryptoProfileDataSourceLifetimeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var days_value types.Int64
@@ -427,8 +495,8 @@ func (d *IkeCryptoProfileDataSource) Configure(_ context.Context, req datasource
 }
 func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state IkeCryptoProfileDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state IkeCryptoProfileDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -444,7 +512,7 @@ func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.Re
 
 	{
 		var terraformLocation IkeCryptoProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -488,15 +556,15 @@ func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.Re
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_ike_crypto_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -506,16 +574,16 @@ func (o *IkeCryptoProfileDataSource) Read(ctx context.Context, req datasource.Re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -548,13 +616,13 @@ func IkeCryptoProfileResourceLocationSchema() rsschema.Attribute {
 }
 
 type IkeCryptoProfileResourceModel struct {
-	Location               types.Object                            `tfsdk:"location"`
-	Name                   types.String                            `tfsdk:"name"`
-	AuthenticationMultiple types.Int64                             `tfsdk:"authentication_multiple"`
-	DhGroup                types.List                              `tfsdk:"dh_group"`
-	Encryption             types.List                              `tfsdk:"encryption"`
-	Hash                   types.List                              `tfsdk:"hash"`
-	Lifetime               *IkeCryptoProfileResourceLifetimeObject `tfsdk:"lifetime"`
+	Location               types.Object `tfsdk:"location"`
+	Name                   types.String `tfsdk:"name"`
+	AuthenticationMultiple types.Int64  `tfsdk:"authentication_multiple"`
+	DhGroup                types.List   `tfsdk:"dh_group"`
+	Encryption             types.List   `tfsdk:"encryption"`
+	Hash                   types.List   `tfsdk:"hash"`
+	Lifetime               types.Object `tfsdk:"lifetime"`
 }
 type IkeCryptoProfileResourceLifetimeObject struct {
 	Days    types.Int64 `tfsdk:"days"`
@@ -563,7 +631,7 @@ type IkeCryptoProfileResourceLifetimeObject struct {
 	Seconds types.Int64 `tfsdk:"seconds"`
 }
 
-func (r *IkeCryptoProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *IkeCryptoProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -712,31 +780,31 @@ func (o *IkeCryptoProfileResourceLifetimeObject) getTypeFor(name string) attr.Ty
 	panic("unreachable")
 }
 
-func (r *IkeCryptoProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *IkeCryptoProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_ike_crypto_profile"
 }
 
-func (r *IkeCryptoProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *IkeCryptoProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = IkeCryptoProfileResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *IkeCryptoProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *IkeCryptoProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := ikecrypto.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := ikecrypto.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*ikecrypto.Entry, ikecrypto.Location, *ikecrypto.Service](r.client, ikecrypto.NewService(r.client), batchSize, specifier, ikecrypto.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*ikecrypto.Entry, ikecrypto.Location, *ikecrypto.Service](o.client, ikecrypto.NewService(o.client), batchSize, specifier, ikecrypto.SpecMatches)
 }
 
 func (o *IkeCryptoProfileResourceModel) AttributeTypes() map[string]attr.Type {
@@ -750,9 +818,15 @@ func (o *IkeCryptoProfileResourceModel) AttributeTypes() map[string]attr.Type {
 		},
 		"name":                    types.StringType,
 		"authentication_multiple": types.Int64Type,
-		"dh_group":                types.ListType{},
-		"encryption":              types.ListType{},
-		"hash":                    types.ListType{},
+		"dh_group": types.ListType{
+			ElemType: types.StringType,
+		},
+		"encryption": types.ListType{
+			ElemType: types.StringType,
+		},
+		"hash": types.ListType{
+			ElemType: types.StringType,
+		},
 		"lifetime": types.ObjectType{
 			AttrTypes: lifetimeObj.AttributeTypes(),
 		},
@@ -784,33 +858,61 @@ func (o IkeCryptoProfileResourceLifetimeObject) EntryName() *string {
 	return nil
 }
 
-func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	authenticationMultiple_value := o.AuthenticationMultiple.ValueInt64Pointer()
-	dhGroup_pango_entries := make([]string, 0)
-	diags.Append(o.DhGroup.ElementsAs(ctx, &dhGroup_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var dhGroup_pango_entries []string
+	if !o.DhGroup.IsUnknown() && !o.DhGroup.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DhGroup.Elements()))
+		diags.Append(o.DhGroup.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			dhGroup_pango_entries = append(dhGroup_pango_entries, elt.ValueString())
+		}
 	}
-	encryption_pango_entries := make([]string, 0)
-	diags.Append(o.Encryption.ElementsAs(ctx, &encryption_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var encryption_pango_entries []string
+	if !o.Encryption.IsUnknown() && !o.Encryption.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Encryption.Elements()))
+		diags.Append(o.Encryption.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			encryption_pango_entries = append(encryption_pango_entries, elt.ValueString())
+		}
 	}
-	hash_pango_entries := make([]string, 0)
-	diags.Append(o.Hash.ElementsAs(ctx, &hash_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var hash_pango_entries []string
+	if !o.Hash.IsUnknown() && !o.Hash.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Hash.Elements()))
+		diags.Append(o.Hash.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			hash_pango_entries = append(hash_pango_entries, elt.ValueString())
+		}
 	}
 	var lifetime_entry *ikecrypto.Lifetime
-	if o.Lifetime != nil {
+	if !o.Lifetime.IsUnknown() && !o.Lifetime.IsNull() {
 		if *obj != nil && (*obj).Lifetime != nil {
 			lifetime_entry = (*obj).Lifetime
 		} else {
 			lifetime_entry = new(ikecrypto.Lifetime)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Lifetime.CopyToPango(ctx, ancestors, &lifetime_entry, ev)...)
+		var object *IkeCryptoProfileResourceLifetimeObject
+		diags.Append(o.Lifetime.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &lifetime_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -828,7 +930,7 @@ func (o *IkeCryptoProfileResourceModel) CopyToPango(ctx context.Context, ancesto
 
 	return diags
 }
-func (o *IkeCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *IkeCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	days_value := o.Days.ValueInt64Pointer()
 	hours_value := o.Hours.ValueInt64Pointer()
@@ -846,12 +948,18 @@ func (o *IkeCryptoProfileResourceLifetimeObject) CopyToPango(ctx context.Context
 	return diags
 }
 
-func (o *IkeCryptoProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *IkeCryptoProfileResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ikecrypto.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var dhGroup_list types.List
 	{
 		var list_diags diag.Diagnostics
-		dhGroup_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DhGroup)
+
+		entries := make([]string, 0)
+		if o.DhGroup.IsNull() || len(obj.DhGroup) > 0 {
+			entries = obj.DhGroup
+		}
+
+		dhGroup_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -860,7 +968,13 @@ func (o *IkeCryptoProfileResourceModel) CopyFromPango(ctx context.Context, ances
 	var encryption_list types.List
 	{
 		var list_diags diag.Diagnostics
-		encryption_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Encryption)
+
+		entries := make([]string, 0)
+		if o.Encryption.IsNull() || len(obj.Encryption) > 0 {
+			entries = obj.Encryption
+		}
+
+		encryption_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -869,16 +983,37 @@ func (o *IkeCryptoProfileResourceModel) CopyFromPango(ctx context.Context, ances
 	var hash_list types.List
 	{
 		var list_diags diag.Diagnostics
-		hash_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Hash)
+
+		entries := make([]string, 0)
+		if o.Hash.IsNull() || len(obj.Hash) > 0 {
+			entries = obj.Hash
+		}
+
+		hash_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var lifetime_object *IkeCryptoProfileResourceLifetimeObject
+
+	var lifetime_obj *IkeCryptoProfileResourceLifetimeObject
+	if o.Lifetime.IsNull() {
+		lifetime_obj = new(IkeCryptoProfileResourceLifetimeObject)
+	} else {
+		diags.Append(o.Lifetime.As(ctx, &lifetime_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	lifetime_object := types.ObjectNull(lifetime_obj.AttributeTypes())
 	if obj.Lifetime != nil {
-		lifetime_object = new(IkeCryptoProfileResourceLifetimeObject)
-		diags.Append(lifetime_object.CopyFromPango(ctx, ancestors, obj.Lifetime, ev)...)
+		diags.Append(lifetime_obj.CopyFromPango(ctx, client, ancestors, obj.Lifetime, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		lifetime_object, diags_tmp = types.ObjectValueFrom(ctx, lifetime_obj.AttributeTypes(), lifetime_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -898,7 +1033,7 @@ func (o *IkeCryptoProfileResourceModel) CopyFromPango(ctx context.Context, ances
 	return diags
 }
 
-func (o *IkeCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *IkeCryptoProfileResourceLifetimeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ikecrypto.Lifetime, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var days_value types.Int64
@@ -930,7 +1065,7 @@ func (o *IkeCryptoProfileResourceModel) resourceXpathParentComponents() ([]strin
 	return components, nil
 }
 
-func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *IkeCryptoProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state IkeCryptoProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -945,7 +1080,7 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1010,7 +1145,7 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 
 	// Load the desired config.
 	var obj *ikecrypto.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1028,13 +1163,13 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1051,8 +1186,8 @@ func (r *IkeCryptoProfileResource) Create(ctx context.Context, req resource.Crea
 }
 func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state IkeCryptoProfileResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state IkeCryptoProfileResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1072,7 +1207,7 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 
 	{
 		var terraformLocation IkeCryptoProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1116,15 +1251,15 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_ike_crypto_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1134,16 +1269,16 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1156,7 +1291,7 @@ func (o *IkeCryptoProfileResource) Read(ctx context.Context, req resource.ReadRe
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *IkeCryptoProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state IkeCryptoProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1227,7 +1362,7 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1237,13 +1372,18 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *ikecrypto.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1254,22 +1394,27 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1283,10 +1428,10 @@ func (r *IkeCryptoProfileResource) Update(ctx context.Context, req resource.Upda
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *IkeCryptoProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *IkeCryptoProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state IkeCryptoProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1302,7 +1447,7 @@ func (r *IkeCryptoProfileResource) Delete(ctx context.Context, req resource.Dele
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1356,7 +1501,7 @@ func (r *IkeCryptoProfileResource) Delete(ctx context.Context, req resource.Dele
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1453,7 +1598,7 @@ func IkeCryptoProfileImportStateCreator(ctx context.Context, resource types.Obje
 	return json.Marshal(importStruct)
 }
 
-func (r *IkeCryptoProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *IkeCryptoProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj IkeCryptoProfileImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

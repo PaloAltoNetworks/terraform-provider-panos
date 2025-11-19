@@ -160,7 +160,7 @@ resource "panos_template_variable" "tmpl-var" {
 }
 
 resource "panos_template_variable" "stack-var" {
-  location = { template = { name = panos_template_stack.example.name } }
+  location = { template_stack = { name = panos_template_stack.example.name } }
 
   name = format("$%s", var.prefix)
   type = { interface = "ethernet1/1" }

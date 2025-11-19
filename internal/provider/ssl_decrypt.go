@@ -11,6 +11,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/ssldecrypt"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -72,18 +73,30 @@ func (o *SslDecryptDataSourceModel) AttributeTypes() map[string]attr.Type {
 
 	var locationObj SslDecryptLocation
 
+	var sslExcludeCertObj *SslDecryptDataSourceSslExcludeCertObject
+
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"disabled_ssl_exclude_cert_from_predefined": types.ListType{},
-		"forward_trust_certificate_ecdsa":           types.StringType,
-		"forward_trust_certificate_rsa":             types.StringType,
-		"forward_untrust_certificate_ecdsa":         types.StringType,
-		"forward_untrust_certificate_rsa":           types.StringType,
-		"root_ca_exclude_list":                      types.ListType{},
-		"ssl_exclude_cert":                          types.ListType{},
-		"trusted_root_ca":                           types.ListType{},
+		"disabled_ssl_exclude_cert_from_predefined": types.ListType{
+			ElemType: types.StringType,
+		},
+		"forward_trust_certificate_ecdsa":   types.StringType,
+		"forward_trust_certificate_rsa":     types.StringType,
+		"forward_untrust_certificate_ecdsa": types.StringType,
+		"forward_untrust_certificate_rsa":   types.StringType,
+		"root_ca_exclude_list": types.ListType{
+			ElemType: types.StringType,
+		},
+		"ssl_exclude_cert": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: sslExcludeCertObj.AttributeTypes(),
+			},
+		},
+		"trusted_root_ca": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -111,21 +124,37 @@ func (o SslDecryptDataSourceSslExcludeCertObject) EntryName() *string {
 	return o.Name.ValueStringPointer()
 }
 
-func (o *SslDecryptDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ssldecrypt.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SslDecryptDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ssldecrypt.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	disabledSslExcludeCertFromPredefined_pango_entries := make([]string, 0)
-	diags.Append(o.DisabledSslExcludeCertFromPredefined.ElementsAs(ctx, &disabledSslExcludeCertFromPredefined_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var disabledSslExcludeCertFromPredefined_pango_entries []string
+	if !o.DisabledSslExcludeCertFromPredefined.IsUnknown() && !o.DisabledSslExcludeCertFromPredefined.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DisabledSslExcludeCertFromPredefined.Elements()))
+		diags.Append(o.DisabledSslExcludeCertFromPredefined.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			disabledSslExcludeCertFromPredefined_pango_entries = append(disabledSslExcludeCertFromPredefined_pango_entries, elt.ValueString())
+		}
 	}
 	forwardTrustCertificateEcdsa_value := o.ForwardTrustCertificateEcdsa.ValueStringPointer()
 	forwardTrustCertificateRsa_value := o.ForwardTrustCertificateRsa.ValueStringPointer()
 	forwardUntrustCertificateEcdsa_value := o.ForwardUntrustCertificateEcdsa.ValueStringPointer()
 	forwardUntrustCertificateRsa_value := o.ForwardUntrustCertificateRsa.ValueStringPointer()
-	rootCaExcludeList_pango_entries := make([]string, 0)
-	diags.Append(o.RootCaExcludeList.ElementsAs(ctx, &rootCaExcludeList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var rootCaExcludeList_pango_entries []string
+	if !o.RootCaExcludeList.IsUnknown() && !o.RootCaExcludeList.IsNull() {
+		object_entries := make([]types.String, 0, len(o.RootCaExcludeList.Elements()))
+		diags.Append(o.RootCaExcludeList.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			rootCaExcludeList_pango_entries = append(rootCaExcludeList_pango_entries, elt.ValueString())
+		}
 	}
 	var sslExcludeCert_tf_entries []SslDecryptDataSourceSslExcludeCertObject
 	var sslExcludeCert_pango_entries []ssldecrypt.SslExcludeCert
@@ -137,17 +166,25 @@ func (o *SslDecryptDataSourceModel) CopyToPango(ctx context.Context, ancestors [
 		}
 		for _, elt := range sslExcludeCert_tf_entries {
 			var entry *ssldecrypt.SslExcludeCert
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
 			sslExcludeCert_pango_entries = append(sslExcludeCert_pango_entries, *entry)
 		}
 	}
-	trustedRootCa_pango_entries := make([]string, 0)
-	diags.Append(o.TrustedRootCa.ElementsAs(ctx, &trustedRootCa_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var trustedRootCa_pango_entries []string
+	if !o.TrustedRootCa.IsUnknown() && !o.TrustedRootCa.IsNull() {
+		object_entries := make([]types.String, 0, len(o.TrustedRootCa.Elements()))
+		diags.Append(o.TrustedRootCa.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			trustedRootCa_pango_entries = append(trustedRootCa_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -164,7 +201,7 @@ func (o *SslDecryptDataSourceModel) CopyToPango(ctx context.Context, ancestors [
 
 	return diags
 }
-func (o *SslDecryptDataSourceSslExcludeCertObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ssldecrypt.SslExcludeCert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SslDecryptDataSourceSslExcludeCertObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ssldecrypt.SslExcludeCert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	exclude_value := o.Exclude.ValueBoolPointer()
@@ -179,12 +216,18 @@ func (o *SslDecryptDataSourceSslExcludeCertObject) CopyToPango(ctx context.Conte
 	return diags
 }
 
-func (o *SslDecryptDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ssldecrypt.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SslDecryptDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ssldecrypt.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var disabledSslExcludeCertFromPredefined_list types.List
 	{
 		var list_diags diag.Diagnostics
-		disabledSslExcludeCertFromPredefined_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DisabledSslExcludeCertFromPredefined)
+
+		entries := make([]string, 0)
+		if o.DisabledSslExcludeCertFromPredefined.IsNull() || len(obj.DisabledSslExcludeCertFromPredefined) > 0 {
+			entries = obj.DisabledSslExcludeCertFromPredefined
+		}
+
+		disabledSslExcludeCertFromPredefined_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -193,7 +236,13 @@ func (o *SslDecryptDataSourceModel) CopyFromPango(ctx context.Context, ancestors
 	var rootCaExcludeList_list types.List
 	{
 		var list_diags diag.Diagnostics
-		rootCaExcludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.RootCaExcludeList)
+
+		entries := make([]string, 0)
+		if o.RootCaExcludeList.IsNull() || len(obj.RootCaExcludeList) > 0 {
+			entries = obj.RootCaExcludeList
+		}
+
+		rootCaExcludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -202,15 +251,31 @@ func (o *SslDecryptDataSourceModel) CopyFromPango(ctx context.Context, ancestors
 	var sslExcludeCert_list types.List
 	{
 		var sslExcludeCert_tf_entries []SslDecryptDataSourceSslExcludeCertObject
-		for _, elt := range obj.SslExcludeCert {
-			entry := SslDecryptDataSourceSslExcludeCertObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.SslExcludeCert.IsNull() {
+			diags.Append(o.SslExcludeCert.ElementsAs(ctx, &sslExcludeCert_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			sslExcludeCert_tf_entries = append(sslExcludeCert_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.SslExcludeCert {
+			entry := SslDecryptDataSourceSslExcludeCertObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(sslExcludeCert_tf_entries) {
+				entry = sslExcludeCert_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(sslExcludeCert_tf_entries) {
+				sslExcludeCert_tf_entries[idx] = entry
+			} else {
+				sslExcludeCert_tf_entries = append(sslExcludeCert_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("ssl_exclude_cert")
@@ -220,7 +285,13 @@ func (o *SslDecryptDataSourceModel) CopyFromPango(ctx context.Context, ancestors
 	var trustedRootCa_list types.List
 	{
 		var list_diags diag.Diagnostics
-		trustedRootCa_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TrustedRootCa)
+
+		entries := make([]string, 0)
+		if o.TrustedRootCa.IsNull() || len(obj.TrustedRootCa) > 0 {
+			entries = obj.TrustedRootCa
+		}
+
+		trustedRootCa_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -255,7 +326,7 @@ func (o *SslDecryptDataSourceModel) CopyFromPango(ctx context.Context, ancestors
 	return diags
 }
 
-func (o *SslDecryptDataSourceSslExcludeCertObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ssldecrypt.SslExcludeCert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SslDecryptDataSourceSslExcludeCertObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ssldecrypt.SslExcludeCert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var description_value types.String
@@ -453,8 +524,8 @@ func (d *SslDecryptDataSource) Configure(_ context.Context, req datasource.Confi
 }
 func (o *SslDecryptDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state SslDecryptDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state SslDecryptDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -470,7 +541,7 @@ func (o *SslDecryptDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 	{
 		var terraformLocation SslDecryptLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -548,7 +619,7 @@ func (o *SslDecryptDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		"function":      "Read",
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
@@ -563,16 +634,16 @@ func (o *SslDecryptDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -616,7 +687,7 @@ type SslDecryptResourceSslExcludeCertObject struct {
 	Exclude     types.Bool   `tfsdk:"exclude"`
 }
 
-func (r *SslDecryptResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *SslDecryptResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -765,48 +836,60 @@ func (o *SslDecryptResourceSslExcludeCertObject) getTypeFor(name string) attr.Ty
 	panic("unreachable")
 }
 
-func (r *SslDecryptResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *SslDecryptResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_ssl_decrypt"
 }
 
-func (r *SslDecryptResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *SslDecryptResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = SslDecryptResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *SslDecryptResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *SslDecryptResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := ssldecrypt.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := ssldecrypt.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewConfigObjectManager(r.client, ssldecrypt.NewService(r.client), specifier)
+	o.manager = sdkmanager.NewConfigObjectManager(o.client, ssldecrypt.NewService(o.client), specifier)
 }
 
 func (o *SslDecryptResourceModel) AttributeTypes() map[string]attr.Type {
 
 	var locationObj SslDecryptLocation
 
+	var sslExcludeCertObj *SslDecryptResourceSslExcludeCertObject
+
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"disabled_ssl_exclude_cert_from_predefined": types.ListType{},
-		"forward_trust_certificate_ecdsa":           types.StringType,
-		"forward_trust_certificate_rsa":             types.StringType,
-		"forward_untrust_certificate_ecdsa":         types.StringType,
-		"forward_untrust_certificate_rsa":           types.StringType,
-		"root_ca_exclude_list":                      types.ListType{},
-		"ssl_exclude_cert":                          types.ListType{},
-		"trusted_root_ca":                           types.ListType{},
+		"disabled_ssl_exclude_cert_from_predefined": types.ListType{
+			ElemType: types.StringType,
+		},
+		"forward_trust_certificate_ecdsa":   types.StringType,
+		"forward_trust_certificate_rsa":     types.StringType,
+		"forward_untrust_certificate_ecdsa": types.StringType,
+		"forward_untrust_certificate_rsa":   types.StringType,
+		"root_ca_exclude_list": types.ListType{
+			ElemType: types.StringType,
+		},
+		"ssl_exclude_cert": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: sslExcludeCertObj.AttributeTypes(),
+			},
+		},
+		"trusted_root_ca": types.ListType{
+			ElemType: types.StringType,
+		},
 	}
 }
 
@@ -834,21 +917,37 @@ func (o SslDecryptResourceSslExcludeCertObject) EntryName() *string {
 	return o.Name.ValueStringPointer()
 }
 
-func (o *SslDecryptResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ssldecrypt.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SslDecryptResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ssldecrypt.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	disabledSslExcludeCertFromPredefined_pango_entries := make([]string, 0)
-	diags.Append(o.DisabledSslExcludeCertFromPredefined.ElementsAs(ctx, &disabledSslExcludeCertFromPredefined_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var disabledSslExcludeCertFromPredefined_pango_entries []string
+	if !o.DisabledSslExcludeCertFromPredefined.IsUnknown() && !o.DisabledSslExcludeCertFromPredefined.IsNull() {
+		object_entries := make([]types.String, 0, len(o.DisabledSslExcludeCertFromPredefined.Elements()))
+		diags.Append(o.DisabledSslExcludeCertFromPredefined.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			disabledSslExcludeCertFromPredefined_pango_entries = append(disabledSslExcludeCertFromPredefined_pango_entries, elt.ValueString())
+		}
 	}
 	forwardTrustCertificateEcdsa_value := o.ForwardTrustCertificateEcdsa.ValueStringPointer()
 	forwardTrustCertificateRsa_value := o.ForwardTrustCertificateRsa.ValueStringPointer()
 	forwardUntrustCertificateEcdsa_value := o.ForwardUntrustCertificateEcdsa.ValueStringPointer()
 	forwardUntrustCertificateRsa_value := o.ForwardUntrustCertificateRsa.ValueStringPointer()
-	rootCaExcludeList_pango_entries := make([]string, 0)
-	diags.Append(o.RootCaExcludeList.ElementsAs(ctx, &rootCaExcludeList_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var rootCaExcludeList_pango_entries []string
+	if !o.RootCaExcludeList.IsUnknown() && !o.RootCaExcludeList.IsNull() {
+		object_entries := make([]types.String, 0, len(o.RootCaExcludeList.Elements()))
+		diags.Append(o.RootCaExcludeList.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			rootCaExcludeList_pango_entries = append(rootCaExcludeList_pango_entries, elt.ValueString())
+		}
 	}
 	var sslExcludeCert_tf_entries []SslDecryptResourceSslExcludeCertObject
 	var sslExcludeCert_pango_entries []ssldecrypt.SslExcludeCert
@@ -860,17 +959,25 @@ func (o *SslDecryptResourceModel) CopyToPango(ctx context.Context, ancestors []A
 		}
 		for _, elt := range sslExcludeCert_tf_entries {
 			var entry *ssldecrypt.SslExcludeCert
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
 			sslExcludeCert_pango_entries = append(sslExcludeCert_pango_entries, *entry)
 		}
 	}
-	trustedRootCa_pango_entries := make([]string, 0)
-	diags.Append(o.TrustedRootCa.ElementsAs(ctx, &trustedRootCa_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var trustedRootCa_pango_entries []string
+	if !o.TrustedRootCa.IsUnknown() && !o.TrustedRootCa.IsNull() {
+		object_entries := make([]types.String, 0, len(o.TrustedRootCa.Elements()))
+		diags.Append(o.TrustedRootCa.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			trustedRootCa_pango_entries = append(trustedRootCa_pango_entries, elt.ValueString())
+		}
 	}
 
 	if (*obj) == nil {
@@ -887,7 +994,7 @@ func (o *SslDecryptResourceModel) CopyToPango(ctx context.Context, ancestors []A
 
 	return diags
 }
-func (o *SslDecryptResourceSslExcludeCertObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ssldecrypt.SslExcludeCert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SslDecryptResourceSslExcludeCertObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ssldecrypt.SslExcludeCert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	exclude_value := o.Exclude.ValueBoolPointer()
@@ -902,12 +1009,18 @@ func (o *SslDecryptResourceSslExcludeCertObject) CopyToPango(ctx context.Context
 	return diags
 }
 
-func (o *SslDecryptResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ssldecrypt.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SslDecryptResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ssldecrypt.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var disabledSslExcludeCertFromPredefined_list types.List
 	{
 		var list_diags diag.Diagnostics
-		disabledSslExcludeCertFromPredefined_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.DisabledSslExcludeCertFromPredefined)
+
+		entries := make([]string, 0)
+		if o.DisabledSslExcludeCertFromPredefined.IsNull() || len(obj.DisabledSslExcludeCertFromPredefined) > 0 {
+			entries = obj.DisabledSslExcludeCertFromPredefined
+		}
+
+		disabledSslExcludeCertFromPredefined_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -916,7 +1029,13 @@ func (o *SslDecryptResourceModel) CopyFromPango(ctx context.Context, ancestors [
 	var rootCaExcludeList_list types.List
 	{
 		var list_diags diag.Diagnostics
-		rootCaExcludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.RootCaExcludeList)
+
+		entries := make([]string, 0)
+		if o.RootCaExcludeList.IsNull() || len(obj.RootCaExcludeList) > 0 {
+			entries = obj.RootCaExcludeList
+		}
+
+		rootCaExcludeList_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -925,15 +1044,31 @@ func (o *SslDecryptResourceModel) CopyFromPango(ctx context.Context, ancestors [
 	var sslExcludeCert_list types.List
 	{
 		var sslExcludeCert_tf_entries []SslDecryptResourceSslExcludeCertObject
-		for _, elt := range obj.SslExcludeCert {
-			entry := SslDecryptResourceSslExcludeCertObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.SslExcludeCert.IsNull() {
+			diags.Append(o.SslExcludeCert.ElementsAs(ctx, &sslExcludeCert_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			sslExcludeCert_tf_entries = append(sslExcludeCert_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.SslExcludeCert {
+			entry := SslDecryptResourceSslExcludeCertObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(sslExcludeCert_tf_entries) {
+				entry = sslExcludeCert_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(sslExcludeCert_tf_entries) {
+				sslExcludeCert_tf_entries[idx] = entry
+			} else {
+				sslExcludeCert_tf_entries = append(sslExcludeCert_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("ssl_exclude_cert")
@@ -943,7 +1078,13 @@ func (o *SslDecryptResourceModel) CopyFromPango(ctx context.Context, ancestors [
 	var trustedRootCa_list types.List
 	{
 		var list_diags diag.Diagnostics
-		trustedRootCa_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.TrustedRootCa)
+
+		entries := make([]string, 0)
+		if o.TrustedRootCa.IsNull() || len(obj.TrustedRootCa) > 0 {
+			entries = obj.TrustedRootCa
+		}
+
+		trustedRootCa_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -978,7 +1119,7 @@ func (o *SslDecryptResourceModel) CopyFromPango(ctx context.Context, ancestors [
 	return diags
 }
 
-func (o *SslDecryptResourceSslExcludeCertObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ssldecrypt.SslExcludeCert, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *SslDecryptResourceSslExcludeCertObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ssldecrypt.SslExcludeCert, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var description_value types.String
@@ -1001,7 +1142,7 @@ func (o *SslDecryptResourceModel) resourceXpathParentComponents() ([]string, err
 	return components, nil
 }
 
-func (r *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state SslDecryptResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1015,7 +1156,7 @@ func (r *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequ
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1112,7 +1253,7 @@ func (r *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequ
 
 	// Load the desired config.
 	var obj *ssldecrypt.Config
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1130,13 +1271,13 @@ func (r *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequ
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1153,8 +1294,8 @@ func (r *SslDecryptResource) Create(ctx context.Context, req resource.CreateRequ
 }
 func (o *SslDecryptResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state SslDecryptResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state SslDecryptResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1174,7 +1315,7 @@ func (o *SslDecryptResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	{
 		var terraformLocation SslDecryptLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1252,7 +1393,7 @@ func (o *SslDecryptResource) Read(ctx context.Context, req resource.ReadRequest,
 		"function":      "Read",
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
@@ -1267,16 +1408,16 @@ func (o *SslDecryptResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1289,7 +1430,7 @@ func (o *SslDecryptResource) Read(ctx context.Context, req resource.ReadRequest,
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *SslDecryptResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *SslDecryptResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state SslDecryptResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1392,7 +1533,7 @@ func (r *SslDecryptResource) Update(ctx context.Context, req resource.UpdateRequ
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1402,13 +1543,13 @@ func (r *SslDecryptResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1419,22 +1560,19 @@ func (r *SslDecryptResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj)
+	updated, err := o.manager.Update(ctx, location, components, obj)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1448,10 +1586,10 @@ func (r *SslDecryptResource) Update(ctx context.Context, req resource.UpdateRequ
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *SslDecryptResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *SslDecryptResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state SslDecryptResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1466,7 +1604,7 @@ func (r *SslDecryptResource) Delete(ctx context.Context, req resource.DeleteRequ
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1553,7 +1691,7 @@ func (r *SslDecryptResource) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	existing, err := r.manager.Read(ctx, location, components)
+	existing, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error while deleting resource", err.Error())
 		return
@@ -1562,7 +1700,7 @@ func (r *SslDecryptResource) Delete(ctx context.Context, req resource.DeleteRequ
 	var obj ssldecrypt.Config
 	obj.Misc = existing.Misc
 
-	err = r.manager.Delete(ctx, location, &obj)
+	err = o.manager.Delete(ctx, location, &obj)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1570,7 +1708,7 @@ func (r *SslDecryptResource) Delete(ctx context.Context, req resource.DeleteRequ
 
 }
 
-func (r *SslDecryptResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *SslDecryptResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 }
 

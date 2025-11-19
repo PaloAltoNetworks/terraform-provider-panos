@@ -65,7 +65,7 @@ func (o *MockEntryObject) DeepCopy() any {
 type MockEntryClient[E manager.UuidObject] struct {
 	Initial          *list.List
 	Current          *list.List
-	MultiConfigOpers []MultiConfigOper
+	MultiConfigOpers [][]MultiConfigOper
 }
 
 func NewMockEntryClient[E manager.UuidObject](initial []E) *MockEntryClient[E] {
@@ -96,8 +96,9 @@ func (o *MockEntryClient[E]) Versioning() version.Number {
 type entryState string
 
 const (
-	entryDeleted entryState = "delete"
-	entryOk      entryState = "ok"
+	entryInitial entryState = "initial"
+	entryDeleted entryState = "deleted"
+	entryUpdated entryState = "updated"
 )
 
 func (o *MockEntryClient[E]) ChunkedMultiConfig(ctx context.Context, updates *xmlapi.MultiConfig, strict bool, extras url.Values) ([]xmlapi.ChunkedMultiConfigResponse, error) {
@@ -110,7 +111,8 @@ func (o *MockEntryClient[E]) ChunkedMultiConfig(ctx context.Context, updates *xm
 }
 
 func (o *MockEntryClient[E]) MultiConfig(ctx context.Context, updates *xmlapi.MultiConfig, arg1 bool, arg2 url.Values) ([]byte, *http.Response, *xmlapi.MultiConfigResponse, error) {
-	o.MultiConfigOpers, _ = MultiConfig[E](updates, &o.Current, multiConfigEntry, 0)
+	opers, _ := MultiConfig[E](updates, &o.Current, multiConfigEntry, 0)
+	o.MultiConfigOpers = append(o.MultiConfigOpers, opers)
 
 	return nil, nil, nil, nil
 }
@@ -136,12 +138,12 @@ func (o *MockEntryService[E, L]) CreateWithXpath(ctx context.Context, xpath stri
 }
 
 func (o *MockEntryService[E, L]) Create(ctx context.Context, location L, entry E) (E, error) {
-	o.client.Initial.PushBack(entry)
+	o.client.Current.PushBack(entry)
 
 	return entry, nil
 }
 
-func (o *MockEntryService[E, L]) UpdateWithXpath(ctx context.Context, xpath string, entry E, name string) error {
+func (o *MockEntryService[E, L]) UpdateWithXpath(ctx context.Context, xpath string, entry E, renamedXpath string) error {
 	for e := o.client.Initial.Front(); e != nil; e = e.Next() {
 		eltEntry := e.Value.(E)
 		if entry.EntryName() == eltEntry.EntryName() {
@@ -166,7 +168,7 @@ func (o *MockEntryService[E, L]) ReadWithXpath(ctx context.Context, xpath string
 }
 
 func (o *MockEntryService[E, L]) Read(ctx context.Context, location L, name string, action string) (E, error) {
-	for e := o.client.Initial.Front(); e != nil; e = e.Next() {
+	for e := o.client.Current.Front(); e != nil; e = e.Next() {
 		entry := e.Value.(E)
 		if entry.EntryName() == name {
 			return entry, nil

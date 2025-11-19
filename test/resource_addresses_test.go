@@ -367,3 +367,59 @@ func TestAccAddresses_Hierarchy(t *testing.T) {
 		},
 	})
 }
+
+const addresses_Multiple_Resources_Tmpl = `
+variable prefix { type = string }
+
+resource "panos_device_group" "parent" {
+  location = { panorama = {} }
+
+  name = var.prefix
+}
+
+resource "panos_addresses" "a" {
+  location = { device_group = { name = panos_device_group.parent.name } }
+
+  addresses = {
+    "addr-1" = {
+      ip_netmask = "10.0.0.1/32"
+    },
+    "addr-2" = {
+      ip_netmask = "10.1.0.1/32"
+    }
+  }
+}
+
+resource "panos_addresses" "b" {
+  location = { device_group = { name = panos_device_group.parent.name } }
+
+  addresses = {
+    "addr-3" = {
+      ip_netmask = "10.2.0.1/32"
+    },
+    "addr-4" = {
+      ip_netmask = "10.3.0.1/32"
+    }
+  }
+}
+`
+
+func TestAccAddresses_MultipleResources(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: addresses_Multiple_Resources_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+		},
+	})
+}

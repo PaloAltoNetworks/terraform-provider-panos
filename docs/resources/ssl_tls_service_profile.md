@@ -32,8 +32,8 @@ Optional:
 
 - `panorama` (Attributes) Located in a panorama. (see [below for nested schema](#nestedatt--location--panorama))
 - `shared` (Attributes) Panorama shared object (see [below for nested schema](#nestedatt--location--shared))
-- `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
-- `template_stack` (Attributes) Located in a specific template stack (see [below for nested schema](#nestedatt--location--template_stack))
+- `template` (Attributes) A shared resource located within a specific template (see [below for nested schema](#nestedatt--location--template))
+- `template_stack` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template_stack))
 - `template_stack_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_stack_vsys))
 - `template_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_vsys))
 
@@ -51,7 +51,6 @@ Optional:
 Optional:
 
 - `name` (String) Specific Panorama template
-- `ngfw_device` (String) The NGFW device
 - `panorama_device` (String) Specific Panorama device
 
 
@@ -60,8 +59,7 @@ Optional:
 
 Optional:
 
-- `name` (String) Specific Panorama template stack
-- `ngfw_device` (String) The NGFW device
+- `name` (String) The template stack
 - `panorama_device` (String) Specific Panorama device
 
 

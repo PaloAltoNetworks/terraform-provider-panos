@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/address"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -76,11 +77,13 @@ func (o *AddressDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"name":             types.StringType,
 		"description":      types.StringType,
 		"disable_override": types.StringType,
-		"tags":             types.ListType{},
-		"fqdn":             types.StringType,
-		"ip_netmask":       types.StringType,
-		"ip_range":         types.StringType,
-		"ip_wildcard":      types.StringType,
+		"tags": types.ListType{
+			ElemType: types.StringType,
+		},
+		"fqdn":        types.StringType,
+		"ip_netmask":  types.StringType,
+		"ip_range":    types.StringType,
+		"ip_wildcard": types.StringType,
 	}
 }
 
@@ -92,14 +95,22 @@ func (o AddressDataSourceModel) EntryName() *string {
 	return nil
 }
 
-func (o *AddressDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	tags_pango_entries := make([]string, 0)
-	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var tags_pango_entries []string
+	if !o.Tags.IsUnknown() && !o.Tags.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Tags.Elements()))
+		diags.Append(o.Tags.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			tags_pango_entries = append(tags_pango_entries, elt.ValueString())
+		}
 	}
 	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
@@ -121,12 +132,18 @@ func (o *AddressDataSourceModel) CopyToPango(ctx context.Context, ancestors []An
 	return diags
 }
 
-func (o *AddressDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tags_list types.List
 	{
 		var list_diags diag.Diagnostics
-		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
+
+		entries := make([]string, 0)
+		if o.Tags.IsNull() || len(obj.Tag) > 0 {
+			entries = obj.Tag
+		}
+
+		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -298,8 +315,8 @@ func (d *AddressDataSource) Configure(_ context.Context, req datasource.Configur
 }
 func (o *AddressDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state AddressDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state AddressDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -315,7 +332,7 @@ func (o *AddressDataSource) Read(ctx context.Context, req datasource.ReadRequest
 
 	{
 		var terraformLocation AddressLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -356,15 +373,15 @@ func (o *AddressDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_address_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -374,16 +391,16 @@ func (o *AddressDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -427,7 +444,7 @@ type AddressResourceModel struct {
 	IpWildcard      types.String `tfsdk:"ip_wildcard"`
 }
 
-func (r *AddressResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *AddressResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -540,31 +557,31 @@ func (o *AddressResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func (r *AddressResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *AddressResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_address"
 }
 
-func (r *AddressResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *AddressResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = AddressResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *AddressResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *AddressResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := address.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := address.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*address.Entry, address.Location, *address.Service](r.client, address.NewService(r.client), batchSize, specifier, address.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*address.Entry, address.Location, *address.Service](o.client, address.NewService(o.client), batchSize, specifier, address.SpecMatches)
 }
 
 func (o *AddressResourceModel) AttributeTypes() map[string]attr.Type {
@@ -578,11 +595,13 @@ func (o *AddressResourceModel) AttributeTypes() map[string]attr.Type {
 		"name":             types.StringType,
 		"description":      types.StringType,
 		"disable_override": types.StringType,
-		"tags":             types.ListType{},
-		"fqdn":             types.StringType,
-		"ip_netmask":       types.StringType,
-		"ip_range":         types.StringType,
-		"ip_wildcard":      types.StringType,
+		"tags": types.ListType{
+			ElemType: types.StringType,
+		},
+		"fqdn":        types.StringType,
+		"ip_netmask":  types.StringType,
+		"ip_range":    types.StringType,
+		"ip_wildcard": types.StringType,
 	}
 }
 
@@ -594,14 +613,22 @@ func (o AddressResourceModel) EntryName() *string {
 	return nil
 }
 
-func (o *AddressResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
-	tags_pango_entries := make([]string, 0)
-	diags.Append(o.Tags.ElementsAs(ctx, &tags_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var tags_pango_entries []string
+	if !o.Tags.IsUnknown() && !o.Tags.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Tags.Elements()))
+		diags.Append(o.Tags.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			tags_pango_entries = append(tags_pango_entries, elt.ValueString())
+		}
 	}
 	fqdn_value := o.Fqdn.ValueStringPointer()
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
@@ -623,12 +650,18 @@ func (o *AddressResourceModel) CopyToPango(ctx context.Context, ancestors []Ance
 	return diags
 }
 
-func (o *AddressResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AddressResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *address.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var tags_list types.List
 	{
 		var list_diags diag.Diagnostics
-		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Tag)
+
+		entries := make([]string, 0)
+		if o.Tags.IsNull() || len(obj.Tag) > 0 {
+			entries = obj.Tag
+		}
+
+		tags_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -676,7 +709,7 @@ func (o *AddressResourceModel) resourceXpathParentComponents() ([]string, error)
 	return components, nil
 }
 
-func (r *AddressResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *AddressResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state AddressResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -691,7 +724,7 @@ func (r *AddressResource) Create(ctx context.Context, req resource.CreateRequest
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -753,7 +786,7 @@ func (r *AddressResource) Create(ctx context.Context, req resource.CreateRequest
 
 	// Load the desired config.
 	var obj *address.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -771,13 +804,13 @@ func (r *AddressResource) Create(ctx context.Context, req resource.CreateRequest
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -794,8 +827,8 @@ func (r *AddressResource) Create(ctx context.Context, req resource.CreateRequest
 }
 func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state AddressResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state AddressResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -815,7 +848,7 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	{
 		var terraformLocation AddressLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -856,15 +889,15 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_address_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -874,16 +907,16 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -896,7 +929,7 @@ func (o *AddressResource) Read(ctx context.Context, req resource.ReadRequest, re
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *AddressResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *AddressResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state AddressResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -964,7 +997,7 @@ func (r *AddressResource) Update(ctx context.Context, req resource.UpdateRequest
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -974,13 +1007,18 @@ func (r *AddressResource) Update(ctx context.Context, req resource.UpdateRequest
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *address.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -991,22 +1029,27 @@ func (r *AddressResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1020,10 +1063,10 @@ func (r *AddressResource) Update(ctx context.Context, req resource.UpdateRequest
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *AddressResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *AddressResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state AddressResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1039,7 +1082,7 @@ func (r *AddressResource) Delete(ctx context.Context, req resource.DeleteRequest
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1090,7 +1133,7 @@ func (r *AddressResource) Delete(ctx context.Context, req resource.DeleteRequest
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1187,7 +1230,7 @@ func AddressImportStateCreator(ctx context.Context, resource types.Object) ([]by
 	return json.Marshal(importStruct)
 }
 
-func (r *AddressResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *AddressResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj AddressImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

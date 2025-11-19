@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/profiles/ldap"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -79,19 +80,25 @@ func (o *LdapProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
 
 	var locationObj LdapProfileLocation
 
+	var serversObj *LdapProfileDataSourceServersObject
+
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":                      types.StringType,
-		"base":                      types.StringType,
-		"bind_dn":                   types.StringType,
-		"bind_password":             types.StringType,
-		"bind_timelimit":            types.Int64Type,
-		"disabled":                  types.BoolType,
-		"ldap_type":                 types.StringType,
-		"retry_interval":            types.Int64Type,
-		"servers":                   types.ListType{},
+		"name":           types.StringType,
+		"base":           types.StringType,
+		"bind_dn":        types.StringType,
+		"bind_password":  types.StringType,
+		"bind_timelimit": types.Int64Type,
+		"disabled":       types.BoolType,
+		"ldap_type":      types.StringType,
+		"retry_interval": types.Int64Type,
+		"servers": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serversObj.AttributeTypes(),
+			},
+		},
 		"ssl":                       types.BoolType,
 		"timelimit":                 types.Int64Type,
 		"verify_server_certificate": types.BoolType,
@@ -122,23 +129,25 @@ func (o LdapProfileDataSourceServersObject) EntryName() *string {
 	return o.Name.ValueStringPointer()
 }
 
-func (o *LdapProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ldap.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *LdapProfileDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ldap.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	base_value := o.Base.ValueStringPointer()
 	bindDn_value := o.BindDn.ValueStringPointer()
-	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "bind-password")
-	if err != nil {
-		diags.AddError("Failed to create encrypted values state key", err.Error())
-		return diags
-	}
 
 	var bindPassword_value *string
-	err = ev.StorePlaintextValue(valueKey, "solo", o.BindPassword.ValueString())
-	if err != nil {
-		diags.AddError("Failed to manage encrypted values state", err.Error())
-		return diags
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "bind-password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.BindPassword.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		bindPassword_value = o.BindPassword.ValueStringPointer()
 	}
-	bindPassword_value = o.BindPassword.ValueStringPointer()
 	bindTimelimit_value := o.BindTimelimit.ValueInt64Pointer()
 	disabled_value := o.Disabled.ValueBoolPointer()
 	ldapType_value := o.LdapType.ValueStringPointer()
@@ -153,7 +162,7 @@ func (o *LdapProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors 
 		}
 		for _, elt := range servers_tf_entries {
 			var entry *ldap.Server
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -182,7 +191,7 @@ func (o *LdapProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors 
 
 	return diags
 }
-func (o *LdapProfileDataSourceServersObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ldap.Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *LdapProfileDataSourceServersObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ldap.Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	address_value := o.Address.ValueStringPointer()
 	port_value := o.Port.ValueInt64Pointer()
@@ -197,20 +206,36 @@ func (o *LdapProfileDataSourceServersObject) CopyToPango(ctx context.Context, an
 	return diags
 }
 
-func (o *LdapProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ldap.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *LdapProfileDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ldap.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var servers_list types.List
 	{
 		var servers_tf_entries []LdapProfileDataSourceServersObject
-		for _, elt := range obj.Server {
-			entry := LdapProfileDataSourceServersObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Servers.IsNull() {
+			diags.Append(o.Servers.ElementsAs(ctx, &servers_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			servers_tf_entries = append(servers_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := LdapProfileDataSourceServersObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(servers_tf_entries) {
+				entry = servers_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(servers_tf_entries) {
+				servers_tf_entries[idx] = entry
+			} else {
+				servers_tf_entries = append(servers_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("servers")
@@ -295,7 +320,7 @@ func (o *LdapProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestor
 	return diags
 }
 
-func (o *LdapProfileDataSourceServersObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ldap.Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *LdapProfileDataSourceServersObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ldap.Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var address_value types.String
@@ -523,8 +548,8 @@ func (d *LdapProfileDataSource) Configure(_ context.Context, req datasource.Conf
 }
 func (o *LdapProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state LdapProfileDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state LdapProfileDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -540,7 +565,7 @@ func (o *LdapProfileDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 	{
 		var terraformLocation LdapProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -627,15 +652,15 @@ func (o *LdapProfileDataSource) Read(ctx context.Context, req datasource.ReadReq
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_ldap_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -645,16 +670,16 @@ func (o *LdapProfileDataSource) Read(ctx context.Context, req datasource.ReadReq
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -707,7 +732,7 @@ type LdapProfileResourceServersObject struct {
 	Port    types.Int64  `tfsdk:"port"`
 }
 
-func (r *LdapProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *LdapProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
 }
 
 // <ResourceSchema>
@@ -899,50 +924,56 @@ func (o *LdapProfileResourceServersObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func (r *LdapProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *LdapProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_ldap_profile"
 }
 
-func (r *LdapProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *LdapProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = LdapProfileResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *LdapProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *LdapProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := ldap.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := ldap.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*ldap.Entry, ldap.Location, *ldap.Service](r.client, ldap.NewService(r.client), batchSize, specifier, ldap.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*ldap.Entry, ldap.Location, *ldap.Service](o.client, ldap.NewService(o.client), batchSize, specifier, ldap.SpecMatches)
 }
 
 func (o *LdapProfileResourceModel) AttributeTypes() map[string]attr.Type {
 
 	var locationObj LdapProfileLocation
 
+	var serversObj *LdapProfileResourceServersObject
+
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":                      types.StringType,
-		"base":                      types.StringType,
-		"bind_dn":                   types.StringType,
-		"bind_password":             types.StringType,
-		"bind_timelimit":            types.Int64Type,
-		"disabled":                  types.BoolType,
-		"ldap_type":                 types.StringType,
-		"retry_interval":            types.Int64Type,
-		"servers":                   types.ListType{},
+		"name":           types.StringType,
+		"base":           types.StringType,
+		"bind_dn":        types.StringType,
+		"bind_password":  types.StringType,
+		"bind_timelimit": types.Int64Type,
+		"disabled":       types.BoolType,
+		"ldap_type":      types.StringType,
+		"retry_interval": types.Int64Type,
+		"servers": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: serversObj.AttributeTypes(),
+			},
+		},
 		"ssl":                       types.BoolType,
 		"timelimit":                 types.Int64Type,
 		"verify_server_certificate": types.BoolType,
@@ -973,23 +1004,25 @@ func (o LdapProfileResourceServersObject) EntryName() *string {
 	return o.Name.ValueStringPointer()
 }
 
-func (o *LdapProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ldap.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *LdapProfileResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ldap.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	base_value := o.Base.ValueStringPointer()
 	bindDn_value := o.BindDn.ValueStringPointer()
-	valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "bind-password")
-	if err != nil {
-		diags.AddError("Failed to create encrypted values state key", err.Error())
-		return diags
-	}
 
 	var bindPassword_value *string
-	err = ev.StorePlaintextValue(valueKey, "solo", o.BindPassword.ValueString())
-	if err != nil {
-		diags.AddError("Failed to manage encrypted values state", err.Error())
-		return diags
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "bind-password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.BindPassword.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		bindPassword_value = o.BindPassword.ValueStringPointer()
 	}
-	bindPassword_value = o.BindPassword.ValueStringPointer()
 	bindTimelimit_value := o.BindTimelimit.ValueInt64Pointer()
 	disabled_value := o.Disabled.ValueBoolPointer()
 	ldapType_value := o.LdapType.ValueStringPointer()
@@ -1004,7 +1037,7 @@ func (o *LdapProfileResourceModel) CopyToPango(ctx context.Context, ancestors []
 		}
 		for _, elt := range servers_tf_entries {
 			var entry *ldap.Server
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1033,7 +1066,7 @@ func (o *LdapProfileResourceModel) CopyToPango(ctx context.Context, ancestors []
 
 	return diags
 }
-func (o *LdapProfileResourceServersObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **ldap.Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *LdapProfileResourceServersObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ldap.Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	address_value := o.Address.ValueStringPointer()
 	port_value := o.Port.ValueInt64Pointer()
@@ -1048,20 +1081,36 @@ func (o *LdapProfileResourceServersObject) CopyToPango(ctx context.Context, ance
 	return diags
 }
 
-func (o *LdapProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ldap.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *LdapProfileResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ldap.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var servers_list types.List
 	{
 		var servers_tf_entries []LdapProfileResourceServersObject
-		for _, elt := range obj.Server {
-			entry := LdapProfileResourceServersObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Servers.IsNull() {
+			diags.Append(o.Servers.ElementsAs(ctx, &servers_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			servers_tf_entries = append(servers_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Server {
+			entry := LdapProfileResourceServersObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(servers_tf_entries) {
+				entry = servers_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(servers_tf_entries) {
+				servers_tf_entries[idx] = entry
+			} else {
+				servers_tf_entries = append(servers_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("servers")
@@ -1146,7 +1195,7 @@ func (o *LdapProfileResourceModel) CopyFromPango(ctx context.Context, ancestors 
 	return diags
 }
 
-func (o *LdapProfileResourceServersObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *ldap.Server, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *LdapProfileResourceServersObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *ldap.Server, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var address_value types.String
@@ -1169,7 +1218,7 @@ func (o *LdapProfileResourceModel) resourceXpathParentComponents() ([]string, er
 	return components, nil
 }
 
-func (r *LdapProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *LdapProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state LdapProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1184,7 +1233,7 @@ func (r *LdapProfileResource) Create(ctx context.Context, req resource.CreateReq
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1292,7 +1341,7 @@ func (r *LdapProfileResource) Create(ctx context.Context, req resource.CreateReq
 
 	// Load the desired config.
 	var obj *ldap.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1310,13 +1359,13 @@ func (r *LdapProfileResource) Create(ctx context.Context, req resource.CreateReq
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1333,8 +1382,8 @@ func (r *LdapProfileResource) Create(ctx context.Context, req resource.CreateReq
 }
 func (o *LdapProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state LdapProfileResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state LdapProfileResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1354,7 +1403,7 @@ func (o *LdapProfileResource) Read(ctx context.Context, req resource.ReadRequest
 
 	{
 		var terraformLocation LdapProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1441,15 +1490,15 @@ func (o *LdapProfileResource) Read(ctx context.Context, req resource.ReadRequest
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_ldap_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1459,16 +1508,16 @@ func (o *LdapProfileResource) Read(ctx context.Context, req resource.ReadRequest
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1481,7 +1530,7 @@ func (o *LdapProfileResource) Read(ctx context.Context, req resource.ReadRequest
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *LdapProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *LdapProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state LdapProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1595,7 +1644,7 @@ func (r *LdapProfileResource) Update(ctx context.Context, req resource.UpdateReq
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1605,13 +1654,18 @@ func (r *LdapProfileResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *ldap.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1622,22 +1676,27 @@ func (r *LdapProfileResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1651,10 +1710,10 @@ func (r *LdapProfileResource) Update(ctx context.Context, req resource.UpdateReq
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *LdapProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *LdapProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state LdapProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1670,7 +1729,7 @@ func (r *LdapProfileResource) Delete(ctx context.Context, req resource.DeleteReq
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1767,7 +1826,7 @@ func (r *LdapProfileResource) Delete(ctx context.Context, req resource.DeleteReq
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1864,7 +1923,7 @@ func LdapProfileImportStateCreator(ctx context.Context, resource types.Object) (
 	return json.Marshal(importStruct)
 }
 
-func (r *LdapProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *LdapProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj LdapProfileImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

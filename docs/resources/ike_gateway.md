@@ -114,7 +114,7 @@ Optional:
 
 Optional:
 
-- `key` (String) the string used as pre-shared key
+- `key` (String, Sensitive) the string used as pre-shared key
 
 
 
