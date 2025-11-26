@@ -60,6 +60,9 @@ type TemplateStackDataSourceModel struct {
 	DefaultVsys     types.String `tfsdk:"default_vsys"`
 	UserGroupSource types.Object `tfsdk:"user_group_source"`
 }
+type TemplateStackDataSourceDevicesObject struct {
+	Name types.String `tfsdk:"name"`
+}
 type TemplateStackDataSourceUserGroupSourceObject struct {
 	MasterDevice types.String `tfsdk:"master_device"`
 }
@@ -67,6 +70,8 @@ type TemplateStackDataSourceUserGroupSourceObject struct {
 func (o *TemplateStackDataSourceModel) AttributeTypes() map[string]attr.Type {
 
 	var locationObj TemplateStackLocation
+
+	var devicesObj *TemplateStackDataSourceDevicesObject
 
 	var userGroupSourceObj *TemplateStackDataSourceUserGroupSourceObject
 	return map[string]attr.Type{
@@ -79,7 +84,9 @@ func (o *TemplateStackDataSourceModel) AttributeTypes() map[string]attr.Type {
 			ElemType: types.StringType,
 		},
 		"devices": types.ListType{
-			ElemType: types.StringType,
+			ElemType: types.ObjectType{
+				AttrTypes: devicesObj.AttributeTypes(),
+			},
 		},
 		"default_vsys": types.StringType,
 		"user_group_source": types.ObjectType{
@@ -94,6 +101,20 @@ func (o TemplateStackDataSourceModel) AncestorName() string {
 
 func (o TemplateStackDataSourceModel) EntryName() *string {
 	return nil
+}
+func (o *TemplateStackDataSourceDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+
+func (o TemplateStackDataSourceDevicesObject) AncestorName() string {
+	return "devices"
+}
+
+func (o TemplateStackDataSourceDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *TemplateStackDataSourceUserGroupSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -126,17 +147,21 @@ func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, client p
 			templates_pango_entries = append(templates_pango_entries, elt.ValueString())
 		}
 	}
-	var devices_pango_entries []string
-	if !o.Devices.IsUnknown() && !o.Devices.IsNull() {
-		object_entries := make([]types.String, 0, len(o.Devices.Elements()))
-		diags.Append(o.Devices.ElementsAs(ctx, &object_entries, false)...)
+	var devices_tf_entries []TemplateStackDataSourceDevicesObject
+	var devices_pango_entries []template_stack.Devices
+	{
+		d := o.Devices.ElementsAs(ctx, &devices_tf_entries, false)
+		diags.Append(d...)
 		if diags.HasError() {
-			diags.AddError("Explicit Error", "Failed something")
 			return diags
 		}
-
-		for _, elt := range object_entries {
-			devices_pango_entries = append(devices_pango_entries, elt.ValueString())
+		for _, elt := range devices_tf_entries {
+			var entry *template_stack.Devices
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			devices_pango_entries = append(devices_pango_entries, *entry)
 		}
 	}
 	defaultVsys_value := o.DefaultVsys.ValueStringPointer()
@@ -167,6 +192,16 @@ func (o *TemplateStackDataSourceModel) CopyToPango(ctx context.Context, client p
 	(*obj).Devices = devices_pango_entries
 	(*obj).DefaultVsys = defaultVsys_value
 	(*obj).UserGroupSource = userGroupSource_entry
+
+	return diags
+}
+func (o *TemplateStackDataSourceDevicesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_stack.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(template_stack.Devices)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
@@ -201,18 +236,37 @@ func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, client
 	}
 	var devices_list types.List
 	{
+		var devices_tf_entries []TemplateStackDataSourceDevicesObject
+		if !o.Devices.IsNull() {
+			diags.Append(o.Devices.ElementsAs(ctx, &devices_tf_entries, false)...)
+			if diags.HasError() {
+				return diags
+			}
+		}
+
+		for idx, elt := range obj.Devices {
+			entry := TemplateStackDataSourceDevicesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(devices_tf_entries) {
+				entry = devices_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(devices_tf_entries) {
+				devices_tf_entries[idx] = entry
+			} else {
+				devices_tf_entries = append(devices_tf_entries, entry)
+			}
+		}
 		var list_diags diag.Diagnostics
-
-		entries := make([]string, 0)
-		if o.Devices.IsNull() || len(obj.Devices) > 0 {
-			entries = obj.Devices
-		}
-
-		devices_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
+		schemaType := o.getTypeFor("devices")
+		devices_list, list_diags = types.ListValueFrom(ctx, schemaType, devices_tf_entries)
 		diags.Append(list_diags...)
-		if diags.HasError() {
-			return diags
-		}
 	}
 
 	var userGroupSource_obj *TemplateStackDataSourceUserGroupSourceObject
@@ -252,6 +306,13 @@ func (o *TemplateStackDataSourceModel) CopyFromPango(ctx context.Context, client
 	o.Devices = devices_list
 	o.DefaultVsys = defaultVsys_value
 	o.UserGroupSource = userGroupSource_object
+
+	return diags
+}
+
+func (o *TemplateStackDataSourceDevicesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_stack.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
@@ -304,13 +365,13 @@ func TemplateStackDataSourceSchema() dsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"devices": dsschema.ListAttribute{
-				Description: "List of devices",
-				Required:    false,
-				Optional:    true,
-				Computed:    true,
-				Sensitive:   false,
-				ElementType: types.StringType,
+			"devices": dsschema.ListNestedAttribute{
+				Description:  "List of devices",
+				Required:     false,
+				Optional:     true,
+				Computed:     true,
+				Sensitive:    false,
+				NestedObject: TemplateStackDataSourceDevicesSchema(),
 			},
 
 			"default_vsys": dsschema.StringAttribute{
@@ -328,6 +389,39 @@ func TemplateStackDataSourceSchema() dsschema.Schema {
 
 func (o *TemplateStackDataSourceModel) getTypeFor(name string) attr.Type {
 	schema := TemplateStackDataSourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func TemplateStackDataSourceDevicesSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *TemplateStackDataSourceDevicesObject) getTypeFor(name string) attr.Type {
+	schema := TemplateStackDataSourceDevicesSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -519,6 +613,9 @@ type TemplateStackResourceModel struct {
 	DefaultVsys     types.String `tfsdk:"default_vsys"`
 	UserGroupSource types.Object `tfsdk:"user_group_source"`
 }
+type TemplateStackResourceDevicesObject struct {
+	Name types.String `tfsdk:"name"`
+}
 type TemplateStackResourceUserGroupSourceObject struct {
 	MasterDevice types.String `tfsdk:"master_device"`
 }
@@ -559,13 +656,13 @@ func TemplateStackResourceSchema() rsschema.Schema {
 				ElementType: types.StringType,
 			},
 
-			"devices": rsschema.ListAttribute{
-				Description: "List of devices",
-				Required:    false,
-				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
-				ElementType: types.StringType,
+			"devices": rsschema.ListNestedAttribute{
+				Description:  "List of devices",
+				Required:     false,
+				Optional:     true,
+				Computed:     false,
+				Sensitive:    false,
+				NestedObject: TemplateStackResourceDevicesSchema(),
 			},
 
 			"default_vsys": rsschema.StringAttribute{
@@ -583,6 +680,39 @@ func TemplateStackResourceSchema() rsschema.Schema {
 
 func (o *TemplateStackResourceModel) getTypeFor(name string) attr.Type {
 	schema := TemplateStackResourceSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func TemplateStackResourceDevicesSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Computed:    false,
+				Required:    true,
+				Optional:    false,
+				Sensitive:   false,
+			},
+		},
+	}
+}
+
+func (o *TemplateStackResourceDevicesObject) getTypeFor(name string) attr.Type {
+	schema := TemplateStackResourceDevicesSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -668,6 +798,8 @@ func (o *TemplateStackResourceModel) AttributeTypes() map[string]attr.Type {
 
 	var locationObj TemplateStackLocation
 
+	var devicesObj *TemplateStackResourceDevicesObject
+
 	var userGroupSourceObj *TemplateStackResourceUserGroupSourceObject
 	return map[string]attr.Type{
 		"location": types.ObjectType{
@@ -679,7 +811,9 @@ func (o *TemplateStackResourceModel) AttributeTypes() map[string]attr.Type {
 			ElemType: types.StringType,
 		},
 		"devices": types.ListType{
-			ElemType: types.StringType,
+			ElemType: types.ObjectType{
+				AttrTypes: devicesObj.AttributeTypes(),
+			},
 		},
 		"default_vsys": types.StringType,
 		"user_group_source": types.ObjectType{
@@ -694,6 +828,20 @@ func (o TemplateStackResourceModel) AncestorName() string {
 
 func (o TemplateStackResourceModel) EntryName() *string {
 	return nil
+}
+func (o *TemplateStackResourceDevicesObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+
+func (o TemplateStackResourceDevicesObject) AncestorName() string {
+	return "devices"
+}
+
+func (o TemplateStackResourceDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
 }
 func (o *TemplateStackResourceUserGroupSourceObject) AttributeTypes() map[string]attr.Type {
 
@@ -726,17 +874,21 @@ func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, client pan
 			templates_pango_entries = append(templates_pango_entries, elt.ValueString())
 		}
 	}
-	var devices_pango_entries []string
-	if !o.Devices.IsUnknown() && !o.Devices.IsNull() {
-		object_entries := make([]types.String, 0, len(o.Devices.Elements()))
-		diags.Append(o.Devices.ElementsAs(ctx, &object_entries, false)...)
+	var devices_tf_entries []TemplateStackResourceDevicesObject
+	var devices_pango_entries []template_stack.Devices
+	{
+		d := o.Devices.ElementsAs(ctx, &devices_tf_entries, false)
+		diags.Append(d...)
 		if diags.HasError() {
-			diags.AddError("Explicit Error", "Failed something")
 			return diags
 		}
-
-		for _, elt := range object_entries {
-			devices_pango_entries = append(devices_pango_entries, elt.ValueString())
+		for _, elt := range devices_tf_entries {
+			var entry *template_stack.Devices
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			devices_pango_entries = append(devices_pango_entries, *entry)
 		}
 	}
 	defaultVsys_value := o.DefaultVsys.ValueStringPointer()
@@ -767,6 +919,16 @@ func (o *TemplateStackResourceModel) CopyToPango(ctx context.Context, client pan
 	(*obj).Devices = devices_pango_entries
 	(*obj).DefaultVsys = defaultVsys_value
 	(*obj).UserGroupSource = userGroupSource_entry
+
+	return diags
+}
+func (o *TemplateStackResourceDevicesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_stack.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(template_stack.Devices)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
@@ -801,18 +963,37 @@ func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, client p
 	}
 	var devices_list types.List
 	{
+		var devices_tf_entries []TemplateStackResourceDevicesObject
+		if !o.Devices.IsNull() {
+			diags.Append(o.Devices.ElementsAs(ctx, &devices_tf_entries, false)...)
+			if diags.HasError() {
+				return diags
+			}
+		}
+
+		for idx, elt := range obj.Devices {
+			entry := TemplateStackResourceDevicesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(devices_tf_entries) {
+				entry = devices_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(devices_tf_entries) {
+				devices_tf_entries[idx] = entry
+			} else {
+				devices_tf_entries = append(devices_tf_entries, entry)
+			}
+		}
 		var list_diags diag.Diagnostics
-
-		entries := make([]string, 0)
-		if o.Devices.IsNull() || len(obj.Devices) > 0 {
-			entries = obj.Devices
-		}
-
-		devices_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
+		schemaType := o.getTypeFor("devices")
+		devices_list, list_diags = types.ListValueFrom(ctx, schemaType, devices_tf_entries)
 		diags.Append(list_diags...)
-		if diags.HasError() {
-			return diags
-		}
 	}
 
 	var userGroupSource_obj *TemplateStackResourceUserGroupSourceObject
@@ -852,6 +1033,13 @@ func (o *TemplateStackResourceModel) CopyFromPango(ctx context.Context, client p
 	o.Devices = devices_list
 	o.DefaultVsys = defaultVsys_value
 	o.UserGroupSource = userGroupSource_object
+
+	return diags
+}
+
+func (o *TemplateStackResourceDevicesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_stack.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }

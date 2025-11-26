@@ -28,6 +28,7 @@ func NewApiKeyResource() ephemeral.EphemeralResource {
 
 type ApiKeyResource struct {
 	client *pango.Client
+	custom *ApiKeyCustom
 }
 
 type ApiKeyResourceModel struct {
@@ -108,6 +109,12 @@ func (o *ApiKeyResource) Configure(ctx context.Context, req ephemeral.ConfigureR
 
 	providerData := req.ProviderData.(*ProviderData)
 	o.client = providerData.Client
+	custom, err := NewApiKeyCustom(providerData)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
+		return
+	}
+	o.custom = custom
 }
 
 func (o *ApiKeyResourceModel) AttributeTypes() map[string]attr.Type {

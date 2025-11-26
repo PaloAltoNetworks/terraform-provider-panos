@@ -23,6 +23,12 @@ import (
 	sdkmanager "github.com/PaloAltoNetworks/terraform-provider-panos/internal/manager"
 )
 
+type CertificateImportCustom struct{}
+
+func NewCertificateImportCustom(data *ProviderData) (*CertificateImportCustom, error) {
+	return &CertificateImportCustom{}, nil
+}
+
 func (o *CertificateImportResource) importCertificate(ctx context.Context, state *CertificateImportResourceModel, template string, vsys string) diag.Diagnostics {
 	mutex := locking.GetMutex(locking.ImportFileLockCategory, "")
 	mutex.Lock()

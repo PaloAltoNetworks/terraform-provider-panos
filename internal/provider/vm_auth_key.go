@@ -28,6 +28,7 @@ func NewVmAuthKeyResource() ephemeral.EphemeralResource {
 
 type VmAuthKeyResource struct {
 	client *pango.Client
+	custom *VmAuthKeyCustom
 }
 
 type VmAuthKeyResourceModel struct {
@@ -108,6 +109,12 @@ func (o *VmAuthKeyResource) Configure(ctx context.Context, req ephemeral.Configu
 
 	providerData := req.ProviderData.(*ProviderData)
 	o.client = providerData.Client
+	custom, err := NewVmAuthKeyCustom(providerData)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
+		return
+	}
+	o.custom = custom
 }
 
 func (o *VmAuthKeyResourceModel) AttributeTypes() map[string]attr.Type {

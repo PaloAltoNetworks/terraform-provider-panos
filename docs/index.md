@@ -38,7 +38,7 @@ provider "panos" {
 
 ## Authentication
 
-The following authentication methods are supported. From highest to lowest priority; 
+The following authentication methods are supported. From highest to lowest priority;
 
 - Static credentials via provider block
 - Environment variables

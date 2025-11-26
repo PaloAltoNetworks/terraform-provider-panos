@@ -36,6 +36,7 @@ func NewDeviceGroupParentDataSource() datasource.DataSource {
 
 type DeviceGroupParentDataSource struct {
 	client *pango.Client
+	custom *DeviceGroupParentCustom
 }
 
 type DeviceGroupParentDataSourceFilter struct {
@@ -139,6 +140,12 @@ func (d *DeviceGroupParentDataSource) Configure(_ context.Context, req datasourc
 
 	providerData := req.ProviderData.(*ProviderData)
 	d.client = providerData.Client
+	custom, err := NewDeviceGroupParentCustom(providerData)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
+		return
+	}
+	d.custom = custom
 }
 func (o *DeviceGroupParentDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -159,6 +166,7 @@ func NewDeviceGroupParentResource() resource.Resource {
 
 type DeviceGroupParentResource struct {
 	client *pango.Client
+	custom *DeviceGroupParentCustom
 }
 
 func DeviceGroupParentResourceLocationSchema() rsschema.Attribute {
@@ -237,6 +245,12 @@ func (o *DeviceGroupParentResource) Configure(ctx context.Context, req resource.
 
 	providerData := req.ProviderData.(*ProviderData)
 	o.client = providerData.Client
+	custom, err := NewDeviceGroupParentCustom(providerData)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
+		return
+	}
+	o.custom = custom
 }
 
 func (o *DeviceGroupParentResourceModel) AttributeTypes() map[string]attr.Type {

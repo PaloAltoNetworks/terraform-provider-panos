@@ -38,6 +38,7 @@ func NewCertificateImportResource() resource.Resource {
 
 type CertificateImportResource struct {
 	client *pango.Client
+	custom *CertificateImportCustom
 }
 
 func CertificateImportResourceLocationSchema() rsschema.Attribute {
@@ -277,6 +278,12 @@ func (o *CertificateImportResource) Configure(ctx context.Context, req resource.
 
 	providerData := req.ProviderData.(*ProviderData)
 	o.client = providerData.Client
+	custom, err := NewCertificateImportCustom(providerData)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
+		return
+	}
+	o.custom = custom
 }
 
 func (o *CertificateImportResourceModel) AttributeTypes() map[string]attr.Type {

@@ -8,6 +8,7 @@ import (
 
 	sdk "github.com/PaloAltoNetworks/pango"
 
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/function"
@@ -20,7 +21,9 @@ import (
 
 // Ensure the provider implementation interface is sound.
 var (
-	_ provider.Provider = &PanosProvider{}
+	_ provider.Provider              = &PanosProvider{}
+	_ provider.ProviderWithFunctions = &PanosProvider{}
+	_ provider.ProviderWithActions   = &PanosProvider{}
 )
 
 // PanosProvider is the provider implementation.
@@ -306,6 +309,7 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 	resp.DataSourceData = providerData
 	resp.ResourceData = providerData
 	resp.EphemeralResourceData = providerData
+	resp.ActionData = providerData
 
 	// Done.
 	tflog.Info(ctx, "Configured client", map[string]any{"success": true})
@@ -344,7 +348,18 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewLogicalRouterDataSource,
 		NewAntiSpywareSecurityProfileDataSource,
 		NewInterfaceManagementProfileDataSource,
+		NewBgpAddressFamilyRoutingProfileDataSource,
 		NewBgpAuthRoutingProfileDataSource,
+		NewBgpDampeningRoutingProfileDataSource,
+		NewBgpFilteringRoutingProfileDataSource,
+		NewBgpRedistributionRoutingProfileDataSource,
+		NewBgpTimerRoutingProfileDataSource,
+		NewFiltersAccessListRoutingProfileDataSource,
+		NewFiltersAsPathAccessListRoutingProfileDataSource,
+		NewFiltersBgpRouteMapRoutingProfileDataSource,
+		NewFiltersCommunityListRoutingProfileDataSource,
+		NewFiltersPrefixListRoutingProfileDataSource,
+		NewFiltersRouteMapsRedistributionRoutingProfileDataSource,
 		NewAggregateLayer3SubinterfaceDataSource,
 		NewEthernetLayer3SubinterfaceDataSource,
 		NewIpsecTunnelDataSource,
@@ -423,7 +438,18 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewLogicalRouterResource,
 		NewAntiSpywareSecurityProfileResource,
 		NewInterfaceManagementProfileResource,
+		NewBgpAddressFamilyRoutingProfileResource,
 		NewBgpAuthRoutingProfileResource,
+		NewBgpDampeningRoutingProfileResource,
+		NewBgpFilteringRoutingProfileResource,
+		NewBgpRedistributionRoutingProfileResource,
+		NewBgpTimerRoutingProfileResource,
+		NewFiltersAccessListRoutingProfileResource,
+		NewFiltersAsPathAccessListRoutingProfileResource,
+		NewFiltersBgpRouteMapRoutingProfileResource,
+		NewFiltersCommunityListRoutingProfileResource,
+		NewFiltersPrefixListRoutingProfileResource,
+		NewFiltersRouteMapsRedistributionRoutingProfileResource,
 		NewAggregateLayer3SubinterfaceResource,
 		NewEthernetLayer3SubinterfaceResource,
 		NewIpsecTunnelResource,
@@ -473,6 +499,12 @@ func (p *PanosProvider) EphemeralResources(_ context.Context) []func() ephemeral
 	return []func() ephemeral.EphemeralResource{
 		NewApiKeyResource,
 		NewVmAuthKeyResource,
+	}
+}
+
+func (p *PanosProvider) Actions(_ context.Context) []func() action.Action {
+	return []func() action.Action{
+		NewCommitAction,
 	}
 }
 
@@ -535,8 +567,23 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_authentication_profile": resourceFuncs{
 		CreateImportId: AuthenticationProfileImportStateCreator,
 	},
+	"panos_bgp_address_family_routing_profile": resourceFuncs{
+		CreateImportId: BgpAddressFamilyRoutingProfileImportStateCreator,
+	},
 	"panos_bgp_auth_routing_profile": resourceFuncs{
 		CreateImportId: BgpAuthRoutingProfileImportStateCreator,
+	},
+	"panos_bgp_dampening_routing_profile": resourceFuncs{
+		CreateImportId: BgpDampeningRoutingProfileImportStateCreator,
+	},
+	"panos_bgp_filtering_routing_profile": resourceFuncs{
+		CreateImportId: BgpFilteringRoutingProfileImportStateCreator,
+	},
+	"panos_bgp_redistribution_routing_profile": resourceFuncs{
+		CreateImportId: BgpRedistributionRoutingProfileImportStateCreator,
+	},
+	"panos_bgp_timer_routing_profile": resourceFuncs{
+		CreateImportId: BgpTimerRoutingProfileImportStateCreator,
 	},
 	"panos_certificate_profile": resourceFuncs{
 		CreateImportId: CertificateProfileImportStateCreator,
@@ -576,6 +623,24 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_file_blocking_security_profile": resourceFuncs{
 		CreateImportId: FileBlockingSecurityProfileImportStateCreator,
+	},
+	"panos_filters_access_list_routing_profile": resourceFuncs{
+		CreateImportId: FiltersAccessListRoutingProfileImportStateCreator,
+	},
+	"panos_filters_as_path_access_list_routing_profile": resourceFuncs{
+		CreateImportId: FiltersAsPathAccessListRoutingProfileImportStateCreator,
+	},
+	"panos_filters_bgp_route_map_routing_profile": resourceFuncs{
+		CreateImportId: FiltersBgpRouteMapRoutingProfileImportStateCreator,
+	},
+	"panos_filters_community_list_routing_profile": resourceFuncs{
+		CreateImportId: FiltersCommunityListRoutingProfileImportStateCreator,
+	},
+	"panos_filters_prefix_list_routing_profile": resourceFuncs{
+		CreateImportId: FiltersPrefixListRoutingProfileImportStateCreator,
+	},
+	"panos_filters_route_maps_redistribution_routing_profile": resourceFuncs{
+		CreateImportId: FiltersRouteMapsRedistributionRoutingProfileImportStateCreator,
 	},
 	"panos_globalprotect_gateway": resourceFuncs{
 		CreateImportId: GlobalprotectGatewayImportStateCreator,

@@ -7,6 +7,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type ApiKeyCustom struct{}
+
+func NewApiKeyCustom(provider *ProviderData) (*ApiKeyCustom, error) {
+	return &ApiKeyCustom{}, nil
+}
+
 func (o *ApiKeyResource) OpenCustom(ctx context.Context, req ephemeral.OpenRequest, resp *ephemeral.OpenResponse) {
 	var data ApiKeyResourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)

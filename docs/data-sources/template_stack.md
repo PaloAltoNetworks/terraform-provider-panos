@@ -24,7 +24,7 @@ description: |-
 
 - `default_vsys` (String) Default virtual system
 - `description` (String) The description.
-- `devices` (List of String) List of devices
+- `devices` (Attributes List) List of devices (see [below for nested schema](#nestedatt--devices))
 - `templates` (List of String) List of templates
 - `user_group_source` (Attributes) (see [below for nested schema](#nestedatt--user_group_source))
 
@@ -42,6 +42,14 @@ Optional:
 
 - `panorama_device` (String) The Panorama device.
 
+
+
+<a id="nestedatt--devices"></a>
+### Nested Schema for `devices`
+
+Required:
+
+- `name` (String)
 
 
 <a id="nestedatt--user_group_source"></a>

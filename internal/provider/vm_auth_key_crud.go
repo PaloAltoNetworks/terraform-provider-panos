@@ -10,6 +10,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type VmAuthKeyCustom struct{}
+
+func NewVmAuthKeyCustom(data *ProviderData) (*VmAuthKeyCustom, error) {
+	return &VmAuthKeyCustom{}, nil
+}
+
 type vmAuthKeyRequest struct {
 	XMLName  xml.Name `xml:"request"`
 	Lifetime int64    `xml:"bootstrap>vm-auth-key>generate>lifetime"`

@@ -13,6 +13,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type DeviceGroupParentCustom struct{}
+
+func NewDeviceGroupParentCustom(provider *ProviderData) (*DeviceGroupParentCustom, error) {
+	return &DeviceGroupParentCustom{}, nil
+}
+
 type dgpReq struct {
 	XMLName xml.Name `xml:"show"`
 	Cmd     string   `xml:"dg-hierarchy"`

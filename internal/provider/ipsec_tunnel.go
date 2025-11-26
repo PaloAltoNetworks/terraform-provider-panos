@@ -5568,6 +5568,16 @@ func (o *IpsecTunnelDataSource) Read(ctx context.Context, req datasource.ReadReq
 			return
 		}
 
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ipsec.NgfwLocation{}
+			var innerLocation IpsecTunnelNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &ipsec.TemplateLocation{}
 			var innerLocation IpsecTunnelTemplateLocation
@@ -11248,6 +11258,16 @@ func (o *IpsecTunnelResource) Create(ctx context.Context, req resource.CreateReq
 			return
 		}
 
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ipsec.NgfwLocation{}
+			var innerLocation IpsecTunnelNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &ipsec.TemplateLocation{}
 			var innerLocation IpsecTunnelTemplateLocation
@@ -11347,6 +11367,16 @@ func (o *IpsecTunnelResource) Read(ctx context.Context, req resource.ReadRequest
 			return
 		}
 
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ipsec.NgfwLocation{}
+			var innerLocation IpsecTunnelNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+		}
+
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &ipsec.TemplateLocation{}
 			var innerLocation IpsecTunnelTemplateLocation
@@ -11443,6 +11473,16 @@ func (o *IpsecTunnelResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ipsec.NgfwLocation{}
+			var innerLocation IpsecTunnelNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -11574,6 +11614,16 @@ func (o *IpsecTunnelResource) Delete(ctx context.Context, req resource.DeleteReq
 		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
+		}
+
+		if !terraformLocation.Ngfw.IsNull() {
+			location.Ngfw = &ipsec.NgfwLocation{}
+			var innerLocation IpsecTunnelNgfwLocation
+			resp.Diagnostics.Append(terraformLocation.Ngfw.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Ngfw.NgfwDevice = innerLocation.NgfwDevice.ValueString()
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -11730,6 +11780,9 @@ func (o *IpsecTunnelResource) ImportState(ctx context.Context, req resource.Impo
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
+type IpsecTunnelNgfwLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+}
 type IpsecTunnelTemplateLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
@@ -11741,6 +11794,7 @@ type IpsecTunnelTemplateStackLocation struct {
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
 }
 type IpsecTunnelLocation struct {
+	Ngfw          types.Object `tfsdk:"ngfw"`
 	Template      types.Object `tfsdk:"template"`
 	TemplateStack types.Object `tfsdk:"template_stack"`
 }
@@ -11750,6 +11804,32 @@ func IpsecTunnelLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
+			"ngfw": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific NGFW device",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("ngfw"),
+						path.MatchRelative().AtParent().AtName("template"),
+						path.MatchRelative().AtParent().AtName("template_stack"),
+					}...),
+				},
+			},
 			"template": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific template",
 				Optional:    true,
@@ -11784,13 +11864,6 @@ func IpsecTunnelLocationSchema() rsschema.Attribute {
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("template"),
-						path.MatchRelative().AtParent().AtName("template_stack"),
-					}...),
 				},
 			},
 			"template_stack": rsschema.SingleNestedAttribute{
@@ -11833,6 +11906,31 @@ func IpsecTunnelLocationSchema() rsschema.Attribute {
 	}
 }
 
+func (o IpsecTunnelNgfwLocation) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	obj := shadow{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *IpsecTunnelNgfwLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+
+	return nil
+}
 func (o IpsecTunnelTemplateLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
@@ -11901,8 +11999,16 @@ func (o *IpsecTunnelTemplateStackLocation) UnmarshalJSON(data []byte) error {
 }
 func (o IpsecTunnelLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
+		Ngfw          *IpsecTunnelNgfwLocation          `json:"ngfw,omitempty"`
 		Template      *IpsecTunnelTemplateLocation      `json:"template,omitempty"`
 		TemplateStack *IpsecTunnelTemplateStackLocation `json:"template_stack,omitempty"`
+	}
+	var ngfw_object *IpsecTunnelNgfwLocation
+	{
+		diags := o.Ngfw.As(context.TODO(), &ngfw_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal ngfw into JSON document", diags.Errors())
+		}
 	}
 	var template_object *IpsecTunnelTemplateLocation
 	{
@@ -11920,6 +12026,7 @@ func (o IpsecTunnelLocation) MarshalJSON() ([]byte, error) {
 	}
 
 	obj := shadow{
+		Ngfw:          ngfw_object,
 		Template:      template_object,
 		TemplateStack: templateStack_object,
 	}
@@ -11929,6 +12036,7 @@ func (o IpsecTunnelLocation) MarshalJSON() ([]byte, error) {
 
 func (o *IpsecTunnelLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
+		Ngfw          *IpsecTunnelNgfwLocation          `json:"ngfw,omitempty"`
 		Template      *IpsecTunnelTemplateLocation      `json:"template,omitempty"`
 		TemplateStack *IpsecTunnelTemplateStackLocation `json:"template_stack,omitempty"`
 	}
@@ -11936,6 +12044,14 @@ func (o *IpsecTunnelLocation) UnmarshalJSON(data []byte) error {
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
+	}
+	var ngfw_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		ngfw_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Ngfw.AttributeTypes(), shadow.Ngfw)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
+		}
 	}
 	var template_object types.Object
 	{
@@ -11953,12 +12069,18 @@ func (o *IpsecTunnelLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into template_stack", diags_tmp.Errors())
 		}
 	}
+	o.Ngfw = ngfw_object
 	o.Template = template_object
 	o.TemplateStack = templateStack_object
 
 	return nil
 }
 
+func (o *IpsecTunnelNgfwLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+	}
+}
 func (o *IpsecTunnelTemplateLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"panorama_device": types.StringType,
@@ -11974,9 +12096,13 @@ func (o *IpsecTunnelTemplateStackLocation) AttributeTypes() map[string]attr.Type
 	}
 }
 func (o *IpsecTunnelLocation) AttributeTypes() map[string]attr.Type {
+	var ngfwObj IpsecTunnelNgfwLocation
 	var templateObj IpsecTunnelTemplateLocation
 	var templateStackObj IpsecTunnelTemplateStackLocation
 	return map[string]attr.Type{
+		"ngfw": types.ObjectType{
+			AttrTypes: ngfwObj.AttributeTypes(),
+		},
 		"template": types.ObjectType{
 			AttrTypes: templateObj.AttributeTypes(),
 		},
