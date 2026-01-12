@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/action/schema"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var (
@@ -27,12 +28,22 @@ type CommitAllAction struct {
 }
 
 type CommitAllActionModel struct {
+	DeviceGroups types.List `tfsdk:"device_groups"`
 }
 
 func CommitAllActionSchema() schema.Schema {
 	return schema.Schema{
-		Description: "Commits pending changes and pushes them to all managed devices (Panorama only). This performs a commit-all operation.",
-		Attributes:  map[string]schema.Attribute{},
+		Description: "Pushes committed configuration to managed devices (Panorama only). " +
+			"This action does NOT commit pending changes - use panos_commit first to commit changes to Panorama.",
+		Attributes: map[string]schema.Attribute{
+			"device_groups": schema.ListAttribute{
+				Description: "List of device group names to push configuration to. " +
+					"If not specified, pushes to all device groups in Panorama. " +
+					"Example: [\"Production\", \"DMZ\"]",
+				ElementType: types.StringType,
+				Optional:    true,
+			},
+		},
 	}
 }
 

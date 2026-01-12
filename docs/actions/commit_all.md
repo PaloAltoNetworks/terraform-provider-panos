@@ -11,12 +11,19 @@ The `panos_commit_all` action performs a commit-all operation on Panorama, which
 
 ## Overview
 
-This action is **Panorama-specific** and performs a two-stage operation:
+This action is **Panorama-specific** and pushes committed configuration changes to all managed devices (firewalls).
 
-1. **Commit**: Commits pending changes to the Panorama configuration
-2. **Push**: Pushes the committed configuration to all managed devices (firewalls) associated with the target device group or template
+**Important**: This action does NOT commit changes to Panorama. It only pushes already-committed configuration. You must run `panos_commit` first to commit your changes to Panorama, then run `panos_commit_all` to push those committed changes to managed devices.
 
-This is equivalent to clicking "Commit" → "Commit and Push" in the Panorama web interface.
+### Typical Workflow
+
+1. Apply Terraform resources (creates pending changes in Panorama)
+2. Run `panos_commit` action (commits pending changes to Panorama)
+3. Run `panos_commit_all` action (pushes committed configuration to devices)
+
+This is equivalent to:
+- Running "Commit" in Panorama (step 2)
+- Then clicking "Push to Devices" (step 3)
 
 ## When to Use
 
@@ -29,19 +36,48 @@ Use `panos_commit_all` when:
 
 ## Comparison with panos_commit
 
-| Action | Purpose | Target |
-|--------|---------|--------|
-| `panos_commit` | Commits changes locally only | Panorama or Firewall |
-| `panos_commit_all` | Commits and pushes to managed devices | Panorama only |
+| Action | Purpose | Target | What it does |
+|--------|---------|--------|--------------|
+| `panos_commit` | Commits pending changes | Panorama or Firewall | Saves configuration changes to the device |
+| `panos_commit_all` | Pushes committed config | Panorama only | Distributes saved configuration to managed devices |
 
-**Important**: Running `panos_commit_all` on a standalone firewall will fail, as the commit-all operation is Panorama-specific.
+**Key Differences**:
+- `panos_commit`: Takes pending changes and commits them to Panorama (or firewall)
+- `panos_commit_all`: Takes committed configuration and pushes it to device groups
+
+**Important**:
+- You typically run `panos_commit` BEFORE `panos_commit_all`
+- Running `panos_commit_all` without pending committed changes will succeed but push nothing
+- Running `panos_commit_all` on a standalone firewall will fail (Panorama only)
 
 ## Prerequisites
 
 - Provider must be configured to connect to a Panorama instance
 - User must have commit permissions in Panorama
-- At least one device must be managed by Panorama
-- Target device group or template must be specified (if applicable)
+- At least one device group must exist in Panorama
+
+## Configuration
+
+### device_groups (Optional)
+
+You can optionally specify which device groups to push configuration to:
+
+```terraform
+action "panos_commit_all" "push_to_specific" {
+  config {
+    device_groups = ["Production", "DMZ"]
+  }
+}
+```
+
+- **Type**: List of strings
+- **Default**: If not specified, pushes to all device groups in Panorama
+- **Example**: `["Production", "DMZ", "Branch-Offices"]`
+
+**When to use**:
+- Push to specific device groups only
+- Avoid pushing to all device groups when testing
+- Target specific environments (production vs staging)
 
 ## Example Usage
 
@@ -95,7 +131,14 @@ resource "panos_security_policy" "allow_web" {
 
 # Define the commit-all action in your configuration
 action "panos_commit_all" "push_to_devices" {
-  # No configuration needed - uses provider settings
+  # No config needed - pushes to all device groups
+}
+
+# Or push to specific device groups
+action "panos_commit_all" "push_to_production" {
+  config {
+    device_groups = ["Production-Firewalls"]
+  }
 }
 
 # Now you can invoke it declaratively:
@@ -140,9 +183,6 @@ provider "panos" {
   hostname = "panorama.example.com"
   username = "admin"
   api_key  = var.panos_api_key
-
-  # Target specific device group for commits
-  target = "DMZ-Firewalls"
 }
 
 # Configure resources for DMZ device group
@@ -157,18 +197,32 @@ resource "panos_address" "dmz_server" {
   ip_netmask = "192.168.100.10/32"
 }
 
-# Define action for declarative use
-action "panos_commit_all" "push_dmz" {
+# Define actions - one for all groups, one for DMZ only
+action "panos_commit" "commit_to_panorama" {
 }
 
-# Invoke with: terraform action invoke push_dmz
-# Or with CLI: terraform apply -invoke=action.panos_commit_all.push_dmz
+action "panos_commit_all" "push_all" {
+  # No config = pushes to all device groups
+}
+
+action "panos_commit_all" "push_dmz_only" {
+  config {
+    device_groups = ["DMZ-Firewalls"]
+  }
+}
+
+# Workflow:
+# terraform apply
+# terraform action invoke commit_to_panorama
+# terraform action invoke push_dmz_only  # Only pushes to DMZ
 ```
 
 ### Multi-Stage Deployment Workflow
 
+This example shows the recommended workflow: commit to Panorama first, then push to devices.
+
 ```terraform
-# Stage 1: Create shared objects
+# Create your resources
 resource "panos_address_group" "web_servers" {
   location = {
     shared = {}
@@ -178,7 +232,6 @@ resource "panos_address_group" "web_servers" {
   static_members = ["web1", "web2", "web3"]
 }
 
-# Stage 2: Create device-specific policies
 resource "panos_security_policy" "branch_policy" {
   location = {
     device_group = {
@@ -197,18 +250,70 @@ resource "panos_security_policy" "branch_policy" {
   }
 }
 
-# Define actions for each stage
-action "panos_commit" "local_commit" {
+# Define actions for the deployment workflow
+action "panos_commit" "commit_to_panorama" {
 }
 
-action "panos_commit_all" "push_to_branches" {
+action "panos_commit_all" "push_to_devices" {
 }
 
 # Deployment workflow:
-# 1. terraform apply                           # Apply configuration to Panorama
-# 2. terraform action invoke local_commit      # Commit to Panorama locally
-# 3. Review changes in Panorama UI
-# 4. terraform action invoke push_to_branches  # Push to branch firewalls
+# 1. terraform apply                              # Apply resources (creates pending changes)
+# 2. terraform action invoke commit_to_panorama   # Commit changes to Panorama
+# 3. (Optional) Review in Panorama UI
+# 4. terraform action invoke push_to_devices      # Push to managed devices
+```
+
+### Automated Workflow with Lifecycle Hooks
+
+This example uses Terraform lifecycle hooks to automatically trigger both commit and push actions:
+
+```terraform
+provider "panos" {
+  hostname = "panorama.example.com"
+  username = "admin"
+  password = var.panos_password
+}
+
+resource "panos_security_policy" "app_policy" {
+  location = {
+    device_group = {
+      name = "Production"
+    }
+  }
+
+  rules = [{
+    name                  = "Allow-App-Traffic"
+    source_zones          = ["trust"]
+    destination_zones     = ["untrust"]
+    source_addresses      = ["any"]
+    destination_addresses = ["any"]
+    applications          = ["web-browsing"]
+    action                = "allow"
+  }]
+
+  # Automatically commit and push after create or update
+  lifecycle {
+    action_trigger {
+      events  = [after_create, after_update]
+      actions = [
+        action.panos_commit.commit_to_panorama,
+        action.panos_commit_all.push_to_devices
+      ]
+    }
+  }
+}
+
+action "panos_commit" "commit_to_panorama" {
+}
+
+action "panos_commit_all" "push_to_devices" {
+}
+
+# With this setup, running terraform apply will:
+# 1. Create/update the security policy
+# 2. Automatically commit to Panorama
+# 3. Automatically push to devices
 ```
 
 ### Template Stack Push Example
@@ -243,11 +348,17 @@ resource "panos_ethernet_interface" "wan" {
   }
 }
 
-# Declarative action for template push
+# Define actions for manual invocation
+action "panos_commit" "commit_template" {
+}
+
 action "panos_commit_all" "push_template" {
 }
 
-# Invoke with: terraform action invoke push_template
+# Manual workflow:
+# terraform apply
+# terraform action invoke commit_template
+# terraform action invoke push_template
 ```
 
 ### Conditional Push Based on Environment
@@ -338,12 +449,16 @@ terraform init
 # Step 2: Plan the changes
 terraform plan -out=tfplan
 
-# Step 3: Apply configuration changes to Panorama
+# Step 3: Apply configuration changes to Panorama (creates pending changes)
 terraform apply tfplan
 
-# Step 4: Commit and push to devices
+# Step 4: Commit changes to Panorama
+echo "Committing configuration to Panorama..."
+terraform action invoke commit_to_panorama
+
+# Step 5: Push committed configuration to managed devices
 echo "Pushing configuration to managed devices..."
-terraform action invoke deploy
+terraform action invoke push_to_devices
 
 echo "Deployment complete!"
 ```
@@ -352,31 +467,37 @@ echo "Deployment complete!"
 
 ```bash
 #!/bin/bash
-# deploy.sh - Alternative approach using CLI actions
+# deploy.sh - Production deployment with manual review checkpoint
 
 set -e
 
 # Step 1: Plan the changes
 terraform plan -out=tfplan
 
-# Step 2: Apply configuration changes to Panorama
+# Step 2: Apply configuration changes to Panorama (creates pending changes)
 terraform apply tfplan
 
-# Step 3: Optional - Review step in production
+# Step 3: Commit to Panorama
+echo "Committing changes to Panorama..."
+terraform action invoke commit_to_panorama
+
+# Step 4: Manual review checkpoint for production
 if [ "$ENVIRONMENT" = "production" ]; then
-  echo "Changes applied to Panorama. Review in UI before pushing to devices."
-  echo "Continue? (yes/no)"
+  echo "Configuration committed to Panorama."
+  echo "Review changes in Panorama UI before pushing to devices."
+  echo "Continue with push? (yes/no)"
   read -r response
   if [ "$response" != "yes" ]; then
-    echo "Deployment cancelled."
-    exit 1
+    echo "Push cancelled. Changes are committed to Panorama but not pushed to devices."
+    exit 0
   fi
 fi
 
-# Step 4: Push to all managed devices
-terraform apply -invoke=action.panos_commit_all.deploy
+# Step 5: Push committed configuration to all managed devices
+echo "Pushing configuration to devices..."
+terraform action invoke push_to_devices
 
-echo "Configuration pushed to all devices."
+echo "Deployment complete!"
 ```
 
 ## Invocation Methods Comparison
