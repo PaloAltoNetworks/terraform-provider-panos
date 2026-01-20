@@ -1704,18 +1704,13 @@ func AuthenticationProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"allow_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -1729,18 +1724,14 @@ func AuthenticationProfileDataSourceSchema() dsschema.Schema {
 
 			"user_domain": dsschema.StringAttribute{
 				Description: "Domain name(Not for SAML) to be used for authentication",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"username_modifier": dsschema.StringAttribute{
 				Description: "Username modifier(Not for SAML) to handle user domain",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1767,26 +1758,20 @@ func (o *AuthenticationProfileDataSourceModel) getTypeFor(name string) attr.Type
 func AuthenticationProfileDataSourceLockoutSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"failed_attempts": dsschema.Int64Attribute{
 				Description: "Number of failed login attempts to trigger lock-out",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lockout_time": dsschema.Int64Attribute{
 				Description: "Number of minutes to lock-out",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1813,10 +1798,8 @@ func (o *AuthenticationProfileDataSourceLockoutObject) getTypeFor(name string) a
 func AuthenticationProfileDataSourceMethodSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"cloud": AuthenticationProfileDataSourceMethodCloudSchema(),
@@ -1859,10 +1842,8 @@ func (o *AuthenticationProfileDataSourceMethodObject) getTypeFor(name string) at
 func AuthenticationProfileDataSourceMethodCloudSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1880,10 +1861,8 @@ func AuthenticationProfileDataSourceMethodCloudSchema() dsschema.SingleNestedAtt
 
 			"clock_skew": dsschema.Int64Attribute{
 				Description: "clock skew between CAS service and device",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"region": AuthenticationProfileDataSourceMethodCloudRegionSchema(),
@@ -1912,18 +1891,14 @@ func (o *AuthenticationProfileDataSourceMethodCloudObject) getTypeFor(name strin
 func AuthenticationProfileDataSourceMethodCloudRegionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"region_id": dsschema.StringAttribute{
 				Description: "Region Id",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tenant": AuthenticationProfileDataSourceMethodCloudRegionTenantSchema(),
@@ -1952,20 +1927,16 @@ func (o *AuthenticationProfileDataSourceMethodCloudRegionObject) getTypeFor(name
 func AuthenticationProfileDataSourceMethodCloudRegionTenantSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": AuthenticationProfileDataSourceMethodCloudRegionTenantProfileSchema(),
 
 			"tenant_id": dsschema.StringAttribute{
 				Description: "Tenant id",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1992,20 +1963,16 @@ func (o *AuthenticationProfileDataSourceMethodCloudRegionTenantObject) getTypeFo
 func AuthenticationProfileDataSourceMethodCloudRegionTenantProfileSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"mfa": AuthenticationProfileDataSourceMethodCloudRegionTenantProfileMfaSchema(),
 
 			"profile_id": dsschema.StringAttribute{
 				Description: "CAS Profile id",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2032,18 +1999,14 @@ func (o *AuthenticationProfileDataSourceMethodCloudRegionTenantProfileObject) ge
 func AuthenticationProfileDataSourceMethodCloudRegionTenantProfileMfaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"force_mfa": dsschema.StringAttribute{
 				Description: "force multi-factor authentication in cloud",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2070,10 +2033,8 @@ func (o *AuthenticationProfileDataSourceMethodCloudRegionTenantProfileMfaObject)
 func AuthenticationProfileDataSourceMethodKerberosSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2091,18 +2052,14 @@ func AuthenticationProfileDataSourceMethodKerberosSchema() dsschema.SingleNested
 
 			"realm": dsschema.StringAttribute{
 				Description: "Realm name to be used for authentication",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"server_profile": dsschema.StringAttribute{
 				Description: "Kerberos server profile object",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2129,10 +2086,8 @@ func (o *AuthenticationProfileDataSourceMethodKerberosObject) getTypeFor(name st
 func AuthenticationProfileDataSourceMethodLdapSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2150,26 +2105,20 @@ func AuthenticationProfileDataSourceMethodLdapSchema() dsschema.SingleNestedAttr
 
 			"login_attribute": dsschema.StringAttribute{
 				Description: "Default is samAccountName for Active Directory, uid for other directory servers",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"passwd_exp_days": dsschema.Int64Attribute{
 				Description: "Avail for Active Directory, eDir",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"server_profile": dsschema.StringAttribute{
 				Description: "LDAP server profile object",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2196,10 +2145,8 @@ func (o *AuthenticationProfileDataSourceMethodLdapObject) getTypeFor(name string
 func AuthenticationProfileDataSourceMethodLocalDatabaseSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2238,10 +2185,8 @@ func (o *AuthenticationProfileDataSourceMethodLocalDatabaseObject) getTypeFor(na
 func AuthenticationProfileDataSourceMethodNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2280,10 +2225,8 @@ func (o *AuthenticationProfileDataSourceMethodNoneObject) getTypeFor(name string
 func AuthenticationProfileDataSourceMethodRadiusSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2301,18 +2244,14 @@ func AuthenticationProfileDataSourceMethodRadiusSchema() dsschema.SingleNestedAt
 
 			"checkgroup": dsschema.BoolAttribute{
 				Description: "Retrieve user group from RADIUS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"server_profile": dsschema.StringAttribute{
 				Description: "RADIUS server profile object",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2339,10 +2278,8 @@ func (o *AuthenticationProfileDataSourceMethodRadiusObject) getTypeFor(name stri
 func AuthenticationProfileDataSourceMethodSamlIdpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2360,66 +2297,50 @@ func AuthenticationProfileDataSourceMethodSamlIdpSchema() dsschema.SingleNestedA
 
 			"attribute_name_access_domain": dsschema.StringAttribute{
 				Description: "access-domain",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"attribute_name_admin_role": dsschema.StringAttribute{
 				Description: "admin-role",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"attribute_name_usergroup": dsschema.StringAttribute{
 				Description: "usergroup",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"attribute_name_username": dsschema.StringAttribute{
 				Description: "Attribute name for username to be extracted from SAML response",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Certificate profile for IDP and SP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_single_logout": dsschema.BoolAttribute{
 				Description: "Enable single logout",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"request_signing_certificate": dsschema.StringAttribute{
 				Description: "Signing certificate for SAML requests",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"server_profile": dsschema.StringAttribute{
 				Description: "IdP server profile object",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2446,10 +2367,8 @@ func (o *AuthenticationProfileDataSourceMethodSamlIdpObject) getTypeFor(name str
 func AuthenticationProfileDataSourceMethodTacplusSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2467,18 +2386,14 @@ func AuthenticationProfileDataSourceMethodTacplusSchema() dsschema.SingleNestedA
 
 			"checkgroup": dsschema.BoolAttribute{
 				Description: "Retrieve user group from TACACS+",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"server_profile": dsschema.StringAttribute{
 				Description: "TACACS+ server profile object",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2505,27 +2420,21 @@ func (o *AuthenticationProfileDataSourceMethodTacplusObject) getTypeFor(name str
 func AuthenticationProfileDataSourceMultiFactorAuthSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"factors": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"mfa_enable": dsschema.BoolAttribute{
 				Description: "Enable Additional Authentication Factors",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2552,34 +2461,26 @@ func (o *AuthenticationProfileDataSourceMultiFactorAuthObject) getTypeFor(name s
 func AuthenticationProfileDataSourceSingleSignOnSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"kerberos_keytab": dsschema.StringAttribute{
 				Description: "Kerberos keytab",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"realm": dsschema.StringAttribute{
 				Description: "Kerberos realm to be used for authentication",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"service_principal": dsschema.StringAttribute{
 				Description: "Kerberos service principal",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2874,7 +2775,209 @@ type AuthenticationProfileResourceSingleSignOnObject struct {
 	ServicePrincipal types.String `tfsdk:"service_principal"`
 }
 
+func (o *AuthenticationProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Lockout.IsUnknown() && !o.Lockout.IsNull() {
+		var nestedObj AuthenticationProfileResourceLockoutObject
+		diags := o.Lockout.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("lockout"))
+		}
+	}
+	if !o.Method.IsUnknown() && !o.Method.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodObject
+		diags := o.Method.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("method"))
+		}
+	}
+	if !o.MultiFactorAuth.IsUnknown() && !o.MultiFactorAuth.IsNull() {
+		var nestedObj AuthenticationProfileResourceMultiFactorAuthObject
+		diags := o.MultiFactorAuth.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("multi_factor_auth"))
+		}
+	}
+	if !o.SingleSignOn.IsUnknown() && !o.SingleSignOn.IsNull() {
+		var nestedObj AuthenticationProfileResourceSingleSignOnObject
+		diags := o.SingleSignOn.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("single_sign_on"))
+		}
+	}
+}
+
+func (o *AuthenticationProfileResourceLockoutObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceMethodObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Cloud.IsUnknown() && !o.Cloud.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodCloudObject
+		diags := o.Cloud.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("cloud"))
+		}
+	}
+	if !o.Kerberos.IsUnknown() && !o.Kerberos.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodKerberosObject
+		diags := o.Kerberos.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("kerberos"))
+		}
+	}
+	if !o.Ldap.IsUnknown() && !o.Ldap.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodLdapObject
+		diags := o.Ldap.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ldap"))
+		}
+	}
+	if !o.LocalDatabase.IsUnknown() && !o.LocalDatabase.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodLocalDatabaseObject
+		diags := o.LocalDatabase.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_database"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.Radius.IsUnknown() && !o.Radius.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodRadiusObject
+		diags := o.Radius.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("radius"))
+		}
+	}
+	if !o.SamlIdp.IsUnknown() && !o.SamlIdp.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodSamlIdpObject
+		diags := o.SamlIdp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("saml_idp"))
+		}
+	}
+	if !o.Tacplus.IsUnknown() && !o.Tacplus.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodTacplusObject
+		diags := o.Tacplus.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tacplus"))
+		}
+	}
+}
+
+func (o *AuthenticationProfileResourceMethodCloudObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Region.IsUnknown() && !o.Region.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodCloudRegionObject
+		diags := o.Region.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("region"))
+		}
+	}
+}
+
+func (o *AuthenticationProfileResourceMethodCloudRegionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Tenant.IsUnknown() && !o.Tenant.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodCloudRegionTenantObject
+		diags := o.Tenant.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tenant"))
+		}
+	}
+}
+
+func (o *AuthenticationProfileResourceMethodCloudRegionTenantObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Profile.IsUnknown() && !o.Profile.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodCloudRegionTenantProfileObject
+		diags := o.Profile.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("profile"))
+		}
+	}
+}
+
+func (o *AuthenticationProfileResourceMethodCloudRegionTenantProfileObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Mfa.IsUnknown() && !o.Mfa.IsNull() {
+		var nestedObj AuthenticationProfileResourceMethodCloudRegionTenantProfileMfaObject
+		diags := o.Mfa.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("mfa"))
+		}
+	}
+}
+
+func (o *AuthenticationProfileResourceMethodCloudRegionTenantProfileMfaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceMethodKerberosObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceMethodLdapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceMethodLocalDatabaseObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceMethodNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceMethodRadiusObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceMethodSamlIdpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceMethodTacplusObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceMultiFactorAuthObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AuthenticationProfileResourceSingleSignOnObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *AuthenticationProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource AuthenticationProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -2887,18 +2990,12 @@ func AuthenticationProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"allow_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -2912,18 +3009,13 @@ func AuthenticationProfileResourceSchema() rsschema.Schema {
 
 			"user_domain": rsschema.StringAttribute{
 				Description: "Domain name(Not for SAML) to be used for authentication",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"username_modifier": rsschema.StringAttribute{
 				Description: "Username modifier(Not for SAML) to handle user domain",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("%USERINPUT%"),
 			},
 		},
@@ -2951,26 +3043,18 @@ func (o *AuthenticationProfileResourceModel) getTypeFor(name string) attr.Type {
 func AuthenticationProfileResourceLockoutSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"failed_attempts": rsschema.Int64Attribute{
 				Description: "Number of failed login attempts to trigger lock-out",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"lockout_time": rsschema.Int64Attribute{
 				Description: "Number of minutes to lock-out",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 		},
@@ -2998,10 +3082,7 @@ func (o *AuthenticationProfileResourceLockoutObject) getTypeFor(name string) att
 func AuthenticationProfileResourceMethodSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"cloud": AuthenticationProfileResourceMethodCloudSchema(),
@@ -3044,10 +3125,7 @@ func (o *AuthenticationProfileResourceMethodObject) getTypeFor(name string) attr
 func AuthenticationProfileResourceMethodCloudSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3065,10 +3143,8 @@ func AuthenticationProfileResourceMethodCloudSchema() rsschema.SingleNestedAttri
 
 			"clock_skew": rsschema.Int64Attribute{
 				Description: "clock skew between CAS service and device",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(60),
 			},
 
@@ -3098,18 +3174,12 @@ func (o *AuthenticationProfileResourceMethodCloudObject) getTypeFor(name string)
 func AuthenticationProfileResourceMethodCloudRegionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"region_id": rsschema.StringAttribute{
 				Description: "Region Id",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tenant": AuthenticationProfileResourceMethodCloudRegionTenantSchema(),
@@ -3138,20 +3208,14 @@ func (o *AuthenticationProfileResourceMethodCloudRegionObject) getTypeFor(name s
 func AuthenticationProfileResourceMethodCloudRegionTenantSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": AuthenticationProfileResourceMethodCloudRegionTenantProfileSchema(),
 
 			"tenant_id": rsschema.StringAttribute{
 				Description: "Tenant id",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3178,20 +3242,14 @@ func (o *AuthenticationProfileResourceMethodCloudRegionTenantObject) getTypeFor(
 func AuthenticationProfileResourceMethodCloudRegionTenantProfileSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"mfa": AuthenticationProfileResourceMethodCloudRegionTenantProfileMfaSchema(),
 
 			"profile_id": rsschema.StringAttribute{
 				Description: "CAS Profile id",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3218,18 +3276,13 @@ func (o *AuthenticationProfileResourceMethodCloudRegionTenantProfileObject) getT
 func AuthenticationProfileResourceMethodCloudRegionTenantProfileMfaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"force_mfa": rsschema.StringAttribute{
 				Description: "force multi-factor authentication in cloud",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("no"),
 			},
 		},
@@ -3257,10 +3310,7 @@ func (o *AuthenticationProfileResourceMethodCloudRegionTenantProfileMfaObject) g
 func AuthenticationProfileResourceMethodKerberosSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3278,18 +3328,12 @@ func AuthenticationProfileResourceMethodKerberosSchema() rsschema.SingleNestedAt
 
 			"realm": rsschema.StringAttribute{
 				Description: "Realm name to be used for authentication",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"server_profile": rsschema.StringAttribute{
 				Description: "Kerberos server profile object",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3316,10 +3360,7 @@ func (o *AuthenticationProfileResourceMethodKerberosObject) getTypeFor(name stri
 func AuthenticationProfileResourceMethodLdapSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3337,27 +3378,19 @@ func AuthenticationProfileResourceMethodLdapSchema() rsschema.SingleNestedAttrib
 
 			"login_attribute": rsschema.StringAttribute{
 				Description: "Default is samAccountName for Active Directory, uid for other directory servers",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"passwd_exp_days": rsschema.Int64Attribute{
 				Description: "Avail for Active Directory, eDir",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(7),
 			},
 
 			"server_profile": rsschema.StringAttribute{
 				Description: "LDAP server profile object",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3384,10 +3417,7 @@ func (o *AuthenticationProfileResourceMethodLdapObject) getTypeFor(name string) 
 func AuthenticationProfileResourceMethodLocalDatabaseSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3426,10 +3456,7 @@ func (o *AuthenticationProfileResourceMethodLocalDatabaseObject) getTypeFor(name
 func AuthenticationProfileResourceMethodNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3468,10 +3495,7 @@ func (o *AuthenticationProfileResourceMethodNoneObject) getTypeFor(name string) 
 func AuthenticationProfileResourceMethodRadiusSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3489,18 +3513,12 @@ func AuthenticationProfileResourceMethodRadiusSchema() rsschema.SingleNestedAttr
 
 			"checkgroup": rsschema.BoolAttribute{
 				Description: "Retrieve user group from RADIUS",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"server_profile": rsschema.StringAttribute{
 				Description: "RADIUS server profile object",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3527,10 +3545,7 @@ func (o *AuthenticationProfileResourceMethodRadiusObject) getTypeFor(name string
 func AuthenticationProfileResourceMethodSamlIdpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3548,67 +3563,44 @@ func AuthenticationProfileResourceMethodSamlIdpSchema() rsschema.SingleNestedAtt
 
 			"attribute_name_access_domain": rsschema.StringAttribute{
 				Description: "access-domain",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"attribute_name_admin_role": rsschema.StringAttribute{
 				Description: "admin-role",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"attribute_name_usergroup": rsschema.StringAttribute{
 				Description: "usergroup",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"attribute_name_username": rsschema.StringAttribute{
 				Description: "Attribute name for username to be extracted from SAML response",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("username"),
 			},
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Certificate profile for IDP and SP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_single_logout": rsschema.BoolAttribute{
 				Description: "Enable single logout",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"request_signing_certificate": rsschema.StringAttribute{
 				Description: "Signing certificate for SAML requests",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"server_profile": rsschema.StringAttribute{
 				Description: "IdP server profile object",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3635,10 +3627,7 @@ func (o *AuthenticationProfileResourceMethodSamlIdpObject) getTypeFor(name strin
 func AuthenticationProfileResourceMethodTacplusSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3656,18 +3645,12 @@ func AuthenticationProfileResourceMethodTacplusSchema() rsschema.SingleNestedAtt
 
 			"checkgroup": rsschema.BoolAttribute{
 				Description: "Retrieve user group from TACACS+",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"server_profile": rsschema.StringAttribute{
 				Description: "TACACS+ server profile object",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3694,27 +3677,18 @@ func (o *AuthenticationProfileResourceMethodTacplusObject) getTypeFor(name strin
 func AuthenticationProfileResourceMultiFactorAuthSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"factors": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"mfa_enable": rsschema.BoolAttribute{
 				Description: "Enable Additional Authentication Factors",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3741,34 +3715,22 @@ func (o *AuthenticationProfileResourceMultiFactorAuthObject) getTypeFor(name str
 func AuthenticationProfileResourceSingleSignOnSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"kerberos_keytab": rsschema.StringAttribute{
 				Description: "Kerberos keytab",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"realm": rsschema.StringAttribute{
 				Description: "Kerberos realm to be used for authentication",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"service_principal": rsschema.StringAttribute{
 				Description: "Kerberos service principal",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5963,14 +5925,15 @@ type AuthenticationProfileImportState struct {
 
 func (o AuthenticationProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *AuthenticationProfileLocation `json:"location"`
-		Name     *string                        `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *AuthenticationProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, AuthenticationProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -5984,8 +5947,8 @@ func (o AuthenticationProfileImportState) MarshalJSON() ([]byte, error) {
 
 func (o *AuthenticationProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *AuthenticationProfileLocation `json:"location"`
-		Name     *string                        `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -5994,10 +5957,14 @@ func (o *AuthenticationProfileImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, AuthenticationProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

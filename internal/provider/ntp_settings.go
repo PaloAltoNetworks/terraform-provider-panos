@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/services/ntp"
@@ -1295,8 +1296,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			authenticationKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			authenticationKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -1328,8 +1329,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			authenticationKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			authenticationKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -1579,8 +1580,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			authenticationKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			authenticationKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -1612,8 +1613,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			authenticationKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			authenticationKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -1666,10 +1667,8 @@ func (o *NtpSettingsDataSourceModel) getTypeFor(name string) attr.Type {
 func NtpSettingsDataSourceNtpServersSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"primary_ntp_server": NtpSettingsDataSourceNtpServersPrimaryNtpServerSchema(),
@@ -1700,20 +1699,16 @@ func (o *NtpSettingsDataSourceNtpServersObject) getTypeFor(name string) attr.Typ
 func NtpSettingsDataSourceNtpServersPrimaryNtpServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"authentication_type": NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSchema(),
 
 			"ntp_server_address": dsschema.StringAttribute{
 				Description: "NTP Server IP Address or Domain Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1740,10 +1735,7 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerObject) getTypeFor(name 
 func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
 		Computed:    true,
-		Optional:    false,
-		Sensitive:   false,
 		Attributes: map[string]dsschema.Attribute{
 
 			"autokey": NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeySchema(),
@@ -1776,10 +1768,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeObject
 func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1813,10 +1803,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeAutoke
 func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1850,10 +1838,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeNoneOb
 func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1868,10 +1854,8 @@ func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricK
 
 			"key_id": dsschema.Int64Attribute{
 				Description: "Symmetric Key Number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1898,10 +1882,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"md5": NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Schema(),
@@ -1932,10 +1914,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1947,9 +1927,8 @@ func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricK
 
 			"authentication_key": dsschema.StringAttribute{
 				Description: "Symmetric Key MD5 String",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 		},
@@ -1977,10 +1956,8 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1992,9 +1969,8 @@ func NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricK
 
 			"authentication_key": dsschema.StringAttribute{
 				Description: "Symmetric Key SHA1 Hexadecimal",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 		},
@@ -2022,20 +1998,16 @@ func (o *NtpSettingsDataSourceNtpServersPrimaryNtpServerAuthenticationTypeSymmet
 func NtpSettingsDataSourceNtpServersSecondaryNtpServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"authentication_type": NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSchema(),
 
 			"ntp_server_address": dsschema.StringAttribute{
 				Description: "NTP Server IP Address or Domain Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2062,10 +2034,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerObject) getTypeFor(nam
 func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"autokey": NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeySchema(),
@@ -2098,10 +2068,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeObje
 func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2135,10 +2103,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeAuto
 func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2172,10 +2138,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeNone
 func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2190,10 +2154,8 @@ func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetri
 
 			"key_id": dsschema.Int64Attribute{
 				Description: "Symmetric Key Number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2220,10 +2182,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"md5": NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Schema(),
@@ -2254,10 +2214,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2269,9 +2227,8 @@ func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetri
 
 			"authentication_key": dsschema.StringAttribute{
 				Description: "Symmetric Key MD5 String",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 		},
@@ -2299,10 +2256,8 @@ func (o *NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymm
 func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2314,9 +2269,8 @@ func NtpSettingsDataSourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetri
 
 			"authentication_key": dsschema.StringAttribute{
 				Description: "Symmetric Key SHA1 Hexadecimal",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 		},
@@ -2549,7 +2503,261 @@ type NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricK
 	AuthenticationKey types.String `tfsdk:"authentication_key"`
 }
 
+func (o *NtpSettingsResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.NtpServers.IsUnknown() && !o.NtpServers.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersObject
+		diags := o.NtpServers.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ntp_servers"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.PrimaryNtpServer.IsUnknown() && !o.PrimaryNtpServer.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersPrimaryNtpServerObject
+		diags := o.PrimaryNtpServer.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("primary_ntp_server"))
+		}
+	}
+	if !o.SecondaryNtpServer.IsUnknown() && !o.SecondaryNtpServer.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersSecondaryNtpServerObject
+		diags := o.SecondaryNtpServer.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("secondary_ntp_server"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AuthenticationType.IsUnknown() && !o.AuthenticationType.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject
+		diags := o.AuthenticationType.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("authentication_type"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Autokey.IsUnknown() && !o.Autokey.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject
+		diags := o.Autokey.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("autokey"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.SymmetricKey.IsUnknown() && !o.SymmetricKey.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject
+		diags := o.SymmetricKey.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("symmetric_key"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Algorithm.IsUnknown() && !o.Algorithm.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
+		diags := o.Algorithm.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("algorithm"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Md5.IsUnknown() && !o.Md5.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
+		diags := o.Md5.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("md5"))
+		}
+	}
+	if !o.Sha1.IsUnknown() && !o.Sha1.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
+		diags := o.Sha1.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha1"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AuthenticationKey.IsUnknown() && !o.AuthenticationKey.IsNull() {
+		value := o.AuthenticationKey.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("authentication_key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("authentication_key").String()),
+			)
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AuthenticationKey.IsUnknown() && !o.AuthenticationKey.IsNull() {
+		value := o.AuthenticationKey.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("authentication_key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("authentication_key").String()),
+			)
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AuthenticationType.IsUnknown() && !o.AuthenticationType.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
+		diags := o.AuthenticationType.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("authentication_type"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Autokey.IsUnknown() && !o.Autokey.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject
+		diags := o.Autokey.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("autokey"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.SymmetricKey.IsUnknown() && !o.SymmetricKey.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject
+		diags := o.SymmetricKey.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("symmetric_key"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Algorithm.IsUnknown() && !o.Algorithm.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject
+		diags := o.Algorithm.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("algorithm"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Md5.IsUnknown() && !o.Md5.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object
+		diags := o.Md5.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("md5"))
+		}
+	}
+	if !o.Sha1.IsUnknown() && !o.Sha1.IsNull() {
+		var nestedObj NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object
+		diags := o.Sha1.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha1"))
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AuthenticationKey.IsUnknown() && !o.AuthenticationKey.IsNull() {
+		value := o.AuthenticationKey.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("authentication_key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("authentication_key").String()),
+			)
+		}
+	}
+}
+
+func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AuthenticationKey.IsUnknown() && !o.AuthenticationKey.IsNull() {
+		value := o.AuthenticationKey.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("authentication_key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("authentication_key").String()),
+			)
+		}
+	}
+}
+
 func (o *NtpSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource NtpSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -2586,10 +2794,7 @@ func (o *NtpSettingsResourceModel) getTypeFor(name string) attr.Type {
 func NtpSettingsResourceNtpServersSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"primary_ntp_server": NtpSettingsResourceNtpServersPrimaryNtpServerSchema(),
@@ -2620,20 +2825,14 @@ func (o *NtpSettingsResourceNtpServersObject) getTypeFor(name string) attr.Type 
 func NtpSettingsResourceNtpServersPrimaryNtpServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"authentication_type": NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSchema(),
 
 			"ntp_server_address": rsschema.StringAttribute{
 				Description: "NTP Server IP Address or Domain Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2661,9 +2860,6 @@ func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSchema() rss
 	return rsschema.SingleNestedAttribute{
 		Description: "",
 		Required:    true,
-		Computed:    false,
-		Optional:    false,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"autokey": NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeySchema(),
@@ -2696,10 +2892,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeObject) 
 func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2733,10 +2926,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeAutokeyO
 func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2770,10 +2960,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeNoneObje
 func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2788,10 +2975,7 @@ func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey
 
 			"key_id": rsschema.Int64Attribute{
 				Description: "Symmetric Key Number",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2818,10 +3002,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"md5": NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Schema(),
@@ -2852,10 +3033,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2867,8 +3045,6 @@ func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey
 
 			"authentication_key": rsschema.StringAttribute{
 				Description: "Symmetric Key MD5 String",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
@@ -2897,10 +3073,7 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2912,8 +3085,6 @@ func NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetricKey
 
 			"authentication_key": rsschema.StringAttribute{
 				Description: "Symmetric Key SHA1 Hexadecimal",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
@@ -2942,20 +3113,14 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 func NtpSettingsResourceNtpServersSecondaryNtpServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"authentication_type": NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSchema(),
 
 			"ntp_server_address": rsschema.StringAttribute{
 				Description: "NTP Server IP Address or Domain Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2982,10 +3147,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerObject) getTypeFor(name 
 func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"autokey": NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeySchema(),
@@ -3018,10 +3180,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeObject
 func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutokeySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3055,10 +3214,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeAutoke
 func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3092,10 +3248,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeNoneOb
 func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3110,10 +3263,7 @@ func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricK
 
 			"key_id": rsschema.Int64Attribute{
 				Description: "Symmetric Key Number",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3140,10 +3290,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"md5": NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Schema(),
@@ -3174,10 +3321,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmMd5Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3189,8 +3333,6 @@ func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricK
 
 			"authentication_key": rsschema.StringAttribute{
 				Description: "Symmetric Key MD5 String",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
@@ -3219,10 +3361,7 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricKeyAlgorithmSha1Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3234,8 +3373,6 @@ func NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmetricK
 
 			"authentication_key": rsschema.StringAttribute{
 				Description: "Symmetric Key SHA1 Hexadecimal",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
@@ -4467,8 +4604,8 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			authenticationKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			authenticationKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -4500,8 +4637,8 @@ func (o *NtpSettingsResourceNtpServersPrimaryNtpServerAuthenticationTypeSymmetri
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			authenticationKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			authenticationKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -4751,8 +4888,8 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			authenticationKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			authenticationKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -4784,8 +4921,8 @@ func (o *NtpSettingsResourceNtpServersSecondaryNtpServerAuthenticationTypeSymmet
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			authenticationKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			authenticationKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {

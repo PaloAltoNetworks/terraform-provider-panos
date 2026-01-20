@@ -1146,18 +1146,12 @@ func VirtualRouterStaticRoutesIpv4DataSourceSchema() dsschema.Schema {
 			"static_routes": dsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesSchema(),
 			},
 
 			"virtual_router": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1187,44 +1181,33 @@ func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesSchema() dsschema.Nested
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"admin_dist": dsschema.Int64Attribute{
 				Description: "adminitrative distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"bfd": VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdSchema(),
 
 			"destination": dsschema.StringAttribute{
 				Description: "Destination IP address/prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "metric value (path cost)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"nexthop": VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopSchema(),
@@ -1257,18 +1240,14 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesObject) getTypeFor(n
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1295,36 +1274,28 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesBfdObject) getTypeFo
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"discard": VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardSchema(),
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "nexthop address FQDN address object configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip_address": dsschema.StringAttribute{
 				Description: "Next hop IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"next_vr": dsschema.StringAttribute{
 				Description: "Next hop virtual router",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"receive": VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveSchema(),
@@ -1353,10 +1324,8 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopObject) getTy
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1392,10 +1361,8 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopDiscardObject
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1431,42 +1398,32 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesNexthopReceiveObject
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"failure_condition": dsschema.StringAttribute{
 				Description: "failure condition",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hold_time": dsschema.Int64Attribute{
 				Description: "hold time (minutes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"monitor_destinations": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestinationsSchema(),
 			},
 		},
@@ -1497,50 +1454,37 @@ func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDestin
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": dsschema.StringAttribute{
 				Description: "Source IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"destination": dsschema.StringAttribute{
 				Description: "Destination IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interval": dsschema.Int64Attribute{
 				Description: "ping interval",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"count": dsschema.Int64Attribute{
 				Description: "ping count",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1567,10 +1511,8 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesPathMonitorMonitorDe
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"both": VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothSchema(),
@@ -1605,10 +1547,8 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableObject) ge
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1643,10 +1583,8 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableBothObject
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1681,10 +1619,8 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableMulticastO
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1719,10 +1655,8 @@ func (o *VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableNoInstallO
 func VirtualRouterStaticRoutesIpv4DataSourceStaticRoutesRouteTableUnicastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1993,7 +1927,165 @@ type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject 
 type VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject struct {
 }
 
+func (o *VirtualRouterStaticRoutesIpv4ResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.StaticRoutes.IsUnknown() && !o.StaticRoutes.IsNull() {
+		var elements []VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject
+		diags := o.StaticRoutes.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("static_routes").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject
+		diags := o.Bfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bfd"))
+		}
+	}
+	if !o.Nexthop.IsUnknown() && !o.Nexthop.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject
+		diags := o.Nexthop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("nexthop"))
+		}
+	}
+	if !o.PathMonitor.IsUnknown() && !o.PathMonitor.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject
+		diags := o.PathMonitor.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("path_monitor"))
+		}
+	}
+	if !o.RouteTable.IsUnknown() && !o.RouteTable.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject
+		diags := o.RouteTable.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("route_table"))
+		}
+	}
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Discard.IsUnknown() && !o.Discard.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject
+		diags := o.Discard.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("discard"))
+		}
+	}
+	if !o.Receive.IsUnknown() && !o.Receive.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject
+		diags := o.Receive.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("receive"))
+		}
+	}
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.MonitorDestinations.IsUnknown() && !o.MonitorDestinations.IsNull() {
+		var elements []VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject
+		diags := o.MonitorDestinations.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("monitor_destinations").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Both.IsUnknown() && !o.Both.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject
+		diags := o.Both.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("both"))
+		}
+	}
+	if !o.Multicast.IsUnknown() && !o.Multicast.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject
+		diags := o.Multicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("multicast"))
+		}
+	}
+	if !o.NoInstall.IsUnknown() && !o.NoInstall.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject
+		diags := o.NoInstall.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("no_install"))
+		}
+	}
+	if !o.Unicast.IsUnknown() && !o.Unicast.IsNull() {
+		var nestedObj VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject
+		diags := o.Unicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("unicast"))
+		}
+	}
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *VirtualRouterStaticRoutesIpv4Resource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource VirtualRouterStaticRoutesIpv4ResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -2007,18 +2099,12 @@ func VirtualRouterStaticRoutesIpv4ResourceSchema() rsschema.Schema {
 			"static_routes": rsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VirtualRouterStaticRoutesIpv4ResourceStaticRoutesSchema(),
 			},
 
 			"virtual_router": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2048,44 +2134,30 @@ func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesSchema() rsschema.NestedAt
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"admin_dist": rsschema.Int64Attribute{
 				Description: "adminitrative distance",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"bfd": VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdSchema(),
 
 			"destination": rsschema.StringAttribute{
 				Description: "Destination IP address/prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "metric value (path cost)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
@@ -2119,18 +2191,13 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesObject) getTypeFor(nam
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -2158,36 +2225,24 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesBfdObject) getTypeFor(
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"discard": VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardSchema(),
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "nexthop address FQDN address object configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip_address": rsschema.StringAttribute{
 				Description: "Next hop IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"next_vr": rsschema.StringAttribute{
 				Description: "Next hop virtual router",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"receive": VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveSchema(),
@@ -2216,10 +2271,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopObject) getType
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2255,10 +2307,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopDiscardObject) 
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2294,44 +2343,31 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesNexthopReceiveObject) 
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"failure_condition": rsschema.StringAttribute{
 				Description: "failure condition",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("any"),
 			},
 
 			"hold_time": rsschema.Int64Attribute{
 				Description: "hold time (minutes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(2),
 			},
 
 			"monitor_destinations": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinationsSchema(),
 			},
 		},
@@ -2362,51 +2398,35 @@ func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDestinat
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": rsschema.StringAttribute{
 				Description: "Source IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"destination": rsschema.StringAttribute{
 				Description: "Destination IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interval": rsschema.Int64Attribute{
 				Description: "ping interval",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(3),
 			},
 
 			"count": rsschema.Int64Attribute{
 				Description: "ping count",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(5),
 			},
 		},
@@ -2434,10 +2454,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesPathMonitorMonitorDest
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"both": VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothSchema(),
@@ -2472,10 +2489,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableObject) getT
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2510,10 +2524,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableBothObject) 
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2548,10 +2559,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableMulticastObj
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2586,10 +2594,7 @@ func (o *VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableNoInstallObj
 func VirtualRouterStaticRoutesIpv4ResourceStaticRoutesRouteTableUnicastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4196,14 +4201,15 @@ type VirtualRouterStaticRoutesIpv4ImportState struct {
 
 func (o VirtualRouterStaticRoutesIpv4ImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location      *VirtualRouterStaticRoutesIpv4Location `json:"location"`
-		VirtualRouter *string                                `json:"virtual_router"`
+		Location      interface{} `json:"location"`
+		VirtualRouter *string     `json:"virtual_router"`
 	}
-	var location_object *VirtualRouterStaticRoutesIpv4Location
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, VirtualRouterStaticRoutesIpv4LocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -4217,8 +4223,8 @@ func (o VirtualRouterStaticRoutesIpv4ImportState) MarshalJSON() ([]byte, error) 
 
 func (o *VirtualRouterStaticRoutesIpv4ImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location      *VirtualRouterStaticRoutesIpv4Location `json:"location"`
-		VirtualRouter *string                                `json:"virtual_router"`
+		Location      interface{} `json:"location"`
+		VirtualRouter *string     `json:"virtual_router"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4227,10 +4233,14 @@ func (o *VirtualRouterStaticRoutesIpv4ImportState) UnmarshalJSON(data []byte) er
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, VirtualRouterStaticRoutesIpv4LocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

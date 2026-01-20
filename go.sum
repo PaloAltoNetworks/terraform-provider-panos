@@ -13,8 +13,8 @@ github.com/Masterminds/sprig/v3 v3.2.3 h1:eL2fZNezLomi0uOLqjQoN6BfsDD+fyLtgbJMAj
 github.com/Masterminds/sprig/v3 v3.2.3/go.mod h1:rXcFaZ2zZbLRJv/xSysmlgIM1u11eBaRMhvYXJNkGuM=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
-github.com/PaloAltoNetworks/pango v0.10.3-0.20251126184826-00453bca3793 h1:ta4BS6LR94QDfcoq8s1nUpQWajEMQ+bMRuR7wRB2sxI=
-github.com/PaloAltoNetworks/pango v0.10.3-0.20251126184826-00453bca3793/go.mod h1:tDFAikqi8qR9jGyOqzXn5JyWh4LoBG/aUSJHF3rmVd4=
+github.com/PaloAltoNetworks/pango v0.10.3-0.20260120024327-649ea19f83db h1:cQKUD3KouoWaWI/EIOMPyKCXRbnztGxSKxsWE+06gQs=
+github.com/PaloAltoNetworks/pango v0.10.3-0.20260120024327-649ea19f83db/go.mod h1:tDFAikqi8qR9jGyOqzXn5JyWh4LoBG/aUSJHF3rmVd4=
 github.com/ProtonMail/go-crypto v1.1.6 h1:ZcV+Ropw6Qn0AX9brlQLAUXfqLBc7Bl+f/DmNxpLfdw=
 github.com/ProtonMail/go-crypto v1.1.6/go.mod h1:rA3QumHc/FZ8pAHreoekgiAbzpNsfQAosU5td4SnOrE=
 github.com/agext/levenshtein v1.2.2 h1:0S/Yg6LYmFJ5stwQeRp6EeOcCbj7xiqQSdNelsXvaqE=

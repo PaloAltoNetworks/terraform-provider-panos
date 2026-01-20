@@ -722,9 +722,6 @@ func DefaultSecurityPolicyDataSourceSchema() dsschema.Schema {
 			"rules": dsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: DefaultSecurityPolicyDataSourceRulesSchema(),
 			},
 		},
@@ -755,68 +752,51 @@ func DefaultSecurityPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_tag": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"icmp_unreachable": dsschema.BoolAttribute{
 				Description: "Send ICMP unreachable error when action is drop or reset",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_end": dsschema.BoolAttribute{
 				Description: "Log at session end (required for certain ACC tables)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_setting": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_start": dsschema.BoolAttribute{
 				Description: "Log at session start",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"profile_setting": DefaultSecurityPolicyDataSourceRulesProfileSettingSchema(),
 
 			"tag": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -844,18 +824,14 @@ func (o *DefaultSecurityPolicyDataSourceRulesObject) getTypeFor(name string) att
 func DefaultSecurityPolicyDataSourceRulesProfileSettingSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"group": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -885,10 +861,8 @@ func (o *DefaultSecurityPolicyDataSourceRulesProfileSettingObject) getTypeFor(na
 func DefaultSecurityPolicyDataSourceRulesProfileSettingProfilesSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -900,82 +874,64 @@ func DefaultSecurityPolicyDataSourceRulesProfileSettingProfilesSchema() dsschema
 
 			"data_filtering": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"file_blocking": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"gtp": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"sctp": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"spyware": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"url_filtering": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"virus": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"vulnerability": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"wildfire_analysis": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1187,13 +1143,56 @@ type DefaultSecurityPolicyResourceRulesProfileSettingProfilesObject struct {
 	WildfireAnalysis types.List `tfsdk:"wildfire_analysis"`
 }
 
-func (o *DefaultSecurityPolicyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	{
-		var resource DefaultSecurityPolicyResourceModel
-		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
-		if resp.Diagnostics.HasError() {
-			return
+func (o *DefaultSecurityPolicyResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Rules.IsUnknown() && !o.Rules.IsNull() {
+		var elements []DefaultSecurityPolicyResourceRulesObject
+		diags := o.Rules.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("rules").AtListIndex(i))
+			}
 		}
+	}
+}
+
+func (o *DefaultSecurityPolicyResourceRulesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ProfileSetting.IsUnknown() && !o.ProfileSetting.IsNull() {
+		var nestedObj DefaultSecurityPolicyResourceRulesProfileSettingObject
+		diags := o.ProfileSetting.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("profile_setting"))
+		}
+	}
+}
+
+func (o *DefaultSecurityPolicyResourceRulesProfileSettingObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Profiles.IsUnknown() && !o.Profiles.IsNull() {
+		var nestedObj DefaultSecurityPolicyResourceRulesProfileSettingProfilesObject
+		diags := o.Profiles.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("profiles"))
+		}
+	}
+}
+
+func (o *DefaultSecurityPolicyResourceRulesProfileSettingProfilesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DefaultSecurityPolicyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource DefaultSecurityPolicyResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
+	{
 
 		entries := make(map[string]struct{})
 		duplicated := make(map[string]struct{})
@@ -1247,9 +1246,6 @@ func DefaultSecurityPolicyResourceSchema() rsschema.Schema {
 			"rules": rsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: DefaultSecurityPolicyResourceRulesSchema(),
 			},
 		},
@@ -1280,18 +1276,13 @@ func DefaultSecurityPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("allow"),
 
 				Validators: []validator.String{
@@ -1308,52 +1299,34 @@ func DefaultSecurityPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"group_tag": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"icmp_unreachable": rsschema.BoolAttribute{
 				Description: "Send ICMP unreachable error when action is drop or reset",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_end": rsschema.BoolAttribute{
 				Description: "Log at session end (required for certain ACC tables)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_setting": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_start": rsschema.BoolAttribute{
 				Description: "Log at session start",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"profile_setting": DefaultSecurityPolicyResourceRulesProfileSettingSchema(),
 
 			"tag": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1381,18 +1354,12 @@ func (o *DefaultSecurityPolicyResourceRulesObject) getTypeFor(name string) attr.
 func DefaultSecurityPolicyResourceRulesProfileSettingSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"group": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 
 				Validators: []validator.List{
@@ -1429,10 +1396,7 @@ func (o *DefaultSecurityPolicyResourceRulesProfileSettingObject) getTypeFor(name
 func DefaultSecurityPolicyResourceRulesProfileSettingProfilesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1444,82 +1408,55 @@ func DefaultSecurityPolicyResourceRulesProfileSettingProfilesSchema() rsschema.S
 
 			"data_filtering": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"file_blocking": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"gtp": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"sctp": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"spyware": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"url_filtering": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"virus": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"vulnerability": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"wildfire_analysis": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2624,14 +2561,15 @@ type DefaultSecurityPolicyImportState struct {
 
 func (o DefaultSecurityPolicyImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *DefaultSecurityPolicyLocation `json:"location"`
-		Names    []string                       `json:"names"`
+		Location interface{} `json:"location"`
+		Names    []string    `json:"names"`
 	}
-	var location_object *DefaultSecurityPolicyLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, DefaultSecurityPolicyLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 	var names_list []string
@@ -2652,8 +2590,8 @@ func (o DefaultSecurityPolicyImportState) MarshalJSON() ([]byte, error) {
 
 func (o *DefaultSecurityPolicyImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *DefaultSecurityPolicyLocation `json:"location"`
-		Names    []string                       `json:"names"`
+		Location interface{} `json:"location"`
+		Names    []string    `json:"names"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2662,10 +2600,14 @@ func (o *DefaultSecurityPolicyImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, DefaultSecurityPolicyLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	var names_list types.List

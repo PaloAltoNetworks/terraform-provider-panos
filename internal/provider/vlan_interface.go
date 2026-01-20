@@ -6571,20 +6571,15 @@ func VlanInterfaceDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"adjust_tcp_mss": VlanInterfaceDataSourceAdjustTcpMssSchema(),
 
 			"arp": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceArpSchema(),
 			},
 
@@ -6592,38 +6587,30 @@ func VlanInterfaceDataSourceSchema() dsschema.Schema {
 
 			"comment": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_config": VlanInterfaceDataSourceDdnsConfigSchema(),
 
 			"df_ignore": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dhcp_client": VlanInterfaceDataSourceDhcpClientSchema(),
 
 			"interface_management_profile": dsschema.StringAttribute{
 				Description: "Interface management profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpSchema(),
 			},
 
@@ -6631,20 +6618,16 @@ func VlanInterfaceDataSourceSchema() dsschema.Schema {
 
 			"mtu": dsschema.Int64Attribute{
 				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ndp_proxy": VlanInterfaceDataSourceNdpProxySchema(),
 
 			"netflow_profile": dsschema.StringAttribute{
 				Description: "Netflow Server Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6671,34 +6654,26 @@ func (o *VlanInterfaceDataSourceModel) getTypeFor(name string) attr.Type {
 func VlanInterfaceDataSourceAdjustTcpMssSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Set if TCP MSS value should be reduced based on mtu",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4_mss_adjustment": dsschema.Int64Attribute{
 				Description: "IPv4 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6_mss_adjustment": dsschema.Int64Attribute{
 				Description: "IPv6 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6728,26 +6703,19 @@ func VlanInterfaceDataSourceArpSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": dsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "Egress interface associated with this ARP entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6774,34 +6742,26 @@ func (o *VlanInterfaceDataSourceArpObject) getTypeFor(name string) attr.Type {
 func VlanInterfaceDataSourceBonjourSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Set to support Bonjour service",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_id": dsschema.Int64Attribute{
 				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ttl_check": dsschema.BoolAttribute{
 				Description: "Set to check and update TTL",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6828,76 +6788,58 @@ func (o *VlanInterfaceDataSourceBonjourObject) getTypeFor(name string) attr.Type
 func VlanInterfaceDataSourceDdnsConfigSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ddns_cert_profile": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_enabled": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_hostname": dsschema.StringAttribute{
 				Description: "ddns hostname variable or real address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_ip": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ddns_ipv6": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ddns_update_interval": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_vendor": dsschema.StringAttribute{
 				Description: "Vendor and product type",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_vendor_config": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigSchema(),
 			},
 		},
@@ -6928,18 +6870,13 @@ func VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigSchema() dsschema.NestedAt
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6966,34 +6903,26 @@ func (o *VlanInterfaceDataSourceDdnsConfigDdnsVendorConfigObject) getTypeFor(nam
 func VlanInterfaceDataSourceDhcpClientSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"create_default_route": dsschema.BoolAttribute{
 				Description: "Automatically create default route pointing to default gateway provided by server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_route_metric": dsschema.Int64Attribute{
 				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"send_hostname": VlanInterfaceDataSourceDhcpClientSendHostnameSchema(),
@@ -7022,26 +6951,20 @@ func (o *VlanInterfaceDataSourceDhcpClientObject) getTypeFor(name string) attr.T
 func VlanInterfaceDataSourceDhcpClientSendHostnameSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hostname": dsschema.StringAttribute{
 				Description: "Set Interface Hostname",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7071,10 +6994,7 @@ func VlanInterfaceDataSourceIpSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7101,18 +7021,14 @@ func (o *VlanInterfaceDataSourceIpObject) getTypeFor(name string) attr.Type {
 func VlanInterfaceDataSourceIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6AddressSchema(),
 			},
 
@@ -7120,20 +7036,16 @@ func VlanInterfaceDataSourceIpv6Schema() dsschema.SingleNestedAttribute {
 
 			"enabled": dsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inherited": VlanInterfaceDataSourceIpv6InheritedSchema(),
 
 			"interface_id": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor_discovery": VlanInterfaceDataSourceIpv6NeighborDiscoverySchema(),
@@ -7165,18 +7077,13 @@ func VlanInterfaceDataSourceIpv6AddressSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable_on_interface": dsschema.BoolAttribute{
 				Description: "configure this address on interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix": VlanInterfaceDataSourceIpv6AddressPrefixSchema(),
@@ -7209,10 +7116,8 @@ func (o *VlanInterfaceDataSourceIpv6AddressObject) getTypeFor(name string) attr.
 func VlanInterfaceDataSourceIpv6AddressPrefixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes:  map[string]dsschema.Attribute{},
 	}
 }
@@ -7238,10 +7143,8 @@ func (o *VlanInterfaceDataSourceIpv6AddressPrefixObject) getTypeFor(name string)
 func VlanInterfaceDataSourceIpv6AddressAnycastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes:  map[string]dsschema.Attribute{},
 	}
 }
@@ -7267,50 +7170,38 @@ func (o *VlanInterfaceDataSourceIpv6AddressAnycastObject) getTypeFor(name string
 func VlanInterfaceDataSourceIpv6AddressAdvertiseSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"valid_lifetime": dsschema.StringAttribute{
 				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"preferred_lifetime": dsschema.StringAttribute{
 				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"onlink_flag": dsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auto_config_flag": dsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7337,44 +7228,34 @@ func (o *VlanInterfaceDataSourceIpv6AddressAdvertiseObject) getTypeFor(name stri
 func VlanInterfaceDataSourceIpv6DhcpClientSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"accept_ra_route": dsschema.BoolAttribute{
 				Description: "Accept Router Advertised Default Route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_route_metric": dsschema.Int64Attribute{
 				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable DHCPv6 Client",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor_discovery": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoverySchema(),
 
 			"preference": dsschema.StringAttribute{
 				Description: "Select Low/Medium/High",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_delegation": VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationSchema(),
@@ -7405,18 +7286,14 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientObject) getTypeFor(name string) at
 func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoverySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dad_attempts": dsschema.Int64Attribute{
 				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dns_server": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema(),
@@ -7425,43 +7302,33 @@ func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoverySchema() dsschema.Sin
 
 			"enable_dad": dsschema.BoolAttribute{
 				Description: "Enable Duplicate Address Detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_ndp_monitor": dsschema.BoolAttribute{
 				Description: "Enable NDP Monitoring",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": dsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.Int64Attribute{
 				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7488,18 +7355,14 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) getTypeFo
 func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema(),
@@ -7528,10 +7391,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) 
 func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dhcpv6": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
@@ -7562,10 +7423,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceOb
 func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7598,10 +7457,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDh
 func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7613,10 +7470,8 @@ func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManual
 
 			"server": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema(),
 			},
 		},
@@ -7647,18 +7502,13 @@ func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManual
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7685,18 +7535,14 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceMa
 func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema(),
@@ -7725,10 +7571,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) 
 func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dhcpv6": VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
@@ -7759,10 +7603,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceOb
 func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7795,10 +7637,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDh
 func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7810,10 +7650,8 @@ func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual
 
 			"suffix": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
 			},
 		},
@@ -7844,18 +7682,13 @@ func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManual
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7885,18 +7718,13 @@ func VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborSchema() dssc
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": dsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7923,10 +7751,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborObject) g
 func VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableSchema(),
@@ -7955,10 +7781,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationObject) getTypeFor
 func VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"no": VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoSchema(),
@@ -7989,10 +7813,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableObject) getT
 func VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8025,10 +7847,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoObject) ge
 func VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8040,26 +7860,20 @@ func VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesSchema() dssc
 
 			"pfx_pool_name": dsschema.StringAttribute{
 				Description: "Configure unique Prefix Pool Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_len": dsschema.Int64Attribute{
 				Description: "Hint DHCP Prefix Length (bits)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_len_hint": dsschema.BoolAttribute{
 				Description: "Send prefix length hint to server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8086,36 +7900,28 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesObject) g
 func VlanInterfaceDataSourceIpv6DhcpClientV6OptionsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"duid_type": dsschema.StringAttribute{
 				Description: "Select DUID-LLT/DUID-LL",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableSchema(),
 
 			"rapid_commit": dsschema.BoolAttribute{
 				Description: "Enable Rapid Commit",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"support_srvr_reconfig": dsschema.BoolAttribute{
 				Description: "Enable DHCPv6 Server Re-Configuration Support",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8142,10 +7948,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsObject) getTypeFor(name s
 func VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"no": VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoSchema(),
@@ -8176,10 +7980,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject) getTypeFor(
 func VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8212,10 +8014,8 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObject) getTypeFo
 func VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8227,18 +8027,14 @@ func VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesSchema() dsschema.Si
 
 			"non_temp_addr": dsschema.BoolAttribute{
 				Description: "Request Non-Temporary Address Type",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"temp_addr": dsschema.BoolAttribute{
 				Description: "Request Temporary Address Type",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8265,27 +8061,21 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObject) getTypeF
 func VlanInterfaceDataSourceIpv6InheritedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"assign_addr": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6InheritedAssignAddrSchema(),
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable Inherited Interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor_discovery": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoverySchema(),
@@ -8317,10 +8107,7 @@ func VlanInterfaceDataSourceIpv6InheritedAssignAddrSchema() dsschema.NestedAttri
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeSchema(),
@@ -8349,10 +8136,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrObject) getTypeFor(name s
 func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"gua": VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaSchema(),
@@ -8383,10 +8168,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeObject) getTypeFor(na
 func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8398,18 +8181,14 @@ func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaSchema() dsschema.Sing
 
 			"enable_on_interface": dsschema.BoolAttribute{
 				Description: "Enable on Interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_pool": dsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"pool_type": VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeSchema(),
@@ -8440,10 +8219,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObject) getTypeFor
 func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dynamic": VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema(),
@@ -8474,10 +8251,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) ge
 func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8510,10 +8285,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObj
 func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8525,10 +8298,8 @@ func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchem
 
 			"identifier": dsschema.Int64Attribute{
 				Description: "Range [0-4095] must be unqiue for this prefix-pool",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8555,34 +8326,26 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdO
 func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"onlink_flag": dsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auto_config_flag": dsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8609,10 +8372,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) g
 func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8624,34 +8385,26 @@ func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaSchema() dsschema.Sing
 
 			"enable_on_interface": dsschema.BoolAttribute{
 				Description: "Configure this address on Interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": dsschema.StringAttribute{
 				Description: "Configure ULA (Unique Local Address)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix": dsschema.BoolAttribute{
 				Description: "Use this as prefix to form full address with interface id/EUI-64",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"anycast": dsschema.BoolAttribute{
 				Description: "Anycast Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"advertise": VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
@@ -8680,50 +8433,38 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObject) getTypeFor
 func VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"valid_lifetime": dsschema.StringAttribute{
 				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"preferred_lifetime": dsschema.StringAttribute{
 				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"onlink_flag": dsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auto_config_flag": dsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8750,18 +8491,14 @@ func (o *VlanInterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) g
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoverySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dad_attempts": dsschema.Int64Attribute{
 				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dns_server": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema(),
@@ -8770,43 +8507,33 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoverySchema() dsschema.Sing
 
 			"enable_dad": dsschema.BoolAttribute{
 				Description: "Enable Duplicate Address Detection (DAD)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_ndp_monitor": dsschema.BoolAttribute{
 				Description: "Enable NDP Monitoring",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": dsschema.Int64Attribute{
 				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.Int64Attribute{
 				Description: "Time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_advertisement": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema(),
@@ -8835,18 +8562,14 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) getTypeFor
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
@@ -8875,10 +8598,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerObject) g
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dhcpv6": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
@@ -8909,10 +8630,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceObj
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8924,10 +8643,8 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6S
 
 			"prefix_pool": dsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8954,10 +8671,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhc
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8969,10 +8684,8 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualS
 
 			"server": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
 			},
 		},
@@ -9003,18 +8716,13 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualS
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9041,18 +8749,14 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceMan
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
@@ -9081,10 +8785,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) g
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dhcpv6": VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
@@ -9115,10 +8817,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObj
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9130,10 +8830,8 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6S
 
 			"prefix_pool": dsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9160,10 +8858,8 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhc
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9175,10 +8871,8 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualS
 
 			"suffix": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
 			},
 		},
@@ -9209,18 +8903,13 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualS
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9250,18 +8939,13 @@ func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborSchema() dssch
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": dsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9288,106 +8972,80 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborObject) ge
 func VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_consistency_check": dsschema.BoolAttribute{
 				Description: "check consistency of RA messages from other routers.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hop_limit": dsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"link_mtu": dsschema.StringAttribute{
 				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"managed_flag": dsschema.BoolAttribute{
 				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_interval": dsschema.Int64Attribute{
 				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"min_interval": dsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"other_flag": dsschema.BoolAttribute{
 				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.StringAttribute{
 				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"retransmission_timer": dsschema.StringAttribute{
 				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_preference": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9414,59 +9072,45 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisemen
 func VlanInterfaceDataSourceIpv6NeighborDiscoverySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dad_attempts": dsschema.Int64Attribute{
 				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_dad": dsschema.BoolAttribute{
 				Description: "enable duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_ndp_monitor": dsschema.BoolAttribute{
 				Description: "enable ndp monitoring",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": dsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.Int64Attribute{
 				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_advertisement": VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema(),
@@ -9498,18 +9142,13 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema() dsschema.Neste
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": dsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9536,108 +9175,82 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryNeighborObject) getTypeFor(
 func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dns_support": VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_consistency_check": dsschema.BoolAttribute{
 				Description: "check consistency of RA messages from other routers.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hop_limit": dsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"link_mtu": dsschema.StringAttribute{
 				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"managed_flag": dsschema.BoolAttribute{
 				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_interval": dsschema.Int64Attribute{
 				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"min_interval": dsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"other_flag": dsschema.BoolAttribute{
 				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.StringAttribute{
 				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"retransmission_timer": dsschema.StringAttribute{
 				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_preference": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9664,35 +9277,27 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementObject) 
 func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"server": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
 			},
 
 			"suffix": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
 			},
 		},
@@ -9723,18 +9328,13 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSe
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9764,18 +9364,13 @@ func VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSu
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9802,27 +9397,21 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSuppo
 func VlanInterfaceDataSourceNdpProxySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceDataSourceNdpProxyAddressSchema(),
 			},
 
 			"enabled": dsschema.BoolAttribute{
 				Description: "Enable proxy NDP on the interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9852,18 +9441,13 @@ func VlanInterfaceDataSourceNdpProxyAddressSchema() dsschema.NestedAttributeObje
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"negate": dsschema.BoolAttribute{
 				Description: "put the prefix or address on a block list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10382,7 +9966,827 @@ type VlanInterfaceResourceNdpProxyAddressObject struct {
 	Negate types.Bool   `tfsdk:"negate"`
 }
 
+func (o *VlanInterfaceResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AdjustTcpMss.IsUnknown() && !o.AdjustTcpMss.IsNull() {
+		var nestedObj VlanInterfaceResourceAdjustTcpMssObject
+		diags := o.AdjustTcpMss.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("adjust_tcp_mss"))
+		}
+	}
+	if !o.Arp.IsUnknown() && !o.Arp.IsNull() {
+		var elements []VlanInterfaceResourceArpObject
+		diags := o.Arp.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("arp").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Bonjour.IsUnknown() && !o.Bonjour.IsNull() {
+		var nestedObj VlanInterfaceResourceBonjourObject
+		diags := o.Bonjour.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bonjour"))
+		}
+	}
+	if !o.DdnsConfig.IsUnknown() && !o.DdnsConfig.IsNull() {
+		var nestedObj VlanInterfaceResourceDdnsConfigObject
+		diags := o.DdnsConfig.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ddns_config"))
+		}
+	}
+	if !o.DhcpClient.IsUnknown() && !o.DhcpClient.IsNull() {
+		var nestedObj VlanInterfaceResourceDhcpClientObject
+		diags := o.DhcpClient.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcp_client"))
+		}
+	}
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var elements []VlanInterfaceResourceIpObject
+		diags := o.Ip.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ip").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+	if !o.NdpProxy.IsUnknown() && !o.NdpProxy.IsNull() {
+		var nestedObj VlanInterfaceResourceNdpProxyObject
+		diags := o.NdpProxy.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ndp_proxy"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceAdjustTcpMssObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceArpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceBonjourObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceDdnsConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DdnsVendorConfig.IsUnknown() && !o.DdnsVendorConfig.IsNull() {
+		var elements []VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject
+		diags := o.DdnsVendorConfig.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ddns_vendor_config").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceDhcpClientObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SendHostname.IsUnknown() && !o.SendHostname.IsNull() {
+		var nestedObj VlanInterfaceResourceDhcpClientSendHostnameObject
+		diags := o.SendHostname.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("send_hostname"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceDhcpClientSendHostnameObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var elements []VlanInterfaceResourceIpv6AddressObject
+		diags := o.Address.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("address").AtListIndex(i))
+			}
+		}
+	}
+	if !o.DhcpClient.IsUnknown() && !o.DhcpClient.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientObject
+		diags := o.DhcpClient.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcp_client"))
+		}
+	}
+	if !o.Inherited.IsUnknown() && !o.Inherited.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedObject
+		diags := o.Inherited.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("inherited"))
+		}
+	}
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6NeighborDiscoveryObject
+		diags := o.NeighborDiscovery.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("neighbor_discovery"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Prefix.IsUnknown() && !o.Prefix.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6AddressPrefixObject
+		diags := o.Prefix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("prefix"))
+		}
+	}
+	if !o.Anycast.IsUnknown() && !o.Anycast.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6AddressAnycastObject
+		diags := o.Anycast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("anycast"))
+		}
+	}
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6AddressAdvertiseObject
+		diags := o.Advertise.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("advertise"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6AddressPrefixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6AddressAnycastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6AddressAdvertiseObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
+		diags := o.NeighborDiscovery.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("neighbor_discovery"))
+		}
+	}
+	if !o.PrefixDelegation.IsUnknown() && !o.PrefixDelegation.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject
+		diags := o.PrefixDelegation.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("prefix_delegation"))
+		}
+	}
+	if !o.V6Options.IsUnknown() && !o.V6Options.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientV6OptionsObject
+		diags := o.V6Options.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("v6_options"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DnsServer.IsUnknown() && !o.DnsServer.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
+		diags := o.DnsServer.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_server"))
+		}
+	}
+	if !o.DnsSuffix.IsUnknown() && !o.DnsSuffix.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+		diags := o.DnsSuffix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_suffix"))
+		}
+	}
+	if !o.Neighbor.IsUnknown() && !o.Neighbor.IsNull() {
+		var elements []VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject
+		diags := o.Neighbor.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("neighbor").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+		diags := o.Source.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+		diags := o.Dhcpv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcpv6"))
+		}
+	}
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+		diags := o.Manual.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("manual"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		var elements []VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
+		diags := o.Server.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("server").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+		diags := o.Source.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+		diags := o.Dhcpv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcpv6"))
+		}
+	}
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+		diags := o.Manual.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("manual"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Suffix.IsUnknown() && !o.Suffix.IsNull() {
+		var elements []VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		diags := o.Suffix.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("suffix").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Enable.IsUnknown() && !o.Enable.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject
+		diags := o.Enable.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("enable"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.No.IsUnknown() && !o.No.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject
+		diags := o.No.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("no"))
+		}
+	}
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject
+		diags := o.Yes.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("yes"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Enable.IsUnknown() && !o.Enable.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject
+		diags := o.Enable.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("enable"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.No.IsUnknown() && !o.No.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject
+		diags := o.No.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("no"))
+		}
+	}
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject
+		diags := o.Yes.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("yes"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AssignAddr.IsUnknown() && !o.AssignAddr.IsNull() {
+		var elements []VlanInterfaceResourceIpv6InheritedAssignAddrObject
+		diags := o.AssignAddr.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("assign_addr").AtListIndex(i))
+			}
+		}
+	}
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject
+		diags := o.NeighborDiscovery.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("neighbor_discovery"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedAssignAddrTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Gua.IsUnknown() && !o.Gua.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaObject
+		diags := o.Gua.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("gua"))
+		}
+	}
+	if !o.Ula.IsUnknown() && !o.Ula.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject
+		diags := o.Ula.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ula"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.PoolType.IsUnknown() && !o.PoolType.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+		diags := o.PoolType.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("pool_type"))
+		}
+	}
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+		diags := o.Advertise.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("advertise"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dynamic.IsUnknown() && !o.Dynamic.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+		diags := o.Dynamic.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dynamic"))
+		}
+	}
+	if !o.DynamicId.IsUnknown() && !o.DynamicId.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+		diags := o.DynamicId.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dynamic_id"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+		diags := o.Advertise.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("advertise"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DnsServer.IsUnknown() && !o.DnsServer.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject
+		diags := o.DnsServer.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_server"))
+		}
+	}
+	if !o.DnsSuffix.IsUnknown() && !o.DnsSuffix.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+		diags := o.DnsSuffix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_suffix"))
+		}
+	}
+	if !o.Neighbor.IsUnknown() && !o.Neighbor.IsNull() {
+		var elements []VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject
+		diags := o.Neighbor.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("neighbor").AtListIndex(i))
+			}
+		}
+	}
+	if !o.RouterAdvertisement.IsUnknown() && !o.RouterAdvertisement.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+		diags := o.RouterAdvertisement.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("router_advertisement"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+		diags := o.Source.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+		diags := o.Dhcpv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcpv6"))
+		}
+	}
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+		diags := o.Manual.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("manual"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		var elements []VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+		diags := o.Server.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("server").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+		diags := o.Source.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+		diags := o.Dhcpv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcpv6"))
+		}
+	}
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+		diags := o.Manual.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("manual"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Suffix.IsUnknown() && !o.Suffix.IsNull() {
+		var elements []VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		diags := o.Suffix.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("suffix").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Neighbor.IsUnknown() && !o.Neighbor.IsNull() {
+		var elements []VlanInterfaceResourceIpv6NeighborDiscoveryNeighborObject
+		diags := o.Neighbor.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("neighbor").AtListIndex(i))
+			}
+		}
+	}
+	if !o.RouterAdvertisement.IsUnknown() && !o.RouterAdvertisement.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject
+		diags := o.RouterAdvertisement.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("router_advertisement"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryNeighborObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DnsSupport.IsUnknown() && !o.DnsSupport.IsNull() {
+		var nestedObj VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+		diags := o.DnsSupport.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_support"))
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		var elements []VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
+		diags := o.Server.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("server").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Suffix.IsUnknown() && !o.Suffix.IsNull() {
+		var elements []VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
+		diags := o.Suffix.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("suffix").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *VlanInterfaceResourceNdpProxyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var elements []VlanInterfaceResourceNdpProxyAddressObject
+		diags := o.Address.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("address").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *VlanInterfaceResourceNdpProxyAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *VlanInterfaceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource VlanInterfaceResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -10395,20 +10799,14 @@ func VlanInterfaceResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"adjust_tcp_mss": VlanInterfaceResourceAdjustTcpMssSchema(),
 
 			"arp": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceArpSchema(),
 			},
 
@@ -10416,38 +10814,26 @@ func VlanInterfaceResourceSchema() rsschema.Schema {
 
 			"comment": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_config": VlanInterfaceResourceDdnsConfigSchema(),
 
 			"df_ignore": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"dhcp_client": VlanInterfaceResourceDhcpClientSchema(),
 
 			"interface_management_profile": rsschema.StringAttribute{
 				Description: "Interface management profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpSchema(),
 			},
 
@@ -10455,20 +10841,14 @@ func VlanInterfaceResourceSchema() rsschema.Schema {
 
 			"mtu": rsschema.Int64Attribute{
 				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ndp_proxy": VlanInterfaceResourceNdpProxySchema(),
 
 			"netflow_profile": rsschema.StringAttribute{
 				Description: "Netflow Server Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -10495,35 +10875,25 @@ func (o *VlanInterfaceResourceModel) getTypeFor(name string) attr.Type {
 func VlanInterfaceResourceAdjustTcpMssSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Set if TCP MSS value should be reduced based on mtu",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4_mss_adjustment": rsschema.Int64Attribute{
 				Description: "IPv4 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(40),
 			},
 
 			"ipv6_mss_adjustment": rsschema.Int64Attribute{
 				Description: "IPv6 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(60),
 			},
 		},
@@ -10554,26 +10924,17 @@ func VlanInterfaceResourceArpSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": rsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "Egress interface associated with this ARP entry",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -10600,35 +10961,24 @@ func (o *VlanInterfaceResourceArpObject) getTypeFor(name string) attr.Type {
 func VlanInterfaceResourceBonjourSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Set to support Bonjour service",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"group_id": rsschema.Int64Attribute{
 				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(40),
 			},
 
 			"ttl_check": rsschema.BoolAttribute{
 				Description: "Set to check and update TTL",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -10655,77 +11005,51 @@ func (o *VlanInterfaceResourceBonjourObject) getTypeFor(name string) attr.Type {
 func VlanInterfaceResourceDdnsConfigSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ddns_cert_profile": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_enabled": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_hostname": rsschema.StringAttribute{
 				Description: "ddns hostname variable or real address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_ip": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ddns_ipv6": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ddns_update_interval": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"ddns_vendor": rsschema.StringAttribute{
 				Description: "Vendor and product type",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_vendor_config": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceDdnsConfigDdnsVendorConfigSchema(),
 			},
 		},
@@ -10756,18 +11080,12 @@ func VlanInterfaceResourceDdnsConfigDdnsVendorConfigSchema() rsschema.NestedAttr
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -10794,35 +11112,24 @@ func (o *VlanInterfaceResourceDdnsConfigDdnsVendorConfigObject) getTypeFor(name 
 func VlanInterfaceResourceDhcpClientSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"create_default_route": rsschema.BoolAttribute{
 				Description: "Automatically create default route pointing to default gateway provided by server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_route_metric": rsschema.Int64Attribute{
 				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"send_hostname": VlanInterfaceResourceDhcpClientSendHostnameSchema(),
@@ -10851,26 +11158,18 @@ func (o *VlanInterfaceResourceDhcpClientObject) getTypeFor(name string) attr.Typ
 func VlanInterfaceResourceDhcpClientSendHostnameSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hostname": rsschema.StringAttribute{
 				Description: "Set Interface Hostname",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("system-hostname"),
 			},
 		},
@@ -10901,10 +11200,7 @@ func VlanInterfaceResourceIpSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -10931,18 +11227,12 @@ func (o *VlanInterfaceResourceIpObject) getTypeFor(name string) attr.Type {
 func VlanInterfaceResourceIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6AddressSchema(),
 			},
 
@@ -10950,20 +11240,15 @@ func VlanInterfaceResourceIpv6Schema() rsschema.SingleNestedAttribute {
 
 			"enabled": rsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inherited": VlanInterfaceResourceIpv6InheritedSchema(),
 
 			"interface_id": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("EUI-64"),
 			},
 
@@ -10996,18 +11281,12 @@ func VlanInterfaceResourceIpv6AddressSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "configure this address on interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix": VlanInterfaceResourceIpv6AddressPrefixSchema(),
@@ -11040,10 +11319,7 @@ func (o *VlanInterfaceResourceIpv6AddressObject) getTypeFor(name string) attr.Ty
 func VlanInterfaceResourceIpv6AddressPrefixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes:  map[string]rsschema.Attribute{},
 	}
 }
@@ -11069,10 +11345,7 @@ func (o *VlanInterfaceResourceIpv6AddressPrefixObject) getTypeFor(name string) a
 func VlanInterfaceResourceIpv6AddressAnycastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes:  map[string]rsschema.Attribute{},
 	}
 }
@@ -11098,52 +11371,36 @@ func (o *VlanInterfaceResourceIpv6AddressAnycastObject) getTypeFor(name string) 
 func VlanInterfaceResourceIpv6AddressAdvertiseSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "enable advertising this prefix in router advertisements",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"valid_lifetime": rsschema.StringAttribute{
 				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("2592000"),
 			},
 
 			"preferred_lifetime": rsschema.StringAttribute{
 				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("604800"),
 			},
 
 			"onlink_flag": rsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auto_config_flag": rsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11170,45 +11427,32 @@ func (o *VlanInterfaceResourceIpv6AddressAdvertiseObject) getTypeFor(name string
 func VlanInterfaceResourceIpv6DhcpClientSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"accept_ra_route": rsschema.BoolAttribute{
 				Description: "Accept Router Advertised Default Route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_route_metric": rsschema.Int64Attribute{
 				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable DHCPv6 Client",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor_discovery": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoverySchema(),
 
 			"preference": rsschema.StringAttribute{
 				Description: "Select Low/Medium/High",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("high"),
 			},
 
@@ -11240,18 +11484,13 @@ func (o *VlanInterfaceResourceIpv6DhcpClientObject) getTypeFor(name string) attr
 func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoverySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dad_attempts": rsschema.Int64Attribute{
 				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
@@ -11261,44 +11500,31 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoverySchema() rsschema.Singl
 
 			"enable_dad": rsschema.BoolAttribute{
 				Description: "Enable Duplicate Address Detection",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_ndp_monitor": rsschema.BoolAttribute{
 				Description: "Enable NDP Monitoring",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": rsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"reachable_time": rsschema.Int64Attribute{
 				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(30),
 			},
 		},
@@ -11326,18 +11552,12 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) getTypeFor(
 func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema(),
@@ -11366,10 +11586,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) ge
 func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dhcpv6": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
@@ -11400,10 +11617,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObje
 func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11436,10 +11650,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcp
 func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11451,10 +11662,7 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualSc
 
 			"server": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema(),
 			},
 		},
@@ -11485,18 +11693,13 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualSe
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -11524,18 +11727,12 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManu
 func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema(),
@@ -11564,10 +11761,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) ge
 func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dhcpv6": VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
@@ -11598,10 +11792,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObje
 func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11634,10 +11825,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcp
 func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11649,10 +11837,7 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSc
 
 			"suffix": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
 			},
 		},
@@ -11683,18 +11868,13 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSu
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -11725,18 +11905,12 @@ func VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborSchema() rssche
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": rsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11763,10 +11937,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) get
 func VlanInterfaceResourceIpv6DhcpClientPrefixDelegationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableSchema(),
@@ -11795,10 +11966,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationObject) getTypeFor(n
 func VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"no": VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoSchema(),
@@ -11829,10 +11997,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) getTyp
 func VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11865,10 +12030,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) getT
 func VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11880,27 +12042,19 @@ func VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesSchema() rssche
 
 			"pfx_pool_name": rsschema.StringAttribute{
 				Description: "Configure unique Prefix Pool Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_len": rsschema.Int64Attribute{
 				Description: "Hint DHCP Prefix Length (bits)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(48),
 			},
 
 			"prefix_len_hint": rsschema.BoolAttribute{
 				Description: "Send prefix length hint to server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11927,18 +12081,13 @@ func (o *VlanInterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) get
 func VlanInterfaceResourceIpv6DhcpClientV6OptionsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"duid_type": rsschema.StringAttribute{
 				Description: "Select DUID-LLT/DUID-LL",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("duid-type-llt"),
 			},
 
@@ -11946,18 +12095,12 @@ func VlanInterfaceResourceIpv6DhcpClientV6OptionsSchema() rsschema.SingleNestedA
 
 			"rapid_commit": rsschema.BoolAttribute{
 				Description: "Enable Rapid Commit",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"support_srvr_reconfig": rsschema.BoolAttribute{
 				Description: "Enable DHCPv6 Server Re-Configuration Support",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11984,10 +12127,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsObject) getTypeFor(name str
 func VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"no": VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoSchema(),
@@ -12018,10 +12158,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableObject) getTypeFor(na
 func VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12054,10 +12191,7 @@ func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) getTypeFor(
 func VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12069,18 +12203,12 @@ func VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesSchema() rsschema.Sing
 
 			"non_temp_addr": rsschema.BoolAttribute{
 				Description: "Request Non-Temporary Address Type",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"temp_addr": rsschema.BoolAttribute{
 				Description: "Request Temporary Address Type",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12107,27 +12235,18 @@ func (o *VlanInterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) getTypeFor
 func VlanInterfaceResourceIpv6InheritedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"assign_addr": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6InheritedAssignAddrSchema(),
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable Inherited Interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor_discovery": VlanInterfaceResourceIpv6InheritedNeighborDiscoverySchema(),
@@ -12159,10 +12278,7 @@ func VlanInterfaceResourceIpv6InheritedAssignAddrSchema() rsschema.NestedAttribu
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": VlanInterfaceResourceIpv6InheritedAssignAddrTypeSchema(),
@@ -12191,10 +12307,7 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrObject) getTypeFor(name str
 func VlanInterfaceResourceIpv6InheritedAssignAddrTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"gua": VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaSchema(),
@@ -12225,10 +12338,7 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeObject) getTypeFor(name
 func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12240,18 +12350,12 @@ func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaSchema() rsschema.Single
 
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "Enable on Interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_pool": rsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"pool_type": VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeSchema(),
@@ -12282,10 +12386,7 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) getTypeFor(n
 func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dynamic": VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema(),
@@ -12316,10 +12417,7 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) getT
 func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12352,10 +12450,7 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObjec
 func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12367,10 +12462,7 @@ func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema(
 
 			"identifier": rsschema.Int64Attribute{
 				Description: "Range [0-4095] must be unqiue for this prefix-pool",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12397,34 +12489,22 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObj
 func VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable advertising this prefix in router advertisements",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"onlink_flag": rsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auto_config_flag": rsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12451,10 +12531,7 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) get
 func VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12466,34 +12543,22 @@ func VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaSchema() rsschema.Single
 
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "Configure this address on Interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": rsschema.StringAttribute{
 				Description: "Configure ULA (Unique Local Address)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix": rsschema.BoolAttribute{
 				Description: "Use this as prefix to form full address with interface id/EUI-64",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"anycast": rsschema.BoolAttribute{
 				Description: "Anycast Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"advertise": VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
@@ -12522,52 +12587,36 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) getTypeFor(n
 func VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "enable advertising this prefix in router advertisements",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"valid_lifetime": rsschema.StringAttribute{
 				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("2592000"),
 			},
 
 			"preferred_lifetime": rsschema.StringAttribute{
 				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("604800"),
 			},
 
 			"onlink_flag": rsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auto_config_flag": rsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12594,18 +12643,13 @@ func (o *VlanInterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) get
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoverySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dad_attempts": rsschema.Int64Attribute{
 				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
@@ -12615,44 +12659,31 @@ func VlanInterfaceResourceIpv6InheritedNeighborDiscoverySchema() rsschema.Single
 
 			"enable_dad": rsschema.BoolAttribute{
 				Description: "Enable Duplicate Address Detection (DAD)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_ndp_monitor": rsschema.BoolAttribute{
 				Description: "Enable NDP Monitoring",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": rsschema.Int64Attribute{
 				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"reachable_time": rsschema.Int64Attribute{
 				Description: "Time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(30),
 			},
 
@@ -12682,18 +12713,12 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) getTypeFor(n
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
@@ -12722,10 +12747,7 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) get
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dhcpv6": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
@@ -12756,10 +12778,7 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObjec
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12771,10 +12790,7 @@ func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Sch
 
 			"prefix_pool": rsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12801,10 +12817,7 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12816,10 +12829,7 @@ func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSch
 
 			"server": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
 			},
 		},
@@ -12850,18 +12860,13 @@ func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSer
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -12889,18 +12894,12 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManua
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
@@ -12929,10 +12928,7 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) get
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dhcpv6": VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
@@ -12963,10 +12959,7 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObjec
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12978,10 +12971,7 @@ func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Sch
 
 			"prefix_pool": rsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13008,10 +12998,7 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13023,10 +13010,7 @@ func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSch
 
 			"suffix": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
 			},
 		},
@@ -13057,18 +13041,13 @@ func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuf
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -13099,18 +13078,12 @@ func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSchema() rsschem
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": rsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13137,113 +13110,82 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) getT
 func VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_consistency_check": rsschema.BoolAttribute{
 				Description: "check consistency of RA messages from other routers.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hop_limit": rsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("64"),
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1800),
 			},
 
 			"link_mtu": rsschema.StringAttribute{
 				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"managed_flag": rsschema.BoolAttribute{
 				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_interval": rsschema.Int64Attribute{
 				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(600),
 			},
 
 			"min_interval": rsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(200),
 			},
 
 			"other_flag": rsschema.BoolAttribute{
 				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"reachable_time": rsschema.StringAttribute{
 				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"retransmission_timer": rsschema.StringAttribute{
 				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"router_preference": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Medium"),
 			},
 		},
@@ -13271,61 +13213,43 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementO
 func VlanInterfaceResourceIpv6NeighborDiscoverySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dad_attempts": rsschema.Int64Attribute{
 				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"enable_dad": rsschema.BoolAttribute{
 				Description: "enable duplicate address detection",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_ndp_monitor": rsschema.BoolAttribute{
 				Description: "enable ndp monitoring",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6NeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": rsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"reachable_time": rsschema.Int64Attribute{
 				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(30),
 			},
 
@@ -13358,18 +13282,12 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryNeighborSchema() rsschema.NestedA
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": rsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13396,115 +13314,84 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryNeighborObject) getTypeFor(na
 func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dns_support": VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_consistency_check": rsschema.BoolAttribute{
 				Description: "check consistency of RA messages from other routers.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hop_limit": rsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("64"),
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1800),
 			},
 
 			"link_mtu": rsschema.StringAttribute{
 				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"managed_flag": rsschema.BoolAttribute{
 				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_interval": rsschema.Int64Attribute{
 				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(600),
 			},
 
 			"min_interval": rsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(200),
 			},
 
 			"other_flag": rsschema.BoolAttribute{
 				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"reachable_time": rsschema.StringAttribute{
 				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"retransmission_timer": rsschema.StringAttribute{
 				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"router_preference": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Medium"),
 			},
 		},
@@ -13532,35 +13419,23 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) ge
 func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"server": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
 			},
 
 			"suffix": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
 			},
 		},
@@ -13591,18 +13466,13 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServ
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -13633,18 +13503,13 @@ func VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuff
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -13672,27 +13537,18 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupport
 func VlanInterfaceResourceNdpProxySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: VlanInterfaceResourceNdpProxyAddressSchema(),
 			},
 
 			"enabled": rsschema.BoolAttribute{
 				Description: "Enable proxy NDP on the interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13722,18 +13578,12 @@ func VlanInterfaceResourceNdpProxyAddressSchema() rsschema.NestedAttributeObject
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"negate": rsschema.BoolAttribute{
 				Description: "put the prefix or address on a block list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -20446,14 +20296,15 @@ type VlanInterfaceImportState struct {
 
 func (o VlanInterfaceImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *VlanInterfaceLocation `json:"location"`
-		Name     *string                `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *VlanInterfaceLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, VlanInterfaceLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -20467,8 +20318,8 @@ func (o VlanInterfaceImportState) MarshalJSON() ([]byte, error) {
 
 func (o *VlanInterfaceImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *VlanInterfaceLocation `json:"location"`
-		Name     *string                `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -20477,10 +20328,14 @@ func (o *VlanInterfaceImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, VlanInterfaceLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

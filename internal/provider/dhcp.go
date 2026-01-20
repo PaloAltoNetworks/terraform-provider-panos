@@ -1734,10 +1734,7 @@ func DhcpDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"relay": DhcpDataSourceRelaySchema(),
@@ -1768,10 +1765,8 @@ func (o *DhcpDataSourceModel) getTypeFor(name string) attr.Type {
 func DhcpDataSourceRelaySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip": DhcpDataSourceRelayIpSchema(),
@@ -1802,26 +1797,20 @@ func (o *DhcpDataSourceRelayObject) getTypeFor(name string) attr.Type {
 func DhcpDataSourceRelayIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enabled": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"server": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1849,26 +1838,20 @@ func (o *DhcpDataSourceRelayIpObject) getTypeFor(name string) attr.Type {
 func DhcpDataSourceRelayIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enabled": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"server": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: DhcpDataSourceRelayIpv6ServerSchema(),
 			},
 		},
@@ -1899,18 +1882,13 @@ func DhcpDataSourceRelayIpv6ServerSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "Specify outgoing interface when using an IPv6 multicast address for your DHCPv6 server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1937,45 +1915,35 @@ func (o *DhcpDataSourceRelayIpv6ServerObject) getTypeFor(name string) attr.Type 
 func DhcpDataSourceServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip_pool": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"mode": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"option": DhcpDataSourceServerOptionSchema(),
 
 			"probe_ip": dsschema.BoolAttribute{
 				Description: "Ping IP when allocating a new IP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reserved": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: DhcpDataSourceServerReservedSchema(),
 			},
 		},
@@ -2003,28 +1971,22 @@ func (o *DhcpDataSourceServerObject) getTypeFor(name string) attr.Type {
 func DhcpDataSourceServerOptionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dns": DhcpDataSourceServerOptionDnsSchema(),
 
 			"dns_suffix": dsschema.StringAttribute{
 				Description: "domain name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"gateway": dsschema.StringAttribute{
 				Description: "default gateway",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inheritance": DhcpDataSourceServerOptionInheritanceSchema(),
@@ -2037,34 +1999,26 @@ func DhcpDataSourceServerOptionSchema() dsschema.SingleNestedAttribute {
 
 			"pop3_server": dsschema.StringAttribute{
 				Description: "POP3 server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"smtp_server": dsschema.StringAttribute{
 				Description: "SMTP server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"subnet_mask": dsschema.StringAttribute{
 				Description: "ip pool subnet mask",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"user_defined": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: DhcpDataSourceServerOptionUserDefinedSchema(),
 			},
 
@@ -2094,26 +2048,20 @@ func (o *DhcpDataSourceServerOptionObject) getTypeFor(name string) attr.Type {
 func DhcpDataSourceServerOptionDnsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"primary": dsschema.StringAttribute{
 				Description: "DNS primary server ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"secondary": dsschema.StringAttribute{
 				Description: "DNS secondary server ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2140,18 +2088,14 @@ func (o *DhcpDataSourceServerOptionDnsObject) getTypeFor(name string) attr.Type 
 func DhcpDataSourceServerOptionInheritanceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source": dsschema.StringAttribute{
 				Description: "Dynamic interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2178,18 +2122,14 @@ func (o *DhcpDataSourceServerOptionInheritanceObject) getTypeFor(name string) at
 func DhcpDataSourceServerOptionLeaseSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"timeout": dsschema.Int64Attribute{
 				Description: "lease(minute)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"unlimited": DhcpDataSourceServerOptionLeaseUnlimitedSchema(),
@@ -2218,10 +2158,8 @@ func (o *DhcpDataSourceServerOptionLeaseObject) getTypeFor(name string) attr.Typ
 func DhcpDataSourceServerOptionLeaseUnlimitedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2254,26 +2192,20 @@ func (o *DhcpDataSourceServerOptionLeaseUnlimitedObject) getTypeFor(name string)
 func DhcpDataSourceServerOptionNisSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"primary": dsschema.StringAttribute{
 				Description: "NIS primary server ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"secondary": dsschema.StringAttribute{
 				Description: "NIS secondary server ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2300,26 +2232,20 @@ func (o *DhcpDataSourceServerOptionNisObject) getTypeFor(name string) attr.Type 
 func DhcpDataSourceServerOptionNtpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"primary": dsschema.StringAttribute{
 				Description: "NTP primary server ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"secondary": dsschema.StringAttribute{
 				Description: "NTP secondary server ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2349,60 +2275,45 @@ func DhcpDataSourceServerOptionUserDefinedSchema() dsschema.NestedAttributeObjec
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"code": dsschema.Int64Attribute{
 				Description: "option code",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"vendor_class_identifier": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inherited": dsschema.BoolAttribute{
 				Description: "Inherited from DHCP server inheritance source",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ascii": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"hex": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2430,26 +2341,20 @@ func (o *DhcpDataSourceServerOptionUserDefinedObject) getTypeFor(name string) at
 func DhcpDataSourceServerOptionWinsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"primary": dsschema.StringAttribute{
 				Description: "WINS primary server ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"secondary": dsschema.StringAttribute{
 				Description: "WINS secondary server ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2479,26 +2384,19 @@ func DhcpDataSourceServerReservedSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"mac": dsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Description of reserved entry, e.g. host name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2757,7 +2655,203 @@ type DhcpResourceServerReservedObject struct {
 	Description types.String `tfsdk:"description"`
 }
 
+func (o *DhcpResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Relay.IsUnknown() && !o.Relay.IsNull() {
+		var nestedObj DhcpResourceRelayObject
+		diags := o.Relay.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("relay"))
+		}
+	}
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		var nestedObj DhcpResourceServerObject
+		diags := o.Server.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("server"))
+		}
+	}
+}
+
+func (o *DhcpResourceRelayObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var nestedObj DhcpResourceRelayIpObject
+		diags := o.Ip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj DhcpResourceRelayIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *DhcpResourceRelayIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DhcpResourceRelayIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		var elements []DhcpResourceRelayIpv6ServerObject
+		diags := o.Server.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("server").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *DhcpResourceRelayIpv6ServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DhcpResourceServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Option.IsUnknown() && !o.Option.IsNull() {
+		var nestedObj DhcpResourceServerOptionObject
+		diags := o.Option.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("option"))
+		}
+	}
+	if !o.Reserved.IsUnknown() && !o.Reserved.IsNull() {
+		var elements []DhcpResourceServerReservedObject
+		diags := o.Reserved.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("reserved").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *DhcpResourceServerOptionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dns.IsUnknown() && !o.Dns.IsNull() {
+		var nestedObj DhcpResourceServerOptionDnsObject
+		diags := o.Dns.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns"))
+		}
+	}
+	if !o.Inheritance.IsUnknown() && !o.Inheritance.IsNull() {
+		var nestedObj DhcpResourceServerOptionInheritanceObject
+		diags := o.Inheritance.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("inheritance"))
+		}
+	}
+	if !o.Lease.IsUnknown() && !o.Lease.IsNull() {
+		var nestedObj DhcpResourceServerOptionLeaseObject
+		diags := o.Lease.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("lease"))
+		}
+	}
+	if !o.Nis.IsUnknown() && !o.Nis.IsNull() {
+		var nestedObj DhcpResourceServerOptionNisObject
+		diags := o.Nis.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("nis"))
+		}
+	}
+	if !o.Ntp.IsUnknown() && !o.Ntp.IsNull() {
+		var nestedObj DhcpResourceServerOptionNtpObject
+		diags := o.Ntp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ntp"))
+		}
+	}
+	if !o.UserDefined.IsUnknown() && !o.UserDefined.IsNull() {
+		var elements []DhcpResourceServerOptionUserDefinedObject
+		diags := o.UserDefined.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("user_defined").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Wins.IsUnknown() && !o.Wins.IsNull() {
+		var nestedObj DhcpResourceServerOptionWinsObject
+		diags := o.Wins.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("wins"))
+		}
+	}
+}
+
+func (o *DhcpResourceServerOptionDnsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DhcpResourceServerOptionInheritanceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DhcpResourceServerOptionLeaseObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Unlimited.IsUnknown() && !o.Unlimited.IsNull() {
+		var nestedObj DhcpResourceServerOptionLeaseUnlimitedObject
+		diags := o.Unlimited.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("unlimited"))
+		}
+	}
+}
+
+func (o *DhcpResourceServerOptionLeaseUnlimitedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DhcpResourceServerOptionNisObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DhcpResourceServerOptionNtpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DhcpResourceServerOptionUserDefinedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DhcpResourceServerOptionWinsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DhcpResourceServerReservedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *DhcpResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource DhcpResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -2770,10 +2864,7 @@ func DhcpResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"relay": DhcpResourceRelaySchema(),
@@ -2804,10 +2895,7 @@ func (o *DhcpResourceModel) getTypeFor(name string) attr.Type {
 func DhcpResourceRelaySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2845,26 +2933,17 @@ func (o *DhcpResourceRelayObject) getTypeFor(name string) attr.Type {
 func DhcpResourceRelayIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enabled": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"server": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2892,26 +2971,17 @@ func (o *DhcpResourceRelayIpObject) getTypeFor(name string) attr.Type {
 func DhcpResourceRelayIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enabled": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"server": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: DhcpResourceRelayIpv6ServerSchema(),
 			},
 		},
@@ -2942,18 +3012,12 @@ func DhcpResourceRelayIpv6ServerSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "Specify outgoing interface when using an IPv6 multicast address for your DHCPv6 server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2980,45 +3044,30 @@ func (o *DhcpResourceRelayIpv6ServerObject) getTypeFor(name string) attr.Type {
 func DhcpResourceServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip_pool": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"mode": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"option": DhcpResourceServerOptionSchema(),
 
 			"probe_ip": rsschema.BoolAttribute{
 				Description: "Ping IP when allocating a new IP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"reserved": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: DhcpResourceServerReservedSchema(),
 			},
 		},
@@ -3046,28 +3095,19 @@ func (o *DhcpResourceServerObject) getTypeFor(name string) attr.Type {
 func DhcpResourceServerOptionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dns": DhcpResourceServerOptionDnsSchema(),
 
 			"dns_suffix": rsschema.StringAttribute{
 				Description: "domain name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"gateway": rsschema.StringAttribute{
 				Description: "default gateway",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inheritance": DhcpResourceServerOptionInheritanceSchema(),
@@ -3080,34 +3120,22 @@ func DhcpResourceServerOptionSchema() rsschema.SingleNestedAttribute {
 
 			"pop3_server": rsschema.StringAttribute{
 				Description: "POP3 server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"smtp_server": rsschema.StringAttribute{
 				Description: "SMTP server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"subnet_mask": rsschema.StringAttribute{
 				Description: "ip pool subnet mask",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"user_defined": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: DhcpResourceServerOptionUserDefinedSchema(),
 			},
 
@@ -3137,26 +3165,17 @@ func (o *DhcpResourceServerOptionObject) getTypeFor(name string) attr.Type {
 func DhcpResourceServerOptionDnsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"primary": rsschema.StringAttribute{
 				Description: "DNS primary server ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"secondary": rsschema.StringAttribute{
 				Description: "DNS secondary server ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3183,18 +3202,12 @@ func (o *DhcpResourceServerOptionDnsObject) getTypeFor(name string) attr.Type {
 func DhcpResourceServerOptionInheritanceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source": rsschema.StringAttribute{
 				Description: "Dynamic interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3221,18 +3234,12 @@ func (o *DhcpResourceServerOptionInheritanceObject) getTypeFor(name string) attr
 func DhcpResourceServerOptionLeaseSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"timeout": rsschema.Int64Attribute{
 				Description: "lease(minute)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -3268,10 +3275,7 @@ func (o *DhcpResourceServerOptionLeaseObject) getTypeFor(name string) attr.Type 
 func DhcpResourceServerOptionLeaseUnlimitedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3304,26 +3308,17 @@ func (o *DhcpResourceServerOptionLeaseUnlimitedObject) getTypeFor(name string) a
 func DhcpResourceServerOptionNisSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"primary": rsschema.StringAttribute{
 				Description: "NIS primary server ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"secondary": rsschema.StringAttribute{
 				Description: "NIS secondary server ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3350,26 +3345,17 @@ func (o *DhcpResourceServerOptionNisObject) getTypeFor(name string) attr.Type {
 func DhcpResourceServerOptionNtpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"primary": rsschema.StringAttribute{
 				Description: "NTP primary server ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"secondary": rsschema.StringAttribute{
 				Description: "NTP secondary server ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3399,42 +3385,27 @@ func DhcpResourceServerOptionUserDefinedSchema() rsschema.NestedAttributeObject 
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"code": rsschema.Int64Attribute{
 				Description: "option code",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"vendor_class_identifier": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inherited": rsschema.BoolAttribute{
 				Description: "Inherited from DHCP server inheritance source",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 
 				Validators: []validator.List{
@@ -3448,19 +3419,13 @@ func DhcpResourceServerOptionUserDefinedSchema() rsschema.NestedAttributeObject 
 
 			"ascii": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"hex": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -3488,26 +3453,17 @@ func (o *DhcpResourceServerOptionUserDefinedObject) getTypeFor(name string) attr
 func DhcpResourceServerOptionWinsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"primary": rsschema.StringAttribute{
 				Description: "WINS primary server ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"secondary": rsschema.StringAttribute{
 				Description: "WINS secondary server ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3537,26 +3493,17 @@ func DhcpResourceServerReservedSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"mac": rsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Description of reserved entry, e.g. host name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5646,14 +5593,15 @@ type DhcpImportState struct {
 
 func (o DhcpImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *DhcpLocation `json:"location"`
-		Name     *string       `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *DhcpLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, DhcpLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -5667,8 +5615,8 @@ func (o DhcpImportState) MarshalJSON() ([]byte, error) {
 
 func (o *DhcpImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *DhcpLocation `json:"location"`
-		Name     *string       `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -5677,10 +5625,14 @@ func (o *DhcpImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, DhcpLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

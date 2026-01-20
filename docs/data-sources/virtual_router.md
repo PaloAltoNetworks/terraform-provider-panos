@@ -36,6 +36,9 @@ Optional:
 - `ngfw` (Attributes) Located in a specific NGFW device (see [below for nested schema](#nestedatt--location--ngfw))
 - `template` (Attributes) Located in a specific template (see [below for nested schema](#nestedatt--location--template))
 - `template_stack` (Attributes) Located in a specific template stack (see [below for nested schema](#nestedatt--location--template_stack))
+- `template_stack_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_stack_vsys))
+- `template_vsys` (Attributes) Located in a specific template, device and vsys. (see [below for nested schema](#nestedatt--location--template_vsys))
+- `vsys` (Attributes) Located in a specific Virtual System (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--ngfw"></a>
 ### Nested Schema for `location.ngfw`
@@ -63,6 +66,37 @@ Optional:
 - `name` (String) Specific Panorama template stack
 - `ngfw_device` (String) The NGFW device
 - `panorama_device` (String) Specific Panorama device
+
+
+<a id="nestedatt--location--template_stack_vsys"></a>
+### Nested Schema for `location.template_stack_vsys`
+
+Optional:
+
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
+- `template_stack` (String) The template stack
+- `vsys` (String) The vsys.
+
+
+<a id="nestedatt--location--template_vsys"></a>
+### Nested Schema for `location.template_vsys`
+
+Optional:
+
+- `ngfw_device` (String) The NGFW device
+- `panorama_device` (String) Specific Panorama device
+- `template` (String) Specific Panorama template
+- `vsys` (String) The vsys.
+
+
+<a id="nestedatt--location--vsys"></a>
+### Nested Schema for `location.vsys`
+
+Optional:
+
+- `name` (String) The Virtual System name
+- `ngfw_device` (String) The NGFW device name
 
 
 
@@ -368,7 +402,7 @@ Required:
 
 Optional:
 
-- `secret` (String) shared secret for the TCP MD5 authentication
+- `secret` (String, Sensitive) shared secret for the TCP MD5 authentication
 
 
 <a id="nestedatt--protocol--bgp--dampening_profile"></a>
@@ -1579,7 +1613,7 @@ Required:
 Optional:
 
 - `md5` (Attributes List) (see [below for nested schema](#nestedatt--protocol--ospf--auth_profile--md5))
-- `password` (String) Simple password authentication
+- `password` (String, Sensitive) Simple password authentication
 
 <a id="nestedatt--protocol--ospf--auth_profile--md5"></a>
 ### Nested Schema for `protocol.ospf.auth_profile.md5`
@@ -1590,7 +1624,7 @@ Required:
 
 Optional:
 
-- `key` (String) key for the authentication
+- `key` (String, Sensitive) key for the authentication
 - `preferred` (Boolean) use this key when sending packet
 
 
@@ -2217,7 +2251,7 @@ Required:
 Optional:
 
 - `md5` (Attributes List) (see [below for nested schema](#nestedatt--protocol--rip--auth_profile--md5))
-- `password` (String) Simple password authentication
+- `password` (String, Sensitive) Simple password authentication
 
 <a id="nestedatt--protocol--rip--auth_profile--md5"></a>
 ### Nested Schema for `protocol.rip.auth_profile.md5`
@@ -2228,7 +2262,7 @@ Required:
 
 Optional:
 
-- `key` (String) key for the authentication
+- `key` (String, Sensitive) key for the authentication
 - `preferred` (Boolean) prefer to use this key when sending packet
 
 

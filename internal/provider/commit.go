@@ -12,10 +12,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/action/schema"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var (
-	_ action.ActionWithConfigure = &CommitAction{}
+	_ action.ActionWithConfigure      = &CommitAction{}
+	_ action.ActionWithValidateConfig = &CommitAction{}
 )
 
 func NewCommitAction() action.Action {
@@ -27,16 +29,168 @@ type CommitAction struct {
 }
 
 type CommitActionModel struct {
+	Description             types.String `tfsdk:"description"`
+	Admins                  types.List   `tfsdk:"admins"`
+	ExcludeDeviceAndNetwork types.Bool   `tfsdk:"exclude_device_and_network"`
+	ExcludeSharedObjects    types.Bool   `tfsdk:"exclude_shared_objects"`
+	Force                   types.Bool   `tfsdk:"force"`
+	ExcludePolicyAndObjects types.Bool   `tfsdk:"exclude_policy_and_objects"`
+	DeviceGroups            types.List   `tfsdk:"device_groups"`
+	Templates               types.List   `tfsdk:"templates"`
+	TemplateStacks          types.List   `tfsdk:"template_stacks"`
+	WildfireAppliances      types.List   `tfsdk:"wildfire_appliances"`
+	WildfireClusters        types.List   `tfsdk:"wildfire_clusters"`
+	LogCollectors           types.List   `tfsdk:"log_collectors"`
+	LogCollectorGroups      types.List   `tfsdk:"log_collector_groups"`
+	PushConfiguration       types.Object `tfsdk:"push_configuration"`
+}
+type CommitActionPushConfigurationObject struct {
+	Type                types.String `tfsdk:"type"`
+	Name                types.String `tfsdk:"name"`
+	Description         types.String `tfsdk:"description"`
+	IncludeTemplate     types.Bool   `tfsdk:"include_template"`
+	ForceTemplateValues types.Bool   `tfsdk:"force_template_values"`
+	Devices             types.List   `tfsdk:"devices"`
 }
 
 func CommitActionSchema() schema.Schema {
 	return schema.Schema{
-		Attributes: map[string]schema.Attribute{},
+		Attributes: map[string]schema.Attribute{
+
+			"description": schema.StringAttribute{
+				Description: "Commit description",
+				Optional:    true,
+			},
+
+			"admins": schema.ListAttribute{
+				Description: "List of administrators whose changes to commit (partial commit)",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			"exclude_device_and_network": schema.BoolAttribute{
+				Description: "Exclude device and network configuration from the commit",
+				Optional:    true,
+			},
+
+			"exclude_shared_objects": schema.BoolAttribute{
+				Description: "Exclude shared objects from the commit",
+				Optional:    true,
+			},
+
+			"force": schema.BoolAttribute{
+				Description: "Force the commit operation",
+				Optional:    true,
+			},
+
+			"exclude_policy_and_objects": schema.BoolAttribute{
+				Description: "Exclude policy and objects from the commit. Available on NGFW only",
+				Optional:    true,
+			},
+
+			"device_groups": schema.ListAttribute{
+				Description: "Commit only the specified device groups. Available on Panorama only",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			"templates": schema.ListAttribute{
+				Description: "Commit only the specified templates. Available on Panorama only",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			"template_stacks": schema.ListAttribute{
+				Description: "Commit only the specified template stacks. Available on Panorama only",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			"wildfire_appliances": schema.ListAttribute{
+				Description: "Commit only the specified WildFire appliances. Available on Panorama only",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			"wildfire_clusters": schema.ListAttribute{
+				Description: "Commit only the specified WildFire clusters. Available on Panorama only",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			"log_collectors": schema.ListAttribute{
+				Description: "Commit only the specified log collectors. Available on Panorama only",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			"log_collector_groups": schema.ListAttribute{
+				Description: "Commit only the specified log collector groups. Available on Panorama only",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+
+			"push_configuration": CommitActionPushConfigurationSchema(),
+		},
 	}
 }
 
 func (o *CommitActionModel) getTypeFor(name string) attr.Type {
 	schema := CommitActionSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func CommitActionPushConfigurationSchema() schema.SingleNestedAttribute {
+	return schema.SingleNestedAttribute{
+		Description: "",
+		Optional:    true,
+		Attributes: map[string]schema.Attribute{
+
+			"type": schema.StringAttribute{
+				Description: "Type of push operation. Valid values: device_group, template, template_stack, log_collector_group, wildfire_appliance, wildfire_cluster",
+				Required:    true,
+			},
+
+			"name": schema.StringAttribute{
+				Description: "Name of the target (device group, template, etc.) to push configuration to",
+				Required:    true,
+			},
+
+			"description": schema.StringAttribute{
+				Description: "Push operation description. If not specified, defaults to the commit description",
+				Optional:    true,
+			},
+
+			"include_template": schema.BoolAttribute{
+				Description: "Include template configuration when pushing to a device group. Only applicable when type is device_group",
+				Optional:    true,
+			},
+
+			"force_template_values": schema.BoolAttribute{
+				Description: "Force template values to override local values on devices. Applicable for device_group, template, and template_stack types",
+				Optional:    true,
+			},
+
+			"devices": schema.ListAttribute{
+				Description: "List of device serial numbers to push configuration to. If not specified, pushes to all devices in the target",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+		},
+	}
+}
+
+func (o *CommitActionPushConfigurationObject) getTypeFor(name string) attr.Type {
+	schema := CommitActionPushConfigurationSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -69,4 +223,7 @@ func (o *CommitAction) Configure(ctx context.Context, req action.ConfigureReques
 
 	providerData := req.ProviderData.(*ProviderData)
 	o.client = providerData.Client
+}
+
+func (o *CommitAction) ValidateConfig(ctx context.Context, req action.ValidateConfigRequest, resp *action.ValidateConfigResponse) {
 }

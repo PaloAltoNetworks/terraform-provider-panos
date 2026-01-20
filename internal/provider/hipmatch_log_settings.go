@@ -1002,87 +1002,66 @@ func HipmatchLogSettingsDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"actions": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: HipmatchLogSettingsDataSourceActionsSchema(),
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"filter": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"quarantine": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"email_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"http_profile": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"snmp_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"syslog_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"send_to_panorama": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1112,10 +1091,7 @@ func HipmatchLogSettingsDataSourceActionsSchema() dsschema.NestedAttributeObject
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": HipmatchLogSettingsDataSourceActionsTypeSchema(),
@@ -1144,10 +1120,8 @@ func (o *HipmatchLogSettingsDataSourceActionsObject) getTypeFor(name string) att
 func HipmatchLogSettingsDataSourceActionsTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"integration": HipmatchLogSettingsDataSourceActionsTypeIntegrationSchema(),
@@ -1178,10 +1152,8 @@ func (o *HipmatchLogSettingsDataSourceActionsTypeObject) getTypeFor(name string)
 func HipmatchLogSettingsDataSourceActionsTypeIntegrationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1193,10 +1165,8 @@ func HipmatchLogSettingsDataSourceActionsTypeIntegrationSchema() dsschema.Single
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1223,10 +1193,8 @@ func (o *HipmatchLogSettingsDataSourceActionsTypeIntegrationObject) getTypeFor(n
 func HipmatchLogSettingsDataSourceActionsTypeTaggingSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1238,36 +1206,28 @@ func HipmatchLogSettingsDataSourceActionsTypeTaggingSchema() dsschema.SingleNest
 
 			"target": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timeout": dsschema.Int64Attribute{
 				Description: "timeout in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"registration": HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationSchema(),
 
 			"tags": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1295,10 +1255,8 @@ func (o *HipmatchLogSettingsDataSourceActionsTypeTaggingObject) getTypeFor(name 
 func HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"localhost": HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostSchema(),
@@ -1331,10 +1289,8 @@ func (o *HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationObject) getT
 func HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1368,10 +1324,8 @@ func (o *HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostObj
 func HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationPanoramaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1405,10 +1359,8 @@ func (o *HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationPanoramaObje
 func HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationRemoteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1421,10 +1373,8 @@ func HipmatchLogSettingsDataSourceActionsTypeTaggingRegistrationRemoteSchema() d
 
 			"http_profile": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1667,7 +1617,115 @@ type HipmatchLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject struc
 	HttpProfile types.String `tfsdk:"http_profile"`
 }
 
+func (o *HipmatchLogSettingsResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Actions.IsUnknown() && !o.Actions.IsNull() {
+		var elements []HipmatchLogSettingsResourceActionsObject
+		diags := o.Actions.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("actions").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *HipmatchLogSettingsResourceActionsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj HipmatchLogSettingsResourceActionsTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *HipmatchLogSettingsResourceActionsTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Integration.IsUnknown() && !o.Integration.IsNull() {
+		var nestedObj HipmatchLogSettingsResourceActionsTypeIntegrationObject
+		diags := o.Integration.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("integration"))
+		}
+	}
+	if !o.Tagging.IsUnknown() && !o.Tagging.IsNull() {
+		var nestedObj HipmatchLogSettingsResourceActionsTypeTaggingObject
+		diags := o.Tagging.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tagging"))
+		}
+	}
+}
+
+func (o *HipmatchLogSettingsResourceActionsTypeIntegrationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *HipmatchLogSettingsResourceActionsTypeTaggingObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Registration.IsUnknown() && !o.Registration.IsNull() {
+		var nestedObj HipmatchLogSettingsResourceActionsTypeTaggingRegistrationObject
+		diags := o.Registration.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("registration"))
+		}
+	}
+}
+
+func (o *HipmatchLogSettingsResourceActionsTypeTaggingRegistrationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Localhost.IsUnknown() && !o.Localhost.IsNull() {
+		var nestedObj HipmatchLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObject
+		diags := o.Localhost.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("localhost"))
+		}
+	}
+	if !o.Panorama.IsUnknown() && !o.Panorama.IsNull() {
+		var nestedObj HipmatchLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject
+		diags := o.Panorama.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("panorama"))
+		}
+	}
+	if !o.Remote.IsUnknown() && !o.Remote.IsNull() {
+		var nestedObj HipmatchLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject
+		diags := o.Remote.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("remote"))
+		}
+	}
+}
+
+func (o *HipmatchLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *HipmatchLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *HipmatchLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *HipmatchLogSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource HipmatchLogSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1680,87 +1738,57 @@ func HipmatchLogSettingsResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"actions": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: HipmatchLogSettingsResourceActionsSchema(),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"filter": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"quarantine": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"email_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"http_profile": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"snmp_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"syslog_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"send_to_panorama": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1790,10 +1818,7 @@ func HipmatchLogSettingsResourceActionsSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": HipmatchLogSettingsResourceActionsTypeSchema(),
@@ -1822,10 +1847,7 @@ func (o *HipmatchLogSettingsResourceActionsObject) getTypeFor(name string) attr.
 func HipmatchLogSettingsResourceActionsTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"integration": HipmatchLogSettingsResourceActionsTypeIntegrationSchema(),
@@ -1856,10 +1878,7 @@ func (o *HipmatchLogSettingsResourceActionsTypeObject) getTypeFor(name string) a
 func HipmatchLogSettingsResourceActionsTypeIntegrationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1871,10 +1890,8 @@ func HipmatchLogSettingsResourceActionsTypeIntegrationSchema() rsschema.SingleNe
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Azure-Security-Center-Integration"),
 			},
 		},
@@ -1902,10 +1919,7 @@ func (o *HipmatchLogSettingsResourceActionsTypeIntegrationObject) getTypeFor(nam
 func HipmatchLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1917,28 +1931,22 @@ func HipmatchLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNested
 
 			"target": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("source-address"),
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("add-tag"),
 			},
 
 			"timeout": rsschema.Int64Attribute{
 				Description: "timeout in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
@@ -1946,10 +1954,7 @@ func HipmatchLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNested
 
 			"tags": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1977,10 +1982,7 @@ func (o *HipmatchLogSettingsResourceActionsTypeTaggingObject) getTypeFor(name st
 func HipmatchLogSettingsResourceActionsTypeTaggingRegistrationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"localhost": HipmatchLogSettingsResourceActionsTypeTaggingRegistrationLocalhostSchema(),
@@ -2013,10 +2015,7 @@ func (o *HipmatchLogSettingsResourceActionsTypeTaggingRegistrationObject) getTyp
 func HipmatchLogSettingsResourceActionsTypeTaggingRegistrationLocalhostSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2050,10 +2049,7 @@ func (o *HipmatchLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObjec
 func HipmatchLogSettingsResourceActionsTypeTaggingRegistrationPanoramaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2087,10 +2083,7 @@ func (o *HipmatchLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject
 func HipmatchLogSettingsResourceActionsTypeTaggingRegistrationRemoteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2103,10 +2096,7 @@ func HipmatchLogSettingsResourceActionsTypeTaggingRegistrationRemoteSchema() rss
 
 			"http_profile": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3596,14 +3586,15 @@ type HipmatchLogSettingsImportState struct {
 
 func (o HipmatchLogSettingsImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *HipmatchLogSettingsLocation `json:"location"`
-		Name     *string                      `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *HipmatchLogSettingsLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, HipmatchLogSettingsLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -3617,8 +3608,8 @@ func (o HipmatchLogSettingsImportState) MarshalJSON() ([]byte, error) {
 
 func (o *HipmatchLogSettingsImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *HipmatchLogSettingsLocation `json:"location"`
-		Name     *string                      `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3627,10 +3618,14 @@ func (o *HipmatchLogSettingsImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, HipmatchLogSettingsLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

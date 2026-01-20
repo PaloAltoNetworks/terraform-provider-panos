@@ -65,6 +65,12 @@ type CertificateImportResourceLocalPkcs12Object struct {
 }
 
 func (o *CertificateImportResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource CertificateImportResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
 
 // <ResourceSchema>
@@ -77,10 +83,7 @@ func CertificateImportResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"local": CertificateImportResourceLocalSchema(),
@@ -109,10 +112,7 @@ func (o *CertificateImportResourceModel) getTypeFor(name string) attr.Type {
 func CertificateImportResourceLocalSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -149,10 +149,7 @@ func (o *CertificateImportResourceLocalObject) getTypeFor(name string) attr.Type
 func CertificateImportResourceLocalPemSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -164,24 +161,16 @@ func CertificateImportResourceLocalPemSchema() rsschema.SingleNestedAttribute {
 
 			"certificate": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"private_key": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"passphrase": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
@@ -210,10 +199,7 @@ func (o *CertificateImportResourceLocalPemObject) getTypeFor(name string) attr.T
 func CertificateImportResourceLocalPkcs12Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -225,16 +211,11 @@ func CertificateImportResourceLocalPkcs12Schema() rsschema.SingleNestedAttribute
 
 			"certificate": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"passphrase": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},

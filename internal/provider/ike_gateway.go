@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/crypto/ike/gateway"
@@ -1475,8 +1476,8 @@ func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			key_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -1888,36 +1889,27 @@ func IkeGatewayDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"authentication": IkeGatewayDataSourceAuthenticationSchema(),
 
 			"comment": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disabled": dsschema.BoolAttribute{
 				Description: "Disable the IKE gateway",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.BoolAttribute{
 				Description: "use IPv6 for the IKE gateway",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_address": IkeGatewayDataSourceLocalAddressSchema(),
@@ -1956,10 +1948,8 @@ func (o *IkeGatewayDataSourceModel) getTypeFor(name string) attr.Type {
 func IkeGatewayDataSourceAuthenticationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"certificate": IkeGatewayDataSourceAuthenticationCertificateSchema(),
@@ -1990,10 +1980,8 @@ func (o *IkeGatewayDataSourceAuthenticationObject) getTypeFor(name string) attr.
 func IkeGatewayDataSourceAuthenticationCertificateSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2005,36 +1993,28 @@ func IkeGatewayDataSourceAuthenticationCertificateSchema() dsschema.SingleNested
 
 			"allow_id_payload_mismatch": dsschema.BoolAttribute{
 				Description: "Permit peer identification and certificate payload identification mismatch",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for certificate valdiation during IKE negotiation",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_certificate": IkeGatewayDataSourceAuthenticationCertificateLocalCertificateSchema(),
 
 			"strict_validation_revocation": dsschema.BoolAttribute{
 				Description: "Enable strict validation of peer's extended key use",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"use_management_as_source": dsschema.BoolAttribute{
 				Description: "Use management interface IP as source to retrieve http certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2061,20 +2041,16 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateObject) getTypeFor(name st
 func IkeGatewayDataSourceAuthenticationCertificateLocalCertificateSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"hash_and_url": IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlSchema(),
 
 			"name": dsschema.StringAttribute{
 				Description: "Local certificate name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2101,26 +2077,20 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateObject) ge
 func IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrlSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"base_url": dsschema.StringAttribute{
 				Description: "The host and directory part of URL for local certificates(http only)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Use hash-and-url for local certificate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2147,10 +2117,8 @@ func (o *IkeGatewayDataSourceAuthenticationCertificateLocalCertificateHashAndUrl
 func IkeGatewayDataSourceAuthenticationPreSharedKeySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2162,9 +2130,8 @@ func IkeGatewayDataSourceAuthenticationPreSharedKeySchema() dsschema.SingleNeste
 
 			"key": dsschema.StringAttribute{
 				Description: "the string used as pre-shared key",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 		},
@@ -2192,34 +2159,26 @@ func (o *IkeGatewayDataSourceAuthenticationPreSharedKeyObject) getTypeFor(name s
 func IkeGatewayDataSourceLocalAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "local gateway end-point",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"floating_ip": dsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2246,26 +2205,20 @@ func (o *IkeGatewayDataSourceLocalAddressObject) getTypeFor(name string) attr.Ty
 func IkeGatewayDataSourceLocalIdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"id": dsschema.StringAttribute{
 				Description: "Local ID string",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2292,28 +2245,22 @@ func (o *IkeGatewayDataSourceLocalIdObject) getTypeFor(name string) attr.Type {
 func IkeGatewayDataSourcePeerAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dynamic": IkeGatewayDataSourcePeerAddressDynamicSchema(),
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "peer gateway FQDN name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.StringAttribute{
 				Description: "peer gateway has static IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2340,10 +2287,8 @@ func (o *IkeGatewayDataSourcePeerAddressObject) getTypeFor(name string) attr.Typ
 func IkeGatewayDataSourcePeerAddressDynamicSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2377,34 +2322,26 @@ func (o *IkeGatewayDataSourcePeerAddressDynamicObject) getTypeFor(name string) a
 func IkeGatewayDataSourcePeerIdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"id": dsschema.StringAttribute{
 				Description: "Peer ID string",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"matching": dsschema.StringAttribute{
 				Description: "Enable peer ID wildcard match for certificate authentication",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2431,10 +2368,8 @@ func (o *IkeGatewayDataSourcePeerIdObject) getTypeFor(name string) attr.Type {
 func IkeGatewayDataSourceProtocolSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ikev1": IkeGatewayDataSourceProtocolIkev1Schema(),
@@ -2443,10 +2378,8 @@ func IkeGatewayDataSourceProtocolSchema() dsschema.SingleNestedAttribute {
 
 			"version": dsschema.StringAttribute{
 				Description: "IKE protocol version",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2473,28 +2406,22 @@ func (o *IkeGatewayDataSourceProtocolObject) getTypeFor(name string) attr.Type {
 func IkeGatewayDataSourceProtocolIkev1Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dpd": IkeGatewayDataSourceProtocolIkev1DpdSchema(),
 
 			"exchange_mode": dsschema.StringAttribute{
 				Description: "Exchange mode",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ike_crypto_profile": dsschema.StringAttribute{
 				Description: "IKE SA crypto profile name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2521,34 +2448,26 @@ func (o *IkeGatewayDataSourceProtocolIkev1Object) getTypeFor(name string) attr.T
 func IkeGatewayDataSourceProtocolIkev1DpdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable Dead-Peer-Detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interval": dsschema.Int64Attribute{
 				Description: "sending interval for probing packets (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"retry": dsschema.Int64Attribute{
 				Description: "number of retries before disconnection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2575,28 +2494,22 @@ func (o *IkeGatewayDataSourceProtocolIkev1DpdObject) getTypeFor(name string) att
 func IkeGatewayDataSourceProtocolIkev2Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dpd": IkeGatewayDataSourceProtocolIkev2DpdSchema(),
 
 			"ike_crypto_profile": dsschema.StringAttribute{
 				Description: "IKE SA crypto profile name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"require_cookie": dsschema.BoolAttribute{
 				Description: "Require cookie",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2623,26 +2536,20 @@ func (o *IkeGatewayDataSourceProtocolIkev2Object) getTypeFor(name string) attr.T
 func IkeGatewayDataSourceProtocolIkev2DpdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable sending empty information liveness check message",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interval": dsschema.Int64Attribute{
 				Description: "delay interval before sending probing packets (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2669,10 +2576,8 @@ func (o *IkeGatewayDataSourceProtocolIkev2DpdObject) getTypeFor(name string) att
 func IkeGatewayDataSourceProtocolCommonSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"fragmentation": IkeGatewayDataSourceProtocolCommonFragmentationSchema(),
@@ -2681,10 +2586,8 @@ func IkeGatewayDataSourceProtocolCommonSchema() dsschema.SingleNestedAttribute {
 
 			"passive_mode": dsschema.BoolAttribute{
 				Description: "Enable passive mode (responder only)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2711,18 +2614,14 @@ func (o *IkeGatewayDataSourceProtocolCommonObject) getTypeFor(name string) attr.
 func IkeGatewayDataSourceProtocolCommonFragmentationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable IKE fragmentation",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2749,34 +2648,26 @@ func (o *IkeGatewayDataSourceProtocolCommonFragmentationObject) getTypeFor(name 
 func IkeGatewayDataSourceProtocolCommonNatTraversalSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable NAT-Traversal",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"keep_alive_interval": dsschema.Int64Attribute{
 				Description: "sending interval for NAT keep-alive packets (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"udp_checksum_enable": dsschema.BoolAttribute{
 				Description: "Enable UDP checksum",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3047,7 +2938,243 @@ type IkeGatewayResourceProtocolCommonNatTraversalObject struct {
 	UdpChecksumEnable types.Bool  `tfsdk:"udp_checksum_enable"`
 }
 
+func (o *IkeGatewayResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Authentication.IsUnknown() && !o.Authentication.IsNull() {
+		var nestedObj IkeGatewayResourceAuthenticationObject
+		diags := o.Authentication.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("authentication"))
+		}
+	}
+	if !o.LocalAddress.IsUnknown() && !o.LocalAddress.IsNull() {
+		var nestedObj IkeGatewayResourceLocalAddressObject
+		diags := o.LocalAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_address"))
+		}
+	}
+	if !o.LocalId.IsUnknown() && !o.LocalId.IsNull() {
+		var nestedObj IkeGatewayResourceLocalIdObject
+		diags := o.LocalId.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_id"))
+		}
+	}
+	if !o.PeerAddress.IsUnknown() && !o.PeerAddress.IsNull() {
+		var nestedObj IkeGatewayResourcePeerAddressObject
+		diags := o.PeerAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("peer_address"))
+		}
+	}
+	if !o.PeerId.IsUnknown() && !o.PeerId.IsNull() {
+		var nestedObj IkeGatewayResourcePeerIdObject
+		diags := o.PeerId.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("peer_id"))
+		}
+	}
+	if !o.Protocol.IsUnknown() && !o.Protocol.IsNull() {
+		var nestedObj IkeGatewayResourceProtocolObject
+		diags := o.Protocol.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("protocol"))
+		}
+	}
+	if !o.ProtocolCommon.IsUnknown() && !o.ProtocolCommon.IsNull() {
+		var nestedObj IkeGatewayResourceProtocolCommonObject
+		diags := o.ProtocolCommon.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("protocol_common"))
+		}
+	}
+}
+
+func (o *IkeGatewayResourceAuthenticationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Certificate.IsUnknown() && !o.Certificate.IsNull() {
+		var nestedObj IkeGatewayResourceAuthenticationCertificateObject
+		diags := o.Certificate.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("certificate"))
+		}
+	}
+	if !o.PreSharedKey.IsUnknown() && !o.PreSharedKey.IsNull() {
+		var nestedObj IkeGatewayResourceAuthenticationPreSharedKeyObject
+		diags := o.PreSharedKey.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("pre_shared_key"))
+		}
+	}
+}
+
+func (o *IkeGatewayResourceAuthenticationCertificateObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.LocalCertificate.IsUnknown() && !o.LocalCertificate.IsNull() {
+		var nestedObj IkeGatewayResourceAuthenticationCertificateLocalCertificateObject
+		diags := o.LocalCertificate.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_certificate"))
+		}
+	}
+}
+
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.HashAndUrl.IsUnknown() && !o.HashAndUrl.IsNull() {
+		var nestedObj IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject
+		diags := o.HashAndUrl.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hash_and_url"))
+		}
+	}
+}
+
+func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
+}
+
+func (o *IkeGatewayResourceLocalAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IkeGatewayResourceLocalIdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IkeGatewayResourcePeerAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dynamic.IsUnknown() && !o.Dynamic.IsNull() {
+		var nestedObj IkeGatewayResourcePeerAddressDynamicObject
+		diags := o.Dynamic.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dynamic"))
+		}
+	}
+}
+
+func (o *IkeGatewayResourcePeerAddressDynamicObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IkeGatewayResourcePeerIdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IkeGatewayResourceProtocolObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ikev1.IsUnknown() && !o.Ikev1.IsNull() {
+		var nestedObj IkeGatewayResourceProtocolIkev1Object
+		diags := o.Ikev1.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ikev1"))
+		}
+	}
+	if !o.Ikev2.IsUnknown() && !o.Ikev2.IsNull() {
+		var nestedObj IkeGatewayResourceProtocolIkev2Object
+		diags := o.Ikev2.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ikev2"))
+		}
+	}
+}
+
+func (o *IkeGatewayResourceProtocolIkev1Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dpd.IsUnknown() && !o.Dpd.IsNull() {
+		var nestedObj IkeGatewayResourceProtocolIkev1DpdObject
+		diags := o.Dpd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dpd"))
+		}
+	}
+}
+
+func (o *IkeGatewayResourceProtocolIkev1DpdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IkeGatewayResourceProtocolIkev2Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dpd.IsUnknown() && !o.Dpd.IsNull() {
+		var nestedObj IkeGatewayResourceProtocolIkev2DpdObject
+		diags := o.Dpd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dpd"))
+		}
+	}
+}
+
+func (o *IkeGatewayResourceProtocolIkev2DpdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IkeGatewayResourceProtocolCommonObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Fragmentation.IsUnknown() && !o.Fragmentation.IsNull() {
+		var nestedObj IkeGatewayResourceProtocolCommonFragmentationObject
+		diags := o.Fragmentation.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("fragmentation"))
+		}
+	}
+	if !o.NatTraversal.IsUnknown() && !o.NatTraversal.IsNull() {
+		var nestedObj IkeGatewayResourceProtocolCommonNatTraversalObject
+		diags := o.NatTraversal.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("nat_traversal"))
+		}
+	}
+}
+
+func (o *IkeGatewayResourceProtocolCommonFragmentationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IkeGatewayResourceProtocolCommonNatTraversalObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *IkeGatewayResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource IkeGatewayResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -3060,36 +3187,24 @@ func IkeGatewayResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"authentication": IkeGatewayResourceAuthenticationSchema(),
 
 			"comment": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disabled": rsschema.BoolAttribute{
 				Description: "Disable the IKE gateway",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.BoolAttribute{
 				Description: "use IPv6 for the IKE gateway",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_address": IkeGatewayResourceLocalAddressSchema(),
@@ -3128,10 +3243,7 @@ func (o *IkeGatewayResourceModel) getTypeFor(name string) attr.Type {
 func IkeGatewayResourceAuthenticationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"certificate": IkeGatewayResourceAuthenticationCertificateSchema(),
@@ -3162,10 +3274,7 @@ func (o *IkeGatewayResourceAuthenticationObject) getTypeFor(name string) attr.Ty
 func IkeGatewayResourceAuthenticationCertificateSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3177,36 +3286,24 @@ func IkeGatewayResourceAuthenticationCertificateSchema() rsschema.SingleNestedAt
 
 			"allow_id_payload_mismatch": rsschema.BoolAttribute{
 				Description: "Permit peer identification and certificate payload identification mismatch",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for certificate valdiation during IKE negotiation",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_certificate": IkeGatewayResourceAuthenticationCertificateLocalCertificateSchema(),
 
 			"strict_validation_revocation": rsschema.BoolAttribute{
 				Description: "Enable strict validation of peer's extended key use",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"use_management_as_source": rsschema.BoolAttribute{
 				Description: "Use management interface IP as source to retrieve http certificates",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3233,20 +3330,14 @@ func (o *IkeGatewayResourceAuthenticationCertificateObject) getTypeFor(name stri
 func IkeGatewayResourceAuthenticationCertificateLocalCertificateSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"hash_and_url": IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlSchema(),
 
 			"name": rsschema.StringAttribute{
 				Description: "Local certificate name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3273,26 +3364,17 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateObject) getT
 func IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"base_url": rsschema.StringAttribute{
 				Description: "The host and directory part of URL for local certificates(http only)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Use hash-and-url for local certificate",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3319,10 +3401,7 @@ func (o *IkeGatewayResourceAuthenticationCertificateLocalCertificateHashAndUrlOb
 func IkeGatewayResourceAuthenticationPreSharedKeySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3334,8 +3413,6 @@ func IkeGatewayResourceAuthenticationPreSharedKeySchema() rsschema.SingleNestedA
 
 			"key": rsschema.StringAttribute{
 				Description: "the string used as pre-shared key",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
@@ -3364,26 +3441,17 @@ func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) getTypeFor(name str
 func IkeGatewayResourceLocalAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "local gateway end-point",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"floating_ip": rsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.Expressions{
@@ -3395,10 +3463,7 @@ func IkeGatewayResourceLocalAddressSchema() rsschema.SingleNestedAttribute {
 
 			"ip": rsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3425,26 +3490,17 @@ func (o *IkeGatewayResourceLocalAddressObject) getTypeFor(name string) attr.Type
 func IkeGatewayResourceLocalIdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"id": rsschema.StringAttribute{
 				Description: "Local ID string",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3471,28 +3527,19 @@ func (o *IkeGatewayResourceLocalIdObject) getTypeFor(name string) attr.Type {
 func IkeGatewayResourcePeerAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dynamic": IkeGatewayResourcePeerAddressDynamicSchema(),
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "peer gateway FQDN name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip": rsschema.StringAttribute{
 				Description: "peer gateway has static IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3519,10 +3566,7 @@ func (o *IkeGatewayResourcePeerAddressObject) getTypeFor(name string) attr.Type 
 func IkeGatewayResourcePeerAddressDynamicSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3556,35 +3600,24 @@ func (o *IkeGatewayResourcePeerAddressDynamicObject) getTypeFor(name string) att
 func IkeGatewayResourcePeerIdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"id": rsschema.StringAttribute{
 				Description: "Peer ID string",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"matching": rsschema.StringAttribute{
 				Description: "Enable peer ID wildcard match for certificate authentication",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("exact"),
 			},
 
 			"type": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3611,10 +3644,7 @@ func (o *IkeGatewayResourcePeerIdObject) getTypeFor(name string) attr.Type {
 func IkeGatewayResourceProtocolSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ikev1": IkeGatewayResourceProtocolIkev1Schema(),
@@ -3623,10 +3653,8 @@ func IkeGatewayResourceProtocolSchema() rsschema.SingleNestedAttribute {
 
 			"version": rsschema.StringAttribute{
 				Description: "IKE protocol version",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("ikev1"),
 			},
 		},
@@ -3654,29 +3682,22 @@ func (o *IkeGatewayResourceProtocolObject) getTypeFor(name string) attr.Type {
 func IkeGatewayResourceProtocolIkev1Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dpd": IkeGatewayResourceProtocolIkev1DpdSchema(),
 
 			"exchange_mode": rsschema.StringAttribute{
 				Description: "Exchange mode",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("auto"),
 			},
 
 			"ike_crypto_profile": rsschema.StringAttribute{
 				Description: "IKE SA crypto profile name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("default"),
 			},
 		},
@@ -3704,35 +3725,25 @@ func (o *IkeGatewayResourceProtocolIkev1Object) getTypeFor(name string) attr.Typ
 func IkeGatewayResourceProtocolIkev1DpdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable Dead-Peer-Detection",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interval": rsschema.Int64Attribute{
 				Description: "sending interval for probing packets (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(5),
 			},
 
 			"retry": rsschema.Int64Attribute{
 				Description: "number of retries before disconnection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(5),
 			},
 		},
@@ -3760,29 +3771,21 @@ func (o *IkeGatewayResourceProtocolIkev1DpdObject) getTypeFor(name string) attr.
 func IkeGatewayResourceProtocolIkev2Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dpd": IkeGatewayResourceProtocolIkev2DpdSchema(),
 
 			"ike_crypto_profile": rsschema.StringAttribute{
 				Description: "IKE SA crypto profile name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("default"),
 			},
 
 			"require_cookie": rsschema.BoolAttribute{
 				Description: "Require cookie",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3809,26 +3812,18 @@ func (o *IkeGatewayResourceProtocolIkev2Object) getTypeFor(name string) attr.Typ
 func IkeGatewayResourceProtocolIkev2DpdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable sending empty information liveness check message",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interval": rsschema.Int64Attribute{
 				Description: "delay interval before sending probing packets (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(5),
 			},
 		},
@@ -3856,10 +3851,7 @@ func (o *IkeGatewayResourceProtocolIkev2DpdObject) getTypeFor(name string) attr.
 func IkeGatewayResourceProtocolCommonSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"fragmentation": IkeGatewayResourceProtocolCommonFragmentationSchema(),
@@ -3868,10 +3860,7 @@ func IkeGatewayResourceProtocolCommonSchema() rsschema.SingleNestedAttribute {
 
 			"passive_mode": rsschema.BoolAttribute{
 				Description: "Enable passive mode (responder only)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3898,18 +3887,12 @@ func (o *IkeGatewayResourceProtocolCommonObject) getTypeFor(name string) attr.Ty
 func IkeGatewayResourceProtocolCommonFragmentationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable IKE fragmentation",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3936,35 +3919,24 @@ func (o *IkeGatewayResourceProtocolCommonFragmentationObject) getTypeFor(name st
 func IkeGatewayResourceProtocolCommonNatTraversalSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable NAT-Traversal",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"keep_alive_interval": rsschema.Int64Attribute{
 				Description: "sending interval for NAT keep-alive packets (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(20),
 			},
 
 			"udp_checksum_enable": rsschema.BoolAttribute{
 				Description: "Enable UDP checksum",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5340,8 +5312,8 @@ func (o *IkeGatewayResourceAuthenticationPreSharedKeyObject) CopyFromPango(ctx c
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			key_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -6196,14 +6168,15 @@ type IkeGatewayImportState struct {
 
 func (o IkeGatewayImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *IkeGatewayLocation `json:"location"`
-		Name     *string             `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *IkeGatewayLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, IkeGatewayLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -6217,8 +6190,8 @@ func (o IkeGatewayImportState) MarshalJSON() ([]byte, error) {
 
 func (o *IkeGatewayImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *IkeGatewayLocation `json:"location"`
-		Name     *string             `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -6227,10 +6200,14 @@ func (o *IkeGatewayImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, IkeGatewayLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

@@ -3,7 +3,7 @@ module github.com/PaloAltoNetworks/terraform-provider-panos
 go 1.24.0
 
 require (
-	github.com/PaloAltoNetworks/pango v0.10.3-0.20251126184826-00453bca3793
+	github.com/PaloAltoNetworks/pango v0.10.3-0.20260120024327-649ea19f83db
 	github.com/hashicorp/terraform-plugin-framework v1.16.1
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
 	github.com/hashicorp/terraform-plugin-go v0.29.0

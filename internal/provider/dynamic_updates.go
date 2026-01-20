@@ -4468,10 +4468,8 @@ func (o *DynamicUpdatesDataSourceModel) getTypeFor(name string) attr.Type {
 func DynamicUpdatesDataSourceUpdateScheduleSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"anti_virus": DynamicUpdatesDataSourceUpdateScheduleAntiVirusSchema(),
@@ -4514,10 +4512,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleObject) getTypeFor(name string) a
 func DynamicUpdatesDataSourceUpdateScheduleAntiVirusSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"recurring": DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringSchema(),
@@ -4546,26 +4542,20 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusObject) getTypeFor(name 
 func DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"sync_to_peer": dsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"threshold": dsschema.Int64Attribute{
 				Description: "ignore if release date is new (hours)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"daily": DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailySchema(),
@@ -4600,10 +4590,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringObject) getType
 func DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4617,18 +4605,14 @@ func DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailySchema() dssch
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4655,10 +4639,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringDailyObject) ge
 func DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4672,18 +4654,14 @@ func DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlySchema() dssc
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4710,10 +4688,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringHourlyObject) g
 func DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4748,10 +4724,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringNoneObject) get
 func DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4765,26 +4739,20 @@ func DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklySchema() dssc
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4811,10 +4779,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAntiVirusRecurringWeeklyObject) g
 func DynamicUpdatesDataSourceUpdateScheduleAppProfileSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"recurring": DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringSchema(),
@@ -4843,26 +4809,20 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileObject) getTypeFor(name
 func DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"sync_to_peer": dsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"threshold": dsschema.Int64Attribute{
 				Description: "ignore if release date is new (hours)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"daily": DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailySchema(),
@@ -4895,10 +4855,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringObject) getTyp
 func DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4911,18 +4869,14 @@ func DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailySchema() dssc
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4949,10 +4903,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringDailyObject) g
 func DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4986,10 +4938,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringNoneObject) ge
 func DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5002,26 +4952,20 @@ func DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklySchema() dss
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5048,10 +4992,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleAppProfileRecurringWeeklyObject) 
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"recurring": DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema(),
@@ -5080,10 +5022,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnObject)
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"daily": DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema(),
@@ -5118,10 +5058,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5135,18 +5073,14 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringDa
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5173,10 +5107,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5190,18 +5122,14 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringHo
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5228,10 +5156,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5266,10 +5192,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5283,26 +5207,20 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurringWe
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5329,10 +5247,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectClientlessVpnRecurri
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"recurring": DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringSchema(),
@@ -5361,10 +5277,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileObject) getT
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"daily": DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema(),
@@ -5399,10 +5313,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringObj
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5416,18 +5328,14 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDailySc
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5454,10 +5362,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringDai
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5471,18 +5377,14 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHourlyS
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5509,10 +5411,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringHou
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5547,10 +5447,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringNon
 func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5564,26 +5462,20 @@ func DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyS
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5610,74 +5502,56 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleGlobalProtectDatafileRecurringWee
 func DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"application_reports": dsschema.BoolAttribute{
 				Description: "Application Reports",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"file_identification_reports": dsschema.BoolAttribute{
 				Description: "File Type Identification Reports",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"health_performance_reports": dsschema.BoolAttribute{
 				Description: "Health and Performance Reports",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"passive_dns_monitoring": dsschema.BoolAttribute{
 				Description: "Passive DNS Monitor",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"threat_prevention_information": dsschema.BoolAttribute{
 				Description: "Threat Prevention Information",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"threat_prevention_pcap": dsschema.BoolAttribute{
 				Description: "Enable sending packet-captures with threat prevention information",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"threat_prevention_reports": dsschema.BoolAttribute{
 				Description: "Threat Reports",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"url_reports": dsschema.BoolAttribute{
 				Description: "URL Reports",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5704,10 +5578,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleStatisticsServiceObject) getTypeF
 func DynamicUpdatesDataSourceUpdateScheduleThreatsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"recurring": DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringSchema(),
@@ -5736,34 +5608,26 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsObject) getTypeFor(name st
 func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"new_app_threshold": dsschema.Int64Attribute{
 				Description: "ignore new apps if release date is new (hours)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"sync_to_peer": dsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"threshold": dsschema.Int64Attribute{
 				Description: "ignore if release date is new (hours)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"daily": DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailySchema(),
@@ -5800,10 +5664,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringObject) getTypeFo
 func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5818,26 +5680,20 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailySchema() dsschem
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_new_content": dsschema.BoolAttribute{
 				Description: "Disable new applications after installation",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5864,10 +5720,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringDailyObject) getT
 func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5882,26 +5736,20 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsSchema() d
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes past half-hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_new_content": dsschema.BoolAttribute{
 				Description: "Disable new applications after installation",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5928,10 +5776,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringEvery30MinsObject
 func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5946,26 +5792,20 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlySchema() dssche
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_new_content": dsschema.BoolAttribute{
 				Description: "Disable new applications after installation",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5992,10 +5832,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringHourlyObject) get
 func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6031,10 +5869,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringNoneObject) getTy
 func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6049,34 +5885,26 @@ func DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklySchema() dssche
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_new_content": dsschema.BoolAttribute{
 				Description: "Disable new applications after installation",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6103,10 +5931,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleThreatsRecurringWeeklyObject) get
 func DynamicUpdatesDataSourceUpdateScheduleWfPrivateSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"recurring": DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringSchema(),
@@ -6135,18 +5961,14 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateObject) getTypeFor(name 
 func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"sync_to_peer": dsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"every_15_mins": DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsSchema(),
@@ -6183,10 +6005,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringObject) getType
 func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6201,18 +6021,14 @@ func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsSchema()
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes Past Quarter-Hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6239,10 +6055,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery15MinsObje
 func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6257,18 +6071,14 @@ func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsSchema()
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes Past Half-Hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6295,10 +6105,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery30MinsObje
 func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6313,18 +6121,14 @@ func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsSchema() 
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes Past five minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6351,10 +6155,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEvery5MinsObjec
 func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6369,18 +6171,14 @@ func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourSchema() d
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes Past Hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6407,10 +6205,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringEveryHourObject
 func DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6446,10 +6242,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWfPrivateRecurringNoneObject) get
 func DynamicUpdatesDataSourceUpdateScheduleWildfireSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"recurring": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringSchema(),
@@ -6478,10 +6272,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireObject) getTypeFor(name s
 func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"every_15_mins": DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsSchema(),
@@ -6520,10 +6312,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringObject) getTypeF
 func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6539,26 +6329,20 @@ func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsSchema() 
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes past quarter-hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"sync_to_peer": dsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6585,10 +6369,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery15MinsObjec
 func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6604,26 +6386,20 @@ func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsSchema() 
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes past half-hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"sync_to_peer": dsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6650,10 +6426,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEvery30MinsObjec
 func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6669,26 +6443,20 @@ func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourSchema() ds
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"at": dsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"sync_to_peer": dsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6715,10 +6483,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryHourObject)
 func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6734,18 +6500,14 @@ func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinSchema() dss
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"sync_to_peer": dsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6772,10 +6534,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringEveryMinObject) 
 func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6812,10 +6572,8 @@ func (o *DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringNoneObject) getT
 func DynamicUpdatesDataSourceUpdateScheduleWildfireRecurringRealTimeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7213,7 +6971,581 @@ type DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject struct {
 type DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject struct {
 }
 
+func (o *DynamicUpdatesResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.UpdateSchedule.IsUnknown() && !o.UpdateSchedule.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleObject
+		diags := o.UpdateSchedule.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("update_schedule"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AntiVirus.IsUnknown() && !o.AntiVirus.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAntiVirusObject
+		diags := o.AntiVirus.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("anti_virus"))
+		}
+	}
+	if !o.AppProfile.IsUnknown() && !o.AppProfile.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAppProfileObject
+		diags := o.AppProfile.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("app_profile"))
+		}
+	}
+	if !o.GlobalProtectClientlessVpn.IsUnknown() && !o.GlobalProtectClientlessVpn.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject
+		diags := o.GlobalProtectClientlessVpn.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("global_protect_clientless_vpn"))
+		}
+	}
+	if !o.GlobalProtectDatafile.IsUnknown() && !o.GlobalProtectDatafile.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject
+		diags := o.GlobalProtectDatafile.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("global_protect_datafile"))
+		}
+	}
+	if !o.StatisticsService.IsUnknown() && !o.StatisticsService.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject
+		diags := o.StatisticsService.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("statistics_service"))
+		}
+	}
+	if !o.Threats.IsUnknown() && !o.Threats.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleThreatsObject
+		diags := o.Threats.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("threats"))
+		}
+	}
+	if !o.WfPrivate.IsUnknown() && !o.WfPrivate.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWfPrivateObject
+		diags := o.WfPrivate.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("wf_private"))
+		}
+	}
+	if !o.Wildfire.IsUnknown() && !o.Wildfire.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWildfireObject
+		diags := o.Wildfire.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("wildfire"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject
+		diags := o.Hourly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hourly"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject
+		diags := o.Hourly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hourly"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject
+		diags := o.Hourly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hourly"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.Every30Mins.IsUnknown() && !o.Every30Mins.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject
+		diags := o.Every30Mins.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("every_30_mins"))
+		}
+	}
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject
+		diags := o.Hourly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hourly"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Every15Mins.IsUnknown() && !o.Every15Mins.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
+		diags := o.Every15Mins.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("every_15_mins"))
+		}
+	}
+	if !o.Every30Mins.IsUnknown() && !o.Every30Mins.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
+		diags := o.Every30Mins.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("every_30_mins"))
+		}
+	}
+	if !o.Every5Mins.IsUnknown() && !o.Every5Mins.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject
+		diags := o.Every5Mins.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("every_5_mins"))
+		}
+	}
+	if !o.EveryHour.IsUnknown() && !o.EveryHour.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject
+		diags := o.EveryHour.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("every_hour"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Every15Mins.IsUnknown() && !o.Every15Mins.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject
+		diags := o.Every15Mins.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("every_15_mins"))
+		}
+	}
+	if !o.Every30Mins.IsUnknown() && !o.Every30Mins.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject
+		diags := o.Every30Mins.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("every_30_mins"))
+		}
+	}
+	if !o.EveryHour.IsUnknown() && !o.EveryHour.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject
+		diags := o.EveryHour.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("every_hour"))
+		}
+	}
+	if !o.EveryMin.IsUnknown() && !o.EveryMin.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject
+		diags := o.EveryMin.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("every_min"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.RealTime.IsUnknown() && !o.RealTime.IsNull() {
+		var nestedObj DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject
+		diags := o.RealTime.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("real_time"))
+		}
+	}
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *DynamicUpdatesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource DynamicUpdatesResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -7250,10 +7582,7 @@ func (o *DynamicUpdatesResourceModel) getTypeFor(name string) attr.Type {
 func DynamicUpdatesResourceUpdateScheduleSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"anti_virus": DynamicUpdatesResourceUpdateScheduleAntiVirusSchema(),
@@ -7296,10 +7625,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleObject) getTypeFor(name string) att
 func DynamicUpdatesResourceUpdateScheduleAntiVirusSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"recurring": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringSchema(),
@@ -7328,26 +7654,17 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusObject) getTypeFor(name st
 func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"sync_to_peer": rsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"threshold": rsschema.Int64Attribute{
 				Description: "ignore if release date is new (hours)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"daily": DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailySchema(),
@@ -7382,10 +7699,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringObject) getTypeFo
 func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7399,18 +7713,12 @@ func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailySchema() rsschem
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7437,10 +7745,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringDailyObject) getT
 func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7454,18 +7759,12 @@ func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlySchema() rssche
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7492,10 +7791,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringHourlyObject) get
 func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7530,10 +7826,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringNoneObject) getTy
 func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7547,26 +7840,17 @@ func DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklySchema() rssche
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7593,10 +7877,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAntiVirusRecurringWeeklyObject) get
 func DynamicUpdatesResourceUpdateScheduleAppProfileSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"recurring": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringSchema(),
@@ -7625,26 +7906,17 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileObject) getTypeFor(name s
 func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"sync_to_peer": rsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"threshold": rsschema.Int64Attribute{
 				Description: "ignore if release date is new (hours)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"daily": DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailySchema(),
@@ -7677,10 +7949,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringObject) getTypeF
 func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7693,18 +7962,12 @@ func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailySchema() rssche
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7731,10 +7994,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringDailyObject) get
 func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7768,10 +8028,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringNoneObject) getT
 func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7784,26 +8041,17 @@ func DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklySchema() rssch
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7830,10 +8078,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleAppProfileRecurringWeeklyObject) ge
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"recurring": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema(),
@@ -7862,10 +8107,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnObject) g
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"daily": DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema(),
@@ -7900,10 +8142,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7917,18 +8156,12 @@ func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringDail
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7955,10 +8188,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHourlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7972,18 +8202,12 @@ func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringHour
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8010,10 +8234,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8048,10 +8269,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8065,26 +8283,17 @@ func DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurringWeek
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8111,10 +8320,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectClientlessVpnRecurring
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"recurring": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringSchema(),
@@ -8143,10 +8349,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileObject) getTyp
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"daily": DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema(),
@@ -8181,10 +8384,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringObjec
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8198,18 +8398,12 @@ func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDailySche
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8236,10 +8430,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringDaily
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8253,18 +8444,12 @@ func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourlySch
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8291,10 +8476,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringHourl
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8329,10 +8511,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringNoneO
 func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8346,26 +8525,17 @@ func DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeeklySch
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8392,74 +8562,47 @@ func (o *DynamicUpdatesResourceUpdateScheduleGlobalProtectDatafileRecurringWeekl
 func DynamicUpdatesResourceUpdateScheduleStatisticsServiceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"application_reports": rsschema.BoolAttribute{
 				Description: "Application Reports",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"file_identification_reports": rsschema.BoolAttribute{
 				Description: "File Type Identification Reports",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"health_performance_reports": rsschema.BoolAttribute{
 				Description: "Health and Performance Reports",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"passive_dns_monitoring": rsschema.BoolAttribute{
 				Description: "Passive DNS Monitor",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"threat_prevention_information": rsschema.BoolAttribute{
 				Description: "Threat Prevention Information",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"threat_prevention_pcap": rsschema.BoolAttribute{
 				Description: "Enable sending packet-captures with threat prevention information",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"threat_prevention_reports": rsschema.BoolAttribute{
 				Description: "Threat Reports",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"url_reports": rsschema.BoolAttribute{
 				Description: "URL Reports",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8486,10 +8629,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleStatisticsServiceObject) getTypeFor
 func DynamicUpdatesResourceUpdateScheduleThreatsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"recurring": DynamicUpdatesResourceUpdateScheduleThreatsRecurringSchema(),
@@ -8518,34 +8658,22 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsObject) getTypeFor(name stri
 func DynamicUpdatesResourceUpdateScheduleThreatsRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"new_app_threshold": rsschema.Int64Attribute{
 				Description: "ignore new apps if release date is new (hours)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"sync_to_peer": rsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"threshold": rsschema.Int64Attribute{
 				Description: "ignore if release date is new (hours)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"daily": DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailySchema(),
@@ -8582,10 +8710,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringObject) getTypeFor(
 func DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8600,26 +8725,17 @@ func DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailySchema() rsschema.
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_new_content": rsschema.BoolAttribute{
 				Description: "Disable new applications after installation",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8646,10 +8762,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringDailyObject) getTyp
 func DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8664,26 +8777,17 @@ func DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsSchema() rss
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes past half-hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_new_content": rsschema.BoolAttribute{
 				Description: "Disable new applications after installation",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8710,10 +8814,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringEvery30MinsObject) 
 func DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8728,26 +8829,17 @@ func DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlySchema() rsschema
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_new_content": rsschema.BoolAttribute{
 				Description: "Disable new applications after installation",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8774,10 +8866,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringHourlyObject) getTy
 func DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8813,10 +8902,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringNoneObject) getType
 func DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8831,34 +8917,22 @@ func DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklySchema() rsschema
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh:mm (e.g. 20:10)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_new_content": rsschema.BoolAttribute{
 				Description: "Disable new applications after installation",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8885,10 +8959,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleThreatsRecurringWeeklyObject) getTy
 func DynamicUpdatesResourceUpdateScheduleWfPrivateSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"recurring": DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringSchema(),
@@ -8917,18 +8988,12 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateObject) getTypeFor(name st
 func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"sync_to_peer": rsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"every_15_mins": DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsSchema(),
@@ -8965,10 +9030,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringObject) getTypeFo
 func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8983,18 +9045,12 @@ func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsSchema() r
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes Past Quarter-Hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9021,10 +9077,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery15MinsObject
 func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9039,18 +9092,12 @@ func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsSchema() r
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes Past Half-Hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9077,10 +9124,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery30MinsObject
 func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9095,18 +9139,12 @@ func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsSchema() rs
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes Past five minutes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9133,10 +9171,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEvery5MinsObject)
 func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9151,18 +9186,12 @@ func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourSchema() rss
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes Past Hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9189,10 +9218,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringEveryHourObject) 
 func DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9228,10 +9254,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWfPrivateRecurringNoneObject) getTy
 func DynamicUpdatesResourceUpdateScheduleWildfireSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"recurring": DynamicUpdatesResourceUpdateScheduleWildfireRecurringSchema(),
@@ -9260,10 +9283,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireObject) getTypeFor(name str
 func DynamicUpdatesResourceUpdateScheduleWildfireRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"every_15_mins": DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsSchema(),
@@ -9302,10 +9322,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringObject) getTypeFor
 func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9321,26 +9338,17 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsSchema() rs
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes past quarter-hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"sync_to_peer": rsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9367,10 +9375,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery15MinsObject)
 func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9386,26 +9391,17 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsSchema() rs
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes past half-hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"sync_to_peer": rsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9432,10 +9428,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEvery30MinsObject)
 func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9451,26 +9444,17 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourSchema() rssc
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"at": rsschema.Int64Attribute{
 				Description: "Minutes past hour",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"sync_to_peer": rsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9497,10 +9481,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryHourObject) g
 func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9516,18 +9497,12 @@ func DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinSchema() rssch
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"sync_to_peer": rsschema.BoolAttribute{
 				Description: "Synchronize content with HA peer after download/install",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9554,10 +9529,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringEveryMinObject) ge
 func DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9594,10 +9566,7 @@ func (o *DynamicUpdatesResourceUpdateScheduleWildfireRecurringNoneObject) getTyp
 func DynamicUpdatesResourceUpdateScheduleWildfireRecurringRealTimeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{

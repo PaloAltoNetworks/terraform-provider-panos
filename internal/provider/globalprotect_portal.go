@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/globalprotect/portal"
@@ -4599,8 +4600,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigObject) CopyFromPango(ctx cont
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			agentUserOverrideKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			agentUserOverrideKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -5700,8 +5701,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsAgentUiObject) CopyFrom
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			passcode_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			passcode_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -5725,8 +5726,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsAgentUiObject) CopyFrom
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			uninstallPassword_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			uninstallPassword_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -6988,8 +6989,8 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnProxyServerSettingProxyServer
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -7841,10 +7842,7 @@ func GlobalprotectPortalDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"client_config": GlobalprotectPortalDataSourceClientConfigSchema(),
@@ -7879,35 +7877,28 @@ func (o *GlobalprotectPortalDataSourceModel) getTypeFor(name string) attr.Type {
 func GlobalprotectPortalDataSourceClientConfigSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"agent_user_override_key": dsschema.StringAttribute{
 				Description: "Agent user override ticket key",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"configs": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsSchema(),
 			},
 
 			"root_ca": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigRootCaSchema(),
 			},
 		},
@@ -7938,100 +7929,75 @@ func GlobalprotectPortalDataSourceClientConfigConfigsSchema() dsschema.NestedAtt
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"save_user_credentials": dsschema.StringAttribute{
 				Description: "Save User Credentials",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"portal_2fa": dsschema.BoolAttribute{
 				Description: "Portal Authentication OTP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"internal_gateway_2fa": dsschema.BoolAttribute{
 				Description: "Internal Gateway Authentication OTP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auto_discovery_external_gateway_2fa": dsschema.BoolAttribute{
 				Description: "Auto Discovery External Gateway Authentication OTP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"manual_only_gateway_2fa": dsschema.BoolAttribute{
 				Description: "Manual Only External Gateway Authentication OTP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"refresh_config": dsschema.BoolAttribute{
 				Description: "Enable portal config refresh",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mdm_address": dsschema.StringAttribute{
 				Description: "IP address or hostname for GlobalProtect MDM server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mdm_enrollment_port": dsschema.StringAttribute{
 				Description: "MDM enrollment port",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_user": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"third_party_vpn_clients": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"os": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -8083,10 +8049,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsObject) getTypeFor(name
 func GlobalprotectPortalDataSourceClientConfigConfigsCertificateSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"criteria": GlobalprotectPortalDataSourceClientConfigConfigsCertificateCriteriaSchema(),
@@ -8115,18 +8079,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsCertificateObject) getT
 func GlobalprotectPortalDataSourceClientConfigConfigsCertificateCriteriaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8153,10 +8113,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsCertificateCriteriaObje
 func GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"criteria": GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaSchema(),
@@ -8185,27 +8143,21 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksObject) get
 func GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"registry_key": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaRegistryKeySchema(),
 			},
 
 			"plist": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaPlistSchema(),
 			},
 		},
@@ -8236,34 +8188,25 @@ func GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaRegistr
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"default_value_data": dsschema.StringAttribute{
 				Description: "Registry key default value data",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"negate": dsschema.BoolAttribute{
 				Description: "Key does not exist",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"registry_value": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaRegistryKeyRegistryValueSchema(),
 			},
 		},
@@ -8294,26 +8237,19 @@ func GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaRegistr
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value_data": dsschema.StringAttribute{
 				Description: "Registry value data",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"negate": dsschema.BoolAttribute{
 				Description: "Value does not exist",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8343,26 +8279,19 @@ func GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaPlistSc
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"negate": dsschema.BoolAttribute{
 				Description: "Plist does not exist",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"key": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaPlistKeySchema(),
 			},
 		},
@@ -8393,26 +8322,19 @@ func GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaPlistKe
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": dsschema.StringAttribute{
 				Description: "Key value",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"negate": dsschema.BoolAttribute{
 				Description: "Value does not exist or match specified value data",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8439,10 +8361,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaPli
 func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"internal": GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalSchema(),
@@ -8473,27 +8393,21 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGatewaysObject) getType
 func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"list": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalListSchema(),
 			},
 
 			"dhcp_option_code": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 		},
@@ -8524,27 +8438,20 @@ func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalListSchema(
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"source_ip": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "fqdn",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalListIpSchema(),
@@ -8573,10 +8480,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalListObj
 func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalListIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8588,18 +8493,14 @@ func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalListIpSchem
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "IPv4",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "IPv6",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8626,26 +8527,20 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalListIpO
 func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"cutoff_time": dsschema.Int64Attribute{
 				Description: "Gateway discovery cutoff time in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"list": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListSchema(),
 			},
 		},
@@ -8676,35 +8571,26 @@ func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListSchema(
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"priority_rule": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListPriorityRuleSchema(),
 			},
 
 			"manual": dsschema.BoolAttribute{
 				Description: "If this GlobalProtect gateway can be manually selected",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "fqdn",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListIpSchema(),
@@ -8736,18 +8622,13 @@ func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListPriorit
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"priority": dsschema.StringAttribute{
 				Description: "Priority of GlobalProtect gateway",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8774,10 +8655,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListPri
 func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8789,18 +8668,14 @@ func GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListIpSchem
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "IPv4",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "IPv6",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8827,26 +8702,20 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListIpO
 func GlobalprotectPortalDataSourceClientConfigConfigsInternalHostDetectionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip_address": dsschema.StringAttribute{
 				Description: "Internal IPv4 address of a host",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hostname": dsschema.StringAttribute{
 				Description: "Host name of the IPv4 in DNS record",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8873,26 +8742,20 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsInternalHostDetectionOb
 func GlobalprotectPortalDataSourceClientConfigConfigsInternalHostDetectionV6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip_address": dsschema.StringAttribute{
 				Description: "Internal IPv6 address of a host",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hostname": dsschema.StringAttribute{
 				Description: "Host name of the IPv6 in DNS record",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8919,42 +8782,34 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsInternalHostDetectionV6
 func GlobalprotectPortalDataSourceClientConfigConfigsAgentUiSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"passcode": dsschema.StringAttribute{
 				Description: "Passcode required for override",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"uninstall_password": dsschema.StringAttribute{
 				Description: "Password to uninstall GlobalProtect app",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"agent_user_override_timeout": dsschema.Int64Attribute{
 				Description: "Agent user override duration in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_agent_user_overrides": dsschema.Int64Attribute{
 				Description: "Max agent user overrides",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"welcome_page": GlobalprotectPortalDataSourceClientConfigConfigsAgentUiWelcomePageSchema(),
@@ -8983,18 +8838,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsAgentUiObject) getTypeF
 func GlobalprotectPortalDataSourceClientConfigConfigsAgentUiWelcomePageSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"page": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9021,34 +8872,26 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsAgentUiWelcomePageObjec
 func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_wait_time": dsschema.Int64Attribute{
 				Description: "Max Wait Time (Sec)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"collect_hip_data": dsschema.BoolAttribute{
 				Description: "Collect HIP Data",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exclusion": GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionExclusionSchema(),
@@ -9079,18 +8922,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionObject) ge
 func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionExclusionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"category": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionExclusionCategorySchema(),
 			},
 		},
@@ -9121,18 +8960,13 @@ func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionExclusionCateg
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"vendor": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionExclusionCategoryVendorSchema(),
 			},
 		},
@@ -9163,18 +8997,13 @@ func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionExclusionCateg
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"product": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -9202,10 +9031,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionExclusionC
 func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChecksSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"windows": GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChecksWindowsSchema(),
@@ -9238,27 +9065,21 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChec
 func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChecksWindowsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"registry_key": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChecksWindowsRegistryKeySchema(),
 			},
 
 			"process_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -9289,18 +9110,13 @@ func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChecksWi
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"registry_value": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -9328,27 +9144,21 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChec
 func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChecksMacOsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"plist": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChecksMacOsPlistSchema(),
 			},
 
 			"process_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -9379,18 +9189,13 @@ func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChecksMa
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"key": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -9418,18 +9223,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChec
 func GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChecksLinuxSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"process_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -9457,10 +9258,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChec
 func GlobalprotectPortalDataSourceClientConfigConfigsAgentConfigSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes:  map[string]dsschema.Attribute{},
 	}
 }
@@ -9486,18 +9285,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsAgentConfigObject) getT
 func GlobalprotectPortalDataSourceClientConfigConfigsGpAppConfigSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"config": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientConfigConfigsGpAppConfigConfigSchema(),
 			},
 		},
@@ -9528,18 +9323,13 @@ func GlobalprotectPortalDataSourceClientConfigConfigsGpAppConfigConfigSchema() d
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -9567,26 +9357,20 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGpAppConfigConfigObject
 func GlobalprotectPortalDataSourceClientConfigConfigsAuthenticationOverrideSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"generate_cookie": dsschema.BoolAttribute{
 				Description: "Generate cookie for authentication override",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"cookie_encrypt_decrypt_cert": dsschema.StringAttribute{
 				Description: "Certificate to Encrypt/Decrypt Cookie",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"accept_cookie": GlobalprotectPortalDataSourceClientConfigConfigsAuthenticationOverrideAcceptCookieSchema(),
@@ -9615,10 +9399,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsAuthenticationOverrideO
 func GlobalprotectPortalDataSourceClientConfigConfigsAuthenticationOverrideAcceptCookieSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"cookie_lifetime": GlobalprotectPortalDataSourceClientConfigConfigsAuthenticationOverrideAcceptCookieCookieLifetimeSchema(),
@@ -9647,34 +9429,26 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsAuthenticationOverrideA
 func GlobalprotectPortalDataSourceClientConfigConfigsAuthenticationOverrideAcceptCookieCookieLifetimeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"lifetime_in_days": dsschema.Int64Attribute{
 				Description: "Cookie lifetime in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime_in_hours": dsschema.Int64Attribute{
 				Description: "Cookie lifetime in hours",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime_in_minutes": dsschema.Int64Attribute{
 				Description: "Cookie lifetime in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9701,10 +9475,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsAuthenticationOverrideA
 func GlobalprotectPortalDataSourceClientConfigConfigsMachineAccountExistsWithSerialnoSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"no": GlobalprotectPortalDataSourceClientConfigConfigsMachineAccountExistsWithSerialnoNoSchema(),
@@ -9735,10 +9507,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsMachineAccountExistsWit
 func GlobalprotectPortalDataSourceClientConfigConfigsMachineAccountExistsWithSerialnoNoSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9771,10 +9541,8 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsMachineAccountExistsWit
 func GlobalprotectPortalDataSourceClientConfigConfigsMachineAccountExistsWithSerialnoYesSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9807,26 +9575,20 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsMachineAccountExistsWit
 func GlobalprotectPortalDataSourceClientConfigConfigsClientCertificateSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"local": dsschema.StringAttribute{
 				Description: "Select Client Certificate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"scep": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9856,18 +9618,13 @@ func GlobalprotectPortalDataSourceClientConfigRootCaSchema() dsschema.NestedAttr
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"install_in_cert_store": dsschema.BoolAttribute{
 				Description: "Install in Trusted CA Certificate Store",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9894,18 +9651,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigRootCaObject) getTypeFor(name 
 func GlobalprotectPortalDataSourceClientlessVpnSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"apps_to_user_mapping": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientlessVpnAppsToUserMappingSchema(),
 			},
 
@@ -9913,18 +9666,14 @@ func GlobalprotectPortalDataSourceClientlessVpnSchema() dsschema.SingleNestedAtt
 
 			"dns_proxy": dsschema.StringAttribute{
 				Description: "DNS proxy object used for resolving clientless-vpn application hostnames",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hostname": dsschema.StringAttribute{
 				Description: "FQDN or IP address of GlobalProtect Portal",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inactivity_logout": GlobalprotectPortalDataSourceClientlessVpnInactivityLogoutSchema(),
@@ -9933,36 +9682,28 @@ func GlobalprotectPortalDataSourceClientlessVpnSchema() dsschema.SingleNestedAtt
 
 			"max_user": dsschema.Int64Attribute{
 				Description: "max number of concurrent logined users to GlobalProtect portal",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"proxy_server_setting": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceClientlessVpnProxyServerSettingSchema(),
 			},
 
 			"rewrite_exclude_domain_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"security_zone": dsschema.StringAttribute{
 				Description: "Zone to be used for clientless-vpn traffic",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9992,44 +9733,33 @@ func GlobalprotectPortalDataSourceClientlessVpnAppsToUserMappingSchema() dsschem
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"source_user": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"applications": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"enable_custom_app_u_r_l_address_bar": dsschema.BoolAttribute{
 				Description: "URL browse bar to access unpublished clientless VPN applications",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"display_global_protect_agent_download_link": dsschema.BoolAttribute{
 				Description: "Display Global Protect Agent download link",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10056,10 +9786,8 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnAppsToUserMappingObject) getT
 func GlobalprotectPortalDataSourceClientlessVpnCryptoSettingsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"server_cert_verification": GlobalprotectPortalDataSourceClientlessVpnCryptoSettingsServerCertVerificationSchema(),
@@ -10090,42 +9818,32 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnCryptoSettingsObject) getType
 func GlobalprotectPortalDataSourceClientlessVpnCryptoSettingsServerCertVerificationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"block_expired_certificate": dsschema.BoolAttribute{
 				Description: "whether to block sessions if server's certificate is expired",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"block_timeout_cert": dsschema.BoolAttribute{
 				Description: "whether to block a session if cert. status can't be retrieved within timeout",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"block_unknown_cert": dsschema.BoolAttribute{
 				Description: "whether to block a session if cert. status is unknown",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"block_untrusted_issuer": dsschema.BoolAttribute{
 				Description: "whether to block sessions if server's certificate is issued by untrusted CA",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10152,130 +9870,98 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnCryptoSettingsServerCertVerif
 func GlobalprotectPortalDataSourceClientlessVpnCryptoSettingsSslProtocolSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"auth_algo_md5": dsschema.BoolAttribute{
 				Description: "Allow authentication MD5",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auth_algo_sha1": dsschema.BoolAttribute{
 				Description: "Allow authentication SHA1",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auth_algo_sha256": dsschema.BoolAttribute{
 				Description: "Allow authentication SHA256",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auth_algo_sha384": dsschema.BoolAttribute{
 				Description: "Allow authentication SHA384",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enc_algo_3des": dsschema.BoolAttribute{
 				Description: "Allow algorithm 3DES",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enc_algo_aes_128_cbc": dsschema.BoolAttribute{
 				Description: "Allow algorithm AES-128-CBC",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enc_algo_aes_128_gcm": dsschema.BoolAttribute{
 				Description: "Allow algorithm AES-128-GCM",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enc_algo_aes_256_cbc": dsschema.BoolAttribute{
 				Description: "Allow algorithm AES-256-CBC",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enc_algo_aes_256_gcm": dsschema.BoolAttribute{
 				Description: "Allow algorithm AES-256-GCM",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enc_algo_rc4": dsschema.BoolAttribute{
 				Description: "Allow algorithm RC4",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"keyxchg_algo_dhe": dsschema.BoolAttribute{
 				Description: "Allow algorithm DHE",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"keyxchg_algo_ecdhe": dsschema.BoolAttribute{
 				Description: "Allow algorithm ECDHE",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"keyxchg_algo_rsa": dsschema.BoolAttribute{
 				Description: "Allow algorithm RSA",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_version": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"min_version": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10302,26 +9988,20 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnCryptoSettingsSslProtocolObje
 func GlobalprotectPortalDataSourceClientlessVpnInactivityLogoutSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"hours": dsschema.Int64Attribute{
 				Description: "specify inactivity time in hours",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"minutes": dsschema.Int64Attribute{
 				Description: "specify inactivity time in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10348,26 +10028,20 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnInactivityLogoutObject) getTy
 func GlobalprotectPortalDataSourceClientlessVpnLoginLifetimeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"hours": dsschema.Int64Attribute{
 				Description: "specify lifetime in hours",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"minutes": dsschema.Int64Attribute{
 				Description: "specify lifetime in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10397,27 +10071,20 @@ func GlobalprotectPortalDataSourceClientlessVpnProxyServerSettingSchema() dssche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"domains": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"use_proxy": dsschema.BoolAttribute{
 				Description: "Whether to use proxy server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"proxy_server": GlobalprotectPortalDataSourceClientlessVpnProxyServerSettingProxyServerSchema(),
@@ -10446,41 +10113,32 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnProxyServerSettingObject) get
 func GlobalprotectPortalDataSourceClientlessVpnProxyServerSettingProxyServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"server": dsschema.StringAttribute{
 				Description: "Proxy server to use",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"port": dsschema.Int64Attribute{
 				Description: "Port for proxy server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"user": dsschema.StringAttribute{
 				Description: "Proxy user name to use",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"password": dsschema.StringAttribute{
 				Description: "Proxy password to use",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 		},
@@ -10508,26 +10166,20 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnProxyServerSettingProxyServer
 func GlobalprotectPortalDataSourcePortalConfigSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"client_auth": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourcePortalConfigClientAuthSchema(),
 			},
 
@@ -10535,60 +10187,46 @@ func GlobalprotectPortalDataSourcePortalConfigSchema() dsschema.SingleNestedAttr
 
 			"custom_help_page": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"custom_home_page": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"custom_login_page": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_address": GlobalprotectPortalDataSourcePortalConfigLocalAddressSchema(),
 
 			"log_fail": dsschema.BoolAttribute{
 				Description: "Log unsuccessful TLS handshakes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_setting": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_success": dsschema.BoolAttribute{
 				Description: "Log successful TLS handshakes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ssl_tls_service_profile": dsschema.StringAttribute{
 				Description: "SSL TLS service profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10618,66 +10256,49 @@ func GlobalprotectPortalDataSourcePortalConfigClientAuthSchema() dsschema.Nested
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"os": dsschema.StringAttribute{
 				Description: "Client OS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication_profile": dsschema.StringAttribute{
 				Description: "authentication profile used for this GlobalProtect",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auto_retrieve_passcode": dsschema.BoolAttribute{
 				Description: "Automatically retrieve passcode from SoftToken application",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"username_label": dsschema.StringAttribute{
 				Description: "Username Label",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"password_label": dsschema.StringAttribute{
 				Description: "Password Label",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication_message": dsschema.StringAttribute{
 				Description: "Authentication Message",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"user_credential_or_client_cert_required": dsschema.StringAttribute{
 				Description: "Allow Authentication with User Credentials OR Client Certificate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10704,18 +10325,14 @@ func (o *GlobalprotectPortalDataSourcePortalConfigClientAuthObject) getTypeFor(n
 func GlobalprotectPortalDataSourcePortalConfigConfigSelectionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"custom_checks": GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksSchema(),
@@ -10744,10 +10361,8 @@ func (o *GlobalprotectPortalDataSourcePortalConfigConfigSelectionObject) getType
 func GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"mac_os": GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksMacOsSchema(),
@@ -10778,18 +10393,14 @@ func (o *GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksObj
 func GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksMacOsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"plist": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksMacOsPlistSchema(),
 			},
 		},
@@ -10820,18 +10431,13 @@ func GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksMacOsPl
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"key": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -10859,18 +10465,14 @@ func (o *GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksMac
 func GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksWindowsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"registry_key": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksWindowsRegistryKeySchema(),
 			},
 		},
@@ -10901,18 +10503,13 @@ func GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksWindows
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"registry_value": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -10940,26 +10537,20 @@ func (o *GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksWin
 func GlobalprotectPortalDataSourcePortalConfigLocalAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "local gateway end-point",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip_address_family": dsschema.StringAttribute{
 				Description: "specify the family of the local address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"floating_ip": GlobalprotectPortalDataSourcePortalConfigLocalAddressFloatingIpSchema(),
@@ -10990,10 +10581,8 @@ func (o *GlobalprotectPortalDataSourcePortalConfigLocalAddressObject) getTypeFor
 func GlobalprotectPortalDataSourcePortalConfigLocalAddressFloatingIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11005,18 +10594,14 @@ func GlobalprotectPortalDataSourcePortalConfigLocalAddressFloatingIpSchema() dss
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "Floating IPv4 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "Floating IPv6 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -11043,10 +10628,8 @@ func (o *GlobalprotectPortalDataSourcePortalConfigLocalAddressFloatingIpObject) 
 func GlobalprotectPortalDataSourcePortalConfigLocalAddressIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11058,18 +10641,14 @@ func GlobalprotectPortalDataSourcePortalConfigLocalAddressIpSchema() dsschema.Si
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "IPv4 addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "IPv6 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -11096,29 +10675,23 @@ func (o *GlobalprotectPortalDataSourcePortalConfigLocalAddressIpObject) getTypeF
 func GlobalprotectPortalDataSourceSatelliteConfigSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"client_certificate": GlobalprotectPortalDataSourceSatelliteConfigClientCertificateSchema(),
 
 			"configs": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceSatelliteConfigConfigsSchema(),
 			},
 
 			"root_ca": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -11146,10 +10719,8 @@ func (o *GlobalprotectPortalDataSourceSatelliteConfigObject) getTypeFor(name str
 func GlobalprotectPortalDataSourceSatelliteConfigClientCertificateSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"local": GlobalprotectPortalDataSourceSatelliteConfigClientCertificateLocalSchema(),
@@ -11180,10 +10751,8 @@ func (o *GlobalprotectPortalDataSourceSatelliteConfigClientCertificateObject) ge
 func GlobalprotectPortalDataSourceSatelliteConfigClientCertificateLocalSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11195,34 +10764,26 @@ func GlobalprotectPortalDataSourceSatelliteConfigClientCertificateLocalSchema() 
 
 			"certificate_life_time": dsschema.Int64Attribute{
 				Description: "Issued GlobalProtect satellite certificate life time in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"certificate_renewal_period": dsschema.Int64Attribute{
 				Description: "GlobalProtect satellite certificate renewal period in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"issuing_certificate": dsschema.StringAttribute{
 				Description: "Issuing certificate to issue GlobalProtect satellite certificate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ocsp_responder": dsschema.StringAttribute{
 				Description: "OCSP responder",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -11249,10 +10810,8 @@ func (o *GlobalprotectPortalDataSourceSatelliteConfigClientCertificateLocalObjec
 func GlobalprotectPortalDataSourceSatelliteConfigClientCertificateScepSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11264,18 +10823,14 @@ func GlobalprotectPortalDataSourceSatelliteConfigClientCertificateScepSchema() d
 
 			"certificate_renewal_period": dsschema.Int64Attribute{
 				Description: "GlobalProtect satellite certificate renewal period in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"scep": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -11305,45 +10860,34 @@ func GlobalprotectPortalDataSourceSatelliteConfigConfigsSchema() dsschema.Nested
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"devices": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"source_user": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"gateways": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalDataSourceSatelliteConfigConfigsGatewaysSchema(),
 			},
 
 			"config_refresh_interval": dsschema.Int64Attribute{
 				Description: "GlobalProtect satellite configuration refresh interval in hours",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -11373,34 +10917,25 @@ func GlobalprotectPortalDataSourceSatelliteConfigConfigsGatewaysSchema() dsschem
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ipv6_preferred": dsschema.BoolAttribute{
 				Description: "IPv6 Preferred",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"priority": dsschema.Int64Attribute{
 				Description: "Priority of GlobalProtect gateway",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "fqdn",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": GlobalprotectPortalDataSourceSatelliteConfigConfigsGatewaysIpSchema(),
@@ -11429,10 +10964,8 @@ func (o *GlobalprotectPortalDataSourceSatelliteConfigConfigsGatewaysObject) getT
 func GlobalprotectPortalDataSourceSatelliteConfigConfigsGatewaysIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11444,18 +10977,14 @@ func GlobalprotectPortalDataSourceSatelliteConfigConfigsGatewaysIpSchema() dssch
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "IPv4",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "IPv6",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -12029,7 +11558,939 @@ type GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysIpObject struct {
 	Ipv6 types.String `tfsdk:"ipv6"`
 }
 
+func (o *GlobalprotectPortalResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ClientConfig.IsUnknown() && !o.ClientConfig.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigObject
+		diags := o.ClientConfig.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("client_config"))
+		}
+	}
+	if !o.ClientlessVpn.IsUnknown() && !o.ClientlessVpn.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientlessVpnObject
+		diags := o.ClientlessVpn.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("clientless_vpn"))
+		}
+	}
+	if !o.PortalConfig.IsUnknown() && !o.PortalConfig.IsNull() {
+		var nestedObj GlobalprotectPortalResourcePortalConfigObject
+		diags := o.PortalConfig.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("portal_config"))
+		}
+	}
+	if !o.SatelliteConfig.IsUnknown() && !o.SatelliteConfig.IsNull() {
+		var nestedObj GlobalprotectPortalResourceSatelliteConfigObject
+		diags := o.SatelliteConfig.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("satellite_config"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AgentUserOverrideKey.IsUnknown() && !o.AgentUserOverrideKey.IsNull() {
+		value := o.AgentUserOverrideKey.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("agent_user_override_key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("agent_user_override_key").String()),
+			)
+		}
+	}
+	if !o.Configs.IsUnknown() && !o.Configs.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsObject
+		diags := o.Configs.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("configs").AtListIndex(i))
+			}
+		}
+	}
+	if !o.RootCa.IsUnknown() && !o.RootCa.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigRootCaObject
+		diags := o.RootCa.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("root_ca").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Certificate.IsUnknown() && !o.Certificate.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsCertificateObject
+		diags := o.Certificate.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("certificate"))
+		}
+	}
+	if !o.CustomChecks.IsUnknown() && !o.CustomChecks.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsCustomChecksObject
+		diags := o.CustomChecks.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("custom_checks"))
+		}
+	}
+	if !o.Gateways.IsUnknown() && !o.Gateways.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsGatewaysObject
+		diags := o.Gateways.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("gateways"))
+		}
+	}
+	if !o.InternalHostDetection.IsUnknown() && !o.InternalHostDetection.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsInternalHostDetectionObject
+		diags := o.InternalHostDetection.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("internal_host_detection"))
+		}
+	}
+	if !o.InternalHostDetectionV6.IsUnknown() && !o.InternalHostDetectionV6.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsInternalHostDetectionV6Object
+		diags := o.InternalHostDetectionV6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("internal_host_detection_v6"))
+		}
+	}
+	if !o.AgentUi.IsUnknown() && !o.AgentUi.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsAgentUiObject
+		diags := o.AgentUi.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("agent_ui"))
+		}
+	}
+	if !o.HipCollection.IsUnknown() && !o.HipCollection.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsHipCollectionObject
+		diags := o.HipCollection.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hip_collection"))
+		}
+	}
+	if !o.AgentConfig.IsUnknown() && !o.AgentConfig.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsAgentConfigObject
+		diags := o.AgentConfig.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("agent_config"))
+		}
+	}
+	if !o.GpAppConfig.IsUnknown() && !o.GpAppConfig.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsGpAppConfigObject
+		diags := o.GpAppConfig.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("gp_app_config"))
+		}
+	}
+	if !o.AuthenticationOverride.IsUnknown() && !o.AuthenticationOverride.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideObject
+		diags := o.AuthenticationOverride.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("authentication_override"))
+		}
+	}
+	if !o.MachineAccountExistsWithSerialno.IsUnknown() && !o.MachineAccountExistsWithSerialno.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoObject
+		diags := o.MachineAccountExistsWithSerialno.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("machine_account_exists_with_serialno"))
+		}
+	}
+	if !o.ClientCertificate.IsUnknown() && !o.ClientCertificate.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsClientCertificateObject
+		diags := o.ClientCertificate.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("client_certificate"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsCertificateObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Criteria.IsUnknown() && !o.Criteria.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsCertificateCriteriaObject
+		diags := o.Criteria.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("criteria"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsCertificateCriteriaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Criteria.IsUnknown() && !o.Criteria.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaObject
+		diags := o.Criteria.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("criteria"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RegistryKey.IsUnknown() && !o.RegistryKey.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaRegistryKeyObject
+		diags := o.RegistryKey.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("registry_key").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Plist.IsUnknown() && !o.Plist.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlistObject
+		diags := o.Plist.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("plist").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaRegistryKeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RegistryValue.IsUnknown() && !o.RegistryValue.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaRegistryKeyRegistryValueObject
+		diags := o.RegistryValue.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("registry_value").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaRegistryKeyRegistryValueObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlistKeyObject
+		diags := o.Key.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("key").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlistKeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Internal.IsUnknown() && !o.Internal.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalObject
+		diags := o.Internal.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("internal"))
+		}
+	}
+	if !o.External.IsUnknown() && !o.External.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalObject
+		diags := o.External.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("external"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.List.IsUnknown() && !o.List.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListObject
+		diags := o.List.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("list").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListIpObject
+		diags := o.Ip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.List.IsUnknown() && !o.List.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListObject
+		diags := o.List.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("list").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.PriorityRule.IsUnknown() && !o.PriorityRule.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListPriorityRuleObject
+		diags := o.PriorityRule.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("priority_rule").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListIpObject
+		diags := o.Ip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListPriorityRuleObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsInternalHostDetectionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsInternalHostDetectionV6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsAgentUiObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Passcode.IsUnknown() && !o.Passcode.IsNull() {
+		value := o.Passcode.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("passcode"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("passcode").String()),
+			)
+		}
+	}
+	if !o.UninstallPassword.IsUnknown() && !o.UninstallPassword.IsNull() {
+		value := o.UninstallPassword.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("uninstall_password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("uninstall_password").String()),
+			)
+		}
+	}
+	if !o.WelcomePage.IsUnknown() && !o.WelcomePage.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsAgentUiWelcomePageObject
+		diags := o.WelcomePage.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("welcome_page"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsAgentUiWelcomePageObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Exclusion.IsUnknown() && !o.Exclusion.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionObject
+		diags := o.Exclusion.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("exclusion"))
+		}
+	}
+	if !o.CustomChecks.IsUnknown() && !o.CustomChecks.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksObject
+		diags := o.CustomChecks.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("custom_checks"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Category.IsUnknown() && !o.Category.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCategoryObject
+		diags := o.Category.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("category").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCategoryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Vendor.IsUnknown() && !o.Vendor.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCategoryVendorObject
+		diags := o.Vendor.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("vendor").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCategoryVendorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Windows.IsUnknown() && !o.Windows.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksWindowsObject
+		diags := o.Windows.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("windows"))
+		}
+	}
+	if !o.MacOs.IsUnknown() && !o.MacOs.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksMacOsObject
+		diags := o.MacOs.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("mac_os"))
+		}
+	}
+	if !o.Linux.IsUnknown() && !o.Linux.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksLinuxObject
+		diags := o.Linux.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("linux"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksWindowsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RegistryKey.IsUnknown() && !o.RegistryKey.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksWindowsRegistryKeyObject
+		diags := o.RegistryKey.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("registry_key").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksWindowsRegistryKeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksMacOsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Plist.IsUnknown() && !o.Plist.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksMacOsPlistObject
+		diags := o.Plist.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("plist").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksMacOsPlistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksLinuxObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsAgentConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGpAppConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Config.IsUnknown() && !o.Config.IsNull() {
+		var elements []GlobalprotectPortalResourceClientConfigConfigsGpAppConfigConfigObject
+		diags := o.Config.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("config").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsGpAppConfigConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AcceptCookie.IsUnknown() && !o.AcceptCookie.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcceptCookieObject
+		diags := o.AcceptCookie.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("accept_cookie"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcceptCookieObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.CookieLifetime.IsUnknown() && !o.CookieLifetime.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcceptCookieCookieLifetimeObject
+		diags := o.CookieLifetime.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("cookie_lifetime"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcceptCookieCookieLifetimeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.No.IsUnknown() && !o.No.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoNoObject
+		diags := o.No.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("no"))
+		}
+	}
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoYesObject
+		diags := o.Yes.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("yes"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoNoObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoYesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigConfigsClientCertificateObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientConfigRootCaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientlessVpnObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AppsToUserMapping.IsUnknown() && !o.AppsToUserMapping.IsNull() {
+		var elements []GlobalprotectPortalResourceClientlessVpnAppsToUserMappingObject
+		diags := o.AppsToUserMapping.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("apps_to_user_mapping").AtListIndex(i))
+			}
+		}
+	}
+	if !o.CryptoSettings.IsUnknown() && !o.CryptoSettings.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientlessVpnCryptoSettingsObject
+		diags := o.CryptoSettings.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("crypto_settings"))
+		}
+	}
+	if !o.InactivityLogout.IsUnknown() && !o.InactivityLogout.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientlessVpnInactivityLogoutObject
+		diags := o.InactivityLogout.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("inactivity_logout"))
+		}
+	}
+	if !o.LoginLifetime.IsUnknown() && !o.LoginLifetime.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientlessVpnLoginLifetimeObject
+		diags := o.LoginLifetime.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("login_lifetime"))
+		}
+	}
+	if !o.ProxyServerSetting.IsUnknown() && !o.ProxyServerSetting.IsNull() {
+		var elements []GlobalprotectPortalResourceClientlessVpnProxyServerSettingObject
+		diags := o.ProxyServerSetting.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("proxy_server_setting").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientlessVpnAppsToUserMappingObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientlessVpnCryptoSettingsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ServerCertVerification.IsUnknown() && !o.ServerCertVerification.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientlessVpnCryptoSettingsServerCertVerificationObject
+		diags := o.ServerCertVerification.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("server_cert_verification"))
+		}
+	}
+	if !o.SslProtocol.IsUnknown() && !o.SslProtocol.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientlessVpnCryptoSettingsSslProtocolObject
+		diags := o.SslProtocol.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ssl_protocol"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientlessVpnCryptoSettingsServerCertVerificationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientlessVpnCryptoSettingsSslProtocolObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientlessVpnInactivityLogoutObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientlessVpnLoginLifetimeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceClientlessVpnProxyServerSettingObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ProxyServer.IsUnknown() && !o.ProxyServer.IsNull() {
+		var nestedObj GlobalprotectPortalResourceClientlessVpnProxyServerSettingProxyServerObject
+		diags := o.ProxyServer.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("proxy_server"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceClientlessVpnProxyServerSettingProxyServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Password.IsUnknown() && !o.Password.IsNull() {
+		value := o.Password.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("password").String()),
+			)
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ClientAuth.IsUnknown() && !o.ClientAuth.IsNull() {
+		var elements []GlobalprotectPortalResourcePortalConfigClientAuthObject
+		diags := o.ClientAuth.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("client_auth").AtListIndex(i))
+			}
+		}
+	}
+	if !o.ConfigSelection.IsUnknown() && !o.ConfigSelection.IsNull() {
+		var nestedObj GlobalprotectPortalResourcePortalConfigConfigSelectionObject
+		diags := o.ConfigSelection.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("config_selection"))
+		}
+	}
+	if !o.LocalAddress.IsUnknown() && !o.LocalAddress.IsNull() {
+		var nestedObj GlobalprotectPortalResourcePortalConfigLocalAddressObject
+		diags := o.LocalAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_address"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigClientAuthObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.CustomChecks.IsUnknown() && !o.CustomChecks.IsNull() {
+		var nestedObj GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksObject
+		diags := o.CustomChecks.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("custom_checks"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.MacOs.IsUnknown() && !o.MacOs.IsNull() {
+		var nestedObj GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOsObject
+		diags := o.MacOs.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("mac_os"))
+		}
+	}
+	if !o.Windows.IsUnknown() && !o.Windows.IsNull() {
+		var nestedObj GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksWindowsObject
+		diags := o.Windows.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("windows"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Plist.IsUnknown() && !o.Plist.IsNull() {
+		var elements []GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOsPlistObject
+		diags := o.Plist.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("plist").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOsPlistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksWindowsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RegistryKey.IsUnknown() && !o.RegistryKey.IsNull() {
+		var elements []GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksWindowsRegistryKeyObject
+		diags := o.RegistryKey.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("registry_key").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksWindowsRegistryKeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigLocalAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.FloatingIp.IsUnknown() && !o.FloatingIp.IsNull() {
+		var nestedObj GlobalprotectPortalResourcePortalConfigLocalAddressFloatingIpObject
+		diags := o.FloatingIp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("floating_ip"))
+		}
+	}
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var nestedObj GlobalprotectPortalResourcePortalConfigLocalAddressIpObject
+		diags := o.Ip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigLocalAddressFloatingIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourcePortalConfigLocalAddressIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceSatelliteConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ClientCertificate.IsUnknown() && !o.ClientCertificate.IsNull() {
+		var nestedObj GlobalprotectPortalResourceSatelliteConfigClientCertificateObject
+		diags := o.ClientCertificate.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("client_certificate"))
+		}
+	}
+	if !o.Configs.IsUnknown() && !o.Configs.IsNull() {
+		var elements []GlobalprotectPortalResourceSatelliteConfigConfigsObject
+		diags := o.Configs.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("configs").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceSatelliteConfigClientCertificateObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Local.IsUnknown() && !o.Local.IsNull() {
+		var nestedObj GlobalprotectPortalResourceSatelliteConfigClientCertificateLocalObject
+		diags := o.Local.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local"))
+		}
+	}
+	if !o.Scep.IsUnknown() && !o.Scep.IsNull() {
+		var nestedObj GlobalprotectPortalResourceSatelliteConfigClientCertificateScepObject
+		diags := o.Scep.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("scep"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceSatelliteConfigClientCertificateLocalObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceSatelliteConfigClientCertificateScepObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectPortalResourceSatelliteConfigConfigsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Gateways.IsUnknown() && !o.Gateways.IsNull() {
+		var elements []GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysObject
+		diags := o.Gateways.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("gateways").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var nestedObj GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysIpObject
+		diags := o.Ip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip"))
+		}
+	}
+}
+
+func (o *GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *GlobalprotectPortalResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource GlobalprotectPortalResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -12042,10 +12503,7 @@ func GlobalprotectPortalResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"client_config": GlobalprotectPortalResourceClientConfigSchema(),
@@ -12080,35 +12538,24 @@ func (o *GlobalprotectPortalResourceModel) getTypeFor(name string) attr.Type {
 func GlobalprotectPortalResourceClientConfigSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"agent_user_override_key": rsschema.StringAttribute{
 				Description: "Agent user override ticket key",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"configs": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsSchema(),
 			},
 
 			"root_ca": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigRootCaSchema(),
 			},
 		},
@@ -12139,102 +12586,68 @@ func GlobalprotectPortalResourceClientConfigConfigsSchema() rsschema.NestedAttri
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"save_user_credentials": rsschema.StringAttribute{
 				Description: "Save User Credentials",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("1"),
 			},
 
 			"portal_2fa": rsschema.BoolAttribute{
 				Description: "Portal Authentication OTP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"internal_gateway_2fa": rsschema.BoolAttribute{
 				Description: "Internal Gateway Authentication OTP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auto_discovery_external_gateway_2fa": rsschema.BoolAttribute{
 				Description: "Auto Discovery External Gateway Authentication OTP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"manual_only_gateway_2fa": rsschema.BoolAttribute{
 				Description: "Manual Only External Gateway Authentication OTP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"refresh_config": rsschema.BoolAttribute{
 				Description: "Enable portal config refresh",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"mdm_address": rsschema.StringAttribute{
 				Description: "IP address or hostname for GlobalProtect MDM server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"mdm_enrollment_port": rsschema.StringAttribute{
 				Description: "MDM enrollment port",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("443"),
 			},
 
 			"source_user": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"third_party_vpn_clients": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"os": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -12286,10 +12699,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsObject) getTypeFor(name s
 func GlobalprotectPortalResourceClientConfigConfigsCertificateSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"criteria": GlobalprotectPortalResourceClientConfigConfigsCertificateCriteriaSchema(),
@@ -12318,18 +12728,12 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsCertificateObject) getTyp
 func GlobalprotectPortalResourceClientConfigConfigsCertificateCriteriaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12356,10 +12760,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsCertificateCriteriaObject
 func GlobalprotectPortalResourceClientConfigConfigsCustomChecksSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"criteria": GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaSchema(),
@@ -12388,27 +12789,18 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksObject) getTy
 func GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"registry_key": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaRegistryKeySchema(),
 			},
 
 			"plist": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlistSchema(),
 			},
 		},
@@ -12439,34 +12831,22 @@ func GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaRegistryK
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"default_value_data": rsschema.StringAttribute{
 				Description: "Registry key default value data",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"negate": rsschema.BoolAttribute{
 				Description: "Key does not exist",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"registry_value": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaRegistryKeyRegistryValueSchema(),
 			},
 		},
@@ -12497,26 +12877,17 @@ func GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaRegistryK
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value_data": rsschema.StringAttribute{
 				Description: "Registry value data",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"negate": rsschema.BoolAttribute{
 				Description: "Value does not exist",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12546,26 +12917,17 @@ func GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlistSche
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"negate": rsschema.BoolAttribute{
 				Description: "Plist does not exist",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"key": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlistKeySchema(),
 			},
 		},
@@ -12596,26 +12958,17 @@ func GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlistKeyS
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.StringAttribute{
 				Description: "Key value",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"negate": rsschema.BoolAttribute{
 				Description: "Value does not exist or match specified value data",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12642,10 +12995,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlist
 func GlobalprotectPortalResourceClientConfigConfigsGatewaysSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"internal": GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalSchema(),
@@ -12676,27 +13026,18 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysObject) getTypeFo
 func GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"list": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListSchema(),
 			},
 
 			"dhcp_option_code": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 		},
@@ -12727,27 +13068,18 @@ func GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListSchema() 
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"source_ip": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "fqdn",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -12783,10 +13115,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListObjec
 func GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12798,18 +13127,12 @@ func GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListIpSchema(
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "IPv4",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "IPv6",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12836,27 +13159,19 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalListIpObj
 func GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"cutoff_time": rsschema.Int64Attribute{
 				Description: "Gateway discovery cutoff time in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(5),
 			},
 
 			"list": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListSchema(),
 			},
 		},
@@ -12887,35 +13202,23 @@ func GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListSchema() 
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"priority_rule": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListPriorityRuleSchema(),
 			},
 
 			"manual": rsschema.BoolAttribute{
 				Description: "If this GlobalProtect gateway can be manually selected",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "fqdn",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -12954,18 +13257,13 @@ func GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListPriorityR
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"priority": rsschema.StringAttribute{
 				Description: "Priority of GlobalProtect gateway",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("1"),
 			},
 		},
@@ -12993,10 +13291,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListPrior
 func GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13008,18 +13303,12 @@ func GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListIpSchema(
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "IPv4",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "IPv6",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13046,26 +13335,17 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListIpObj
 func GlobalprotectPortalResourceClientConfigConfigsInternalHostDetectionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip_address": rsschema.StringAttribute{
 				Description: "Internal IPv4 address of a host",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hostname": rsschema.StringAttribute{
 				Description: "Host name of the IPv4 in DNS record",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13092,26 +13372,17 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsInternalHostDetectionObje
 func GlobalprotectPortalResourceClientConfigConfigsInternalHostDetectionV6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip_address": rsschema.StringAttribute{
 				Description: "Internal IPv6 address of a host",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hostname": rsschema.StringAttribute{
 				Description: "Host name of the IPv6 in DNS record",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13138,43 +13409,32 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsInternalHostDetectionV6Ob
 func GlobalprotectPortalResourceClientConfigConfigsAgentUiSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"passcode": rsschema.StringAttribute{
 				Description: "Passcode required for override",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"uninstall_password": rsschema.StringAttribute{
 				Description: "Password to uninstall GlobalProtect app",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"agent_user_override_timeout": rsschema.Int64Attribute{
 				Description: "Agent user override duration in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"max_agent_user_overrides": rsschema.Int64Attribute{
 				Description: "Max agent user overrides",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
@@ -13204,18 +13464,12 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsAgentUiObject) getTypeFor
 func GlobalprotectPortalResourceClientConfigConfigsAgentUiWelcomePageSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"page": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13242,35 +13496,24 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsAgentUiWelcomePageObject)
 func GlobalprotectPortalResourceClientConfigConfigsHipCollectionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_wait_time": rsschema.Int64Attribute{
 				Description: "Max Wait Time (Sec)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(20),
 			},
 
 			"collect_hip_data": rsschema.BoolAttribute{
 				Description: "Collect HIP Data",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exclusion": GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionSchema(),
@@ -13301,18 +13544,12 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionObject) getT
 func GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"category": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCategorySchema(),
 			},
 		},
@@ -13343,18 +13580,12 @@ func GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCategor
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"vendor": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCategoryVendorSchema(),
 			},
 		},
@@ -13385,18 +13616,12 @@ func GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCategor
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"product": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -13424,10 +13649,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCat
 func GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"windows": GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksWindowsSchema(),
@@ -13460,27 +13682,18 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecks
 func GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksWindowsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"registry_key": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksWindowsRegistryKeySchema(),
 			},
 
 			"process_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -13511,18 +13724,12 @@ func GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksWind
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"registry_value": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -13550,27 +13757,18 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecks
 func GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksMacOsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"plist": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksMacOsPlistSchema(),
 			},
 
 			"process_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -13601,18 +13799,12 @@ func GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksMacO
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"key": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -13640,18 +13832,12 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecks
 func GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecksLinuxSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"process_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -13679,10 +13865,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecks
 func GlobalprotectPortalResourceClientConfigConfigsAgentConfigSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes:  map[string]rsschema.Attribute{},
 	}
 }
@@ -13708,18 +13891,12 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsAgentConfigObject) getTyp
 func GlobalprotectPortalResourceClientConfigConfigsGpAppConfigSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"config": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientConfigConfigsGpAppConfigConfigSchema(),
 			},
 		},
@@ -13750,18 +13927,12 @@ func GlobalprotectPortalResourceClientConfigConfigsGpAppConfigConfigSchema() rss
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -13789,26 +13960,17 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGpAppConfigConfigObject) 
 func GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"generate_cookie": rsschema.BoolAttribute{
 				Description: "Generate cookie for authentication override",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"cookie_encrypt_decrypt_cert": rsschema.StringAttribute{
 				Description: "Certificate to Encrypt/Decrypt Cookie",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"accept_cookie": GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcceptCookieSchema(),
@@ -13837,10 +13999,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideObj
 func GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcceptCookieSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"cookie_lifetime": GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcceptCookieCookieLifetimeSchema(),
@@ -13869,18 +14028,12 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcc
 func GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcceptCookieCookieLifetimeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"lifetime_in_days": rsschema.Int64Attribute{
 				Description: "Cookie lifetime in days",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -13893,18 +14046,12 @@ func GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcceptC
 
 			"lifetime_in_hours": rsschema.Int64Attribute{
 				Description: "Cookie lifetime in hours",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"lifetime_in_minutes": rsschema.Int64Attribute{
 				Description: "Cookie lifetime in minutes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13931,10 +14078,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsAuthenticationOverrideAcc
 func GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"no": GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoNoSchema(),
@@ -13965,10 +14109,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithS
 func GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoNoSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -14001,10 +14142,7 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithS
 func GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithSerialnoYesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -14037,18 +14175,12 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsMachineAccountExistsWithS
 func GlobalprotectPortalResourceClientConfigConfigsClientCertificateSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"local": rsschema.StringAttribute{
 				Description: "Select Client Certificate",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -14060,10 +14192,7 @@ func GlobalprotectPortalResourceClientConfigConfigsClientCertificateSchema() rss
 
 			"scep": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14093,18 +14222,12 @@ func GlobalprotectPortalResourceClientConfigRootCaSchema() rsschema.NestedAttrib
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"install_in_cert_store": rsschema.BoolAttribute{
 				Description: "Install in Trusted CA Certificate Store",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14131,18 +14254,12 @@ func (o *GlobalprotectPortalResourceClientConfigRootCaObject) getTypeFor(name st
 func GlobalprotectPortalResourceClientlessVpnSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"apps_to_user_mapping": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientlessVpnAppsToUserMappingSchema(),
 			},
 
@@ -14150,18 +14267,12 @@ func GlobalprotectPortalResourceClientlessVpnSchema() rsschema.SingleNestedAttri
 
 			"dns_proxy": rsschema.StringAttribute{
 				Description: "DNS proxy object used for resolving clientless-vpn application hostnames",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hostname": rsschema.StringAttribute{
 				Description: "FQDN or IP address of GlobalProtect Portal",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inactivity_logout": GlobalprotectPortalResourceClientlessVpnInactivityLogoutSchema(),
@@ -14170,36 +14281,24 @@ func GlobalprotectPortalResourceClientlessVpnSchema() rsschema.SingleNestedAttri
 
 			"max_user": rsschema.Int64Attribute{
 				Description: "max number of concurrent logined users to GlobalProtect portal",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"proxy_server_setting": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceClientlessVpnProxyServerSettingSchema(),
 			},
 
 			"rewrite_exclude_domain_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"security_zone": rsschema.StringAttribute{
 				Description: "Zone to be used for clientless-vpn traffic",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14229,44 +14328,29 @@ func GlobalprotectPortalResourceClientlessVpnAppsToUserMappingSchema() rsschema.
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"source_user": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"applications": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"enable_custom_app_u_r_l_address_bar": rsschema.BoolAttribute{
 				Description: "URL browse bar to access unpublished clientless VPN applications",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"display_global_protect_agent_download_link": rsschema.BoolAttribute{
 				Description: "Display Global Protect Agent download link",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14293,10 +14377,7 @@ func (o *GlobalprotectPortalResourceClientlessVpnAppsToUserMappingObject) getTyp
 func GlobalprotectPortalResourceClientlessVpnCryptoSettingsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"server_cert_verification": GlobalprotectPortalResourceClientlessVpnCryptoSettingsServerCertVerificationSchema(),
@@ -14327,42 +14408,27 @@ func (o *GlobalprotectPortalResourceClientlessVpnCryptoSettingsObject) getTypeFo
 func GlobalprotectPortalResourceClientlessVpnCryptoSettingsServerCertVerificationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"block_expired_certificate": rsschema.BoolAttribute{
 				Description: "whether to block sessions if server's certificate is expired",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"block_timeout_cert": rsschema.BoolAttribute{
 				Description: "whether to block a session if cert. status can't be retrieved within timeout",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"block_unknown_cert": rsschema.BoolAttribute{
 				Description: "whether to block a session if cert. status is unknown",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"block_untrusted_issuer": rsschema.BoolAttribute{
 				Description: "whether to block sessions if server's certificate is issued by untrusted CA",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14389,131 +14455,85 @@ func (o *GlobalprotectPortalResourceClientlessVpnCryptoSettingsServerCertVerific
 func GlobalprotectPortalResourceClientlessVpnCryptoSettingsSslProtocolSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"auth_algo_md5": rsschema.BoolAttribute{
 				Description: "Allow authentication MD5",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auth_algo_sha1": rsschema.BoolAttribute{
 				Description: "Allow authentication SHA1",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auth_algo_sha256": rsschema.BoolAttribute{
 				Description: "Allow authentication SHA256",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auth_algo_sha384": rsschema.BoolAttribute{
 				Description: "Allow authentication SHA384",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enc_algo_3des": rsschema.BoolAttribute{
 				Description: "Allow algorithm 3DES",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enc_algo_aes_128_cbc": rsschema.BoolAttribute{
 				Description: "Allow algorithm AES-128-CBC",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enc_algo_aes_128_gcm": rsschema.BoolAttribute{
 				Description: "Allow algorithm AES-128-GCM",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enc_algo_aes_256_cbc": rsschema.BoolAttribute{
 				Description: "Allow algorithm AES-256-CBC",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enc_algo_aes_256_gcm": rsschema.BoolAttribute{
 				Description: "Allow algorithm AES-256-GCM",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enc_algo_rc4": rsschema.BoolAttribute{
 				Description: "Allow algorithm RC4",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"keyxchg_algo_dhe": rsschema.BoolAttribute{
 				Description: "Allow algorithm DHE",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"keyxchg_algo_ecdhe": rsschema.BoolAttribute{
 				Description: "Allow algorithm ECDHE",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"keyxchg_algo_rsa": rsschema.BoolAttribute{
 				Description: "Allow algorithm RSA",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_version": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("max"),
 			},
 
 			"min_version": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("tls1-0"),
 			},
 		},
@@ -14541,18 +14561,12 @@ func (o *GlobalprotectPortalResourceClientlessVpnCryptoSettingsSslProtocolObject
 func GlobalprotectPortalResourceClientlessVpnInactivityLogoutSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"hours": rsschema.Int64Attribute{
 				Description: "specify inactivity time in hours",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -14564,10 +14578,7 @@ func GlobalprotectPortalResourceClientlessVpnInactivityLogoutSchema() rsschema.S
 
 			"minutes": rsschema.Int64Attribute{
 				Description: "specify inactivity time in minutes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14594,18 +14605,12 @@ func (o *GlobalprotectPortalResourceClientlessVpnInactivityLogoutObject) getType
 func GlobalprotectPortalResourceClientlessVpnLoginLifetimeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"hours": rsschema.Int64Attribute{
 				Description: "specify lifetime in hours",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -14617,10 +14622,7 @@ func GlobalprotectPortalResourceClientlessVpnLoginLifetimeSchema() rsschema.Sing
 
 			"minutes": rsschema.Int64Attribute{
 				Description: "specify lifetime in minutes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14650,27 +14652,18 @@ func GlobalprotectPortalResourceClientlessVpnProxyServerSettingSchema() rsschema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"domains": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"use_proxy": rsschema.BoolAttribute{
 				Description: "Whether to use proxy server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"proxy_server": GlobalprotectPortalResourceClientlessVpnProxyServerSettingProxyServerSchema(),
@@ -14699,40 +14692,26 @@ func (o *GlobalprotectPortalResourceClientlessVpnProxyServerSettingObject) getTy
 func GlobalprotectPortalResourceClientlessVpnProxyServerSettingProxyServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"server": rsschema.StringAttribute{
 				Description: "Proxy server to use",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"port": rsschema.Int64Attribute{
 				Description: "Port for proxy server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"user": rsschema.StringAttribute{
 				Description: "Proxy user name to use",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"password": rsschema.StringAttribute{
 				Description: "Proxy password to use",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
@@ -14761,26 +14740,17 @@ func (o *GlobalprotectPortalResourceClientlessVpnProxyServerSettingProxyServerOb
 func GlobalprotectPortalResourcePortalConfigSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"client_auth": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourcePortalConfigClientAuthSchema(),
 			},
 
@@ -14788,27 +14758,20 @@ func GlobalprotectPortalResourcePortalConfigSchema() rsschema.SingleNestedAttrib
 
 			"custom_help_page": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"custom_home_page": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("factory-default"),
 			},
 
 			"custom_login_page": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("factory-default"),
 			},
 
@@ -14816,34 +14779,22 @@ func GlobalprotectPortalResourcePortalConfigSchema() rsschema.SingleNestedAttrib
 
 			"log_fail": rsschema.BoolAttribute{
 				Description: "Log unsuccessful TLS handshakes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_setting": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_success": rsschema.BoolAttribute{
 				Description: "Log successful TLS handshakes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ssl_tls_service_profile": rsschema.StringAttribute{
 				Description: "SSL TLS service profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14873,70 +14824,51 @@ func GlobalprotectPortalResourcePortalConfigClientAuthSchema() rsschema.NestedAt
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"os": rsschema.StringAttribute{
 				Description: "Client OS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Any"),
 			},
 
 			"authentication_profile": rsschema.StringAttribute{
 				Description: "authentication profile used for this GlobalProtect",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auto_retrieve_passcode": rsschema.BoolAttribute{
 				Description: "Automatically retrieve passcode from SoftToken application",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"username_label": rsschema.StringAttribute{
 				Description: "Username Label",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Username"),
 			},
 
 			"password_label": rsschema.StringAttribute{
 				Description: "Password Label",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Password"),
 			},
 
 			"authentication_message": rsschema.StringAttribute{
 				Description: "Authentication Message",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Enter login credentials"),
 			},
 
 			"user_credential_or_client_cert_required": rsschema.StringAttribute{
 				Description: "Allow Authentication with User Credentials OR Client Certificate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("no"),
 			},
 		},
@@ -14964,18 +14896,12 @@ func (o *GlobalprotectPortalResourcePortalConfigClientAuthObject) getTypeFor(nam
 func GlobalprotectPortalResourcePortalConfigConfigSelectionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"custom_checks": GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksSchema(),
@@ -15004,10 +14930,7 @@ func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionObject) getTypeFo
 func GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"mac_os": GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOsSchema(),
@@ -15038,18 +14961,12 @@ func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksObjec
 func GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"plist": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOsPlistSchema(),
 			},
 		},
@@ -15080,18 +14997,12 @@ func GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOsPlis
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"key": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -15119,18 +15030,12 @@ func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOs
 func GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksWindowsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"registry_key": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksWindowsRegistryKeySchema(),
 			},
 		},
@@ -15161,18 +15066,12 @@ func GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksWindowsRe
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"registry_value": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -15200,26 +15099,18 @@ func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksWindo
 func GlobalprotectPortalResourcePortalConfigLocalAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "local gateway end-point",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip_address_family": rsschema.StringAttribute{
 				Description: "specify the family of the local address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("ipv4"),
 			},
 
@@ -15251,10 +15142,7 @@ func (o *GlobalprotectPortalResourcePortalConfigLocalAddressObject) getTypeFor(n
 func GlobalprotectPortalResourcePortalConfigLocalAddressFloatingIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15266,18 +15154,12 @@ func GlobalprotectPortalResourcePortalConfigLocalAddressFloatingIpSchema() rssch
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "Floating IPv4 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "Floating IPv6 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -15304,10 +15186,7 @@ func (o *GlobalprotectPortalResourcePortalConfigLocalAddressFloatingIpObject) ge
 func GlobalprotectPortalResourcePortalConfigLocalAddressIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15319,18 +15198,12 @@ func GlobalprotectPortalResourcePortalConfigLocalAddressIpSchema() rsschema.Sing
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "IPv4 addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "IPv6 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -15357,29 +15230,20 @@ func (o *GlobalprotectPortalResourcePortalConfigLocalAddressIpObject) getTypeFor
 func GlobalprotectPortalResourceSatelliteConfigSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"client_certificate": GlobalprotectPortalResourceSatelliteConfigClientCertificateSchema(),
 
 			"configs": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceSatelliteConfigConfigsSchema(),
 			},
 
 			"root_ca": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -15407,10 +15271,7 @@ func (o *GlobalprotectPortalResourceSatelliteConfigObject) getTypeFor(name strin
 func GlobalprotectPortalResourceSatelliteConfigClientCertificateSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"local": GlobalprotectPortalResourceSatelliteConfigClientCertificateLocalSchema(),
@@ -15441,10 +15302,7 @@ func (o *GlobalprotectPortalResourceSatelliteConfigClientCertificateObject) getT
 func GlobalprotectPortalResourceSatelliteConfigClientCertificateLocalSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15456,36 +15314,26 @@ func GlobalprotectPortalResourceSatelliteConfigClientCertificateLocalSchema() rs
 
 			"certificate_life_time": rsschema.Int64Attribute{
 				Description: "Issued GlobalProtect satellite certificate life time in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(7),
 			},
 
 			"certificate_renewal_period": rsschema.Int64Attribute{
 				Description: "GlobalProtect satellite certificate renewal period in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(3),
 			},
 
 			"issuing_certificate": rsschema.StringAttribute{
 				Description: "Issuing certificate to issue GlobalProtect satellite certificate",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ocsp_responder": rsschema.StringAttribute{
 				Description: "OCSP responder",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -15512,10 +15360,7 @@ func (o *GlobalprotectPortalResourceSatelliteConfigClientCertificateLocalObject)
 func GlobalprotectPortalResourceSatelliteConfigClientCertificateScepSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15527,19 +15372,14 @@ func GlobalprotectPortalResourceSatelliteConfigClientCertificateScepSchema() rss
 
 			"certificate_renewal_period": rsschema.Int64Attribute{
 				Description: "GlobalProtect satellite certificate renewal period in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(3),
 			},
 
 			"scep": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -15569,45 +15409,31 @@ func GlobalprotectPortalResourceSatelliteConfigConfigsSchema() rsschema.NestedAt
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"devices": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"source_user": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"gateways": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysSchema(),
 			},
 
 			"config_refresh_interval": rsschema.Int64Attribute{
 				Description: "GlobalProtect satellite configuration refresh interval in hours",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(24),
 			},
 		},
@@ -15638,34 +15464,22 @@ func GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysSchema() rsschema.
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ipv6_preferred": rsschema.BoolAttribute{
 				Description: "IPv6 Preferred",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"priority": rsschema.Int64Attribute{
 				Description: "Priority of GlobalProtect gateway",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "fqdn",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -15701,10 +15515,7 @@ func (o *GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysObject) getTyp
 func GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15716,18 +15527,12 @@ func GlobalprotectPortalResourceSatelliteConfigConfigsGatewaysIpSchema() rsschem
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "IPv4",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "IPv6",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -19950,8 +19755,8 @@ func (o *GlobalprotectPortalResourceClientConfigObject) CopyFromPango(ctx contex
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			agentUserOverrideKey_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			agentUserOverrideKey_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -21051,8 +20856,8 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsAgentUiObject) CopyFromPa
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			passcode_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			passcode_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -21076,8 +20881,8 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsAgentUiObject) CopyFromPa
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			uninstallPassword_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			uninstallPassword_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -22339,8 +22144,8 @@ func (o *GlobalprotectPortalResourceClientlessVpnProxyServerSettingProxyServerOb
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -23743,14 +23548,15 @@ type GlobalprotectPortalImportState struct {
 
 func (o GlobalprotectPortalImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *GlobalprotectPortalLocation `json:"location"`
-		Name     *string                      `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *GlobalprotectPortalLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, GlobalprotectPortalLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -23764,8 +23570,8 @@ func (o GlobalprotectPortalImportState) MarshalJSON() ([]byte, error) {
 
 func (o *GlobalprotectPortalImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *GlobalprotectPortalLocation `json:"location"`
-		Name     *string                      `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -23774,10 +23580,14 @@ func (o *GlobalprotectPortalImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, GlobalprotectPortalLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

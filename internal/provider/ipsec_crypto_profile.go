@@ -610,18 +610,13 @@ func IpsecCryptoProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"dh_group": dsschema.StringAttribute{
 				Description: "phase-2 DH group (PFS DH group)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifesize": IpsecCryptoProfileDataSourceLifesizeSchema(),
@@ -656,42 +651,32 @@ func (o *IpsecCryptoProfileDataSourceModel) getTypeFor(name string) attr.Type {
 func IpsecCryptoProfileDataSourceLifesizeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"gb": dsschema.Int64Attribute{
 				Description: "specify lifesize in gigabytes(GB)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"kb": dsschema.Int64Attribute{
 				Description: "specify lifesize in kilobytes(KB)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mb": dsschema.Int64Attribute{
 				Description: "specify lifesize in megabytes(MB)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tb": dsschema.Int64Attribute{
 				Description: "specify lifesize in terabytes(TB)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -718,42 +703,32 @@ func (o *IpsecCryptoProfileDataSourceLifesizeObject) getTypeFor(name string) att
 func IpsecCryptoProfileDataSourceLifetimeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"days": dsschema.Int64Attribute{
 				Description: "specify lifetime in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hours": dsschema.Int64Attribute{
 				Description: "specify lifetime in hours",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"minutes": dsschema.Int64Attribute{
 				Description: "specify lifetime in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"seconds": dsschema.Int64Attribute{
 				Description: "specify lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -780,18 +755,14 @@ func (o *IpsecCryptoProfileDataSourceLifetimeObject) getTypeFor(name string) att
 func IpsecCryptoProfileDataSourceAhSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"authentication": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -819,27 +790,21 @@ func (o *IpsecCryptoProfileDataSourceAhObject) getTypeFor(name string) attr.Type
 func IpsecCryptoProfileDataSourceEspSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"authentication": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"encryption": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1045,7 +1010,65 @@ type IpsecCryptoProfileResourceEspObject struct {
 	Encryption     types.List `tfsdk:"encryption"`
 }
 
+func (o *IpsecCryptoProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Lifesize.IsUnknown() && !o.Lifesize.IsNull() {
+		var nestedObj IpsecCryptoProfileResourceLifesizeObject
+		diags := o.Lifesize.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("lifesize"))
+		}
+	}
+	if !o.Lifetime.IsUnknown() && !o.Lifetime.IsNull() {
+		var nestedObj IpsecCryptoProfileResourceLifetimeObject
+		diags := o.Lifetime.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("lifetime"))
+		}
+	}
+	if !o.Ah.IsUnknown() && !o.Ah.IsNull() {
+		var nestedObj IpsecCryptoProfileResourceAhObject
+		diags := o.Ah.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ah"))
+		}
+	}
+	if !o.Esp.IsUnknown() && !o.Esp.IsNull() {
+		var nestedObj IpsecCryptoProfileResourceEspObject
+		diags := o.Esp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("esp"))
+		}
+	}
+}
+
+func (o *IpsecCryptoProfileResourceLifesizeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecCryptoProfileResourceLifetimeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecCryptoProfileResourceAhObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecCryptoProfileResourceEspObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *IpsecCryptoProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource IpsecCryptoProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1058,18 +1081,13 @@ func IpsecCryptoProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"dh_group": rsschema.StringAttribute{
 				Description: "phase-2 DH group (PFS DH group)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("group2"),
 
 				Validators: []validator.String{
@@ -1120,18 +1138,12 @@ func (o *IpsecCryptoProfileResourceModel) getTypeFor(name string) attr.Type {
 func IpsecCryptoProfileResourceLifesizeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"gb": rsschema.Int64Attribute{
 				Description: "specify lifesize in gigabytes(GB)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -1145,26 +1157,17 @@ func IpsecCryptoProfileResourceLifesizeSchema() rsschema.SingleNestedAttribute {
 
 			"kb": rsschema.Int64Attribute{
 				Description: "specify lifesize in kilobytes(KB)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"mb": rsschema.Int64Attribute{
 				Description: "specify lifesize in megabytes(MB)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tb": rsschema.Int64Attribute{
 				Description: "specify lifesize in terabytes(TB)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1191,18 +1194,12 @@ func (o *IpsecCryptoProfileResourceLifesizeObject) getTypeFor(name string) attr.
 func IpsecCryptoProfileResourceLifetimeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"days": rsschema.Int64Attribute{
 				Description: "specify lifetime in days",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -1216,26 +1213,17 @@ func IpsecCryptoProfileResourceLifetimeSchema() rsschema.SingleNestedAttribute {
 
 			"hours": rsschema.Int64Attribute{
 				Description: "specify lifetime in hours",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"minutes": rsschema.Int64Attribute{
 				Description: "specify lifetime in minutes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"seconds": rsschema.Int64Attribute{
 				Description: "specify lifetime in seconds",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1262,10 +1250,7 @@ func (o *IpsecCryptoProfileResourceLifetimeObject) getTypeFor(name string) attr.
 func IpsecCryptoProfileResourceAhSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1277,10 +1262,7 @@ func IpsecCryptoProfileResourceAhSchema() rsschema.SingleNestedAttribute {
 
 			"authentication": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1308,27 +1290,18 @@ func (o *IpsecCryptoProfileResourceAhObject) getTypeFor(name string) attr.Type {
 func IpsecCryptoProfileResourceEspSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"authentication": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"encryption": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2349,14 +2322,15 @@ type IpsecCryptoProfileImportState struct {
 
 func (o IpsecCryptoProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *IpsecCryptoProfileLocation `json:"location"`
-		Name     *string                     `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *IpsecCryptoProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, IpsecCryptoProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -2370,8 +2344,8 @@ func (o IpsecCryptoProfileImportState) MarshalJSON() ([]byte, error) {
 
 func (o *IpsecCryptoProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *IpsecCryptoProfileLocation `json:"location"`
-		Name     *string                     `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2380,10 +2354,14 @@ func (o *IpsecCryptoProfileImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, IpsecCryptoProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

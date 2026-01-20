@@ -2927,43 +2927,32 @@ func GlobalprotectGatewayDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"block_quarantined_devices": dsschema.BoolAttribute{
 				Description: "Block login for quarantined devices",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"client_auth": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayDataSourceClientAuthSchema(),
 			},
 
 			"hip_notification": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayDataSourceHipNotificationSchema(),
 			},
 
@@ -2971,78 +2960,60 @@ func GlobalprotectGatewayDataSourceSchema() dsschema.Schema {
 
 			"log_fail": dsschema.BoolAttribute{
 				Description: "Log unsuccessful TLS handshakes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_setting": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_success": dsschema.BoolAttribute{
 				Description: "Log successful TLS handshakes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"remote_user_tunnel": dsschema.StringAttribute{
 				Description: "GlobalProtect user tunnel",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"remote_user_tunnel_configs": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSchema(),
 			},
 
 			"roles": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayDataSourceRolesSchema(),
 			},
 
 			"satellite_tunnel": dsschema.StringAttribute{
 				Description: "GlobalProtect satellite tunnel",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"security_restrictions": GlobalprotectGatewayDataSourceSecurityRestrictionsSchema(),
 
 			"ssl_tls_service_profile": dsschema.StringAttribute{
 				Description: "SSL TLS service profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tunnel_mode": dsschema.BoolAttribute{
 				Description: "Tunnel mode",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3072,66 +3043,49 @@ func GlobalprotectGatewayDataSourceClientAuthSchema() dsschema.NestedAttributeOb
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"os": dsschema.StringAttribute{
 				Description: "Client OS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication_profile": dsschema.StringAttribute{
 				Description: "authentication profile used for this GlobalProtect",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auto_retrieve_passcode": dsschema.BoolAttribute{
 				Description: "Automatically retrieve passcode from SoftToken application",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"username_label": dsschema.StringAttribute{
 				Description: "Username Label",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"password_label": dsschema.StringAttribute{
 				Description: "Password Label",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication_message": dsschema.StringAttribute{
 				Description: "Authentication Message",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"user_credential_or_client_cert_required": dsschema.StringAttribute{
 				Description: "Allow Authentication with User Credentials OR Client Certificate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3161,10 +3115,7 @@ func GlobalprotectGatewayDataSourceHipNotificationSchema() dsschema.NestedAttrib
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"match_message": GlobalprotectGatewayDataSourceHipNotificationMatchMessageSchema(),
@@ -3195,34 +3146,26 @@ func (o *GlobalprotectGatewayDataSourceHipNotificationObject) getTypeFor(name st
 func GlobalprotectGatewayDataSourceHipNotificationMatchMessageSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"include_app_list": dsschema.BoolAttribute{
 				Description: "Whether include matched application list in message",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"show_notification_as": dsschema.StringAttribute{
 				Description: "Show notification as",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"message": dsschema.StringAttribute{
 				Description: "Matched message",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3249,26 +3192,20 @@ func (o *GlobalprotectGatewayDataSourceHipNotificationMatchMessageObject) getTyp
 func GlobalprotectGatewayDataSourceHipNotificationNotMatchMessageSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"show_notification_as": dsschema.StringAttribute{
 				Description: "Show notification as",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"message": dsschema.StringAttribute{
 				Description: "Not matched message",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3295,26 +3232,20 @@ func (o *GlobalprotectGatewayDataSourceHipNotificationNotMatchMessageObject) get
 func GlobalprotectGatewayDataSourceLocalAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "local gateway end-point",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip_address_family": dsschema.StringAttribute{
 				Description: "specify the family of the local address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"floating_ip": GlobalprotectGatewayDataSourceLocalAddressFloatingIpSchema(),
@@ -3345,10 +3276,8 @@ func (o *GlobalprotectGatewayDataSourceLocalAddressObject) getTypeFor(name strin
 func GlobalprotectGatewayDataSourceLocalAddressFloatingIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3360,18 +3289,14 @@ func GlobalprotectGatewayDataSourceLocalAddressFloatingIpSchema() dsschema.Singl
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "Floating IPv4 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "Floating IPv6 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3398,10 +3323,8 @@ func (o *GlobalprotectGatewayDataSourceLocalAddressFloatingIpObject) getTypeFor(
 func GlobalprotectGatewayDataSourceLocalAddressIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3413,18 +3336,14 @@ func GlobalprotectGatewayDataSourceLocalAddressIpSchema() dsschema.SingleNestedA
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "IPv4 addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "IPv6 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3454,63 +3373,48 @@ func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSchema() dsschema.Nest
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"source_user": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"os": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"dns_server": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"dns_suffix": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ip_pool": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"authentication_server_ip_pool": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -3522,18 +3426,14 @@ func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSchema() dsschema.Nest
 
 			"no_direct_access_to_local_network": dsschema.BoolAttribute{
 				Description: "No direct access to local network",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"retrieve_framed_ip_address": dsschema.BoolAttribute{
 				Description: "retrieve framed ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3560,26 +3460,20 @@ func (o *GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsObject) getTypeFor
 func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsAuthenticationOverrideSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"generate_cookie": dsschema.BoolAttribute{
 				Description: "Generate cookie for authentication override",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"cookie_encrypt_decrypt_cert": dsschema.StringAttribute{
 				Description: "Certificate to Encrypt/Decrypt Cookie",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"accept_cookie": GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieSchema(),
@@ -3608,10 +3502,8 @@ func (o *GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsAuthenticationOver
 func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"cookie_lifetime": GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieCookieLifetimeSchema(),
@@ -3640,34 +3532,26 @@ func (o *GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsAuthenticationOver
 func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieCookieLifetimeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"lifetime_in_days": dsschema.Int64Attribute{
 				Description: "Cookie lifetime in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime_in_hours": dsschema.Int64Attribute{
 				Description: "Cookie lifetime in hours",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime_in_minutes": dsschema.Int64Attribute{
 				Description: "Cookie lifetime in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3694,27 +3578,21 @@ func (o *GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsAuthenticationOver
 func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSourceAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"region": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ip_address": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -3742,45 +3620,35 @@ func (o *GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSourceAddressObjec
 func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_route": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"exclude_access_route": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"include_applications": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"exclude_applications": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -3812,18 +3680,14 @@ func (o *GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingObje
 func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingIncludeDomainsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"list": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingIncludeDomainsListSchema(),
 			},
 		},
@@ -3854,18 +3718,13 @@ func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingIncludeD
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ports": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 		},
@@ -3893,18 +3752,14 @@ func (o *GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingIncl
 func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingExcludeDomainsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"list": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingExcludeDomainsListSchema(),
 			},
 		},
@@ -3935,18 +3790,13 @@ func GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingExcludeD
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ports": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 		},
@@ -3977,68 +3827,51 @@ func GlobalprotectGatewayDataSourceRolesSchema() dsschema.NestedAttributeObject 
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"login_lifetime": GlobalprotectGatewayDataSourceRolesLoginLifetimeSchema(),
 
 			"inactivity_logout": dsschema.Int64Attribute{
 				Description: "Logout the GlobalProtect user session if the GlobalProtect app has not sent traffic in the specified amount of minutes.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime_notify_prior": dsschema.Int64Attribute{
 				Description: "Notify users before the lifetime expiration in the specified amount of minutes.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime_notify_message": dsschema.StringAttribute{
 				Description: "Lifetime expiration notification displayed on GP app",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inactivity_notify_prior": dsschema.Int64Attribute{
 				Description: "Notify users before the inactivity timeout in the specified amount of minutes.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inactivity_notify_message": dsschema.StringAttribute{
 				Description: "Inactivity logout notification displayed on GP app",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"admin_logout_notify": dsschema.BoolAttribute{
 				Description: "Notify users on admin logout",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"admin_logout_notify_message": dsschema.StringAttribute{
 				Description: "Admin logout notification displayed on GP app",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4065,34 +3898,26 @@ func (o *GlobalprotectGatewayDataSourceRolesObject) getTypeFor(name string) attr
 func GlobalprotectGatewayDataSourceRolesLoginLifetimeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"minutes": dsschema.Int64Attribute{
 				Description: "specify lifetime in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hours": dsschema.Int64Attribute{
 				Description: "specify lifetime in hours",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"days": dsschema.Int64Attribute{
 				Description: "specify lifetime in days",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4119,18 +3944,14 @@ func (o *GlobalprotectGatewayDataSourceRolesLoginLifetimeObject) getTypeFor(name
 func GlobalprotectGatewayDataSourceSecurityRestrictionsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"disallow_automatic_restoration": dsschema.BoolAttribute{
 				Description: "Disallow Automatic Restoration of SSL VPN",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_ip_enforcement": GlobalprotectGatewayDataSourceSecurityRestrictionsSourceIpEnforcementSchema(),
@@ -4159,18 +3980,14 @@ func (o *GlobalprotectGatewayDataSourceSecurityRestrictionsObject) getTypeFor(na
 func GlobalprotectGatewayDataSourceSecurityRestrictionsSourceIpEnforcementSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Allow Authentication Cookie Usage Only",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"custom": GlobalprotectGatewayDataSourceSecurityRestrictionsSourceIpEnforcementCustomSchema(),
@@ -4201,10 +4018,8 @@ func (o *GlobalprotectGatewayDataSourceSecurityRestrictionsSourceIpEnforcementOb
 func GlobalprotectGatewayDataSourceSecurityRestrictionsSourceIpEnforcementCustomSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4216,18 +4031,14 @@ func GlobalprotectGatewayDataSourceSecurityRestrictionsSourceIpEnforcementCustom
 
 			"source_ipv4_netmask": dsschema.Int64Attribute{
 				Description: "Source IPv4 Netmask",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_ipv6_netmask": dsschema.Int64Attribute{
 				Description: "Source IPv6 Netmask",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4254,10 +4065,8 @@ func (o *GlobalprotectGatewayDataSourceSecurityRestrictionsSourceIpEnforcementCu
 func GlobalprotectGatewayDataSourceSecurityRestrictionsSourceIpEnforcementDefaultSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4608,7 +4417,305 @@ type GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementCustomOb
 type GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementDefaultObject struct {
 }
 
+func (o *GlobalprotectGatewayResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ClientAuth.IsUnknown() && !o.ClientAuth.IsNull() {
+		var elements []GlobalprotectGatewayResourceClientAuthObject
+		diags := o.ClientAuth.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("client_auth").AtListIndex(i))
+			}
+		}
+	}
+	if !o.HipNotification.IsUnknown() && !o.HipNotification.IsNull() {
+		var elements []GlobalprotectGatewayResourceHipNotificationObject
+		diags := o.HipNotification.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("hip_notification").AtListIndex(i))
+			}
+		}
+	}
+	if !o.LocalAddress.IsUnknown() && !o.LocalAddress.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceLocalAddressObject
+		diags := o.LocalAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_address"))
+		}
+	}
+	if !o.RemoteUserTunnelConfigs.IsUnknown() && !o.RemoteUserTunnelConfigs.IsNull() {
+		var elements []GlobalprotectGatewayResourceRemoteUserTunnelConfigsObject
+		diags := o.RemoteUserTunnelConfigs.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("remote_user_tunnel_configs").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Roles.IsUnknown() && !o.Roles.IsNull() {
+		var elements []GlobalprotectGatewayResourceRolesObject
+		diags := o.Roles.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("roles").AtListIndex(i))
+			}
+		}
+	}
+	if !o.SecurityRestrictions.IsUnknown() && !o.SecurityRestrictions.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceSecurityRestrictionsObject
+		diags := o.SecurityRestrictions.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("security_restrictions"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceClientAuthObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceHipNotificationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.MatchMessage.IsUnknown() && !o.MatchMessage.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceHipNotificationMatchMessageObject
+		diags := o.MatchMessage.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match_message"))
+		}
+	}
+	if !o.NotMatchMessage.IsUnknown() && !o.NotMatchMessage.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceHipNotificationNotMatchMessageObject
+		diags := o.NotMatchMessage.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("not_match_message"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceHipNotificationMatchMessageObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceHipNotificationNotMatchMessageObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceLocalAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.FloatingIp.IsUnknown() && !o.FloatingIp.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceLocalAddressFloatingIpObject
+		diags := o.FloatingIp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("floating_ip"))
+		}
+	}
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceLocalAddressIpObject
+		diags := o.Ip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceLocalAddressFloatingIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceLocalAddressIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AuthenticationOverride.IsUnknown() && !o.AuthenticationOverride.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideObject
+		diags := o.AuthenticationOverride.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("authentication_override"))
+		}
+	}
+	if !o.SourceAddress.IsUnknown() && !o.SourceAddress.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceRemoteUserTunnelConfigsSourceAddressObject
+		diags := o.SourceAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source_address"))
+		}
+	}
+	if !o.SplitTunneling.IsUnknown() && !o.SplitTunneling.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingObject
+		diags := o.SplitTunneling.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("split_tunneling"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AcceptCookie.IsUnknown() && !o.AcceptCookie.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieObject
+		diags := o.AcceptCookie.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("accept_cookie"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.CookieLifetime.IsUnknown() && !o.CookieLifetime.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieCookieLifetimeObject
+		diags := o.CookieLifetime.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("cookie_lifetime"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieCookieLifetimeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSourceAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.IncludeDomains.IsUnknown() && !o.IncludeDomains.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingIncludeDomainsObject
+		diags := o.IncludeDomains.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("include_domains"))
+		}
+	}
+	if !o.ExcludeDomains.IsUnknown() && !o.ExcludeDomains.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingExcludeDomainsObject
+		diags := o.ExcludeDomains.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("exclude_domains"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingIncludeDomainsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.List.IsUnknown() && !o.List.IsNull() {
+		var elements []GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingIncludeDomainsListObject
+		diags := o.List.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("list").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingIncludeDomainsListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingExcludeDomainsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.List.IsUnknown() && !o.List.IsNull() {
+		var elements []GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingExcludeDomainsListObject
+		diags := o.List.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("list").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingExcludeDomainsListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceRolesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.LoginLifetime.IsUnknown() && !o.LoginLifetime.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceRolesLoginLifetimeObject
+		diags := o.LoginLifetime.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("login_lifetime"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceRolesLoginLifetimeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceSecurityRestrictionsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SourceIpEnforcement.IsUnknown() && !o.SourceIpEnforcement.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementObject
+		diags := o.SourceIpEnforcement.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source_ip_enforcement"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Custom.IsUnknown() && !o.Custom.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementCustomObject
+		diags := o.Custom.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("custom"))
+		}
+	}
+	if !o.Default.IsUnknown() && !o.Default.IsNull() {
+		var nestedObj GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementDefaultObject
+		diags := o.Default.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("default"))
+		}
+	}
+}
+
+func (o *GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementCustomObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementDefaultObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *GlobalprotectGatewayResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource GlobalprotectGatewayResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -4621,43 +4728,28 @@ func GlobalprotectGatewayResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"block_quarantined_devices": rsschema.BoolAttribute{
 				Description: "Block login for quarantined devices",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"client_auth": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayResourceClientAuthSchema(),
 			},
 
 			"hip_notification": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayResourceHipNotificationSchema(),
 			},
 
@@ -4665,78 +4757,51 @@ func GlobalprotectGatewayResourceSchema() rsschema.Schema {
 
 			"log_fail": rsschema.BoolAttribute{
 				Description: "Log unsuccessful TLS handshakes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_setting": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_success": rsschema.BoolAttribute{
 				Description: "Log successful TLS handshakes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"remote_user_tunnel": rsschema.StringAttribute{
 				Description: "GlobalProtect user tunnel",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"remote_user_tunnel_configs": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayResourceRemoteUserTunnelConfigsSchema(),
 			},
 
 			"roles": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayResourceRolesSchema(),
 			},
 
 			"satellite_tunnel": rsschema.StringAttribute{
 				Description: "GlobalProtect satellite tunnel",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"security_restrictions": GlobalprotectGatewayResourceSecurityRestrictionsSchema(),
 
 			"ssl_tls_service_profile": rsschema.StringAttribute{
 				Description: "SSL TLS service profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tunnel_mode": rsschema.BoolAttribute{
 				Description: "Tunnel mode",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4766,70 +4831,51 @@ func GlobalprotectGatewayResourceClientAuthSchema() rsschema.NestedAttributeObje
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"os": rsschema.StringAttribute{
 				Description: "Client OS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Any"),
 			},
 
 			"authentication_profile": rsschema.StringAttribute{
 				Description: "authentication profile used for this GlobalProtect",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auto_retrieve_passcode": rsschema.BoolAttribute{
 				Description: "Automatically retrieve passcode from SoftToken application",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"username_label": rsschema.StringAttribute{
 				Description: "Username Label",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Username"),
 			},
 
 			"password_label": rsschema.StringAttribute{
 				Description: "Password Label",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Password"),
 			},
 
 			"authentication_message": rsschema.StringAttribute{
 				Description: "Authentication Message",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Enter login credentials"),
 			},
 
 			"user_credential_or_client_cert_required": rsschema.StringAttribute{
 				Description: "Allow Authentication with User Credentials OR Client Certificate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("no"),
 			},
 		},
@@ -4860,10 +4906,7 @@ func GlobalprotectGatewayResourceHipNotificationSchema() rsschema.NestedAttribut
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"match_message": GlobalprotectGatewayResourceHipNotificationMatchMessageSchema(),
@@ -4894,35 +4937,24 @@ func (o *GlobalprotectGatewayResourceHipNotificationObject) getTypeFor(name stri
 func GlobalprotectGatewayResourceHipNotificationMatchMessageSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"include_app_list": rsschema.BoolAttribute{
 				Description: "Whether include matched application list in message",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"show_notification_as": rsschema.StringAttribute{
 				Description: "Show notification as",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("system-tray-balloon"),
 			},
 
 			"message": rsschema.StringAttribute{
 				Description: "Matched message",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4949,27 +4981,19 @@ func (o *GlobalprotectGatewayResourceHipNotificationMatchMessageObject) getTypeF
 func GlobalprotectGatewayResourceHipNotificationNotMatchMessageSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"show_notification_as": rsschema.StringAttribute{
 				Description: "Show notification as",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("system-tray-balloon"),
 			},
 
 			"message": rsschema.StringAttribute{
 				Description: "Not matched message",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4996,26 +5020,18 @@ func (o *GlobalprotectGatewayResourceHipNotificationNotMatchMessageObject) getTy
 func GlobalprotectGatewayResourceLocalAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "local gateway end-point",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip_address_family": rsschema.StringAttribute{
 				Description: "specify the family of the local address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("ipv4"),
 			},
 
@@ -5047,10 +5063,7 @@ func (o *GlobalprotectGatewayResourceLocalAddressObject) getTypeFor(name string)
 func GlobalprotectGatewayResourceLocalAddressFloatingIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5062,18 +5075,12 @@ func GlobalprotectGatewayResourceLocalAddressFloatingIpSchema() rsschema.SingleN
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "Floating IPv4 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "Floating IPv6 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5100,10 +5107,7 @@ func (o *GlobalprotectGatewayResourceLocalAddressFloatingIpObject) getTypeFor(na
 func GlobalprotectGatewayResourceLocalAddressIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5115,18 +5119,12 @@ func GlobalprotectGatewayResourceLocalAddressIpSchema() rsschema.SingleNestedAtt
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "IPv4 addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "IPv6 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5156,63 +5154,42 @@ func GlobalprotectGatewayResourceRemoteUserTunnelConfigsSchema() rsschema.Nested
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"source_user": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"os": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"dns_server": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"dns_suffix": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ip_pool": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"authentication_server_ip_pool": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -5224,18 +5201,12 @@ func GlobalprotectGatewayResourceRemoteUserTunnelConfigsSchema() rsschema.Nested
 
 			"no_direct_access_to_local_network": rsschema.BoolAttribute{
 				Description: "No direct access to local network",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"retrieve_framed_ip_address": rsschema.BoolAttribute{
 				Description: "retrieve framed ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5262,26 +5233,17 @@ func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsObject) getTypeFor(n
 func GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"generate_cookie": rsschema.BoolAttribute{
 				Description: "Generate cookie for authentication override",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"cookie_encrypt_decrypt_cert": rsschema.StringAttribute{
 				Description: "Certificate to Encrypt/Decrypt Cookie",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"accept_cookie": GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieSchema(),
@@ -5310,10 +5272,7 @@ func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverri
 func GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"cookie_lifetime": GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieCookieLifetimeSchema(),
@@ -5342,18 +5301,12 @@ func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverri
 func GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideAcceptCookieCookieLifetimeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"lifetime_in_days": rsschema.Int64Attribute{
 				Description: "Cookie lifetime in days",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -5366,18 +5319,12 @@ func GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverrideAc
 
 			"lifetime_in_hours": rsschema.Int64Attribute{
 				Description: "Cookie lifetime in hours",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"lifetime_in_minutes": rsschema.Int64Attribute{
 				Description: "Cookie lifetime in minutes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5404,27 +5351,18 @@ func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsAuthenticationOverri
 func GlobalprotectGatewayResourceRemoteUserTunnelConfigsSourceAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"region": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ip_address": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -5452,45 +5390,30 @@ func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSourceAddressObject)
 func GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_route": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"exclude_access_route": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"include_applications": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"exclude_applications": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -5522,18 +5445,12 @@ func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingObject
 func GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingIncludeDomainsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"list": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingIncludeDomainsListSchema(),
 			},
 		},
@@ -5564,18 +5481,12 @@ func GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingIncludeDom
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ports": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 		},
@@ -5603,18 +5514,12 @@ func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingInclud
 func GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingExcludeDomainsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"list": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingExcludeDomainsListSchema(),
 			},
 		},
@@ -5645,18 +5550,12 @@ func GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingExcludeDom
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ports": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 		},
@@ -5687,73 +5586,55 @@ func GlobalprotectGatewayResourceRolesSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"login_lifetime": GlobalprotectGatewayResourceRolesLoginLifetimeSchema(),
 
 			"inactivity_logout": rsschema.Int64Attribute{
 				Description: "Logout the GlobalProtect user session if the GlobalProtect app has not sent traffic in the specified amount of minutes.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(180),
 			},
 
 			"lifetime_notify_prior": rsschema.Int64Attribute{
 				Description: "Notify users before the lifetime expiration in the specified amount of minutes.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(30),
 			},
 
 			"lifetime_notify_message": rsschema.StringAttribute{
 				Description: "Lifetime expiration notification displayed on GP app",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Your GlobalProtect session will expire in 30 minutes. Please save your work before your session expires."),
 			},
 
 			"inactivity_notify_prior": rsschema.Int64Attribute{
 				Description: "Notify users before the inactivity timeout in the specified amount of minutes.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(30),
 			},
 
 			"inactivity_notify_message": rsschema.StringAttribute{
 				Description: "Inactivity logout notification displayed on GP app",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Your GlobalProtect session will time out in 30 minutes. Please save your work before your session times out."),
 			},
 
 			"admin_logout_notify": rsschema.BoolAttribute{
 				Description: "Notify users on admin logout",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"admin_logout_notify_message": rsschema.StringAttribute{
 				Description: "Admin logout notification displayed on GP app",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Your administrator has logged you out."),
 			},
 		},
@@ -5781,18 +5662,12 @@ func (o *GlobalprotectGatewayResourceRolesObject) getTypeFor(name string) attr.T
 func GlobalprotectGatewayResourceRolesLoginLifetimeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"minutes": rsschema.Int64Attribute{
 				Description: "specify lifetime in minutes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -5805,18 +5680,12 @@ func GlobalprotectGatewayResourceRolesLoginLifetimeSchema() rsschema.SingleNeste
 
 			"hours": rsschema.Int64Attribute{
 				Description: "specify lifetime in hours",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"days": rsschema.Int64Attribute{
 				Description: "specify lifetime in days",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5843,18 +5712,12 @@ func (o *GlobalprotectGatewayResourceRolesLoginLifetimeObject) getTypeFor(name s
 func GlobalprotectGatewayResourceSecurityRestrictionsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"disallow_automatic_restoration": rsschema.BoolAttribute{
 				Description: "Disallow Automatic Restoration of SSL VPN",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source_ip_enforcement": GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementSchema(),
@@ -5883,18 +5746,12 @@ func (o *GlobalprotectGatewayResourceSecurityRestrictionsObject) getTypeFor(name
 func GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Allow Authentication Cookie Usage Only",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"custom": GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementCustomSchema(),
@@ -5925,10 +5782,7 @@ func (o *GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementObje
 func GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementCustomSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5940,18 +5794,12 @@ func GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementCustomSc
 
 			"source_ipv4_netmask": rsschema.Int64Attribute{
 				Description: "Source IPv4 Netmask",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source_ipv6_netmask": rsschema.Int64Attribute{
 				Description: "Source IPv6 Netmask",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5978,10 +5826,7 @@ func (o *GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementCust
 func GlobalprotectGatewayResourceSecurityRestrictionsSourceIpEnforcementDefaultSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9319,14 +9164,15 @@ type GlobalprotectGatewayImportState struct {
 
 func (o GlobalprotectGatewayImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *GlobalprotectGatewayLocation `json:"location"`
-		Name     *string                       `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *GlobalprotectGatewayLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, GlobalprotectGatewayLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -9340,8 +9186,8 @@ func (o GlobalprotectGatewayImportState) MarshalJSON() ([]byte, error) {
 
 func (o *GlobalprotectGatewayImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *GlobalprotectGatewayLocation `json:"location"`
-		Name     *string                       `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -9350,10 +9196,14 @@ func (o *GlobalprotectGatewayImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, GlobalprotectGatewayLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

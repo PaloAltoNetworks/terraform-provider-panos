@@ -7117,8 +7117,8 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoeObject) CopyFromPango(ctx cont
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -7313,28 +7313,21 @@ func EthernetLayer3SubinterfaceDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"parent": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"adjust_tcp_mss": EthernetLayer3SubinterfaceDataSourceAdjustTcpMssSchema(),
 
 			"arp": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceArpSchema(),
 			},
 
@@ -7342,46 +7335,36 @@ func EthernetLayer3SubinterfaceDataSourceSchema() dsschema.Schema {
 
 			"comment": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_config": EthernetLayer3SubinterfaceDataSourceDdnsConfigSchema(),
 
 			"decrypt_forward": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"df_ignore": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dhcp_client": EthernetLayer3SubinterfaceDataSourceDhcpClientSchema(),
 
 			"interface_management_profile": dsschema.StringAttribute{
 				Description: "Interface management profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpSchema(),
 			},
 
@@ -7389,20 +7372,16 @@ func EthernetLayer3SubinterfaceDataSourceSchema() dsschema.Schema {
 
 			"mtu": dsschema.Int64Attribute{
 				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ndp_proxy": EthernetLayer3SubinterfaceDataSourceNdpProxySchema(),
 
 			"netflow_profile": dsschema.StringAttribute{
 				Description: "Netflow Server Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"pppoe": EthernetLayer3SubinterfaceDataSourcePppoeSchema(),
@@ -7411,10 +7390,8 @@ func EthernetLayer3SubinterfaceDataSourceSchema() dsschema.Schema {
 
 			"tag": dsschema.Int64Attribute{
 				Description: "802.1q VLAN tag",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7441,34 +7418,26 @@ func (o *EthernetLayer3SubinterfaceDataSourceModel) getTypeFor(name string) attr
 func EthernetLayer3SubinterfaceDataSourceAdjustTcpMssSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Set if TCP MSS value should be reduced based on mtu",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4_mss_adjustment": dsschema.Int64Attribute{
 				Description: "IPv4 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6_mss_adjustment": dsschema.Int64Attribute{
 				Description: "IPv6 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7498,18 +7467,13 @@ func EthernetLayer3SubinterfaceDataSourceArpSchema() dsschema.NestedAttributeObj
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": dsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7536,34 +7500,26 @@ func (o *EthernetLayer3SubinterfaceDataSourceArpObject) getTypeFor(name string) 
 func EthernetLayer3SubinterfaceDataSourceBonjourSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Set to support Bonjour service",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_id": dsschema.Int64Attribute{
 				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ttl_check": dsschema.BoolAttribute{
 				Description: "Set to check and update TTL",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7590,76 +7546,58 @@ func (o *EthernetLayer3SubinterfaceDataSourceBonjourObject) getTypeFor(name stri
 func EthernetLayer3SubinterfaceDataSourceDdnsConfigSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ddns_cert_profile": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_enabled": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_hostname": dsschema.StringAttribute{
 				Description: "ddns hostname variable or real address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_ip": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ddns_ipv6": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ddns_update_interval": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_vendor": dsschema.StringAttribute{
 				Description: "Vendor and product type",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns_vendor_config": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigSchema(),
 			},
 		},
@@ -7690,18 +7628,13 @@ func EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigSchema() dssc
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7728,34 +7661,26 @@ func (o *EthernetLayer3SubinterfaceDataSourceDdnsConfigDdnsVendorConfigObject) g
 func EthernetLayer3SubinterfaceDataSourceDhcpClientSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"create_default_route": dsschema.BoolAttribute{
 				Description: "Automatically create default route pointing to default gateway provided by server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_route_metric": dsschema.Int64Attribute{
 				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"send_hostname": EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameSchema(),
@@ -7784,26 +7709,20 @@ func (o *EthernetLayer3SubinterfaceDataSourceDhcpClientObject) getTypeFor(name s
 func EthernetLayer3SubinterfaceDataSourceDhcpClientSendHostnameSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hostname": dsschema.StringAttribute{
 				Description: "Set Interface Hostname",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7833,18 +7752,13 @@ func EthernetLayer3SubinterfaceDataSourceIpSchema() dsschema.NestedAttributeObje
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"sdwan_gateway": dsschema.StringAttribute{
 				Description: "Gateway IPv4 Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7871,18 +7785,14 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpObject) getTypeFor(name string) a
 func EthernetLayer3SubinterfaceDataSourceIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6AddressSchema(),
 			},
 
@@ -7890,20 +7800,16 @@ func EthernetLayer3SubinterfaceDataSourceIpv6Schema() dsschema.SingleNestedAttri
 
 			"enabled": dsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inherited": EthernetLayer3SubinterfaceDataSourceIpv6InheritedSchema(),
 
 			"interface_id": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor_discovery": EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoverySchema(),
@@ -7935,18 +7841,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6AddressSchema() dsschema.NestedAttr
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable_on_interface": dsschema.BoolAttribute{
 				Description: "configure this address on interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix": EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixSchema(),
@@ -7979,10 +7880,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressObject) getTypeFor(name 
 func EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes:  map[string]dsschema.Attribute{},
 	}
 }
@@ -8008,10 +7907,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressPrefixObject) getTypeFor
 func EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes:  map[string]dsschema.Attribute{},
 	}
 }
@@ -8037,50 +7934,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAnycastObject) getTypeFo
 func EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"valid_lifetime": dsschema.StringAttribute{
 				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"preferred_lifetime": dsschema.StringAttribute{
 				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"onlink_flag": dsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auto_config_flag": dsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8107,44 +7992,34 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6AddressAdvertiseObject) getType
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"accept_ra_route": dsschema.BoolAttribute{
 				Description: "Accept Router Advertised Default Route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_route_metric": dsschema.Int64Attribute{
 				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable DHCPv6 Client",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor_discovery": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoverySchema(),
 
 			"preference": dsschema.StringAttribute{
 				Description: "Select Low/Medium/High",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_delegation": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationSchema(),
@@ -8175,18 +8050,14 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientObject) getTypeFor(na
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoverySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dad_attempts": dsschema.Int64Attribute{
 				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dns_server": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema(),
@@ -8195,43 +8066,33 @@ func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoverySchema()
 
 			"enable_dad": dsschema.BoolAttribute{
 				Description: "Enable Duplicate Address Detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_ndp_monitor": dsschema.BoolAttribute{
 				Description: "Enable NDP Monitoring",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": dsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.Int64Attribute{
 				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8258,18 +8119,14 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObje
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema(),
@@ -8298,10 +8155,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dhcpv6": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
@@ -8332,10 +8187,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8368,10 +8221,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8383,10 +8234,8 @@ func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServe
 
 			"server": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema(),
 			},
 		},
@@ -8417,18 +8266,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServe
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8455,18 +8299,14 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema(),
@@ -8495,10 +8335,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dhcpv6": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
@@ -8529,10 +8367,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8565,10 +8401,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsS
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8580,10 +8414,8 @@ func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffi
 
 			"suffix": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
 			},
 		},
@@ -8614,18 +8446,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffi
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8655,18 +8482,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeighbor
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": dsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8693,10 +8515,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryNeig
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableSchema(),
@@ -8725,10 +8545,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationObjec
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"no": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoSchema(),
@@ -8759,10 +8577,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnabl
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableNoSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8795,10 +8611,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnabl
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYesSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8810,26 +8624,20 @@ func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnableYes
 
 			"pfx_pool_name": dsschema.StringAttribute{
 				Description: "Configure unique Prefix Pool Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_len": dsschema.Int64Attribute{
 				Description: "Hint DHCP Prefix Length (bits)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_len_hint": dsschema.BoolAttribute{
 				Description: "Send prefix length hint to server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8856,36 +8664,28 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientPrefixDelegationEnabl
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"duid_type": dsschema.StringAttribute{
 				Description: "Select DUID-LLT/DUID-LL",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableSchema(),
 
 			"rapid_commit": dsschema.BoolAttribute{
 				Description: "Enable Rapid Commit",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"support_srvr_reconfig": dsschema.BoolAttribute{
 				Description: "Enable DHCPv6 Server Re-Configuration Support",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -8912,10 +8712,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsObject) getT
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"no": EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoSchema(),
@@ -8946,10 +8744,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableObject
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8982,10 +8778,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableNoObje
 func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8997,18 +8791,14 @@ func EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesSchema(
 
 			"non_temp_addr": dsschema.BoolAttribute{
 				Description: "Request Non-Temporary Address Type",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"temp_addr": dsschema.BoolAttribute{
 				Description: "Request Temporary Address Type",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9035,27 +8825,21 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6DhcpClientV6OptionsEnableYesObj
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"assign_addr": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrSchema(),
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable Inherited Interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor_discovery": EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoverySchema(),
@@ -9087,10 +8871,7 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrSchema() dsschem
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeSchema(),
@@ -9119,10 +8900,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrObject) getT
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"gua": EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaSchema(),
@@ -9153,10 +8932,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeObject) 
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9168,18 +8945,14 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaSchema() 
 
 			"enable_on_interface": dsschema.BoolAttribute{
 				Description: "Enable on Interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_pool": dsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"pool_type": EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeSchema(),
@@ -9210,10 +8983,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaObjec
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dynamic": EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema(),
@@ -9244,10 +9015,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolT
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9280,10 +9049,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolT
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9295,10 +9062,8 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolTypeD
 
 			"identifier": dsschema.Int64Attribute{
 				Description: "Range [0-4095] must be unqiue for this prefix-pool",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9325,34 +9090,26 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaPoolT
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdvertiseSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"onlink_flag": dsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auto_config_flag": dsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9379,10 +9136,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeGuaAdver
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9394,34 +9149,26 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaSchema() 
 
 			"enable_on_interface": dsschema.BoolAttribute{
 				Description: "Configure this address on Interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": dsschema.StringAttribute{
 				Description: "Configure ULA (Unique Local Address)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix": dsschema.BoolAttribute{
 				Description: "Use this as prefix to form full address with interface id/EUI-64",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"anycast": dsschema.BoolAttribute{
 				Description: "Anycast Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"advertise": EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
@@ -9450,50 +9197,38 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaObjec
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "enable advertising this prefix in router advertisements",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"valid_lifetime": dsschema.StringAttribute{
 				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"preferred_lifetime": dsschema.StringAttribute{
 				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"onlink_flag": dsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auto_config_flag": dsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9520,18 +9255,14 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedAssignAddrTypeUlaAdver
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoverySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dad_attempts": dsschema.Int64Attribute{
 				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dns_server": EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema(),
@@ -9540,43 +9271,33 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoverySchema() 
 
 			"enable_dad": dsschema.BoolAttribute{
 				Description: "Enable Duplicate Address Detection (DAD)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_ndp_monitor": dsschema.BoolAttribute{
 				Description: "Enable NDP Monitoring",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": dsschema.Int64Attribute{
 				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.Int64Attribute{
 				Description: "Time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_advertisement": EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema(),
@@ -9605,18 +9326,14 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObjec
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
@@ -9645,10 +9362,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dhcpv6": EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
@@ -9679,10 +9394,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9694,10 +9407,8 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServer
 
 			"prefix_pool": dsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9724,10 +9435,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9739,10 +9448,8 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServer
 
 			"server": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
 			},
 		},
@@ -9773,18 +9480,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServer
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9811,18 +9513,14 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSe
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
@@ -9851,10 +9549,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dhcpv6": EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
@@ -9885,10 +9581,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9900,10 +9594,8 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffix
 
 			"prefix_pool": dsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -9930,10 +9622,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSu
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9945,10 +9635,8 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffix
 
 			"suffix": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
 			},
 		},
@@ -9979,18 +9667,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffix
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10020,18 +9703,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeighborS
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": dsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10058,106 +9736,80 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryNeigh
 func EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_consistency_check": dsschema.BoolAttribute{
 				Description: "check consistency of RA messages from other routers.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hop_limit": dsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"link_mtu": dsschema.StringAttribute{
 				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"managed_flag": dsschema.BoolAttribute{
 				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_interval": dsschema.Int64Attribute{
 				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"min_interval": dsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"other_flag": dsschema.BoolAttribute{
 				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.StringAttribute{
 				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"retransmission_timer": dsschema.StringAttribute{
 				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_preference": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10184,59 +9836,45 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryRoute
 func EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoverySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dad_attempts": dsschema.Int64Attribute{
 				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_dad": dsschema.BoolAttribute{
 				Description: "enable duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_ndp_monitor": dsschema.BoolAttribute{
 				Description: "enable ndp monitoring",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": dsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.Int64Attribute{
 				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_advertisement": EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema(),
@@ -10268,18 +9906,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborSchema() d
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": dsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10306,108 +9939,82 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryNeighborObject
 func EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dns_support": EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_consistency_check": dsschema.BoolAttribute{
 				Description: "check consistency of RA messages from other routers.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hop_limit": dsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"link_mtu": dsschema.StringAttribute{
 				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"managed_flag": dsschema.BoolAttribute{
 				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_interval": dsschema.Int64Attribute{
 				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"min_interval": dsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"other_flag": dsschema.BoolAttribute{
 				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reachable_time": dsschema.StringAttribute{
 				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"retransmission_timer": dsschema.StringAttribute{
 				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_preference": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10434,35 +10041,27 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 func EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"server": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
 			},
 
 			"suffix": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
 			},
 		},
@@ -10493,18 +10092,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisemen
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10534,18 +10128,13 @@ func EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisemen
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": dsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10572,27 +10161,21 @@ func (o *EthernetLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertis
 func EthernetLayer3SubinterfaceDataSourceNdpProxySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceDataSourceNdpProxyAddressSchema(),
 			},
 
 			"enabled": dsschema.BoolAttribute{
 				Description: "Enable proxy NDP on the interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10622,18 +10205,13 @@ func EthernetLayer3SubinterfaceDataSourceNdpProxyAddressSchema() dsschema.Nested
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"negate": dsschema.BoolAttribute{
 				Description: "put the prefix or address on a block list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10660,78 +10238,61 @@ func (o *EthernetLayer3SubinterfaceDataSourceNdpProxyAddressObject) getTypeFor(n
 func EthernetLayer3SubinterfaceDataSourcePppoeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_concentrator": dsschema.StringAttribute{
 				Description: "desired access concentrator. The valid characters are [a-zA-Z0-9._~!@#$%^*(){},:?/+=\\-]",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "authentication protocol",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"create_default_route": dsschema.BoolAttribute{
 				Description: "automatically create default route pointing to peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_route_metric": dsschema.Int64Attribute{
 				Description: "metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"passive": EthernetLayer3SubinterfaceDataSourcePppoePassiveSchema(),
 
 			"password": dsschema.StringAttribute{
 				Description: "password for ppp autentication",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"service": dsschema.StringAttribute{
 				Description: "desired service. The valid characters are [a-zA-Z0-9._~!@#$%^*(){},:?/+=\\-]",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"static_address": EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressSchema(),
 
 			"username": dsschema.StringAttribute{
 				Description: "username for ppp authentication. The valid characters are [a-zA-Z0-9._~!@#$%^*(){},:?/+=\\-]",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10758,18 +10319,14 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoeObject) getTypeFor(name string
 func EthernetLayer3SubinterfaceDataSourcePppoePassiveSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10796,18 +10353,14 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoePassiveObject) getTypeFor(name
 func EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip": dsschema.StringAttribute{
 				Description: "static ip address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -10834,26 +10387,20 @@ func (o *EthernetLayer3SubinterfaceDataSourcePppoeStaticAddressObject) getTypeFo
 func EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable sdwan on this ethernet interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"sdwan_interface_profile": dsschema.StringAttribute{
 				Description: "Sdwan link characteristics",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"upstream_nat": EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatSchema(),
@@ -10882,18 +10429,14 @@ func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsObject) getTypeFor
 func EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable upstream NAT IP config",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ddns": EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsSchema(),
@@ -10924,10 +10467,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatObject)
 func EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10960,10 +10501,8 @@ func (o *EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatDdnsObj
 func EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10975,18 +10514,14 @@ func EthernetLayer3SubinterfaceDataSourceSdwanLinkSettingsUpstreamNatStaticIpSch
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "Upstream NAT address FQDN name configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip_address": dsschema.StringAttribute{
 				Description: "Upstream NAT IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -11551,7 +11086,921 @@ type EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObjec
 	IpAddress types.String `tfsdk:"ip_address"`
 }
 
+func (o *EthernetLayer3SubinterfaceResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AdjustTcpMss.IsUnknown() && !o.AdjustTcpMss.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceAdjustTcpMssObject
+		diags := o.AdjustTcpMss.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("adjust_tcp_mss"))
+		}
+	}
+	if !o.Arp.IsUnknown() && !o.Arp.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceArpObject
+		diags := o.Arp.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("arp").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Bonjour.IsUnknown() && !o.Bonjour.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceBonjourObject
+		diags := o.Bonjour.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bonjour"))
+		}
+	}
+	if !o.DdnsConfig.IsUnknown() && !o.DdnsConfig.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceDdnsConfigObject
+		diags := o.DdnsConfig.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ddns_config"))
+		}
+	}
+	if !o.DhcpClient.IsUnknown() && !o.DhcpClient.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceDhcpClientObject
+		diags := o.DhcpClient.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcp_client"))
+		}
+	}
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpObject
+		diags := o.Ip.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ip").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+	if !o.NdpProxy.IsUnknown() && !o.NdpProxy.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceNdpProxyObject
+		diags := o.NdpProxy.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ndp_proxy"))
+		}
+	}
+	if !o.Pppoe.IsUnknown() && !o.Pppoe.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourcePppoeObject
+		diags := o.Pppoe.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("pppoe"))
+		}
+	}
+	if !o.SdwanLinkSettings.IsUnknown() && !o.SdwanLinkSettings.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject
+		diags := o.SdwanLinkSettings.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sdwan_link_settings"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceAdjustTcpMssObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceArpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceBonjourObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceDdnsConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DdnsVendorConfig.IsUnknown() && !o.DdnsVendorConfig.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject
+		diags := o.DdnsVendorConfig.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ddns_vendor_config").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceDhcpClientObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SendHostname.IsUnknown() && !o.SendHostname.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject
+		diags := o.SendHostname.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("send_hostname"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6AddressObject
+		diags := o.Address.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("address").AtListIndex(i))
+			}
+		}
+	}
+	if !o.DhcpClient.IsUnknown() && !o.DhcpClient.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject
+		diags := o.DhcpClient.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcp_client"))
+		}
+	}
+	if !o.Inherited.IsUnknown() && !o.Inherited.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedObject
+		diags := o.Inherited.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("inherited"))
+		}
+	}
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject
+		diags := o.NeighborDiscovery.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("neighbor_discovery"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Prefix.IsUnknown() && !o.Prefix.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject
+		diags := o.Prefix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("prefix"))
+		}
+	}
+	if !o.Anycast.IsUnknown() && !o.Anycast.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject
+		diags := o.Anycast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("anycast"))
+		}
+	}
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject
+		diags := o.Advertise.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("advertise"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
+		diags := o.NeighborDiscovery.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("neighbor_discovery"))
+		}
+	}
+	if !o.PrefixDelegation.IsUnknown() && !o.PrefixDelegation.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject
+		diags := o.PrefixDelegation.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("prefix_delegation"))
+		}
+	}
+	if !o.V6Options.IsUnknown() && !o.V6Options.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject
+		diags := o.V6Options.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("v6_options"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DnsServer.IsUnknown() && !o.DnsServer.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject
+		diags := o.DnsServer.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_server"))
+		}
+	}
+	if !o.DnsSuffix.IsUnknown() && !o.DnsSuffix.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject
+		diags := o.DnsSuffix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_suffix"))
+		}
+	}
+	if !o.Neighbor.IsUnknown() && !o.Neighbor.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject
+		diags := o.Neighbor.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("neighbor").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject
+		diags := o.Source.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object
+		diags := o.Dhcpv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcpv6"))
+		}
+	}
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject
+		diags := o.Manual.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("manual"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject
+		diags := o.Server.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("server").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject
+		diags := o.Source.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+		diags := o.Dhcpv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcpv6"))
+		}
+	}
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject
+		diags := o.Manual.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("manual"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Suffix.IsUnknown() && !o.Suffix.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		diags := o.Suffix.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("suffix").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Enable.IsUnknown() && !o.Enable.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject
+		diags := o.Enable.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("enable"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.No.IsUnknown() && !o.No.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject
+		diags := o.No.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("no"))
+		}
+	}
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject
+		diags := o.Yes.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("yes"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Enable.IsUnknown() && !o.Enable.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject
+		diags := o.Enable.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("enable"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.No.IsUnknown() && !o.No.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject
+		diags := o.No.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("no"))
+		}
+	}
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject
+		diags := o.Yes.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("yes"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AssignAddr.IsUnknown() && !o.AssignAddr.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject
+		diags := o.AssignAddr.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("assign_addr").AtListIndex(i))
+			}
+		}
+	}
+	if !o.NeighborDiscovery.IsUnknown() && !o.NeighborDiscovery.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject
+		diags := o.NeighborDiscovery.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("neighbor_discovery"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Gua.IsUnknown() && !o.Gua.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject
+		diags := o.Gua.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("gua"))
+		}
+	}
+	if !o.Ula.IsUnknown() && !o.Ula.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject
+		diags := o.Ula.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ula"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.PoolType.IsUnknown() && !o.PoolType.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject
+		diags := o.PoolType.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("pool_type"))
+		}
+	}
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject
+		diags := o.Advertise.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("advertise"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dynamic.IsUnknown() && !o.Dynamic.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject
+		diags := o.Dynamic.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dynamic"))
+		}
+	}
+	if !o.DynamicId.IsUnknown() && !o.DynamicId.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject
+		diags := o.DynamicId.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dynamic_id"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Advertise.IsUnknown() && !o.Advertise.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject
+		diags := o.Advertise.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("advertise"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DnsServer.IsUnknown() && !o.DnsServer.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject
+		diags := o.DnsServer.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_server"))
+		}
+	}
+	if !o.DnsSuffix.IsUnknown() && !o.DnsSuffix.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject
+		diags := o.DnsSuffix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_suffix"))
+		}
+	}
+	if !o.Neighbor.IsUnknown() && !o.Neighbor.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject
+		diags := o.Neighbor.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("neighbor").AtListIndex(i))
+			}
+		}
+	}
+	if !o.RouterAdvertisement.IsUnknown() && !o.RouterAdvertisement.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject
+		diags := o.RouterAdvertisement.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("router_advertisement"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject
+		diags := o.Source.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object
+		diags := o.Dhcpv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcpv6"))
+		}
+	}
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject
+		diags := o.Manual.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("manual"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject
+		diags := o.Server.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("server").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Source.IsUnknown() && !o.Source.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject
+		diags := o.Source.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dhcpv6.IsUnknown() && !o.Dhcpv6.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object
+		diags := o.Dhcpv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dhcpv6"))
+		}
+	}
+	if !o.Manual.IsUnknown() && !o.Manual.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject
+		diags := o.Manual.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("manual"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Suffix.IsUnknown() && !o.Suffix.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject
+		diags := o.Suffix.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("suffix").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Neighbor.IsUnknown() && !o.Neighbor.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject
+		diags := o.Neighbor.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("neighbor").AtListIndex(i))
+			}
+		}
+	}
+	if !o.RouterAdvertisement.IsUnknown() && !o.RouterAdvertisement.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject
+		diags := o.RouterAdvertisement.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("router_advertisement"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DnsSupport.IsUnknown() && !o.DnsSupport.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject
+		diags := o.DnsSupport.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_support"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Server.IsUnknown() && !o.Server.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject
+		diags := o.Server.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("server").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Suffix.IsUnknown() && !o.Suffix.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject
+		diags := o.Suffix.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("suffix").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceNdpProxyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var elements []EthernetLayer3SubinterfaceResourceNdpProxyAddressObject
+		diags := o.Address.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("address").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceNdpProxyAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourcePppoeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Password.IsUnknown() && !o.Password.IsNull() {
+		value := o.Password.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("password").String()),
+			)
+		}
+	}
+	if !o.Passive.IsUnknown() && !o.Passive.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourcePppoePassiveObject
+		diags := o.Passive.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("passive"))
+		}
+	}
+	if !o.StaticAddress.IsUnknown() && !o.StaticAddress.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject
+		diags := o.StaticAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("static_address"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourcePppoePassiveObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.UpstreamNat.IsUnknown() && !o.UpstreamNat.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject
+		diags := o.UpstreamNat.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("upstream_nat"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ddns.IsUnknown() && !o.Ddns.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject
+		diags := o.Ddns.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ddns"))
+		}
+	}
+	if !o.StaticIp.IsUnknown() && !o.StaticIp.IsNull() {
+		var nestedObj EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject
+		diags := o.StaticIp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("static_ip"))
+		}
+	}
+}
+
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *EthernetLayer3SubinterfaceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource EthernetLayer3SubinterfaceResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -11564,28 +12013,19 @@ func EthernetLayer3SubinterfaceResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"parent": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"adjust_tcp_mss": EthernetLayer3SubinterfaceResourceAdjustTcpMssSchema(),
 
 			"arp": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceArpSchema(),
 			},
 
@@ -11593,46 +12033,31 @@ func EthernetLayer3SubinterfaceResourceSchema() rsschema.Schema {
 
 			"comment": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_config": EthernetLayer3SubinterfaceResourceDdnsConfigSchema(),
 
 			"decrypt_forward": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"df_ignore": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"dhcp_client": EthernetLayer3SubinterfaceResourceDhcpClientSchema(),
 
 			"interface_management_profile": rsschema.StringAttribute{
 				Description: "Interface management profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpSchema(),
 			},
 
@@ -11640,20 +12065,14 @@ func EthernetLayer3SubinterfaceResourceSchema() rsschema.Schema {
 
 			"mtu": rsschema.Int64Attribute{
 				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ndp_proxy": EthernetLayer3SubinterfaceResourceNdpProxySchema(),
 
 			"netflow_profile": rsschema.StringAttribute{
 				Description: "Netflow Server Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"pppoe": EthernetLayer3SubinterfaceResourcePppoeSchema(),
@@ -11662,10 +12081,7 @@ func EthernetLayer3SubinterfaceResourceSchema() rsschema.Schema {
 
 			"tag": rsschema.Int64Attribute{
 				Description: "802.1q VLAN tag",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11692,35 +12108,25 @@ func (o *EthernetLayer3SubinterfaceResourceModel) getTypeFor(name string) attr.T
 func EthernetLayer3SubinterfaceResourceAdjustTcpMssSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Set if TCP MSS value should be reduced based on mtu",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4_mss_adjustment": rsschema.Int64Attribute{
 				Description: "IPv4 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(40),
 			},
 
 			"ipv6_mss_adjustment": rsschema.Int64Attribute{
 				Description: "IPv6 MSS adjustment size (in bytes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(60),
 			},
 		},
@@ -11751,18 +12157,12 @@ func EthernetLayer3SubinterfaceResourceArpSchema() rsschema.NestedAttributeObjec
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": rsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11789,35 +12189,24 @@ func (o *EthernetLayer3SubinterfaceResourceArpObject) getTypeFor(name string) at
 func EthernetLayer3SubinterfaceResourceBonjourSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Set to support Bonjour service",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"group_id": rsschema.Int64Attribute{
 				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(40),
 			},
 
 			"ttl_check": rsschema.BoolAttribute{
 				Description: "Set to check and update TTL",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11844,77 +12233,51 @@ func (o *EthernetLayer3SubinterfaceResourceBonjourObject) getTypeFor(name string
 func EthernetLayer3SubinterfaceResourceDdnsConfigSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ddns_cert_profile": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_enabled": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_hostname": rsschema.StringAttribute{
 				Description: "ddns hostname variable or real address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_ip": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ddns_ipv6": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ddns_update_interval": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"ddns_vendor": rsschema.StringAttribute{
 				Description: "Vendor and product type",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns_vendor_config": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigSchema(),
 			},
 		},
@@ -11945,18 +12308,12 @@ func EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigSchema() rssche
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11983,35 +12340,24 @@ func (o *EthernetLayer3SubinterfaceResourceDdnsConfigDdnsVendorConfigObject) get
 func EthernetLayer3SubinterfaceResourceDhcpClientSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"create_default_route": rsschema.BoolAttribute{
 				Description: "Automatically create default route pointing to default gateway provided by server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_route_metric": rsschema.Int64Attribute{
 				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"send_hostname": EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameSchema(),
@@ -12040,26 +12386,18 @@ func (o *EthernetLayer3SubinterfaceResourceDhcpClientObject) getTypeFor(name str
 func EthernetLayer3SubinterfaceResourceDhcpClientSendHostnameSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hostname": rsschema.StringAttribute{
 				Description: "Set Interface Hostname",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("system-hostname"),
 			},
 		},
@@ -12090,18 +12428,12 @@ func EthernetLayer3SubinterfaceResourceIpSchema() rsschema.NestedAttributeObject
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"sdwan_gateway": rsschema.StringAttribute{
 				Description: "Gateway IPv4 Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12128,18 +12460,12 @@ func (o *EthernetLayer3SubinterfaceResourceIpObject) getTypeFor(name string) att
 func EthernetLayer3SubinterfaceResourceIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6AddressSchema(),
 			},
 
@@ -12147,20 +12473,15 @@ func EthernetLayer3SubinterfaceResourceIpv6Schema() rsschema.SingleNestedAttribu
 
 			"enabled": rsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inherited": EthernetLayer3SubinterfaceResourceIpv6InheritedSchema(),
 
 			"interface_id": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("EUI-64"),
 			},
 
@@ -12193,18 +12514,12 @@ func EthernetLayer3SubinterfaceResourceIpv6AddressSchema() rsschema.NestedAttrib
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "configure this address on interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix": EthernetLayer3SubinterfaceResourceIpv6AddressPrefixSchema(),
@@ -12237,10 +12552,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressObject) getTypeFor(name st
 func EthernetLayer3SubinterfaceResourceIpv6AddressPrefixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes:  map[string]rsschema.Attribute{},
 	}
 }
@@ -12266,10 +12578,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressPrefixObject) getTypeFor(n
 func EthernetLayer3SubinterfaceResourceIpv6AddressAnycastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes:  map[string]rsschema.Attribute{},
 	}
 }
@@ -12295,52 +12604,36 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAnycastObject) getTypeFor(
 func EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "enable advertising this prefix in router advertisements",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"valid_lifetime": rsschema.StringAttribute{
 				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("2592000"),
 			},
 
 			"preferred_lifetime": rsschema.StringAttribute{
 				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("604800"),
 			},
 
 			"onlink_flag": rsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auto_config_flag": rsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12367,45 +12660,32 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6AddressAdvertiseObject) getTypeFo
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"accept_ra_route": rsschema.BoolAttribute{
 				Description: "Accept Router Advertised Default Route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_route_metric": rsschema.Int64Attribute{
 				Description: "Metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable DHCPv6 Client",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor_discovery": EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoverySchema(),
 
 			"preference": rsschema.StringAttribute{
 				Description: "Select Low/Medium/High",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("high"),
 			},
 
@@ -12437,18 +12717,13 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientObject) getTypeFor(name
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoverySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dad_attempts": rsschema.Int64Attribute{
 				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
@@ -12458,44 +12733,31 @@ func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoverySchema() r
 
 			"enable_dad": rsschema.BoolAttribute{
 				Description: "Enable Duplicate Address Detection",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_ndp_monitor": rsschema.BoolAttribute{
 				Description: "Enable NDP Monitoring",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": rsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"reachable_time": rsschema.Int64Attribute{
 				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(30),
 			},
 		},
@@ -12523,18 +12785,12 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObject
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema(),
@@ -12563,10 +12819,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dhcpv6": EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
@@ -12597,10 +12850,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12633,10 +12883,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12648,10 +12895,7 @@ func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerS
 
 			"server": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManualServerSchema(),
 			},
 		},
@@ -12682,18 +12926,13 @@ func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerS
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -12721,18 +12960,12 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSer
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema(),
@@ -12761,10 +12994,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dhcpv6": EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
@@ -12795,10 +13025,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12831,10 +13058,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuf
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -12846,10 +13070,7 @@ func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixS
 
 			"suffix": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
 			},
 		},
@@ -12880,18 +13101,13 @@ func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixS
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -12922,18 +13138,12 @@ func EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighborSc
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": rsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -12960,10 +13170,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryNeighb
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableSchema(),
@@ -12992,10 +13199,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationObject)
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"no": EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoSchema(),
@@ -13026,10 +13230,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableO
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableNoSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13062,10 +13263,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableN
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13077,27 +13275,19 @@ func EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableYesSc
 
 			"pfx_pool_name": rsschema.StringAttribute{
 				Description: "Configure unique Prefix Pool Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_len": rsschema.Int64Attribute{
 				Description: "Hint DHCP Prefix Length (bits)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(48),
 			},
 
 			"prefix_len_hint": rsschema.BoolAttribute{
 				Description: "Send prefix length hint to server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13124,18 +13314,13 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientPrefixDelegationEnableY
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"duid_type": rsschema.StringAttribute{
 				Description: "Select DUID-LLT/DUID-LL",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("duid-type-llt"),
 			},
 
@@ -13143,18 +13328,12 @@ func EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsSchema() rsschema.
 
 			"rapid_commit": rsschema.BoolAttribute{
 				Description: "Enable Rapid Commit",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"support_srvr_reconfig": rsschema.BoolAttribute{
 				Description: "Enable DHCPv6 Server Re-Configuration Support",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13181,10 +13360,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsObject) getTyp
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"no": EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoSchema(),
@@ -13215,10 +13391,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableObject) 
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13251,10 +13424,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableNoObject
 func EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13266,18 +13436,12 @@ func EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesSchema() 
 
 			"non_temp_addr": rsschema.BoolAttribute{
 				Description: "Request Non-Temporary Address Type",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"temp_addr": rsschema.BoolAttribute{
 				Description: "Request Temporary Address Type",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13304,27 +13468,18 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6DhcpClientV6OptionsEnableYesObjec
 func EthernetLayer3SubinterfaceResourceIpv6InheritedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"assign_addr": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrSchema(),
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable Inherited Interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor_discovery": EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoverySchema(),
@@ -13356,10 +13511,7 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrSchema() rsschema.
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeSchema(),
@@ -13388,10 +13540,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrObject) getTyp
 func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"gua": EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaSchema(),
@@ -13422,10 +13571,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeObject) ge
 func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13437,18 +13583,12 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaSchema() rs
 
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "Enable on Interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_pool": rsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"pool_type": EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeSchema(),
@@ -13479,10 +13619,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaObject)
 func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dynamic": EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema(),
@@ -13513,10 +13650,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTyp
 func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13549,10 +13683,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTyp
 func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDynamicIdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13564,10 +13695,7 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTypeDyn
 
 			"identifier": rsschema.Int64Attribute{
 				Description: "Range [0-4095] must be unqiue for this prefix-pool",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13594,34 +13722,22 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaPoolTyp
 func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdvertiseSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable advertising this prefix in router advertisements",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"onlink_flag": rsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auto_config_flag": rsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13648,10 +13764,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeGuaAdverti
 func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13663,34 +13776,22 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaSchema() rs
 
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "Configure this address on Interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": rsschema.StringAttribute{
 				Description: "Configure ULA (Unique Local Address)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix": rsschema.BoolAttribute{
 				Description: "Use this as prefix to form full address with interface id/EUI-64",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"anycast": rsschema.BoolAttribute{
 				Description: "Anycast Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"advertise": EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema(),
@@ -13719,52 +13820,36 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaObject)
 func EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdvertiseSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "enable advertising this prefix in router advertisements",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"valid_lifetime": rsschema.StringAttribute{
 				Description: "Valid Lifetime (in seconds) of the prefix advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("2592000"),
 			},
 
 			"preferred_lifetime": rsschema.StringAttribute{
 				Description: "Preferred Lifetime (in seconds) of the prefix advertised in Router advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("604800"),
 			},
 
 			"onlink_flag": rsschema.BoolAttribute{
 				Description: "Set the On-Link Flag (L-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auto_config_flag": rsschema.BoolAttribute{
 				Description: "Set the Auto Address Configuration Flag (A-bit) of the prefix in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13791,18 +13876,13 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedAssignAddrTypeUlaAdverti
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoverySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dad_attempts": rsschema.Int64Attribute{
 				Description: "Number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
@@ -13812,44 +13892,31 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoverySchema() rs
 
 			"enable_dad": rsschema.BoolAttribute{
 				Description: "Enable Duplicate Address Detection (DAD)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_ndp_monitor": rsschema.BoolAttribute{
 				Description: "Enable NDP Monitoring",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": rsschema.Int64Attribute{
 				Description: "Interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"reachable_time": rsschema.Int64Attribute{
 				Description: "Time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(30),
 			},
 
@@ -13879,18 +13946,12 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject)
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema(),
@@ -13919,10 +13980,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dhcpv6": EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema(),
@@ -13953,10 +14011,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -13968,10 +14023,7 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSo
 
 			"prefix_pool": rsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -13998,10 +14050,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -14013,10 +14062,7 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSo
 
 			"server": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManualServerSchema(),
 			},
 		},
@@ -14047,18 +14093,13 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSo
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) Lifetime in Seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -14086,18 +14127,12 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsServ
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema(),
@@ -14126,10 +14161,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dhcpv6": EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema(),
@@ -14160,10 +14192,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceDhcpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -14175,10 +14204,7 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSo
 
 			"prefix_pool": rsschema.StringAttribute{
 				Description: "Prefix-Pool Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14205,10 +14231,7 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuff
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -14220,10 +14243,7 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSo
 
 			"suffix": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffixSchema(),
 			},
 		},
@@ -14254,18 +14274,13 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSo
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -14296,18 +14311,12 @@ func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighborSch
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": rsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14334,113 +14343,82 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryNeighbo
 func EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_consistency_check": rsschema.BoolAttribute{
 				Description: "check consistency of RA messages from other routers.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hop_limit": rsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("64"),
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1800),
 			},
 
 			"link_mtu": rsschema.StringAttribute{
 				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"managed_flag": rsschema.BoolAttribute{
 				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_interval": rsschema.Int64Attribute{
 				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(600),
 			},
 
 			"min_interval": rsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(200),
 			},
 
 			"other_flag": rsschema.BoolAttribute{
 				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"reachable_time": rsschema.StringAttribute{
 				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"retransmission_timer": rsschema.StringAttribute{
 				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"router_preference": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Medium"),
 			},
 		},
@@ -14468,61 +14446,43 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryRouterA
 func EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoverySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dad_attempts": rsschema.Int64Attribute{
 				Description: "number of consecutive neighbor solicitation messages sent for duplicate address detection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"enable_dad": rsschema.BoolAttribute{
 				Description: "enable duplicate address detection",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_ndp_monitor": rsschema.BoolAttribute{
 				Description: "enable ndp monitoring",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborSchema(),
 			},
 
 			"ns_interval": rsschema.Int64Attribute{
 				Description: "interval (in seconds) between consecutive neighbor solicitation messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"reachable_time": rsschema.Int64Attribute{
 				Description: "time (in seconds) that the Reachable status for a neighbor can be maintained",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(30),
 			},
 
@@ -14555,18 +14515,12 @@ func EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborSchema() rss
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"hw_address": rsschema.StringAttribute{
 				Description: "MAC address (format xx:xx:xx:xx:xx:xx)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14593,115 +14547,84 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryNeighborObject) 
 func EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dns_support": EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema(),
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_consistency_check": rsschema.BoolAttribute{
 				Description: "check consistency of RA messages from other routers.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hop_limit": rsschema.StringAttribute{
 				Description: "Current Hop Limit advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("64"),
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "Router Lifetime (in seconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1800),
 			},
 
 			"link_mtu": rsschema.StringAttribute{
 				Description: "value of MTU option in Router Advertisement messages, upto 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"managed_flag": rsschema.BoolAttribute{
 				Description: "Set the Managed Configuration Flag (M-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_interval": rsschema.Int64Attribute{
 				Description: "Maximum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(600),
 			},
 
 			"min_interval": rsschema.Int64Attribute{
 				Description: "Minimum interval (seconds) between consecutive unsolicited Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(200),
 			},
 
 			"other_flag": rsschema.BoolAttribute{
 				Description: "Set the Other Stateful Configuration Flag (O-bit) in Router Advertisement messages",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"reachable_time": rsschema.StringAttribute{
 				Description: "Reachable Time (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"retransmission_timer": rsschema.StringAttribute{
 				Description: "Retransmission Timer (in milliseconds) advertised in Router Advertisement messages",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unspecified"),
 			},
 
 			"router_preference": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Medium"),
 			},
 		},
@@ -14729,35 +14652,23 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 func EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"server": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportServerSchema(),
 			},
 
 			"suffix": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffixSchema(),
 			},
 		},
@@ -14788,18 +14699,13 @@ func EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementD
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -14830,18 +14736,13 @@ func EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementD
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"lifetime": rsschema.Int64Attribute{
 				Description: "(4-3600) lifetime in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1200),
 			},
 		},
@@ -14869,27 +14770,18 @@ func (o *EthernetLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertisem
 func EthernetLayer3SubinterfaceResourceNdpProxySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: EthernetLayer3SubinterfaceResourceNdpProxyAddressSchema(),
 			},
 
 			"enabled": rsschema.BoolAttribute{
 				Description: "Enable proxy NDP on the interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14919,18 +14811,12 @@ func EthernetLayer3SubinterfaceResourceNdpProxyAddressSchema() rsschema.NestedAt
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"negate": rsschema.BoolAttribute{
 				Description: "put the prefix or address on a block list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -14957,79 +14843,54 @@ func (o *EthernetLayer3SubinterfaceResourceNdpProxyAddressObject) getTypeFor(nam
 func EthernetLayer3SubinterfaceResourcePppoeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_concentrator": rsschema.StringAttribute{
 				Description: "desired access concentrator. The valid characters are [a-zA-Z0-9._~!@#$%^*(){},:?/+=\\-]",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "authentication protocol",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"create_default_route": rsschema.BoolAttribute{
 				Description: "automatically create default route pointing to peer",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_route_metric": rsschema.Int64Attribute{
 				Description: "metric of the default route created",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"passive": EthernetLayer3SubinterfaceResourcePppoePassiveSchema(),
 
 			"password": rsschema.StringAttribute{
 				Description: "password for ppp autentication",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"service": rsschema.StringAttribute{
 				Description: "desired service. The valid characters are [a-zA-Z0-9._~!@#$%^*(){},:?/+=\\-]",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"static_address": EthernetLayer3SubinterfaceResourcePppoeStaticAddressSchema(),
 
 			"username": rsschema.StringAttribute{
 				Description: "username for ppp authentication. The valid characters are [a-zA-Z0-9._~!@#$%^*(){},:?/+=\\-]",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -15056,18 +14917,12 @@ func (o *EthernetLayer3SubinterfaceResourcePppoeObject) getTypeFor(name string) 
 func EthernetLayer3SubinterfaceResourcePppoePassiveSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -15094,18 +14949,12 @@ func (o *EthernetLayer3SubinterfaceResourcePppoePassiveObject) getTypeFor(name s
 func EthernetLayer3SubinterfaceResourcePppoeStaticAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip": rsschema.StringAttribute{
 				Description: "static ip address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -15132,26 +14981,17 @@ func (o *EthernetLayer3SubinterfaceResourcePppoeStaticAddressObject) getTypeFor(
 func EthernetLayer3SubinterfaceResourceSdwanLinkSettingsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable sdwan on this ethernet interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"sdwan_interface_profile": rsschema.StringAttribute{
 				Description: "Sdwan link characteristics",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"upstream_nat": EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatSchema(),
@@ -15180,18 +15020,12 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsObject) getTypeFor(n
 func EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable upstream NAT IP config",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ddns": EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsSchema(),
@@ -15222,10 +15056,7 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatObject) g
 func EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15258,10 +15089,7 @@ func (o *EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatDdnsObjec
 func EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15273,10 +15101,7 @@ func EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpSchem
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "Upstream NAT address FQDN name configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -15288,10 +15113,7 @@ func EthernetLayer3SubinterfaceResourceSdwanLinkSettingsUpstreamNatStaticIpSchem
 
 			"ip_address": rsschema.StringAttribute{
 				Description: "Upstream NAT IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -22031,8 +21853,8 @@ func (o *EthernetLayer3SubinterfaceResourcePppoeObject) CopyFromPango(ctx contex
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -22775,15 +22597,16 @@ type EthernetLayer3SubinterfaceImportState struct {
 
 func (o EthernetLayer3SubinterfaceImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *EthernetLayer3SubinterfaceLocation `json:"location"`
-		Parent   *string                             `json:"parent"`
-		Name     *string                             `json:"name"`
+		Location interface{} `json:"location"`
+		Parent   *string     `json:"parent"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *EthernetLayer3SubinterfaceLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, EthernetLayer3SubinterfaceLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -22798,9 +22621,9 @@ func (o EthernetLayer3SubinterfaceImportState) MarshalJSON() ([]byte, error) {
 
 func (o *EthernetLayer3SubinterfaceImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *EthernetLayer3SubinterfaceLocation `json:"location"`
-		Parent   *string                             `json:"parent"`
-		Name     *string                             `json:"name"`
+		Location interface{} `json:"location"`
+		Parent   *string     `json:"parent"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -22809,10 +22632,14 @@ func (o *EthernetLayer3SubinterfaceImportState) UnmarshalJSON(data []byte) error
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, EthernetLayer3SubinterfaceLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

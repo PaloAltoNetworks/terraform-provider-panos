@@ -14296,18 +14296,13 @@ func LogicalRouterDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"vrf": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfSchema(),
 			},
 		},
@@ -14338,18 +14333,13 @@ func LogicalRouterDataSourceVrfSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"interface": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -14395,106 +14385,80 @@ func (o *LogicalRouterDataSourceVrfObject) getTypeFor(name string) attr.Type {
 func LogicalRouterDataSourceVrfAdministrativeDistancesSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"static": dsschema.Int64Attribute{
 				Description: "Set IPv4 Static Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"static_ipv6": dsschema.Int64Attribute{
 				Description: "Set IPv6 Static Routes  Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ospf_inter": dsschema.Int64Attribute{
 				Description: "Set OSPF Inter Area Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ospf_intra": dsschema.Int64Attribute{
 				Description: "Set OSPF Intra Area Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ospf_ext": dsschema.Int64Attribute{
 				Description: "Set OSPF External Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ospfv3_inter": dsschema.Int64Attribute{
 				Description: "Set OSPFv3 Inter Area Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ospfv3_intra": dsschema.Int64Attribute{
 				Description: "Set OSPFv3 Intra Area Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ospfv3_ext": dsschema.Int64Attribute{
 				Description: "Set OSPFv3 External Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"bgp_internal": dsschema.Int64Attribute{
 				Description: "Set BGP AS Internal Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"bgp_external": dsschema.Int64Attribute{
 				Description: "Set BGP AS External Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"bgp_local": dsschema.Int64Attribute{
 				Description: "Set BGP Local Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"rip": dsschema.Int64Attribute{
 				Description: "Set RIP Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -14521,10 +14485,8 @@ func (o *LogicalRouterDataSourceVrfAdministrativeDistancesObject) getTypeFor(nam
 func LogicalRouterDataSourceVrfRibFilterSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": LogicalRouterDataSourceVrfRibFilterIpv4Schema(),
@@ -14555,10 +14517,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterObject) getTypeFor(name string) attr
 func LogicalRouterDataSourceVrfRibFilterIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"static": LogicalRouterDataSourceVrfRibFilterIpv4StaticSchema(),
@@ -14593,18 +14553,14 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4Object) getTypeFor(name string) 
 func LogicalRouterDataSourceVrfRibFilterIpv4StaticSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on Static Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -14631,18 +14587,14 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4StaticObject) getTypeFor(name st
 func LogicalRouterDataSourceVrfRibFilterIpv4BgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on BGP Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -14669,18 +14621,14 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4BgpObject) getTypeFor(name strin
 func LogicalRouterDataSourceVrfRibFilterIpv4OspfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on OSPF Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -14707,18 +14655,14 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4OspfObject) getTypeFor(name stri
 func LogicalRouterDataSourceVrfRibFilterIpv4RipSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on RIP Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -14745,10 +14689,8 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv4RipObject) getTypeFor(name strin
 func LogicalRouterDataSourceVrfRibFilterIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"static": LogicalRouterDataSourceVrfRibFilterIpv6StaticSchema(),
@@ -14781,18 +14723,14 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Object) getTypeFor(name string) 
 func LogicalRouterDataSourceVrfRibFilterIpv6StaticSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on Static Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -14819,18 +14757,14 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6StaticObject) getTypeFor(name st
 func LogicalRouterDataSourceVrfRibFilterIpv6BgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on BGP Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -14857,18 +14791,14 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6BgpObject) getTypeFor(name strin
 func LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on OSPFv3 Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -14895,90 +14825,68 @@ func (o *LogicalRouterDataSourceVrfRibFilterIpv6Ospfv3Object) getTypeFor(name st
 func LogicalRouterDataSourceVrfBgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_id": dsschema.StringAttribute{
 				Description: "router id of this BGP instance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_as": dsschema.StringAttribute{
 				Description: "local AS number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"install_route": dsschema.BoolAttribute{
 				Description: "Populate BGP learned route to global route table",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enforce_first_as": dsschema.BoolAttribute{
 				Description: "Enforce First AS for EBGP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"fast_external_failover": dsschema.BoolAttribute{
 				Description: "Immediately reset session if a link to a directly connected external peer goes down",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ecmp_multi_as": dsschema.BoolAttribute{
 				Description: "Support multiple AS in ECMP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_local_preference": dsschema.Int64Attribute{
 				Description: "Global Default Local Preference",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"graceful_shutdown": dsschema.BoolAttribute{
 				Description: "Gracefully Shutdown BGP following RFC-8326",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"always_advertise_network_route": dsschema.BoolAttribute{
 				Description: "Always advertise network routes even if not present in RIB",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"med": LogicalRouterDataSourceVrfBgpMedSchema(),
@@ -14993,19 +14901,15 @@ func LogicalRouterDataSourceVrfBgpSchema() dsschema.SingleNestedAttribute {
 
 			"peer_group": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfBgpPeerGroupSchema(),
 			},
 
 			"aggregate_routes": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfBgpAggregateRoutesSchema(),
 			},
 		},
@@ -15033,26 +14937,20 @@ func (o *LogicalRouterDataSourceVrfBgpObject) getTypeFor(name string) attr.Type 
 func LogicalRouterDataSourceVrfBgpMedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"always_compare_med": dsschema.BoolAttribute{
 				Description: "always compare MEDs",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"deterministic_med_comparison": dsschema.BoolAttribute{
 				Description: "deterministic MEDs comparison",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15079,42 +14977,32 @@ func (o *LogicalRouterDataSourceVrfBgpMedObject) getTypeFor(name string) attr.Ty
 func LogicalRouterDataSourceVrfBgpGracefulRestartSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"stale_route_time": dsschema.Int64Attribute{
 				Description: "time to remove stale routes after peer restart Default:120 (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_peer_restart_time": dsschema.Int64Attribute{
 				Description: "maximum of peer restart time accepted Default:120 (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_restart_time": dsschema.Int64Attribute{
 				Description: "local restart time to advertise to peer Default:120 (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15141,18 +15029,14 @@ func (o *LogicalRouterDataSourceVrfBgpGracefulRestartObject) getTypeFor(name str
 func LogicalRouterDataSourceVrfBgpGlobalBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15179,10 +15063,8 @@ func (o *LogicalRouterDataSourceVrfBgpGlobalBfdObject) getTypeFor(name string) a
 func LogicalRouterDataSourceVrfBgpRedistributionProfileSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Schema(),
@@ -15213,18 +15095,14 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileObject) getTypeFor(na
 func LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"unicast": dsschema.StringAttribute{
 				Description: "Redistribution Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15251,18 +15129,14 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv4Object) getTypeFo
 func LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"unicast": dsschema.StringAttribute{
 				Description: "Redistribution Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15289,10 +15163,8 @@ func (o *LogicalRouterDataSourceVrfBgpRedistributionProfileIpv6Object) getTypeFo
 func LogicalRouterDataSourceVrfBgpAdvertiseNetworkSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Schema(),
@@ -15323,18 +15195,14 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkObject) getTypeFor(name st
 func LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"network": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkSchema(),
 			},
 		},
@@ -15365,34 +15233,25 @@ func LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkSchema() dsschema.N
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"unicast": dsschema.BoolAttribute{
 				Description: "Unicast Network configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"multicast": dsschema.BoolAttribute{
 				Description: "Multicast Network configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"backdoor": dsschema.BoolAttribute{
 				Description: "Mark network as backdoor route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15419,18 +15278,14 @@ func (o *LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv4NetworkObject) getType
 func LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"network": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkSchema(),
 			},
 		},
@@ -15461,18 +15316,13 @@ func LogicalRouterDataSourceVrfBgpAdvertiseNetworkIpv6NetworkSchema() dsschema.N
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"unicast": dsschema.BoolAttribute{
 				Description: "Unicast Network configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15502,18 +15352,13 @@ func LogicalRouterDataSourceVrfBgpPeerGroupSchema() dsschema.NestedAttributeObje
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": LogicalRouterDataSourceVrfBgpPeerGroupTypeSchema(),
@@ -15526,10 +15371,8 @@ func LogicalRouterDataSourceVrfBgpPeerGroupSchema() dsschema.NestedAttributeObje
 
 			"peer": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfBgpPeerGroupPeerSchema(),
 			},
 		},
@@ -15557,10 +15400,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupObject) getTypeFor(name string) a
 func LogicalRouterDataSourceVrfBgpPeerGroupTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ibgp": LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpSchema(),
@@ -15591,10 +15432,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeObject) getTypeFor(name strin
 func LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15627,10 +15466,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeIbgpObject) getTypeFor(name s
 func LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15663,26 +15500,20 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupTypeEbgpObject) getTypeFor(name s
 func LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "Enable IPv4 route exchange",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "Enable IPv6 route exchange",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15709,26 +15540,20 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupAddressFamilyObject) getTypeFor(n
 func LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "IPv4 Filtering Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "IPv6 Filtering Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15755,42 +15580,32 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupFilteringProfileObject) getTypeFo
 func LogicalRouterDataSourceVrfBgpPeerGroupConnectionOptionsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"timers": dsschema.StringAttribute{
 				Description: "Timer Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"multihop": dsschema.Int64Attribute{
 				Description: "Multi-hop value",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dampening": dsschema.StringAttribute{
 				Description: "Dampening Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15820,42 +15635,31 @@ func LogicalRouterDataSourceVrfBgpPeerGroupPeerSchema() dsschema.NestedAttribute
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"passive": dsschema.BoolAttribute{
 				Description: "If enabled, open messages are not sent to this peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"peer_as": dsschema.StringAttribute{
 				Description: "peer AS number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_sender_side_loop_detection": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inherit": LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritSchema(),
@@ -15892,10 +15696,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerObject) getTypeFor(name strin
 func LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"yes": LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesSchema(),
@@ -15926,10 +15728,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritObject) getTypeFor(nam
 func LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15962,10 +15762,8 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritYesObject) getTypeFor(
 func LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -16003,26 +15801,20 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoObject) getTypeFor(n
 func LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "Enable IPv4 route exchange",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "Enable IPv6 route exchange",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16049,26 +15841,20 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject)
 func LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "IPv4 Filtering Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "IPv6 Filtering Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16095,26 +15881,20 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObje
 func LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "interface to accept BGP session",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16141,26 +15921,20 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerLocalAddressObject) getTypeFo
 func LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip": dsschema.StringAttribute{
 				Description: "peer address configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "Peer FQDN Address Object",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16187,42 +15961,32 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerPeerAddressObject) getTypeFor
 func LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"timers": dsschema.StringAttribute{
 				Description: "Timer Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"multihop": dsschema.StringAttribute{
 				Description: "Multi-hop value",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dampening": dsschema.StringAttribute{
 				Description: "Dampening Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16249,18 +16013,14 @@ func (o *LogicalRouterDataSourceVrfBgpPeerGroupPeerConnectionOptionsObject) getT
 func LogicalRouterDataSourceVrfBgpPeerGroupPeerBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16290,50 +16050,37 @@ func LogicalRouterDataSourceVrfBgpAggregateRoutesSchema() dsschema.NestedAttribu
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Aggregate Route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable Aggregation for this Prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"summary_only": dsschema.BoolAttribute{
 				Description: "Send only Summary Route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"as_set": dsschema.BoolAttribute{
 				Description: "Generate AS set path attribute",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"same_med": dsschema.BoolAttribute{
 				Description: "Aggregate Routes only if they have same MED Attributes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": LogicalRouterDataSourceVrfBgpAggregateRoutesTypeSchema(),
@@ -16362,10 +16109,8 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesObject) getTypeFor(name str
 func LogicalRouterDataSourceVrfBgpAggregateRoutesTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Schema(),
@@ -16396,10 +16141,8 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeObject) getTypeFor(name
 func LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -16411,26 +16154,20 @@ func LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Schema() dsschema.Singl
 
 			"summary_prefix": dsschema.StringAttribute{
 				Description: "Aggregating Address Prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"suppress_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to select routes to be suppressed",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"attribute_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to set attributes of aggregate prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16457,10 +16194,8 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv4Object) getTypeFor(
 func LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -16472,26 +16207,20 @@ func LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Schema() dsschema.Singl
 
 			"summary_prefix": dsschema.StringAttribute{
 				Description: "Aggregating Address Prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"suppress_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to select routes to be suppressed",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"attribute_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to set attributes of aggregate prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16518,10 +16247,8 @@ func (o *LogicalRouterDataSourceVrfBgpAggregateRoutesTypeIpv6Object) getTypeFor(
 func LogicalRouterDataSourceVrfRoutingTableSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip": LogicalRouterDataSourceVrfRoutingTableIpSchema(),
@@ -16552,18 +16279,14 @@ func (o *LogicalRouterDataSourceVrfRoutingTableObject) getTypeFor(name string) a
 func LogicalRouterDataSourceVrfRoutingTableIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"static_route": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfRoutingTableIpStaticRouteSchema(),
 			},
 		},
@@ -16594,42 +16317,31 @@ func LogicalRouterDataSourceVrfRoutingTableIpStaticRouteSchema() dsschema.Nested
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"destination": dsschema.StringAttribute{
 				Description: "Destination IP address/prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"administrative_distance": dsschema.Int64Attribute{
 				Description: "adminitrative distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "metric value (path cost)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"nexthop": LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopSchema(),
@@ -16662,36 +16374,28 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteObject) getTypeFor(n
 func LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"discard": LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardSchema(),
 
 			"ip_address": dsschema.StringAttribute{
 				Description: "Next hop IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"next_lr": dsschema.StringAttribute{
 				Description: "Next-Hop Logical Router",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "nexthop address FQDN address object configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16718,10 +16422,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopObject) getTy
 func LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -16756,18 +16458,14 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteNexthopDiscardObject
 func LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16794,42 +16492,32 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRouteBfdObject) getTypeFo
 func LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"failure_condition": dsschema.StringAttribute{
 				Description: "failure condition",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hold_time": dsschema.Int64Attribute{
 				Description: "hold time (minutes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"monitor_destinations": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsSchema(),
 			},
 		},
@@ -16860,50 +16548,37 @@ func LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestin
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": dsschema.StringAttribute{
 				Description: "Source IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"destination": dsschema.StringAttribute{
 				Description: "Destination IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interval": dsschema.Int64Attribute{
 				Description: "ping interval",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"count": dsschema.Int64Attribute{
 				Description: "ping count",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16930,18 +16605,14 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDe
 func LogicalRouterDataSourceVrfRoutingTableIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"static_route": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteSchema(),
 			},
 		},
@@ -16972,42 +16643,31 @@ func LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteSchema() dsschema.Nest
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"destination": dsschema.StringAttribute{
 				Description: "Destination IP address/prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"administrative_distance": dsschema.Int64Attribute{
 				Description: "adminitrative distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "metric value (path cost)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"nexthop": LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopSchema(),
@@ -17040,36 +16700,28 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteObject) getTypeFor
 func LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"discard": LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardSchema(),
 
 			"ipv6_address": dsschema.StringAttribute{
 				Description: "Next hop IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "nexthop address FQDN address object configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"next_lr": dsschema.StringAttribute{
 				Description: "Next-Hop Logical Router",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17096,10 +16748,8 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopObject) get
 func LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -17134,18 +16784,14 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObje
 func LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17172,42 +16818,32 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRouteBfdObject) getType
 func LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"failure_condition": dsschema.StringAttribute{
 				Description: "failure condition",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hold_time": dsschema.Int64Attribute{
 				Description: "hold time (minutes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"monitor_destinations": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsSchema(),
 			},
 		},
@@ -17238,50 +16874,37 @@ func LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDest
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source": dsschema.StringAttribute{
 				Description: "Source IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"destination": dsschema.StringAttribute{
 				Description: "Destination IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interval": dsschema.Int64Attribute{
 				Description: "ping interval",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"count": dsschema.Int64Attribute{
 				Description: "ping count",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17308,58 +16931,44 @@ func (o *LogicalRouterDataSourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitor
 func LogicalRouterDataSourceVrfOspfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"router_id": dsschema.StringAttribute{
 				Description: "router id of this OSPF instance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"rfc1583": dsschema.BoolAttribute{
 				Description: "rfc-1583 compatibility",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"spf_timer": dsschema.StringAttribute{
 				Description: "SPF timer setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"global_if_timer": dsschema.StringAttribute{
 				Description: "Global protocol timer setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"redistribution_profile": dsschema.StringAttribute{
 				Description: "Redistribution profile setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"global_bfd": LogicalRouterDataSourceVrfOspfGlobalBfdSchema(),
@@ -17368,10 +16977,8 @@ func LogicalRouterDataSourceVrfOspfSchema() dsschema.SingleNestedAttribute {
 
 			"area": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfAreaSchema(),
 			},
 		},
@@ -17399,18 +17006,14 @@ func (o *LogicalRouterDataSourceVrfOspfObject) getTypeFor(name string) attr.Type
 func LogicalRouterDataSourceVrfOspfGlobalBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17437,50 +17040,38 @@ func (o *LogicalRouterDataSourceVrfOspfGlobalBfdObject) getTypeFor(name string) 
 func LogicalRouterDataSourceVrfOspfGracefulRestartSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"grace_period": dsschema.Int64Attribute{
 				Description: "maximum local restarting time (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"helper_enable": dsschema.BoolAttribute{
 				Description: "enable/disable helping neighboring routers to graceful restart",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"strict_lsa_checking": dsschema.BoolAttribute{
 				Description: "enable/disable strict LSA checking. Abort GR if lsa change is detected",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_neighbor_restart_time": dsschema.Int64Attribute{
 				Description: "maximum of neighbor restart time accepted (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17510,46 +17101,35 @@ func LogicalRouterDataSourceVrfOspfAreaSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication profile name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": LogicalRouterDataSourceVrfOspfAreaTypeSchema(),
 
 			"range": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfAreaRangeSchema(),
 			},
 
 			"interface": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfAreaInterfaceSchema(),
 			},
 
 			"virtual_link": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfAreaVirtualLinkSchema(),
 			},
 		},
@@ -17577,10 +17157,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaObject) getTypeFor(name string) attr.
 func LogicalRouterDataSourceVrfOspfAreaTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"normal": LogicalRouterDataSourceVrfOspfAreaTypeNormalSchema(),
@@ -17613,10 +17191,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeObject) getTypeFor(name string) a
 func LogicalRouterDataSourceVrfOspfAreaTypeNormalSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -17653,42 +17229,32 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalObject) getTypeFor(name str
 func LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"import_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"export_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inbound_filter_list": dsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound_filter_list": dsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17715,10 +17281,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNormalAbrObject) getTypeFor(name 
 func LogicalRouterDataSourceVrfOspfAreaTypeStubSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -17731,20 +17295,16 @@ func LogicalRouterDataSourceVrfOspfAreaTypeStubSchema() dsschema.SingleNestedAtt
 
 			"no_summary": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"abr": LogicalRouterDataSourceVrfOspfAreaTypeStubAbrSchema(),
 
 			"default_route_metric": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17771,42 +17331,32 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubObject) getTypeFor(name strin
 func LogicalRouterDataSourceVrfOspfAreaTypeStubAbrSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"import_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"export_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inbound_filter_list": dsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound_filter_list": dsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17833,10 +17383,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeStubAbrObject) getTypeFor(name st
 func LogicalRouterDataSourceVrfOspfAreaTypeNssaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -17849,10 +17397,8 @@ func LogicalRouterDataSourceVrfOspfAreaTypeNssaSchema() dsschema.SingleNestedAtt
 
 			"no_summary": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_information_originate": LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateSchema(),
@@ -17883,26 +17429,20 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaObject) getTypeFor(name strin
 func LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric_type": dsschema.StringAttribute{
 				Description: "metric type to be used when redistribute default route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17929,50 +17469,38 @@ func (o *LogicalRouterDataSourceVrfOspfAreaTypeNssaDefaultInformationOriginateOb
 func LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"import_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"export_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inbound_filter_list": dsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound_filter_list": dsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"nssa_ext_range": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeSchema(),
 			},
 		},
@@ -18003,18 +17531,13 @@ func LogicalRouterDataSourceVrfOspfAreaTypeNssaAbrNssaExtRangeSchema() dsschema.
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"advertise": dsschema.BoolAttribute{
 				Description: "do summarization and advertise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18044,18 +17567,13 @@ func LogicalRouterDataSourceVrfOspfAreaRangeSchema() dsschema.NestedAttributeObj
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"advertise": dsschema.BoolAttribute{
 				Description: "do summarization and advertise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18085,66 +17603,49 @@ func LogicalRouterDataSourceVrfOspfAreaInterfaceSchema() dsschema.NestedAttribut
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable OSPF on this interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mtu_ignore": dsschema.BoolAttribute{
 				Description: "Ignore mtu when try to establish adjacency",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"passive": dsschema.BoolAttribute{
 				Description: "Suppress the sending of hello packets in this interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"priority": dsschema.Int64Attribute{
 				Description: "Priority for OSPF designated router selection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Cost of OSPF interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timing": dsschema.StringAttribute{
 				Description: "Protocol timer setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"link_type": LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeSchema(),
@@ -18175,10 +17676,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceObject) getTypeFor(name stri
 func LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"broadcast": LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastSchema(),
@@ -18211,10 +17710,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeObject) getTypeFor(n
 func LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -18248,10 +17745,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) get
 func LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -18285,10 +17780,8 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2pObject) getTypeFo
 func LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -18301,10 +17794,8 @@ func LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpSchema() dsschema.Si
 
 			"neighbor": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborSchema(),
 			},
 		},
@@ -18335,18 +17826,13 @@ func LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborSchema() dss
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"priority": dsschema.Int64Attribute{
 				Description: "Neighbor priority",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18373,18 +17859,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) 
 func LogicalRouterDataSourceVrfOspfAreaInterfaceBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18414,58 +17896,43 @@ func LogicalRouterDataSourceVrfOspfAreaVirtualLinkSchema() dsschema.NestedAttrib
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"neighbor_id": dsschema.StringAttribute{
 				Description: "neighbor router id for virtual link",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"transit_area_id": dsschema.StringAttribute{
 				Description: "id of transit area, cannot be backbone, stub or NSSA",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable this virtual link",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"instance_id": dsschema.Int64Attribute{
 				Description: "OSPF instance ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timing": dsschema.StringAttribute{
 				Description: "Protocol timer setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"bfd": LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdSchema(),
@@ -18494,18 +17961,14 @@ func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkObject) getTypeFor(name st
 func LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18532,58 +17995,44 @@ func (o *LogicalRouterDataSourceVrfOspfAreaVirtualLinkBfdObject) getTypeFor(name
 func LogicalRouterDataSourceVrfOspfv3Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_id": dsschema.StringAttribute{
 				Description: "router id of this OSPFv3 instance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_transit_traffic": dsschema.BoolAttribute{
 				Description: "whether OSPFv3 should set the R- and V6-bits in its Router-LSAs",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"spf_timer": dsschema.StringAttribute{
 				Description: "SPF timer setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"global_if_timer": dsschema.StringAttribute{
 				Description: "Global protocol timer setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"redistribution_profile": dsschema.StringAttribute{
 				Description: "Redistribution profile setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"global_bfd": LogicalRouterDataSourceVrfOspfv3GlobalBfdSchema(),
@@ -18592,10 +18041,8 @@ func LogicalRouterDataSourceVrfOspfv3Schema() dsschema.SingleNestedAttribute {
 
 			"area": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfv3AreaSchema(),
 			},
 		},
@@ -18623,18 +18070,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3Object) getTypeFor(name string) attr.Ty
 func LogicalRouterDataSourceVrfOspfv3GlobalBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18661,50 +18104,38 @@ func (o *LogicalRouterDataSourceVrfOspfv3GlobalBfdObject) getTypeFor(name string
 func LogicalRouterDataSourceVrfOspfv3GracefulRestartSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"grace_period": dsschema.Int64Attribute{
 				Description: "maximum local restarting time (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"helper_enable": dsschema.BoolAttribute{
 				Description: "enable/disable helping neighboring routers to graceful restart",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"strict_lsa_checking": dsschema.BoolAttribute{
 				Description: "enable/disable strict LSA checking. Abort GR if lsa change is detected",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_neighbor_restart_time": dsschema.Int64Attribute{
 				Description: "maximum of neighbor restart time accepted (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18734,46 +18165,35 @@ func LogicalRouterDataSourceVrfOspfv3AreaSchema() dsschema.NestedAttributeObject
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication profile name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": LogicalRouterDataSourceVrfOspfv3AreaTypeSchema(),
 
 			"range": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfv3AreaRangeSchema(),
 			},
 
 			"interface": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfv3AreaInterfaceSchema(),
 			},
 
 			"virtual_link": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkSchema(),
 			},
 		},
@@ -18801,10 +18221,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaObject) getTypeFor(name string) att
 func LogicalRouterDataSourceVrfOspfv3AreaTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"normal": LogicalRouterDataSourceVrfOspfv3AreaTypeNormalSchema(),
@@ -18837,10 +18255,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeObject) getTypeFor(name string)
 func LogicalRouterDataSourceVrfOspfv3AreaTypeNormalSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -18877,42 +18293,32 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalObject) getTypeFor(name s
 func LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"import_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"export_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inbound_filter_list": dsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound_filter_list": dsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18939,10 +18345,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNormalAbrObject) getTypeFor(nam
 func LogicalRouterDataSourceVrfOspfv3AreaTypeStubSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -18955,20 +18359,16 @@ func LogicalRouterDataSourceVrfOspfv3AreaTypeStubSchema() dsschema.SingleNestedA
 
 			"no_summary": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"abr": LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrSchema(),
 
 			"default_route_metric": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18995,42 +18395,32 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubObject) getTypeFor(name str
 func LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"import_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"export_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inbound_filter_list": dsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound_filter_list": dsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19057,10 +18447,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeStubAbrObject) getTypeFor(name 
 func LogicalRouterDataSourceVrfOspfv3AreaTypeNssaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -19073,10 +18461,8 @@ func LogicalRouterDataSourceVrfOspfv3AreaTypeNssaSchema() dsschema.SingleNestedA
 
 			"no_summary": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_information_originate": LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateSchema(),
@@ -19107,26 +18493,20 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaObject) getTypeFor(name str
 func LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric_type": dsschema.StringAttribute{
 				Description: "metric type to be used when redistribute default route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19153,50 +18533,38 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaTypeNssaDefaultInformationOriginate
 func LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"import_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"export_list": dsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inbound_filter_list": dsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound_filter_list": dsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"nssa_ext_range": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeSchema(),
 			},
 		},
@@ -19227,18 +18595,13 @@ func LogicalRouterDataSourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeSchema() dsschem
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"advertise": dsschema.BoolAttribute{
 				Description: "do summarization and advertise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19268,18 +18631,13 @@ func LogicalRouterDataSourceVrfOspfv3AreaRangeSchema() dsschema.NestedAttributeO
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"advertise": dsschema.BoolAttribute{
 				Description: "do summarization and advertise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19309,74 +18667,55 @@ func LogicalRouterDataSourceVrfOspfv3AreaInterfaceSchema() dsschema.NestedAttrib
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable OSPF in this interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mtu_ignore": dsschema.BoolAttribute{
 				Description: "Ignore mtu when try to establish adjacency",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"passive": dsschema.BoolAttribute{
 				Description: "Suppress the sending of hello packets in this interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"priority": dsschema.Int64Attribute{
 				Description: "Priority for OSPF designated router selection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Cost of OSPF interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"instance_id": dsschema.Int64Attribute{
 				Description: "OSPFv3 instance ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timing": dsschema.StringAttribute{
 				Description: "Protocol timer setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"link_type": LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeSchema(),
@@ -19407,10 +18746,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceObject) getTypeFor(name st
 func LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"broadcast": LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastSchema(),
@@ -19443,10 +18780,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeObject) getTypeFor
 func LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -19480,10 +18815,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) g
 func LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -19517,10 +18850,8 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) getType
 func LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -19533,10 +18864,8 @@ func LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpSchema() dsschema.
 
 			"neighbor": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborSchema(),
 			},
 		},
@@ -19567,18 +18896,13 @@ func LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborSchema() d
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"priority": dsschema.Int64Attribute{
 				Description: "Neighbor priority",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19605,18 +18929,14 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
 func LogicalRouterDataSourceVrfOspfv3AreaInterfaceBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19646,58 +18966,43 @@ func LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkSchema() dsschema.NestedAttr
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"neighbor_id": dsschema.StringAttribute{
 				Description: "neighbor router id for virtual link",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"transit_area_id": dsschema.StringAttribute{
 				Description: "id of transit area, cannot be backbone, stub or NSSA",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable this virtual link",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"instance_id": dsschema.Int64Attribute{
 				Description: "OSPFv3 instance ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timing": dsschema.StringAttribute{
 				Description: "Protocol timer setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19724,42 +19029,32 @@ func (o *LogicalRouterDataSourceVrfOspfv3AreaVirtualLinkObject) getTypeFor(name 
 func LogicalRouterDataSourceVrfEcmpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "enable Equal Cost Multipath routing, change this configuration will result in a virtual router restart",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_paths": dsschema.Int64Attribute{
 				Description: "Maxmum number of ECMP paths supported, change this configuration will result in a virtual router restart",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"symmetric_return": dsschema.BoolAttribute{
 				Description: "allows return packets to egress out of the ingress interface of the flow",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"strict_source_path": dsschema.BoolAttribute{
 				Description: "force VPN traffic to exit interface that the source-ip belongs to",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"algorithm": LogicalRouterDataSourceVrfEcmpAlgorithmSchema(),
@@ -19788,10 +19083,8 @@ func (o *LogicalRouterDataSourceVrfEcmpObject) getTypeFor(name string) attr.Type
 func LogicalRouterDataSourceVrfEcmpAlgorithmSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip_modulo": LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloSchema(),
@@ -19826,10 +19119,8 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmObject) getTypeFor(name string) 
 func LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -19864,10 +19155,8 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpModuloObject) getTypeFor(name 
 func LogicalRouterDataSourceVrfEcmpAlgorithmIpHashSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -19881,26 +19170,20 @@ func LogicalRouterDataSourceVrfEcmpAlgorithmIpHashSchema() dsschema.SingleNested
 
 			"src_only": dsschema.BoolAttribute{
 				Description: "only use source address for hash",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"use_port": dsschema.BoolAttribute{
 				Description: "use source/destination port for hash",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"hash_seed": dsschema.Int64Attribute{
 				Description: "User-specified hash seed",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19927,10 +19210,8 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmIpHashObject) getTypeFor(name st
 func LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -19944,10 +19225,8 @@ func LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinSchema() dsschema.
 
 			"interface": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceSchema(),
 			},
 		},
@@ -19978,18 +19257,13 @@ func LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceSchema() 
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"weight": dsschema.Int64Attribute{
 				Description: "interface ECMP weight",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20016,10 +19290,8 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObjec
 func LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -20054,26 +19326,20 @@ func (o *LogicalRouterDataSourceVrfEcmpAlgorithmBalancedRoundRobinObject) getTyp
 func LogicalRouterDataSourceVrfMulticastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "enable multicast protocol",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"static_route": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfMulticastStaticRouteSchema(),
 			},
 
@@ -20110,34 +19376,25 @@ func LogicalRouterDataSourceVrfMulticastStaticRouteSchema() dsschema.NestedAttri
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"destination": dsschema.StringAttribute{
 				Description: "Destination IP address/prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"preference": dsschema.Int64Attribute{
 				Description: "administrative distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"nexthop": LogicalRouterDataSourceVrfMulticastStaticRouteNexthopSchema(),
@@ -20166,18 +19423,14 @@ func (o *LogicalRouterDataSourceVrfMulticastStaticRouteObject) getTypeFor(name s
 func LogicalRouterDataSourceVrfMulticastStaticRouteNexthopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip_address": dsschema.StringAttribute{
 				Description: "Next hop IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20204,50 +19457,38 @@ func (o *LogicalRouterDataSourceVrfMulticastStaticRouteNexthopObject) getTypeFor
 func LogicalRouterDataSourceVrfMulticastPimSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"rpf_lookup_mode": dsschema.StringAttribute{
 				Description: "RPF Lookup Preference",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"route_ageout_time": dsschema.Int64Attribute{
 				Description: "time to wait before aging out a multicast route after data stops, in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"if_timer_global": dsschema.StringAttribute{
 				Description: "Global Interface Timer Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_permission": dsschema.StringAttribute{
 				Description: "ASM/SSM group permission",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ssm_address_space": LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceSchema(),
@@ -20256,19 +19497,15 @@ func LogicalRouterDataSourceVrfMulticastPimSchema() dsschema.SingleNestedAttribu
 
 			"spt_threshold": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfMulticastPimSptThresholdSchema(),
 			},
 
 			"interface": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfMulticastPimInterfaceSchema(),
 			},
 		},
@@ -20296,18 +19533,14 @@ func (o *LogicalRouterDataSourceVrfMulticastPimObject) getTypeFor(name string) a
 func LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"group_list": dsschema.StringAttribute{
 				Description: "SSM Group Prefix List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20334,20 +19567,16 @@ func (o *LogicalRouterDataSourceVrfMulticastPimSsmAddressSpaceObject) getTypeFor
 func LogicalRouterDataSourceVrfMulticastPimRpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"local_rp": LogicalRouterDataSourceVrfMulticastPimRpLocalRpSchema(),
 
 			"external_rp": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfMulticastPimRpExternalRpSchema(),
 			},
 		},
@@ -20375,10 +19604,8 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpObject) getTypeFor(name string)
 func LogicalRouterDataSourceVrfMulticastPimRpLocalRpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"static_rp": LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpSchema(),
@@ -20409,10 +19636,8 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpObject) getTypeFor(name 
 func LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -20424,34 +19649,26 @@ func LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpSchema() dsschema.Si
 
 			"interface": dsschema.StringAttribute{
 				Description: "local RP interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": dsschema.StringAttribute{
 				Description: "local RP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"override": dsschema.BoolAttribute{
 				Description: "Override learned RP for the same group",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_list": dsschema.StringAttribute{
 				Description: "Group Access List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20478,10 +19695,8 @@ func (o *LogicalRouterDataSourceVrfMulticastPimRpLocalRpStaticRpObject) getTypeF
 func LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -20493,42 +19708,32 @@ func LogicalRouterDataSourceVrfMulticastPimRpLocalRpCandidateRpSchema() dsschema
 
 			"interface": dsschema.StringAttribute{
 				Description: "candidate RP interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": dsschema.StringAttribute{
 				Description: "candidate RP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"priority": dsschema.Int64Attribute{
 				Description: "The priority for this candidate rt",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"advertisement_interval": dsschema.Int64Attribute{
 				Description: "The time interval in seconds between candidate rp advertisements",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_list": dsschema.StringAttribute{
 				Description: "Group Access List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20558,26 +19763,19 @@ func LogicalRouterDataSourceVrfMulticastPimRpExternalRpSchema() dsschema.NestedA
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"group_list": dsschema.StringAttribute{
 				Description: "Group Access List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"override": dsschema.BoolAttribute{
 				Description: "Override learned RP for the same group",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20607,18 +19805,13 @@ func LogicalRouterDataSourceVrfMulticastPimSptThresholdSchema() dsschema.NestedA
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"threshold": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20648,50 +19841,37 @@ func LogicalRouterDataSourceVrfMulticastPimInterfaceSchema() dsschema.NestedAttr
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dr_priority": dsschema.Int64Attribute{
 				Description: "Designated Router priority",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"send_bsm": dsschema.BoolAttribute{
 				Description: "Send BSM",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"if_timer": dsschema.StringAttribute{
 				Description: "Interface Timer Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"neighbor_filter": dsschema.StringAttribute{
 				Description: "Set the filter for neighbor list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20718,28 +19898,22 @@ func (o *LogicalRouterDataSourceVrfMulticastPimInterfaceObject) getTypeFor(name 
 func LogicalRouterDataSourceVrfMulticastIgmpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "enable IGMP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"dynamic": LogicalRouterDataSourceVrfMulticastIgmpDynamicSchema(),
 
 			"static": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfMulticastIgmpStaticSchema(),
 			},
 		},
@@ -20767,18 +19941,14 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpObject) getTypeFor(name string) 
 func LogicalRouterDataSourceVrfMulticastIgmpDynamicSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceSchema(),
 			},
 		},
@@ -20809,66 +19979,49 @@ func LogicalRouterDataSourceVrfMulticastIgmpDynamicInterfaceSchema() dsschema.Ne
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"version": dsschema.StringAttribute{
 				Description: "IGMP version number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"robustness": dsschema.StringAttribute{
 				Description: "robustness variable",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_filter": dsschema.StringAttribute{
 				Description: "ASM/SSM Group Access List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_groups": dsschema.StringAttribute{
 				Description: "maximum number of groups allowed on this interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_sources": dsschema.StringAttribute{
 				Description: "maximum number of source-specific memberships allowed on this interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"query_profile": dsschema.StringAttribute{
 				Description: "IGMP Query Timer Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_alert_policing": dsschema.BoolAttribute{
 				Description: "drop IGMP packets without Router Alert option",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20898,34 +20051,25 @@ func LogicalRouterDataSourceVrfMulticastIgmpStaticSchema() dsschema.NestedAttrib
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "multicast interfaces",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_address": dsschema.StringAttribute{
 				Description: "group-address/prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_address": dsschema.StringAttribute{
 				Description: "source-address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20952,44 +20096,34 @@ func (o *LogicalRouterDataSourceVrfMulticastIgmpStaticObject) getTypeFor(name st
 func LogicalRouterDataSourceVrfMulticastMsdpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"global_timer": dsschema.StringAttribute{
 				Description: "Global timer profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"global_authentication": dsschema.StringAttribute{
 				Description: "Global authentication profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"originator_id": LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdSchema(),
 
 			"peer": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfMulticastMsdpPeerSchema(),
 			},
 		},
@@ -21017,26 +20151,20 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpObject) getTypeFor(name string) 
 func LogicalRouterDataSourceVrfMulticastMsdpOriginatorIdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "interface of originator",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21066,58 +20194,43 @@ func LogicalRouterDataSourceVrfMulticastMsdpPeerSchema() dsschema.NestedAttribut
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"peer_as": dsschema.StringAttribute{
 				Description: "peer AS number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_sa": dsschema.Int64Attribute{
 				Description: "Maximum number of SA",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inbound_sa_filter": dsschema.StringAttribute{
 				Description: "Inbound SA Filter",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound_sa_filter": dsschema.StringAttribute{
 				Description: "Outbound SA Filter",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_address": LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressSchema(),
@@ -21148,26 +20261,20 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerObject) getTypeFor(name stri
 func LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "interface to accept MSDP connection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21194,26 +20301,20 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerLocalAddressObject) getTypeF
 func LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip": dsschema.StringAttribute{
 				Description: "peer address configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "Peer FQDN Address Object",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21240,50 +20341,38 @@ func (o *LogicalRouterDataSourceVrfMulticastMsdpPeerPeerAddressObject) getTypeFo
 func LogicalRouterDataSourceVrfRipSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_information_originate": dsschema.BoolAttribute{
 				Description: "advertise default route in RIP",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"global_timer": dsschema.StringAttribute{
 				Description: "timer setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"auth_profile": dsschema.StringAttribute{
 				Description: "Authentication profile setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"redistribution_profile": dsschema.StringAttribute{
 				Description: "Redistribution profile setting",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"global_bfd": LogicalRouterDataSourceVrfRipGlobalBfdSchema(),
@@ -21294,10 +20383,8 @@ func LogicalRouterDataSourceVrfRipSchema() dsschema.SingleNestedAttribute {
 
 			"interfaces": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: LogicalRouterDataSourceVrfRipInterfacesSchema(),
 			},
 		},
@@ -21325,18 +20412,14 @@ func (o *LogicalRouterDataSourceVrfRipObject) getTypeFor(name string) attr.Type 
 func LogicalRouterDataSourceVrfRipGlobalBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21363,18 +20446,14 @@ func (o *LogicalRouterDataSourceVrfRipGlobalBfdObject) getTypeFor(name string) a
 func LogicalRouterDataSourceVrfRipGlobalInboundDistributeListSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "access-list name from filter",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21401,18 +20480,14 @@ func (o *LogicalRouterDataSourceVrfRipGlobalInboundDistributeListObject) getType
 func LogicalRouterDataSourceVrfRipGlobalOutboundDistributeListSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "access-list name from filter",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21442,42 +20517,31 @@ func LogicalRouterDataSourceVrfRipInterfacesSchema() dsschema.NestedAttributeObj
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable RIP on this interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mode": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"split_horizon": dsschema.StringAttribute{
 				Description: "Split horizon options",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"authentication": dsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"bfd": LogicalRouterDataSourceVrfRipInterfacesBfdSchema(),
@@ -21510,18 +20574,14 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesObject) getTypeFor(name string) 
 func LogicalRouterDataSourceVrfRipInterfacesBfdSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"profile": dsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21548,26 +20608,20 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesBfdObject) getTypeFor(name strin
 func LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "access-list name from filter",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "metric value",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21594,26 +20648,20 @@ func (o *LogicalRouterDataSourceVrfRipInterfacesInterfaceInboundDistributeListOb
 func LogicalRouterDataSourceVrfRipInterfacesInterfaceOutboundDistributeListSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "access-list name from filter",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "metric value",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -22546,7 +21594,1771 @@ type LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject 
 	Metric     types.Int64  `tfsdk:"metric"`
 }
 
+func (o *LogicalRouterResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Vrf.IsUnknown() && !o.Vrf.IsNull() {
+		var elements []LogicalRouterResourceVrfObject
+		diags := o.Vrf.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("vrf").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AdministrativeDistances.IsUnknown() && !o.AdministrativeDistances.IsNull() {
+		var nestedObj LogicalRouterResourceVrfAdministrativeDistancesObject
+		diags := o.AdministrativeDistances.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("administrative_distances"))
+		}
+	}
+	if !o.RibFilter.IsUnknown() && !o.RibFilter.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterObject
+		diags := o.RibFilter.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rib_filter"))
+		}
+	}
+	if !o.Bgp.IsUnknown() && !o.Bgp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpObject
+		diags := o.Bgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bgp"))
+		}
+	}
+	if !o.RoutingTable.IsUnknown() && !o.RoutingTable.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableObject
+		diags := o.RoutingTable.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("routing_table"))
+		}
+	}
+	if !o.Ospf.IsUnknown() && !o.Ospf.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfObject
+		diags := o.Ospf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospf"))
+		}
+	}
+	if !o.Ospfv3.IsUnknown() && !o.Ospfv3.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3Object
+		diags := o.Ospfv3.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospfv3"))
+		}
+	}
+	if !o.Ecmp.IsUnknown() && !o.Ecmp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfEcmpObject
+		diags := o.Ecmp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ecmp"))
+		}
+	}
+	if !o.Multicast.IsUnknown() && !o.Multicast.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastObject
+		diags := o.Multicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("multicast"))
+		}
+	}
+	if !o.Rip.IsUnknown() && !o.Rip.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRipObject
+		diags := o.Rip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rip"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRibFilterObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRibFilterIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Static.IsUnknown() && !o.Static.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterIpv4StaticObject
+		diags := o.Static.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("static"))
+		}
+	}
+	if !o.Bgp.IsUnknown() && !o.Bgp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterIpv4BgpObject
+		diags := o.Bgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bgp"))
+		}
+	}
+	if !o.Ospf.IsUnknown() && !o.Ospf.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterIpv4OspfObject
+		diags := o.Ospf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospf"))
+		}
+	}
+	if !o.Rip.IsUnknown() && !o.Rip.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterIpv4RipObject
+		diags := o.Rip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rip"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRibFilterIpv4StaticObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRibFilterIpv4OspfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRibFilterIpv4RipObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRibFilterIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Static.IsUnknown() && !o.Static.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterIpv6StaticObject
+		diags := o.Static.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("static"))
+		}
+	}
+	if !o.Bgp.IsUnknown() && !o.Bgp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterIpv6BgpObject
+		diags := o.Bgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bgp"))
+		}
+	}
+	if !o.Ospfv3.IsUnknown() && !o.Ospfv3.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object
+		diags := o.Ospfv3.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospfv3"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRibFilterIpv6StaticObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Med.IsUnknown() && !o.Med.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpMedObject
+		diags := o.Med.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("med"))
+		}
+	}
+	if !o.GracefulRestart.IsUnknown() && !o.GracefulRestart.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpGracefulRestartObject
+		diags := o.GracefulRestart.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("graceful_restart"))
+		}
+	}
+	if !o.GlobalBfd.IsUnknown() && !o.GlobalBfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpGlobalBfdObject
+		diags := o.GlobalBfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("global_bfd"))
+		}
+	}
+	if !o.RedistributionProfile.IsUnknown() && !o.RedistributionProfile.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpRedistributionProfileObject
+		diags := o.RedistributionProfile.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("redistribution_profile"))
+		}
+	}
+	if !o.AdvertiseNetwork.IsUnknown() && !o.AdvertiseNetwork.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpAdvertiseNetworkObject
+		diags := o.AdvertiseNetwork.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("advertise_network"))
+		}
+	}
+	if !o.PeerGroup.IsUnknown() && !o.PeerGroup.IsNull() {
+		var elements []LogicalRouterResourceVrfBgpPeerGroupObject
+		diags := o.PeerGroup.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("peer_group").AtListIndex(i))
+			}
+		}
+	}
+	if !o.AggregateRoutes.IsUnknown() && !o.AggregateRoutes.IsNull() {
+		var elements []LogicalRouterResourceVrfBgpAggregateRoutesObject
+		diags := o.AggregateRoutes.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("aggregate_routes").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpMedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpGlobalBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Network.IsUnknown() && !o.Network.IsNull() {
+		var elements []LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject
+		diags := o.Network.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("network").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Network.IsUnknown() && !o.Network.IsNull() {
+		var elements []LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject
+		diags := o.Network.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("network").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+	if !o.AddressFamily.IsUnknown() && !o.AddressFamily.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject
+		diags := o.AddressFamily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address_family"))
+		}
+	}
+	if !o.FilteringProfile.IsUnknown() && !o.FilteringProfile.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject
+		diags := o.FilteringProfile.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("filtering_profile"))
+		}
+	}
+	if !o.ConnectionOptions.IsUnknown() && !o.ConnectionOptions.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject
+		diags := o.ConnectionOptions.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("connection_options"))
+		}
+	}
+	if !o.Peer.IsUnknown() && !o.Peer.IsNull() {
+		var elements []LogicalRouterResourceVrfBgpPeerGroupPeerObject
+		diags := o.Peer.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("peer").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ibgp.IsUnknown() && !o.Ibgp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject
+		diags := o.Ibgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ibgp"))
+		}
+	}
+	if !o.Ebgp.IsUnknown() && !o.Ebgp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject
+		diags := o.Ebgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ebgp"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Inherit.IsUnknown() && !o.Inherit.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject
+		diags := o.Inherit.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("inherit"))
+		}
+	}
+	if !o.LocalAddress.IsUnknown() && !o.LocalAddress.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject
+		diags := o.LocalAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_address"))
+		}
+	}
+	if !o.PeerAddress.IsUnknown() && !o.PeerAddress.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject
+		diags := o.PeerAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("peer_address"))
+		}
+	}
+	if !o.ConnectionOptions.IsUnknown() && !o.ConnectionOptions.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject
+		diags := o.ConnectionOptions.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("connection_options"))
+		}
+	}
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject
+		diags := o.Bfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bfd"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Yes.IsUnknown() && !o.Yes.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject
+		diags := o.Yes.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("yes"))
+		}
+	}
+	if !o.No.IsUnknown() && !o.No.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject
+		diags := o.No.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("no"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AddressFamily.IsUnknown() && !o.AddressFamily.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject
+		diags := o.AddressFamily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address_family"))
+		}
+	}
+	if !o.FilteringProfile.IsUnknown() && !o.FilteringProfile.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject
+		diags := o.FilteringProfile.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("filtering_profile"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpPeerGroupPeerBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpAggregateRoutesTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpObject
+		diags := o.Ip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.StaticRoute.IsUnknown() && !o.StaticRoute.IsNull() {
+		var elements []LogicalRouterResourceVrfRoutingTableIpStaticRouteObject
+		diags := o.StaticRoute.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("static_route").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Nexthop.IsUnknown() && !o.Nexthop.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject
+		diags := o.Nexthop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("nexthop"))
+		}
+	}
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject
+		diags := o.Bfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bfd"))
+		}
+	}
+	if !o.PathMonitor.IsUnknown() && !o.PathMonitor.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject
+		diags := o.PathMonitor.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("path_monitor"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Discard.IsUnknown() && !o.Discard.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject
+		diags := o.Discard.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("discard"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.MonitorDestinations.IsUnknown() && !o.MonitorDestinations.IsNull() {
+		var elements []LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject
+		diags := o.MonitorDestinations.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("monitor_destinations").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.StaticRoute.IsUnknown() && !o.StaticRoute.IsNull() {
+		var elements []LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject
+		diags := o.StaticRoute.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("static_route").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Nexthop.IsUnknown() && !o.Nexthop.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject
+		diags := o.Nexthop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("nexthop"))
+		}
+	}
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject
+		diags := o.Bfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bfd"))
+		}
+	}
+	if !o.PathMonitor.IsUnknown() && !o.PathMonitor.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject
+		diags := o.PathMonitor.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("path_monitor"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Discard.IsUnknown() && !o.Discard.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject
+		diags := o.Discard.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("discard"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.MonitorDestinations.IsUnknown() && !o.MonitorDestinations.IsNull() {
+		var elements []LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject
+		diags := o.MonitorDestinations.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("monitor_destinations").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.GlobalBfd.IsUnknown() && !o.GlobalBfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfGlobalBfdObject
+		diags := o.GlobalBfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("global_bfd"))
+		}
+	}
+	if !o.GracefulRestart.IsUnknown() && !o.GracefulRestart.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfGracefulRestartObject
+		diags := o.GracefulRestart.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("graceful_restart"))
+		}
+	}
+	if !o.Area.IsUnknown() && !o.Area.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfAreaObject
+		diags := o.Area.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("area").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfGlobalBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfGracefulRestartObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+	if !o.Range.IsUnknown() && !o.Range.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfAreaRangeObject
+		diags := o.Range.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("range").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Interface.IsUnknown() && !o.Interface.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfAreaInterfaceObject
+		diags := o.Interface.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("interface").AtListIndex(i))
+			}
+		}
+	}
+	if !o.VirtualLink.IsUnknown() && !o.VirtualLink.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfAreaVirtualLinkObject
+		diags := o.VirtualLink.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("virtual_link").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Normal.IsUnknown() && !o.Normal.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaTypeNormalObject
+		diags := o.Normal.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("normal"))
+		}
+	}
+	if !o.Stub.IsUnknown() && !o.Stub.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaTypeStubObject
+		diags := o.Stub.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("stub"))
+		}
+	}
+	if !o.Nssa.IsUnknown() && !o.Nssa.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaTypeNssaObject
+		diags := o.Nssa.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("nssa"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Abr.IsUnknown() && !o.Abr.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject
+		diags := o.Abr.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("abr"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Abr.IsUnknown() && !o.Abr.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaTypeStubAbrObject
+		diags := o.Abr.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("abr"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DefaultInformationOriginate.IsUnknown() && !o.DefaultInformationOriginate.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject
+		diags := o.DefaultInformationOriginate.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("default_information_originate"))
+		}
+	}
+	if !o.Abr.IsUnknown() && !o.Abr.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject
+		diags := o.Abr.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("abr"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.NssaExtRange.IsUnknown() && !o.NssaExtRange.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject
+		diags := o.NssaExtRange.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("nssa_ext_range").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaRangeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.LinkType.IsUnknown() && !o.LinkType.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject
+		diags := o.LinkType.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("link_type"))
+		}
+	}
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaInterfaceBfdObject
+		diags := o.Bfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bfd"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Broadcast.IsUnknown() && !o.Broadcast.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject
+		diags := o.Broadcast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("broadcast"))
+		}
+	}
+	if !o.P2p.IsUnknown() && !o.P2p.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject
+		diags := o.P2p.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("p2p"))
+		}
+	}
+	if !o.P2mp.IsUnknown() && !o.P2mp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject
+		diags := o.P2mp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("p2mp"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Neighbor.IsUnknown() && !o.Neighbor.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject
+		diags := o.Neighbor.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("neighbor").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaInterfaceBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject
+		diags := o.Bfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bfd"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.GlobalBfd.IsUnknown() && !o.GlobalBfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3GlobalBfdObject
+		diags := o.GlobalBfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("global_bfd"))
+		}
+	}
+	if !o.GracefulRestart.IsUnknown() && !o.GracefulRestart.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3GracefulRestartObject
+		diags := o.GracefulRestart.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("graceful_restart"))
+		}
+	}
+	if !o.Area.IsUnknown() && !o.Area.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfv3AreaObject
+		diags := o.Area.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("area").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3GlobalBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3GracefulRestartObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+	if !o.Range.IsUnknown() && !o.Range.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfv3AreaRangeObject
+		diags := o.Range.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("range").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Interface.IsUnknown() && !o.Interface.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfv3AreaInterfaceObject
+		diags := o.Interface.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("interface").AtListIndex(i))
+			}
+		}
+	}
+	if !o.VirtualLink.IsUnknown() && !o.VirtualLink.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject
+		diags := o.VirtualLink.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("virtual_link").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Normal.IsUnknown() && !o.Normal.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaTypeNormalObject
+		diags := o.Normal.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("normal"))
+		}
+	}
+	if !o.Stub.IsUnknown() && !o.Stub.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaTypeStubObject
+		diags := o.Stub.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("stub"))
+		}
+	}
+	if !o.Nssa.IsUnknown() && !o.Nssa.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaTypeNssaObject
+		diags := o.Nssa.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("nssa"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Abr.IsUnknown() && !o.Abr.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject
+		diags := o.Abr.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("abr"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Abr.IsUnknown() && !o.Abr.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject
+		diags := o.Abr.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("abr"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DefaultInformationOriginate.IsUnknown() && !o.DefaultInformationOriginate.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject
+		diags := o.DefaultInformationOriginate.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("default_information_originate"))
+		}
+	}
+	if !o.Abr.IsUnknown() && !o.Abr.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject
+		diags := o.Abr.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("abr"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.NssaExtRange.IsUnknown() && !o.NssaExtRange.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject
+		diags := o.NssaExtRange.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("nssa_ext_range").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaRangeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.LinkType.IsUnknown() && !o.LinkType.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject
+		diags := o.LinkType.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("link_type"))
+		}
+	}
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject
+		diags := o.Bfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bfd"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Broadcast.IsUnknown() && !o.Broadcast.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject
+		diags := o.Broadcast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("broadcast"))
+		}
+	}
+	if !o.P2p.IsUnknown() && !o.P2p.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject
+		diags := o.P2p.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("p2p"))
+		}
+	}
+	if !o.P2mp.IsUnknown() && !o.P2mp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject
+		diags := o.P2mp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("p2mp"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Neighbor.IsUnknown() && !o.Neighbor.IsNull() {
+		var elements []LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject
+		diags := o.Neighbor.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("neighbor").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfEcmpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Algorithm.IsUnknown() && !o.Algorithm.IsNull() {
+		var nestedObj LogicalRouterResourceVrfEcmpAlgorithmObject
+		diags := o.Algorithm.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("algorithm"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.IpModulo.IsUnknown() && !o.IpModulo.IsNull() {
+		var nestedObj LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject
+		diags := o.IpModulo.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip_modulo"))
+		}
+	}
+	if !o.IpHash.IsUnknown() && !o.IpHash.IsNull() {
+		var nestedObj LogicalRouterResourceVrfEcmpAlgorithmIpHashObject
+		diags := o.IpHash.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip_hash"))
+		}
+	}
+	if !o.WeightedRoundRobin.IsUnknown() && !o.WeightedRoundRobin.IsNull() {
+		var nestedObj LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject
+		diags := o.WeightedRoundRobin.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weighted_round_robin"))
+		}
+	}
+	if !o.BalancedRoundRobin.IsUnknown() && !o.BalancedRoundRobin.IsNull() {
+		var nestedObj LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject
+		diags := o.BalancedRoundRobin.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("balanced_round_robin"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Interface.IsUnknown() && !o.Interface.IsNull() {
+		var elements []LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject
+		diags := o.Interface.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("interface").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.StaticRoute.IsUnknown() && !o.StaticRoute.IsNull() {
+		var elements []LogicalRouterResourceVrfMulticastStaticRouteObject
+		diags := o.StaticRoute.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("static_route").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Pim.IsUnknown() && !o.Pim.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastPimObject
+		diags := o.Pim.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("pim"))
+		}
+	}
+	if !o.Igmp.IsUnknown() && !o.Igmp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastIgmpObject
+		diags := o.Igmp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("igmp"))
+		}
+	}
+	if !o.Msdp.IsUnknown() && !o.Msdp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastMsdpObject
+		diags := o.Msdp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("msdp"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Nexthop.IsUnknown() && !o.Nexthop.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastStaticRouteNexthopObject
+		diags := o.Nexthop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("nexthop"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastPimObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SsmAddressSpace.IsUnknown() && !o.SsmAddressSpace.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject
+		diags := o.SsmAddressSpace.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ssm_address_space"))
+		}
+	}
+	if !o.Rp.IsUnknown() && !o.Rp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastPimRpObject
+		diags := o.Rp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rp"))
+		}
+	}
+	if !o.SptThreshold.IsUnknown() && !o.SptThreshold.IsNull() {
+		var elements []LogicalRouterResourceVrfMulticastPimSptThresholdObject
+		diags := o.SptThreshold.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("spt_threshold").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Interface.IsUnknown() && !o.Interface.IsNull() {
+		var elements []LogicalRouterResourceVrfMulticastPimInterfaceObject
+		diags := o.Interface.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("interface").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastPimRpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.LocalRp.IsUnknown() && !o.LocalRp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastPimRpLocalRpObject
+		diags := o.LocalRp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_rp"))
+		}
+	}
+	if !o.ExternalRp.IsUnknown() && !o.ExternalRp.IsNull() {
+		var elements []LogicalRouterResourceVrfMulticastPimRpExternalRpObject
+		diags := o.ExternalRp.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("external_rp").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.StaticRp.IsUnknown() && !o.StaticRp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject
+		diags := o.StaticRp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("static_rp"))
+		}
+	}
+	if !o.CandidateRp.IsUnknown() && !o.CandidateRp.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject
+		diags := o.CandidateRp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("candidate_rp"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastPimRpExternalRpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastPimSptThresholdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastIgmpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Dynamic.IsUnknown() && !o.Dynamic.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastIgmpDynamicObject
+		diags := o.Dynamic.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dynamic"))
+		}
+	}
+	if !o.Static.IsUnknown() && !o.Static.IsNull() {
+		var elements []LogicalRouterResourceVrfMulticastIgmpStaticObject
+		diags := o.Static.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("static").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfMulticastIgmpDynamicObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Interface.IsUnknown() && !o.Interface.IsNull() {
+		var elements []LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject
+		diags := o.Interface.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("interface").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastMsdpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.OriginatorId.IsUnknown() && !o.OriginatorId.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject
+		diags := o.OriginatorId.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("originator_id"))
+		}
+	}
+	if !o.Peer.IsUnknown() && !o.Peer.IsNull() {
+		var elements []LogicalRouterResourceVrfMulticastMsdpPeerObject
+		diags := o.Peer.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("peer").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfMulticastMsdpOriginatorIdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.LocalAddress.IsUnknown() && !o.LocalAddress.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject
+		diags := o.LocalAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_address"))
+		}
+	}
+	if !o.PeerAddress.IsUnknown() && !o.PeerAddress.IsNull() {
+		var nestedObj LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject
+		diags := o.PeerAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("peer_address"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRipObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.GlobalBfd.IsUnknown() && !o.GlobalBfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRipGlobalBfdObject
+		diags := o.GlobalBfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("global_bfd"))
+		}
+	}
+	if !o.GlobalInboundDistributeList.IsUnknown() && !o.GlobalInboundDistributeList.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRipGlobalInboundDistributeListObject
+		diags := o.GlobalInboundDistributeList.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("global_inbound_distribute_list"))
+		}
+	}
+	if !o.GlobalOutboundDistributeList.IsUnknown() && !o.GlobalOutboundDistributeList.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject
+		diags := o.GlobalOutboundDistributeList.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("global_outbound_distribute_list"))
+		}
+	}
+	if !o.Interfaces.IsUnknown() && !o.Interfaces.IsNull() {
+		var elements []LogicalRouterResourceVrfRipInterfacesObject
+		diags := o.Interfaces.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("interfaces").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRipGlobalBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRipGlobalOutboundDistributeListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRipInterfacesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Bfd.IsUnknown() && !o.Bfd.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRipInterfacesBfdObject
+		diags := o.Bfd.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bfd"))
+		}
+	}
+	if !o.InterfaceInboundDistributeList.IsUnknown() && !o.InterfaceInboundDistributeList.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject
+		diags := o.InterfaceInboundDistributeList.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("interface_inbound_distribute_list"))
+		}
+	}
+	if !o.InterfaceOutboundDistributeList.IsUnknown() && !o.InterfaceOutboundDistributeList.IsNull() {
+		var nestedObj LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject
+		diags := o.InterfaceOutboundDistributeList.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("interface_outbound_distribute_list"))
+		}
+	}
+}
+
+func (o *LogicalRouterResourceVrfRipInterfacesBfdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *LogicalRouterResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource LogicalRouterResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -22559,18 +23371,12 @@ func LogicalRouterResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"vrf": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfSchema(),
 			},
 		},
@@ -22601,18 +23407,12 @@ func LogicalRouterResourceVrfSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -22658,117 +23458,90 @@ func (o *LogicalRouterResourceVrfObject) getTypeFor(name string) attr.Type {
 func LogicalRouterResourceVrfAdministrativeDistancesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"static": rsschema.Int64Attribute{
 				Description: "Set IPv4 Static Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"static_ipv6": rsschema.Int64Attribute{
 				Description: "Set IPv6 Static Routes  Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"ospf_inter": rsschema.Int64Attribute{
 				Description: "Set OSPF Inter Area Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(110),
 			},
 
 			"ospf_intra": rsschema.Int64Attribute{
 				Description: "Set OSPF Intra Area Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(110),
 			},
 
 			"ospf_ext": rsschema.Int64Attribute{
 				Description: "Set OSPF External Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(110),
 			},
 
 			"ospfv3_inter": rsschema.Int64Attribute{
 				Description: "Set OSPFv3 Inter Area Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(110),
 			},
 
 			"ospfv3_intra": rsschema.Int64Attribute{
 				Description: "Set OSPFv3 Intra Area Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(110),
 			},
 
 			"ospfv3_ext": rsschema.Int64Attribute{
 				Description: "Set OSPFv3 External Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(110),
 			},
 
 			"bgp_internal": rsschema.Int64Attribute{
 				Description: "Set BGP AS Internal Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(200),
 			},
 
 			"bgp_external": rsschema.Int64Attribute{
 				Description: "Set BGP AS External Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(20),
 			},
 
 			"bgp_local": rsschema.Int64Attribute{
 				Description: "Set BGP Local Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(20),
 			},
 
 			"rip": rsschema.Int64Attribute{
 				Description: "Set RIP Routes Administrative Distance",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(120),
 			},
 		},
@@ -22796,10 +23569,7 @@ func (o *LogicalRouterResourceVrfAdministrativeDistancesObject) getTypeFor(name 
 func LogicalRouterResourceVrfRibFilterSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": LogicalRouterResourceVrfRibFilterIpv4Schema(),
@@ -22830,10 +23600,7 @@ func (o *LogicalRouterResourceVrfRibFilterObject) getTypeFor(name string) attr.T
 func LogicalRouterResourceVrfRibFilterIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"static": LogicalRouterResourceVrfRibFilterIpv4StaticSchema(),
@@ -22868,18 +23635,12 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4Object) getTypeFor(name string) at
 func LogicalRouterResourceVrfRibFilterIpv4StaticSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on Static Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -22906,18 +23667,12 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4StaticObject) getTypeFor(name stri
 func LogicalRouterResourceVrfRibFilterIpv4BgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on BGP Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -22944,18 +23699,12 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4BgpObject) getTypeFor(name string)
 func LogicalRouterResourceVrfRibFilterIpv4OspfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on OSPF Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -22982,18 +23731,12 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4OspfObject) getTypeFor(name string
 func LogicalRouterResourceVrfRibFilterIpv4RipSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on RIP Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23020,10 +23763,7 @@ func (o *LogicalRouterResourceVrfRibFilterIpv4RipObject) getTypeFor(name string)
 func LogicalRouterResourceVrfRibFilterIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"static": LogicalRouterResourceVrfRibFilterIpv6StaticSchema(),
@@ -23056,18 +23796,12 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Object) getTypeFor(name string) at
 func LogicalRouterResourceVrfRibFilterIpv6StaticSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on Static Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23094,18 +23828,12 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6StaticObject) getTypeFor(name stri
 func LogicalRouterResourceVrfRibFilterIpv6BgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on BGP Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23132,18 +23860,12 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6BgpObject) getTypeFor(name string)
 func LogicalRouterResourceVrfRibFilterIpv6Ospfv3Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on OSPFv3 Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23170,91 +23892,59 @@ func (o *LogicalRouterResourceVrfRibFilterIpv6Ospfv3Object) getTypeFor(name stri
 func LogicalRouterResourceVrfBgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"router_id": rsschema.StringAttribute{
 				Description: "router id of this BGP instance",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_as": rsschema.StringAttribute{
 				Description: "local AS number",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"install_route": rsschema.BoolAttribute{
 				Description: "Populate BGP learned route to global route table",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enforce_first_as": rsschema.BoolAttribute{
 				Description: "Enforce First AS for EBGP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"fast_external_failover": rsschema.BoolAttribute{
 				Description: "Immediately reset session if a link to a directly connected external peer goes down",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ecmp_multi_as": rsschema.BoolAttribute{
 				Description: "Support multiple AS in ECMP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_local_preference": rsschema.Int64Attribute{
 				Description: "Global Default Local Preference",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(100),
 			},
 
 			"graceful_shutdown": rsschema.BoolAttribute{
 				Description: "Gracefully Shutdown BGP following RFC-8326",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"always_advertise_network_route": rsschema.BoolAttribute{
 				Description: "Always advertise network routes even if not present in RIB",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"med": LogicalRouterResourceVrfBgpMedSchema(),
@@ -23269,19 +23959,13 @@ func LogicalRouterResourceVrfBgpSchema() rsschema.SingleNestedAttribute {
 
 			"peer_group": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfBgpPeerGroupSchema(),
 			},
 
 			"aggregate_routes": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfBgpAggregateRoutesSchema(),
 			},
 		},
@@ -23309,26 +23993,17 @@ func (o *LogicalRouterResourceVrfBgpObject) getTypeFor(name string) attr.Type {
 func LogicalRouterResourceVrfBgpMedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"always_compare_med": rsschema.BoolAttribute{
 				Description: "always compare MEDs",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"deterministic_med_comparison": rsschema.BoolAttribute{
 				Description: "deterministic MEDs comparison",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23355,44 +24030,32 @@ func (o *LogicalRouterResourceVrfBgpMedObject) getTypeFor(name string) attr.Type
 func LogicalRouterResourceVrfBgpGracefulRestartSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"stale_route_time": rsschema.Int64Attribute{
 				Description: "time to remove stale routes after peer restart Default:120 (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(120),
 			},
 
 			"max_peer_restart_time": rsschema.Int64Attribute{
 				Description: "maximum of peer restart time accepted Default:120 (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(120),
 			},
 
 			"local_restart_time": rsschema.Int64Attribute{
 				Description: "local restart time to advertise to peer Default:120 (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(120),
 			},
 		},
@@ -23420,18 +24083,13 @@ func (o *LogicalRouterResourceVrfBgpGracefulRestartObject) getTypeFor(name strin
 func LogicalRouterResourceVrfBgpGlobalBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -23459,10 +24117,7 @@ func (o *LogicalRouterResourceVrfBgpGlobalBfdObject) getTypeFor(name string) att
 func LogicalRouterResourceVrfBgpRedistributionProfileSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": LogicalRouterResourceVrfBgpRedistributionProfileIpv4Schema(),
@@ -23493,18 +24148,12 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileObject) getTypeFor(name
 func LogicalRouterResourceVrfBgpRedistributionProfileIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"unicast": rsschema.StringAttribute{
 				Description: "Redistribution Profile Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23531,18 +24180,12 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv4Object) getTypeFor(
 func LogicalRouterResourceVrfBgpRedistributionProfileIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"unicast": rsschema.StringAttribute{
 				Description: "Redistribution Profile Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23569,10 +24212,7 @@ func (o *LogicalRouterResourceVrfBgpRedistributionProfileIpv6Object) getTypeFor(
 func LogicalRouterResourceVrfBgpAdvertiseNetworkSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Schema(),
@@ -23603,18 +24243,12 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkObject) getTypeFor(name stri
 func LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"network": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkSchema(),
 			},
 		},
@@ -23645,34 +24279,22 @@ func LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkSchema() rsschema.Nes
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"unicast": rsschema.BoolAttribute{
 				Description: "Unicast Network configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"multicast": rsschema.BoolAttribute{
 				Description: "Multicast Network configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"backdoor": rsschema.BoolAttribute{
 				Description: "Mark network as backdoor route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23699,18 +24321,12 @@ func (o *LogicalRouterResourceVrfBgpAdvertiseNetworkIpv4NetworkObject) getTypeFo
 func LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"network": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkSchema(),
 			},
 		},
@@ -23741,18 +24357,12 @@ func LogicalRouterResourceVrfBgpAdvertiseNetworkIpv6NetworkSchema() rsschema.Nes
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"unicast": rsschema.BoolAttribute{
 				Description: "Unicast Network configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23782,18 +24392,12 @@ func LogicalRouterResourceVrfBgpPeerGroupSchema() rsschema.NestedAttributeObject
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": LogicalRouterResourceVrfBgpPeerGroupTypeSchema(),
@@ -23806,10 +24410,7 @@ func LogicalRouterResourceVrfBgpPeerGroupSchema() rsschema.NestedAttributeObject
 
 			"peer": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfBgpPeerGroupPeerSchema(),
 			},
 		},
@@ -23837,10 +24438,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupObject) getTypeFor(name string) att
 func LogicalRouterResourceVrfBgpPeerGroupTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ibgp": LogicalRouterResourceVrfBgpPeerGroupTypeIbgpSchema(),
@@ -23871,10 +24469,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeObject) getTypeFor(name string)
 func LogicalRouterResourceVrfBgpPeerGroupTypeIbgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -23907,10 +24502,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeIbgpObject) getTypeFor(name str
 func LogicalRouterResourceVrfBgpPeerGroupTypeEbgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -23943,26 +24535,17 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupTypeEbgpObject) getTypeFor(name str
 func LogicalRouterResourceVrfBgpPeerGroupAddressFamilySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "Enable IPv4 route exchange",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "Enable IPv6 route exchange",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -23989,26 +24572,17 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupAddressFamilyObject) getTypeFor(nam
 func LogicalRouterResourceVrfBgpPeerGroupFilteringProfileSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "IPv4 Filtering Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "IPv6 Filtering Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24035,43 +24609,29 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupFilteringProfileObject) getTypeFor(
 func LogicalRouterResourceVrfBgpPeerGroupConnectionOptionsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"timers": rsschema.StringAttribute{
 				Description: "Timer Profile Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"multihop": rsschema.Int64Attribute{
 				Description: "Multi-hop value",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication Profile Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"dampening": rsschema.StringAttribute{
 				Description: "Dampening Profile Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24101,42 +24661,27 @@ func LogicalRouterResourceVrfBgpPeerGroupPeerSchema() rsschema.NestedAttributeOb
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"passive": rsschema.BoolAttribute{
 				Description: "If enabled, open messages are not sent to this peer",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"peer_as": rsschema.StringAttribute{
 				Description: "peer AS number",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_sender_side_loop_detection": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inherit": LogicalRouterResourceVrfBgpPeerGroupPeerInheritSchema(),
@@ -24173,10 +24718,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerObject) getTypeFor(name string)
 func LogicalRouterResourceVrfBgpPeerGroupPeerInheritSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"yes": LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesSchema(),
@@ -24207,10 +24749,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritObject) getTypeFor(name 
 func LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -24243,10 +24782,7 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritYesObject) getTypeFor(na
 func LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -24284,27 +24820,20 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoObject) getTypeFor(nam
 func LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "Enable IPv4 route exchange",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("none"),
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "Enable IPv6 route exchange",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("none"),
 			},
 		},
@@ -24332,27 +24861,20 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoAddressFamilyObject) g
 func LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "IPv4 Filtering Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("none"),
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "IPv6 Filtering Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("none"),
 			},
 		},
@@ -24380,26 +24902,17 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerInheritNoFilteringProfileObject
 func LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "interface to accept BGP session",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip": rsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24426,18 +24939,12 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerLocalAddressObject) getTypeFor(
 func LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip": rsschema.StringAttribute{
 				Description: "peer address configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -24449,10 +24956,7 @@ func LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressSchema() rsschema.Single
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "Peer FQDN Address Object",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24479,45 +24983,34 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerPeerAddressObject) getTypeFor(n
 func LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"timers": rsschema.StringAttribute{
 				Description: "Timer Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("inherit"),
 			},
 
 			"multihop": rsschema.StringAttribute{
 				Description: "Multi-hop value",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("inherit"),
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("inherit"),
 			},
 
 			"dampening": rsschema.StringAttribute{
 				Description: "Dampening Profile Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("inherit"),
 			},
 		},
@@ -24545,18 +25038,13 @@ func (o *LogicalRouterResourceVrfBgpPeerGroupPeerConnectionOptionsObject) getTyp
 func LogicalRouterResourceVrfBgpPeerGroupPeerBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Inherit-lr-global-setting"),
 			},
 		},
@@ -24587,50 +25075,32 @@ func LogicalRouterResourceVrfBgpAggregateRoutesSchema() rsschema.NestedAttribute
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Aggregate Route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable Aggregation for this Prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"summary_only": rsschema.BoolAttribute{
 				Description: "Send only Summary Route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"as_set": rsschema.BoolAttribute{
 				Description: "Generate AS set path attribute",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"same_med": rsschema.BoolAttribute{
 				Description: "Aggregate Routes only if they have same MED Attributes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": LogicalRouterResourceVrfBgpAggregateRoutesTypeSchema(),
@@ -24659,10 +25129,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesObject) getTypeFor(name strin
 func LogicalRouterResourceVrfBgpAggregateRoutesTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Schema(),
@@ -24693,10 +25160,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeObject) getTypeFor(name s
 func LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -24708,26 +25172,17 @@ func LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Schema() rsschema.SingleN
 
 			"summary_prefix": rsschema.StringAttribute{
 				Description: "Aggregating Address Prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"suppress_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to select routes to be suppressed",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"attribute_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to set attributes of aggregate prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24754,10 +25209,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv4Object) getTypeFor(na
 func LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -24769,26 +25221,17 @@ func LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Schema() rsschema.SingleN
 
 			"summary_prefix": rsschema.StringAttribute{
 				Description: "Aggregating Address Prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"suppress_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to select routes to be suppressed",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"attribute_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to set attributes of aggregate prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24815,10 +25258,7 @@ func (o *LogicalRouterResourceVrfBgpAggregateRoutesTypeIpv6Object) getTypeFor(na
 func LogicalRouterResourceVrfRoutingTableSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip": LogicalRouterResourceVrfRoutingTableIpSchema(),
@@ -24849,18 +25289,12 @@ func (o *LogicalRouterResourceVrfRoutingTableObject) getTypeFor(name string) att
 func LogicalRouterResourceVrfRoutingTableIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"static_route": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfRoutingTableIpStaticRouteSchema(),
 			},
 		},
@@ -24891,42 +25325,28 @@ func LogicalRouterResourceVrfRoutingTableIpStaticRouteSchema() rsschema.NestedAt
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"destination": rsschema.StringAttribute{
 				Description: "Destination IP address/prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"administrative_distance": rsschema.Int64Attribute{
 				Description: "adminitrative distance",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "metric value (path cost)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
@@ -24960,36 +25380,24 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteObject) getTypeFor(nam
 func LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"discard": LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardSchema(),
 
 			"ip_address": rsschema.StringAttribute{
 				Description: "Next hop IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"next_lr": rsschema.StringAttribute{
 				Description: "Next-Hop Logical Router",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "nexthop address FQDN address object configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25016,10 +25424,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopObject) getType
 func LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -25054,18 +25459,13 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteNexthopDiscardObject) 
 func LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -25093,44 +25493,31 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRouteBfdObject) getTypeFor(
 func LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"failure_condition": rsschema.StringAttribute{
 				Description: "failure condition",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("any"),
 			},
 
 			"hold_time": rsschema.Int64Attribute{
 				Description: "hold time (minutes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(2),
 			},
 
 			"monitor_destinations": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinationsSchema(),
 			},
 		},
@@ -25161,51 +25548,35 @@ func LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDestinat
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": rsschema.StringAttribute{
 				Description: "Source IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"destination": rsschema.StringAttribute{
 				Description: "Destination IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interval": rsschema.Int64Attribute{
 				Description: "ping interval",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(3),
 			},
 
 			"count": rsschema.Int64Attribute{
 				Description: "ping count",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(5),
 			},
 		},
@@ -25233,18 +25604,12 @@ func (o *LogicalRouterResourceVrfRoutingTableIpStaticRoutePathMonitorMonitorDest
 func LogicalRouterResourceVrfRoutingTableIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"static_route": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfRoutingTableIpv6StaticRouteSchema(),
 			},
 		},
@@ -25275,42 +25640,28 @@ func LogicalRouterResourceVrfRoutingTableIpv6StaticRouteSchema() rsschema.Nested
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"destination": rsschema.StringAttribute{
 				Description: "Destination IP address/prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"administrative_distance": rsschema.Int64Attribute{
 				Description: "adminitrative distance",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "metric value (path cost)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
@@ -25344,36 +25695,24 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteObject) getTypeFor(n
 func LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"discard": LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardSchema(),
 
 			"ipv6_address": rsschema.StringAttribute{
 				Description: "Next hop IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "nexthop address FQDN address object configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"next_lr": rsschema.StringAttribute{
 				Description: "Next-Hop Logical Router",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25400,10 +25739,7 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopObject) getTy
 func LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -25438,18 +25774,13 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteNexthopDiscardObject
 func LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -25477,44 +25808,31 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRouteBfdObject) getTypeFo
 func LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"failure_condition": rsschema.StringAttribute{
 				Description: "failure condition",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("any"),
 			},
 
 			"hold_time": rsschema.Int64Attribute{
 				Description: "hold time (minutes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(2),
 			},
 
 			"monitor_destinations": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestinationsSchema(),
 			},
 		},
@@ -25545,51 +25863,35 @@ func LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDestin
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source": rsschema.StringAttribute{
 				Description: "Source IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"destination": rsschema.StringAttribute{
 				Description: "Destination IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interval": rsschema.Int64Attribute{
 				Description: "ping interval",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(3),
 			},
 
 			"count": rsschema.Int64Attribute{
 				Description: "ping count",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(5),
 			},
 		},
@@ -25617,58 +25919,37 @@ func (o *LogicalRouterResourceVrfRoutingTableIpv6StaticRoutePathMonitorMonitorDe
 func LogicalRouterResourceVrfOspfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"router_id": rsschema.StringAttribute{
 				Description: "router id of this OSPF instance",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"rfc1583": rsschema.BoolAttribute{
 				Description: "rfc-1583 compatibility",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"spf_timer": rsschema.StringAttribute{
 				Description: "SPF timer setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"global_if_timer": rsschema.StringAttribute{
 				Description: "Global protocol timer setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"redistribution_profile": rsschema.StringAttribute{
 				Description: "Redistribution profile setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"global_bfd": LogicalRouterResourceVrfOspfGlobalBfdSchema(),
@@ -25677,10 +25958,7 @@ func LogicalRouterResourceVrfOspfSchema() rsschema.SingleNestedAttribute {
 
 			"area": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfAreaSchema(),
 			},
 		},
@@ -25708,18 +25986,13 @@ func (o *LogicalRouterResourceVrfOspfObject) getTypeFor(name string) attr.Type {
 func LogicalRouterResourceVrfOspfGlobalBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -25747,51 +26020,35 @@ func (o *LogicalRouterResourceVrfOspfGlobalBfdObject) getTypeFor(name string) at
 func LogicalRouterResourceVrfOspfGracefulRestartSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"grace_period": rsschema.Int64Attribute{
 				Description: "maximum local restarting time (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(120),
 			},
 
 			"helper_enable": rsschema.BoolAttribute{
 				Description: "enable/disable helping neighboring routers to graceful restart",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"strict_lsa_checking": rsschema.BoolAttribute{
 				Description: "enable/disable strict LSA checking. Abort GR if lsa change is detected",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_neighbor_restart_time": rsschema.Int64Attribute{
 				Description: "maximum of neighbor restart time accepted (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(140),
 			},
 		},
@@ -25822,46 +26079,31 @@ func LogicalRouterResourceVrfOspfAreaSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication profile name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": LogicalRouterResourceVrfOspfAreaTypeSchema(),
 
 			"range": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfAreaRangeSchema(),
 			},
 
 			"interface": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfAreaInterfaceSchema(),
 			},
 
 			"virtual_link": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfAreaVirtualLinkSchema(),
 			},
 		},
@@ -25889,10 +26131,7 @@ func (o *LogicalRouterResourceVrfOspfAreaObject) getTypeFor(name string) attr.Ty
 func LogicalRouterResourceVrfOspfAreaTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"normal": LogicalRouterResourceVrfOspfAreaTypeNormalSchema(),
@@ -25925,10 +26164,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeObject) getTypeFor(name string) att
 func LogicalRouterResourceVrfOspfAreaTypeNormalSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -25965,42 +26201,27 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNormalObject) getTypeFor(name strin
 func LogicalRouterResourceVrfOspfAreaTypeNormalAbrSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"import_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"export_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inbound_filter_list": rsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound_filter_list": rsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26027,10 +26248,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNormalAbrObject) getTypeFor(name st
 func LogicalRouterResourceVrfOspfAreaTypeStubSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -26043,20 +26261,15 @@ func LogicalRouterResourceVrfOspfAreaTypeStubSchema() rsschema.SingleNestedAttri
 
 			"no_summary": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"abr": LogicalRouterResourceVrfOspfAreaTypeStubAbrSchema(),
 
 			"default_route_metric": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 		},
@@ -26084,42 +26297,27 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeStubObject) getTypeFor(name string)
 func LogicalRouterResourceVrfOspfAreaTypeStubAbrSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"import_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"export_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inbound_filter_list": rsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound_filter_list": rsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26146,10 +26344,7 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeStubAbrObject) getTypeFor(name stri
 func LogicalRouterResourceVrfOspfAreaTypeNssaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -26162,10 +26357,7 @@ func LogicalRouterResourceVrfOspfAreaTypeNssaSchema() rsschema.SingleNestedAttri
 
 			"no_summary": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_information_originate": LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateSchema(),
@@ -26196,27 +26388,20 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaObject) getTypeFor(name string)
 func LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"metric_type": rsschema.StringAttribute{
 				Description: "metric type to be used when redistribute default route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("type-2"),
 			},
 		},
@@ -26244,50 +26429,32 @@ func (o *LogicalRouterResourceVrfOspfAreaTypeNssaDefaultInformationOriginateObje
 func LogicalRouterResourceVrfOspfAreaTypeNssaAbrSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"import_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"export_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inbound_filter_list": rsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound_filter_list": rsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"nssa_ext_range": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeSchema(),
 			},
 		},
@@ -26318,18 +26485,12 @@ func LogicalRouterResourceVrfOspfAreaTypeNssaAbrNssaExtRangeSchema() rsschema.Ne
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"advertise": rsschema.BoolAttribute{
 				Description: "do summarization and advertise",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26359,18 +26520,12 @@ func LogicalRouterResourceVrfOspfAreaRangeSchema() rsschema.NestedAttributeObjec
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"advertise": rsschema.BoolAttribute{
 				Description: "do summarization and advertise",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26400,68 +26555,46 @@ func LogicalRouterResourceVrfOspfAreaInterfaceSchema() rsschema.NestedAttributeO
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable OSPF on this interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"mtu_ignore": rsschema.BoolAttribute{
 				Description: "Ignore mtu when try to establish adjacency",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"passive": rsschema.BoolAttribute{
 				Description: "Suppress the sending of hello packets in this interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"priority": rsschema.Int64Attribute{
 				Description: "Priority for OSPF designated router selection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Cost of OSPF interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"timing": rsschema.StringAttribute{
 				Description: "Protocol timer setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"link_type": LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeSchema(),
@@ -26492,10 +26625,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceObject) getTypeFor(name string
 func LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"broadcast": LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastSchema(),
@@ -26528,10 +26658,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeObject) getTypeFor(nam
 func LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -26565,10 +26692,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeBroadcastObject) getTy
 func LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -26602,10 +26726,7 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2pObject) getTypeFor(
 func LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -26618,10 +26739,7 @@ func LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpSchema() rsschema.Sing
 
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborSchema(),
 			},
 		},
@@ -26652,18 +26770,13 @@ func LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborSchema() rssch
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"priority": rsschema.Int64Attribute{
 				Description: "Neighbor priority",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 		},
@@ -26691,18 +26804,13 @@ func (o *LogicalRouterResourceVrfOspfAreaInterfaceLinkTypeP2mpNeighborObject) ge
 func LogicalRouterResourceVrfOspfAreaInterfaceBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Inherit-lr-global-setting"),
 			},
 		},
@@ -26733,59 +26841,39 @@ func LogicalRouterResourceVrfOspfAreaVirtualLinkSchema() rsschema.NestedAttribut
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"neighbor_id": rsschema.StringAttribute{
 				Description: "neighbor router id for virtual link",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"transit_area_id": rsschema.StringAttribute{
 				Description: "id of transit area, cannot be backbone, stub or NSSA",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable this virtual link",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"instance_id": rsschema.Int64Attribute{
 				Description: "OSPF instance ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"timing": rsschema.StringAttribute{
 				Description: "Protocol timer setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"bfd": LogicalRouterResourceVrfOspfAreaVirtualLinkBfdSchema(),
@@ -26814,18 +26902,13 @@ func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkObject) getTypeFor(name stri
 func LogicalRouterResourceVrfOspfAreaVirtualLinkBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Inherit-lr-global-setting"),
 			},
 		},
@@ -26853,58 +26936,37 @@ func (o *LogicalRouterResourceVrfOspfAreaVirtualLinkBfdObject) getTypeFor(name s
 func LogicalRouterResourceVrfOspfv3Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"router_id": rsschema.StringAttribute{
 				Description: "router id of this OSPFv3 instance",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_transit_traffic": rsschema.BoolAttribute{
 				Description: "whether OSPFv3 should set the R- and V6-bits in its Router-LSAs",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"spf_timer": rsschema.StringAttribute{
 				Description: "SPF timer setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"global_if_timer": rsschema.StringAttribute{
 				Description: "Global protocol timer setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"redistribution_profile": rsschema.StringAttribute{
 				Description: "Redistribution profile setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"global_bfd": LogicalRouterResourceVrfOspfv3GlobalBfdSchema(),
@@ -26913,10 +26975,7 @@ func LogicalRouterResourceVrfOspfv3Schema() rsschema.SingleNestedAttribute {
 
 			"area": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfv3AreaSchema(),
 			},
 		},
@@ -26944,18 +27003,13 @@ func (o *LogicalRouterResourceVrfOspfv3Object) getTypeFor(name string) attr.Type
 func LogicalRouterResourceVrfOspfv3GlobalBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -26983,51 +27037,35 @@ func (o *LogicalRouterResourceVrfOspfv3GlobalBfdObject) getTypeFor(name string) 
 func LogicalRouterResourceVrfOspfv3GracefulRestartSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"grace_period": rsschema.Int64Attribute{
 				Description: "maximum local restarting time (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(120),
 			},
 
 			"helper_enable": rsschema.BoolAttribute{
 				Description: "enable/disable helping neighboring routers to graceful restart",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"strict_lsa_checking": rsschema.BoolAttribute{
 				Description: "enable/disable strict LSA checking. Abort GR if lsa change is detected",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_neighbor_restart_time": rsschema.Int64Attribute{
 				Description: "maximum of neighbor restart time accepted (in seconds)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(140),
 			},
 		},
@@ -27058,46 +27096,31 @@ func LogicalRouterResourceVrfOspfv3AreaSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication profile name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": LogicalRouterResourceVrfOspfv3AreaTypeSchema(),
 
 			"range": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfv3AreaRangeSchema(),
 			},
 
 			"interface": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfv3AreaInterfaceSchema(),
 			},
 
 			"virtual_link": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfv3AreaVirtualLinkSchema(),
 			},
 		},
@@ -27125,10 +27148,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaObject) getTypeFor(name string) attr.
 func LogicalRouterResourceVrfOspfv3AreaTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"normal": LogicalRouterResourceVrfOspfv3AreaTypeNormalSchema(),
@@ -27161,10 +27181,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeObject) getTypeFor(name string) a
 func LogicalRouterResourceVrfOspfv3AreaTypeNormalSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -27201,42 +27218,27 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalObject) getTypeFor(name str
 func LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"import_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"export_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inbound_filter_list": rsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound_filter_list": rsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27263,10 +27265,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNormalAbrObject) getTypeFor(name 
 func LogicalRouterResourceVrfOspfv3AreaTypeStubSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -27279,20 +27278,15 @@ func LogicalRouterResourceVrfOspfv3AreaTypeStubSchema() rsschema.SingleNestedAtt
 
 			"no_summary": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"abr": LogicalRouterResourceVrfOspfv3AreaTypeStubAbrSchema(),
 
 			"default_route_metric": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 		},
@@ -27320,42 +27314,27 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubObject) getTypeFor(name strin
 func LogicalRouterResourceVrfOspfv3AreaTypeStubAbrSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"import_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"export_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inbound_filter_list": rsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound_filter_list": rsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27382,10 +27361,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeStubAbrObject) getTypeFor(name st
 func LogicalRouterResourceVrfOspfv3AreaTypeNssaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -27398,10 +27374,7 @@ func LogicalRouterResourceVrfOspfv3AreaTypeNssaSchema() rsschema.SingleNestedAtt
 
 			"no_summary": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_information_originate": LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateSchema(),
@@ -27432,27 +27405,20 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaObject) getTypeFor(name strin
 func LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"metric_type": rsschema.StringAttribute{
 				Description: "metric type to be used when redistribute default route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("type-2"),
 			},
 		},
@@ -27480,50 +27446,32 @@ func (o *LogicalRouterResourceVrfOspfv3AreaTypeNssaDefaultInformationOriginateOb
 func LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"import_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced from other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"export_list": rsschema.StringAttribute{
 				Description: "Set the filter for networks announced to other areas",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"inbound_filter_list": rsschema.StringAttribute{
 				Description: "Inbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound_filter_list": rsschema.StringAttribute{
 				Description: "Outbound filter list",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"nssa_ext_range": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeSchema(),
 			},
 		},
@@ -27554,18 +27502,12 @@ func LogicalRouterResourceVrfOspfv3AreaTypeNssaAbrNssaExtRangeSchema() rsschema.
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"advertise": rsschema.BoolAttribute{
 				Description: "do summarization and advertise",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27595,18 +27537,12 @@ func LogicalRouterResourceVrfOspfv3AreaRangeSchema() rsschema.NestedAttributeObj
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"advertise": rsschema.BoolAttribute{
 				Description: "do summarization and advertise",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27636,77 +27572,53 @@ func LogicalRouterResourceVrfOspfv3AreaInterfaceSchema() rsschema.NestedAttribut
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable OSPF in this interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"mtu_ignore": rsschema.BoolAttribute{
 				Description: "Ignore mtu when try to establish adjacency",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"passive": rsschema.BoolAttribute{
 				Description: "Suppress the sending of hello packets in this interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"priority": rsschema.Int64Attribute{
 				Description: "Priority for OSPF designated router selection",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Cost of OSPF interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(10),
 			},
 
 			"instance_id": rsschema.Int64Attribute{
 				Description: "OSPFv3 instance ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"timing": rsschema.StringAttribute{
 				Description: "Protocol timer setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"link_type": LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeSchema(),
@@ -27737,10 +27649,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceObject) getTypeFor(name stri
 func LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"broadcast": LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastSchema(),
@@ -27773,10 +27682,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeObject) getTypeFor(n
 func LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -27810,10 +27716,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeBroadcastObject) get
 func LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -27847,10 +27750,7 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2pObject) getTypeFo
 func LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -27863,10 +27763,7 @@ func LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpSchema() rsschema.Si
 
 			"neighbor": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborSchema(),
 			},
 		},
@@ -27897,18 +27794,13 @@ func LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborSchema() rss
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"priority": rsschema.Int64Attribute{
 				Description: "Neighbor priority",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 		},
@@ -27936,18 +27828,13 @@ func (o *LogicalRouterResourceVrfOspfv3AreaInterfaceLinkTypeP2mpNeighborObject) 
 func LogicalRouterResourceVrfOspfv3AreaInterfaceBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Inherit-lr-global-setting"),
 			},
 		},
@@ -27978,59 +27865,39 @@ func LogicalRouterResourceVrfOspfv3AreaVirtualLinkSchema() rsschema.NestedAttrib
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"neighbor_id": rsschema.StringAttribute{
 				Description: "neighbor router id for virtual link",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"transit_area_id": rsschema.StringAttribute{
 				Description: "id of transit area, cannot be backbone, stub or NSSA",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable this virtual link",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"instance_id": rsschema.Int64Attribute{
 				Description: "OSPFv3 instance ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"timing": rsschema.StringAttribute{
 				Description: "Protocol timer setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28057,43 +27924,29 @@ func (o *LogicalRouterResourceVrfOspfv3AreaVirtualLinkObject) getTypeFor(name st
 func LogicalRouterResourceVrfEcmpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "enable Equal Cost Multipath routing, change this configuration will result in a virtual router restart",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_paths": rsschema.Int64Attribute{
 				Description: "Maxmum number of ECMP paths supported, change this configuration will result in a virtual router restart",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(2),
 			},
 
 			"symmetric_return": rsschema.BoolAttribute{
 				Description: "allows return packets to egress out of the ingress interface of the flow",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"strict_source_path": rsschema.BoolAttribute{
 				Description: "force VPN traffic to exit interface that the source-ip belongs to",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"algorithm": LogicalRouterResourceVrfEcmpAlgorithmSchema(),
@@ -28122,10 +27975,7 @@ func (o *LogicalRouterResourceVrfEcmpObject) getTypeFor(name string) attr.Type {
 func LogicalRouterResourceVrfEcmpAlgorithmSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip_modulo": LogicalRouterResourceVrfEcmpAlgorithmIpModuloSchema(),
@@ -28160,10 +28010,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmObject) getTypeFor(name string) at
 func LogicalRouterResourceVrfEcmpAlgorithmIpModuloSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -28198,10 +28045,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmIpModuloObject) getTypeFor(name st
 func LogicalRouterResourceVrfEcmpAlgorithmIpHashSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -28215,26 +28059,18 @@ func LogicalRouterResourceVrfEcmpAlgorithmIpHashSchema() rsschema.SingleNestedAt
 
 			"src_only": rsschema.BoolAttribute{
 				Description: "only use source address for hash",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"use_port": rsschema.BoolAttribute{
 				Description: "use source/destination port for hash",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"hash_seed": rsschema.Int64Attribute{
 				Description: "User-specified hash seed",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 		},
@@ -28262,10 +28098,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmIpHashObject) getTypeFor(name stri
 func LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -28279,10 +28112,7 @@ func LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinSchema() rsschema.Si
 
 			"interface": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceSchema(),
 			},
 		},
@@ -28313,18 +28143,13 @@ func LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceSchema() rs
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"weight": rsschema.Int64Attribute{
 				Description: "interface ECMP weight",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(100),
 			},
 		},
@@ -28352,10 +28177,7 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmWeightedRoundRobinInterfaceObject)
 func LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -28390,26 +28212,17 @@ func (o *LogicalRouterResourceVrfEcmpAlgorithmBalancedRoundRobinObject) getTypeF
 func LogicalRouterResourceVrfMulticastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "enable multicast protocol",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"static_route": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfMulticastStaticRouteSchema(),
 			},
 
@@ -28446,34 +28259,22 @@ func LogicalRouterResourceVrfMulticastStaticRouteSchema() rsschema.NestedAttribu
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"destination": rsschema.StringAttribute{
 				Description: "Destination IP address/prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"preference": rsschema.Int64Attribute{
 				Description: "administrative distance",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"nexthop": LogicalRouterResourceVrfMulticastStaticRouteNexthopSchema(),
@@ -28502,18 +28303,12 @@ func (o *LogicalRouterResourceVrfMulticastStaticRouteObject) getTypeFor(name str
 func LogicalRouterResourceVrfMulticastStaticRouteNexthopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip_address": rsschema.StringAttribute{
 				Description: "Next hop IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28540,52 +28335,36 @@ func (o *LogicalRouterResourceVrfMulticastStaticRouteNexthopObject) getTypeFor(n
 func LogicalRouterResourceVrfMulticastPimSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"rpf_lookup_mode": rsschema.StringAttribute{
 				Description: "RPF Lookup Preference",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("mrib-then-urib"),
 			},
 
 			"route_ageout_time": rsschema.Int64Attribute{
 				Description: "time to wait before aging out a multicast route after data stops, in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(210),
 			},
 
 			"if_timer_global": rsschema.StringAttribute{
 				Description: "Global Interface Timer Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"group_permission": rsschema.StringAttribute{
 				Description: "ASM/SSM group permission",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ssm_address_space": LogicalRouterResourceVrfMulticastPimSsmAddressSpaceSchema(),
@@ -28594,19 +28373,13 @@ func LogicalRouterResourceVrfMulticastPimSchema() rsschema.SingleNestedAttribute
 
 			"spt_threshold": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfMulticastPimSptThresholdSchema(),
 			},
 
 			"interface": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfMulticastPimInterfaceSchema(),
 			},
 		},
@@ -28634,18 +28407,13 @@ func (o *LogicalRouterResourceVrfMulticastPimObject) getTypeFor(name string) att
 func LogicalRouterResourceVrfMulticastPimSsmAddressSpaceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"group_list": rsschema.StringAttribute{
 				Description: "SSM Group Prefix List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -28673,20 +28441,14 @@ func (o *LogicalRouterResourceVrfMulticastPimSsmAddressSpaceObject) getTypeFor(n
 func LogicalRouterResourceVrfMulticastPimRpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"local_rp": LogicalRouterResourceVrfMulticastPimRpLocalRpSchema(),
 
 			"external_rp": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfMulticastPimRpExternalRpSchema(),
 			},
 		},
@@ -28714,10 +28476,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpObject) getTypeFor(name string) a
 func LogicalRouterResourceVrfMulticastPimRpLocalRpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"static_rp": LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpSchema(),
@@ -28748,10 +28507,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpObject) getTypeFor(name st
 func LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -28763,34 +28519,23 @@ func LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpSchema() rsschema.Sing
 
 			"interface": rsschema.StringAttribute{
 				Description: "local RP interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": rsschema.StringAttribute{
 				Description: "local RP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"override": rsschema.BoolAttribute{
 				Description: "Override learned RP for the same group",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"group_list": rsschema.StringAttribute{
 				Description: "Group Access List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -28818,10 +28563,7 @@ func (o *LogicalRouterResourceVrfMulticastPimRpLocalRpStaticRpObject) getTypeFor
 func LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -28833,44 +28575,32 @@ func LogicalRouterResourceVrfMulticastPimRpLocalRpCandidateRpSchema() rsschema.S
 
 			"interface": rsschema.StringAttribute{
 				Description: "candidate RP interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": rsschema.StringAttribute{
 				Description: "candidate RP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"priority": rsschema.Int64Attribute{
 				Description: "The priority for this candidate rt",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(192),
 			},
 
 			"advertisement_interval": rsschema.Int64Attribute{
 				Description: "The time interval in seconds between candidate rp advertisements",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(60),
 			},
 
 			"group_list": rsschema.StringAttribute{
 				Description: "Group Access List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -28901,27 +28631,19 @@ func LogicalRouterResourceVrfMulticastPimRpExternalRpSchema() rsschema.NestedAtt
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"group_list": rsschema.StringAttribute{
 				Description: "Group Access List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 
 			"override": rsschema.BoolAttribute{
 				Description: "Override learned RP for the same group",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28951,18 +28673,13 @@ func LogicalRouterResourceVrfMulticastPimSptThresholdSchema() rsschema.NestedAtt
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"threshold": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("0"),
 			},
 		},
@@ -28993,51 +28710,35 @@ func LogicalRouterResourceVrfMulticastPimInterfaceSchema() rsschema.NestedAttrib
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"dr_priority": rsschema.Int64Attribute{
 				Description: "Designated Router priority",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"send_bsm": rsschema.BoolAttribute{
 				Description: "Send BSM",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"if_timer": rsschema.StringAttribute{
 				Description: "Interface Timer Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"neighbor_filter": rsschema.StringAttribute{
 				Description: "Set the filter for neighbor list",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -29065,28 +28766,19 @@ func (o *LogicalRouterResourceVrfMulticastPimInterfaceObject) getTypeFor(name st
 func LogicalRouterResourceVrfMulticastIgmpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "enable IGMP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"dynamic": LogicalRouterResourceVrfMulticastIgmpDynamicSchema(),
 
 			"static": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfMulticastIgmpStaticSchema(),
 			},
 		},
@@ -29114,18 +28806,12 @@ func (o *LogicalRouterResourceVrfMulticastIgmpObject) getTypeFor(name string) at
 func LogicalRouterResourceVrfMulticastIgmpDynamicSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceSchema(),
 			},
 		},
@@ -29156,71 +28842,52 @@ func LogicalRouterResourceVrfMulticastIgmpDynamicInterfaceSchema() rsschema.Nest
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"version": rsschema.StringAttribute{
 				Description: "IGMP version number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("3"),
 			},
 
 			"robustness": rsschema.StringAttribute{
 				Description: "robustness variable",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("2"),
 			},
 
 			"group_filter": rsschema.StringAttribute{
 				Description: "ASM/SSM Group Access List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 
 			"max_groups": rsschema.StringAttribute{
 				Description: "maximum number of groups allowed on this interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unlimited"),
 			},
 
 			"max_sources": rsschema.StringAttribute{
 				Description: "maximum number of source-specific memberships allowed on this interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("unlimited"),
 			},
 
 			"query_profile": rsschema.StringAttribute{
 				Description: "IGMP Query Timer Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"router_alert_policing": rsschema.BoolAttribute{
 				Description: "drop IGMP packets without Router Alert option",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29250,34 +28917,22 @@ func LogicalRouterResourceVrfMulticastIgmpStaticSchema() rsschema.NestedAttribut
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "multicast interfaces",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"group_address": rsschema.StringAttribute{
 				Description: "group-address/prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source_address": rsschema.StringAttribute{
 				Description: "source-address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29304,44 +28959,29 @@ func (o *LogicalRouterResourceVrfMulticastIgmpStaticObject) getTypeFor(name stri
 func LogicalRouterResourceVrfMulticastMsdpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"global_timer": rsschema.StringAttribute{
 				Description: "Global timer profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"global_authentication": rsschema.StringAttribute{
 				Description: "Global authentication profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"originator_id": LogicalRouterResourceVrfMulticastMsdpOriginatorIdSchema(),
 
 			"peer": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfMulticastMsdpPeerSchema(),
 			},
 		},
@@ -29369,26 +29009,17 @@ func (o *LogicalRouterResourceVrfMulticastMsdpObject) getTypeFor(name string) at
 func LogicalRouterResourceVrfMulticastMsdpOriginatorIdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "interface of originator",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip": rsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29418,60 +29049,41 @@ func LogicalRouterResourceVrfMulticastMsdpPeerSchema() rsschema.NestedAttributeO
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"peer_as": rsschema.StringAttribute{
 				Description: "peer AS number",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("inherit"),
 			},
 
 			"max_sa": rsschema.Int64Attribute{
 				Description: "Maximum number of SA",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"inbound_sa_filter": rsschema.StringAttribute{
 				Description: "Inbound SA Filter",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound_sa_filter": rsschema.StringAttribute{
 				Description: "Outbound SA Filter",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_address": LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressSchema(),
@@ -29502,26 +29114,17 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerObject) getTypeFor(name string
 func LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "interface to accept MSDP connection",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip": rsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29548,18 +29151,12 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerLocalAddressObject) getTypeFor
 func LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip": rsschema.StringAttribute{
 				Description: "peer address configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -29571,10 +29168,7 @@ func LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressSchema() rsschema.Singl
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "Peer FQDN Address Object",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29601,50 +29195,32 @@ func (o *LogicalRouterResourceVrfMulticastMsdpPeerPeerAddressObject) getTypeFor(
 func LogicalRouterResourceVrfRipSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_information_originate": rsschema.BoolAttribute{
 				Description: "advertise default route in RIP",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"global_timer": rsschema.StringAttribute{
 				Description: "timer setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"auth_profile": rsschema.StringAttribute{
 				Description: "Authentication profile setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"redistribution_profile": rsschema.StringAttribute{
 				Description: "Redistribution profile setting",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"global_bfd": LogicalRouterResourceVrfRipGlobalBfdSchema(),
@@ -29655,10 +29231,7 @@ func LogicalRouterResourceVrfRipSchema() rsschema.SingleNestedAttribute {
 
 			"interfaces": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: LogicalRouterResourceVrfRipInterfacesSchema(),
 			},
 		},
@@ -29686,18 +29259,13 @@ func (o *LogicalRouterResourceVrfRipObject) getTypeFor(name string) attr.Type {
 func LogicalRouterResourceVrfRipGlobalBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 		},
@@ -29725,18 +29293,12 @@ func (o *LogicalRouterResourceVrfRipGlobalBfdObject) getTypeFor(name string) att
 func LogicalRouterResourceVrfRipGlobalInboundDistributeListSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "access-list name from filter",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29763,18 +29325,12 @@ func (o *LogicalRouterResourceVrfRipGlobalInboundDistributeListObject) getTypeFo
 func LogicalRouterResourceVrfRipGlobalOutboundDistributeListSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "access-list name from filter",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29804,44 +29360,31 @@ func LogicalRouterResourceVrfRipInterfacesSchema() rsschema.NestedAttributeObjec
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable RIP on this interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"mode": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("active"),
 			},
 
 			"split_horizon": rsschema.StringAttribute{
 				Description: "Split horizon options",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("split-horizon"),
 			},
 
 			"authentication": rsschema.StringAttribute{
 				Description: "Authentication options",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"bfd": LogicalRouterResourceVrfRipInterfacesBfdSchema(),
@@ -29874,18 +29417,13 @@ func (o *LogicalRouterResourceVrfRipInterfacesObject) getTypeFor(name string) at
 func LogicalRouterResourceVrfRipInterfacesBfdSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"profile": rsschema.StringAttribute{
 				Description: "BFD profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Inherit-lr-global-setting"),
 			},
 		},
@@ -29913,26 +29451,17 @@ func (o *LogicalRouterResourceVrfRipInterfacesBfdObject) getTypeFor(name string)
 func LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "access-list name from filter",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "metric value",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29959,26 +29488,17 @@ func (o *LogicalRouterResourceVrfRipInterfacesInterfaceInboundDistributeListObje
 func LogicalRouterResourceVrfRipInterfacesInterfaceOutboundDistributeListSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "access-list name from filter",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "metric value",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -44011,14 +43531,15 @@ type LogicalRouterImportState struct {
 
 func (o LogicalRouterImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *LogicalRouterLocation `json:"location"`
-		Name     *string                `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *LogicalRouterLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, LogicalRouterLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -44032,8 +43553,8 @@ func (o LogicalRouterImportState) MarshalJSON() ([]byte, error) {
 
 func (o *LogicalRouterImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *LogicalRouterLocation `json:"location"`
-		Name     *string                `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -44042,10 +43563,14 @@ func (o *LogicalRouterImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, LogicalRouterLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

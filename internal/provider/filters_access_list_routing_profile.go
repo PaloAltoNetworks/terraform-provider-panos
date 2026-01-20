@@ -1113,18 +1113,13 @@ func FiltersAccessListRoutingProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Access-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": FiltersAccessListRoutingProfileDataSourceTypeSchema(),
@@ -1153,10 +1148,8 @@ func (o *FiltersAccessListRoutingProfileDataSourceModel) getTypeFor(name string)
 func FiltersAccessListRoutingProfileDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": FiltersAccessListRoutingProfileDataSourceTypeIpv4Schema(),
@@ -1187,10 +1180,8 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeObject) getTypeFor(name st
 func FiltersAccessListRoutingProfileDataSourceTypeIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1202,10 +1193,8 @@ func FiltersAccessListRoutingProfileDataSourceTypeIpv4Schema() dsschema.SingleNe
 
 			"ipv4_entries": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSchema(),
 			},
 		},
@@ -1236,18 +1225,13 @@ func FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSchema() dssche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Access-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_address": FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSourceAddressSchema(),
@@ -1278,18 +1262,14 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesObject) get
 func FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSourceAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": dsschema.StringAttribute{
 				Description: "Select pre-defined Source Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"entry": FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSourceAddressEntrySchema(),
@@ -1318,10 +1298,8 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSourceAddre
 func FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSourceAddressEntrySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1333,18 +1311,14 @@ func FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSourceAddressEn
 
 			"address": dsschema.StringAttribute{
 				Description: "Configure IPv4 Source Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"wildcard": dsschema.StringAttribute{
 				Description: "Configure IPv4 Source Wildcard",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1371,18 +1345,14 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSourceAddre
 func FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesDestinationAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": dsschema.StringAttribute{
 				Description: "Select pre-defined Destination Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"entry": FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesDestinationAddressEntrySchema(),
@@ -1411,10 +1381,8 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesDestination
 func FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesDestinationAddressEntrySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1426,18 +1394,14 @@ func FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesDestinationAddr
 
 			"address": dsschema.StringAttribute{
 				Description: "Configure IPv4 Destination Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"wildcard": dsschema.StringAttribute{
 				Description: "Configure IPv4 Destination Wildcard",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1464,10 +1428,8 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeIpv4Ipv4EntriesDestination
 func FiltersAccessListRoutingProfileDataSourceTypeIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1479,10 +1441,8 @@ func FiltersAccessListRoutingProfileDataSourceTypeIpv6Schema() dsschema.SingleNe
 
 			"ipv6_entries": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersAccessListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSchema(),
 			},
 		},
@@ -1513,18 +1473,13 @@ func FiltersAccessListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSchema() dssche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Access-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_address": FiltersAccessListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSourceAddressSchema(),
@@ -1553,18 +1508,14 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeIpv6Ipv6EntriesObject) get
 func FiltersAccessListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSourceAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": dsschema.StringAttribute{
 				Description: "Select pre-defined Source Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"entry": FiltersAccessListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSourceAddressEntrySchema(),
@@ -1593,10 +1544,8 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSourceAddre
 func FiltersAccessListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSourceAddressEntrySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1608,18 +1557,14 @@ func FiltersAccessListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSourceAddressEn
 
 			"address": dsschema.StringAttribute{
 				Description: "Configure IPv6 Access-List Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exact_match": dsschema.BoolAttribute{
 				Description: "Exact Match of this address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1847,7 +1792,153 @@ type FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSourceAddressEntr
 	ExactMatch types.Bool   `tfsdk:"exact_match"`
 }
 
+func (o *FiltersAccessListRoutingProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj FiltersAccessListRoutingProfileResourceTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersAccessListRoutingProfileResourceTypeIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj FiltersAccessListRoutingProfileResourceTypeIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4Entries.IsUnknown() && !o.Ipv4Entries.IsNull() {
+		var elements []FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesObject
+		diags := o.Ipv4Entries.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ipv4_entries").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SourceAddress.IsUnknown() && !o.SourceAddress.IsNull() {
+		var nestedObj FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSourceAddressObject
+		diags := o.SourceAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source_address"))
+		}
+	}
+	if !o.DestinationAddress.IsUnknown() && !o.DestinationAddress.IsNull() {
+		var nestedObj FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesDestinationAddressObject
+		diags := o.DestinationAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("destination_address"))
+		}
+	}
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSourceAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Entry.IsUnknown() && !o.Entry.IsNull() {
+		var nestedObj FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSourceAddressEntryObject
+		diags := o.Entry.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("entry"))
+		}
+	}
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSourceAddressEntryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesDestinationAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Entry.IsUnknown() && !o.Entry.IsNull() {
+		var nestedObj FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesDestinationAddressEntryObject
+		diags := o.Entry.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("entry"))
+		}
+	}
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesDestinationAddressEntryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv6Entries.IsUnknown() && !o.Ipv6Entries.IsNull() {
+		var elements []FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesObject
+		diags := o.Ipv6Entries.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ipv6_entries").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SourceAddress.IsUnknown() && !o.SourceAddress.IsNull() {
+		var nestedObj FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSourceAddressObject
+		diags := o.SourceAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source_address"))
+		}
+	}
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSourceAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Entry.IsUnknown() && !o.Entry.IsNull() {
+		var nestedObj FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSourceAddressEntryObject
+		diags := o.Entry.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("entry"))
+		}
+	}
+}
+
+func (o *FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSourceAddressEntryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *FiltersAccessListRoutingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource FiltersAccessListRoutingProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1860,18 +1951,12 @@ func FiltersAccessListRoutingProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Access-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": FiltersAccessListRoutingProfileResourceTypeSchema(),
@@ -1900,10 +1985,7 @@ func (o *FiltersAccessListRoutingProfileResourceModel) getTypeFor(name string) a
 func FiltersAccessListRoutingProfileResourceTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": FiltersAccessListRoutingProfileResourceTypeIpv4Schema(),
@@ -1934,10 +2016,7 @@ func (o *FiltersAccessListRoutingProfileResourceTypeObject) getTypeFor(name stri
 func FiltersAccessListRoutingProfileResourceTypeIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1949,10 +2028,7 @@ func FiltersAccessListRoutingProfileResourceTypeIpv4Schema() rsschema.SingleNest
 
 			"ipv4_entries": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSchema(),
 			},
 		},
@@ -1983,18 +2059,13 @@ func FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSchema() rsschema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Access-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
@@ -2026,18 +2097,12 @@ func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesObject) getTy
 func FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSourceAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": rsschema.StringAttribute{
 				Description: "Select pre-defined Source Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -2073,10 +2138,7 @@ func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSourceAddress
 func FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSourceAddressEntrySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2088,18 +2150,12 @@ func FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSourceAddressEntr
 
 			"address": rsschema.StringAttribute{
 				Description: "Configure IPv4 Source Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"wildcard": rsschema.StringAttribute{
 				Description: "Configure IPv4 Source Wildcard",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2126,18 +2182,12 @@ func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesSourceAddress
 func FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesDestinationAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": rsschema.StringAttribute{
 				Description: "Select pre-defined Destination Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -2173,10 +2223,7 @@ func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesDestinationAd
 func FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesDestinationAddressEntrySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2188,18 +2235,12 @@ func FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesDestinationAddres
 
 			"address": rsschema.StringAttribute{
 				Description: "Configure IPv4 Destination Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"wildcard": rsschema.StringAttribute{
 				Description: "Configure IPv4 Destination Wildcard",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2226,10 +2267,7 @@ func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Ipv4EntriesDestinationAd
 func FiltersAccessListRoutingProfileResourceTypeIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2241,10 +2279,7 @@ func FiltersAccessListRoutingProfileResourceTypeIpv6Schema() rsschema.SingleNest
 
 			"ipv6_entries": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSchema(),
 			},
 		},
@@ -2275,18 +2310,13 @@ func FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSchema() rsschema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Access-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
@@ -2316,18 +2346,12 @@ func (o *FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesObject) getTy
 func FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSourceAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": rsschema.StringAttribute{
 				Description: "Select pre-defined Source Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -2363,10 +2387,7 @@ func (o *FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSourceAddress
 func FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSourceAddressEntrySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2378,18 +2399,12 @@ func FiltersAccessListRoutingProfileResourceTypeIpv6Ipv6EntriesSourceAddressEntr
 
 			"address": rsschema.StringAttribute{
 				Description: "Configure IPv6 Access-List Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exact_match": rsschema.BoolAttribute{
 				Description: "Exact Match of this address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3890,14 +3905,15 @@ type FiltersAccessListRoutingProfileImportState struct {
 
 func (o FiltersAccessListRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *FiltersAccessListRoutingProfileLocation `json:"location"`
-		Name     *string                                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *FiltersAccessListRoutingProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, FiltersAccessListRoutingProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -3911,8 +3927,8 @@ func (o FiltersAccessListRoutingProfileImportState) MarshalJSON() ([]byte, error
 
 func (o *FiltersAccessListRoutingProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *FiltersAccessListRoutingProfileLocation `json:"location"`
-		Name     *string                                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3921,10 +3937,14 @@ func (o *FiltersAccessListRoutingProfileImportState) UnmarshalJSON(data []byte) 
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, FiltersAccessListRoutingProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

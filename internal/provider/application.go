@@ -1769,229 +1769,172 @@ func ApplicationDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"able_to_transfer_file": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"alg_disable_capability": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"category": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"consume_big_bandwidth": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"data_ident": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default": ApplicationDataSourceDefaultSchema(),
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"evasive_behavior": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"file_type_ident": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"has_known_vulnerability": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"no_appid_caching": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"parent_app": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"pervasive_use": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prone_to_misuse": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"risk": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"signature": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: ApplicationDataSourceSignatureSchema(),
 			},
 
 			"subcategory": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tcp_half_closed_timeout": dsschema.Int64Attribute{
 				Description: "timeout for half-close session in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tcp_time_wait_timeout": dsschema.Int64Attribute{
 				Description: "timeout for session in time_wait state in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tcp_timeout": dsschema.Int64Attribute{
 				Description: "timeout in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"technology": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timeout": dsschema.Int64Attribute{
 				Description: "timeout in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tunnel_applications": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tunnel_other_application": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"udp_timeout": dsschema.Int64Attribute{
 				Description: "timeout in seconds",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"used_by_malware": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"virus_ident": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2018,10 +1961,8 @@ func (o *ApplicationDataSourceModel) getTypeFor(name string) attr.Type {
 func ApplicationDataSourceDefaultSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ident_by_icmp_type": ApplicationDataSourceDefaultIdentByIcmpTypeSchema(),
@@ -2030,18 +1971,14 @@ func ApplicationDataSourceDefaultSchema() dsschema.SingleNestedAttribute {
 
 			"ident_by_ip_protocol": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"port": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2069,10 +2006,8 @@ func (o *ApplicationDataSourceDefaultObject) getTypeFor(name string) attr.Type {
 func ApplicationDataSourceDefaultIdentByIcmpTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2086,18 +2021,14 @@ func ApplicationDataSourceDefaultIdentByIcmpTypeSchema() dsschema.SingleNestedAt
 
 			"code": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2124,10 +2055,8 @@ func (o *ApplicationDataSourceDefaultIdentByIcmpTypeObject) getTypeFor(name stri
 func ApplicationDataSourceDefaultIdentByIcmp6TypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2141,18 +2070,14 @@ func ApplicationDataSourceDefaultIdentByIcmp6TypeSchema() dsschema.SingleNestedA
 
 			"code": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2182,42 +2107,31 @@ func ApplicationDataSourceSignatureSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"comment": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"scope": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"order_free": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"and_condition": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: ApplicationDataSourceSignatureAndConditionSchema(),
 			},
 		},
@@ -2248,18 +2162,13 @@ func ApplicationDataSourceSignatureAndConditionSchema() dsschema.NestedAttribute
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"or_condition": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: ApplicationDataSourceSignatureAndConditionOrConditionSchema(),
 			},
 		},
@@ -2290,10 +2199,7 @@ func ApplicationDataSourceSignatureAndConditionOrConditionSchema() dsschema.Nest
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"operator": ApplicationDataSourceSignatureAndConditionOrConditionOperatorSchema(),
@@ -2322,10 +2228,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionObject) getTypeFor
 func ApplicationDataSourceSignatureAndConditionOrConditionOperatorSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"pattern_match": ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchSchema(),
@@ -2360,10 +2264,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorObject) ge
 func ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2377,26 +2279,20 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchSc
 
 			"context": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"pattern": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"qualifier": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierSchema(),
 			},
 		},
@@ -2427,18 +2323,13 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMatchQu
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2465,10 +2356,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMat
 func ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2482,26 +2371,20 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanSch
 
 			"context": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"value": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"qualifier": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierSchema(),
 			},
 		},
@@ -2532,18 +2415,13 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterThanQua
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2570,10 +2448,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterTha
 func ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2587,26 +2463,20 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanSchema
 
 			"context": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"value": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"qualifier": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualifierSchema(),
 			},
 		},
@@ -2637,18 +2507,13 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQualif
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2675,10 +2540,8 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanQu
 func ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2692,34 +2555,26 @@ func ApplicationDataSourceSignatureAndConditionOrConditionOperatorEqualToSchema(
 
 			"context": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"position": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mask": dsschema.StringAttribute{
 				Description: "4-byte hex value",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"value": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2993,7 +2848,197 @@ type ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject st
 	Value    types.String `tfsdk:"value"`
 }
 
+func (o *ApplicationResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Default.IsUnknown() && !o.Default.IsNull() {
+		var nestedObj ApplicationResourceDefaultObject
+		diags := o.Default.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("default"))
+		}
+	}
+	if !o.Signature.IsUnknown() && !o.Signature.IsNull() {
+		var elements []ApplicationResourceSignatureObject
+		diags := o.Signature.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("signature").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *ApplicationResourceDefaultObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.IdentByIcmpType.IsUnknown() && !o.IdentByIcmpType.IsNull() {
+		var nestedObj ApplicationResourceDefaultIdentByIcmpTypeObject
+		diags := o.IdentByIcmpType.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ident_by_icmp_type"))
+		}
+	}
+	if !o.IdentByIcmp6Type.IsUnknown() && !o.IdentByIcmp6Type.IsNull() {
+		var nestedObj ApplicationResourceDefaultIdentByIcmp6TypeObject
+		diags := o.IdentByIcmp6Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ident_by_icmp6_type"))
+		}
+	}
+}
+
+func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ApplicationResourceDefaultIdentByIcmp6TypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ApplicationResourceSignatureObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AndCondition.IsUnknown() && !o.AndCondition.IsNull() {
+		var elements []ApplicationResourceSignatureAndConditionObject
+		diags := o.AndCondition.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("and_condition").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *ApplicationResourceSignatureAndConditionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.OrCondition.IsUnknown() && !o.OrCondition.IsNull() {
+		var elements []ApplicationResourceSignatureAndConditionOrConditionObject
+		diags := o.OrCondition.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("or_condition").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *ApplicationResourceSignatureAndConditionOrConditionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Operator.IsUnknown() && !o.Operator.IsNull() {
+		var nestedObj ApplicationResourceSignatureAndConditionOrConditionOperatorObject
+		diags := o.Operator.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("operator"))
+		}
+	}
+}
+
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.PatternMatch.IsUnknown() && !o.PatternMatch.IsNull() {
+		var nestedObj ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject
+		diags := o.PatternMatch.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("pattern_match"))
+		}
+	}
+	if !o.GreaterThan.IsUnknown() && !o.GreaterThan.IsNull() {
+		var nestedObj ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject
+		diags := o.GreaterThan.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("greater_than"))
+		}
+	}
+	if !o.LessThan.IsUnknown() && !o.LessThan.IsNull() {
+		var nestedObj ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject
+		diags := o.LessThan.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("less_than"))
+		}
+	}
+	if !o.EqualTo.IsUnknown() && !o.EqualTo.IsNull() {
+		var nestedObj ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject
+		diags := o.EqualTo.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("equal_to"))
+		}
+	}
+}
+
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Qualifier.IsUnknown() && !o.Qualifier.IsNull() {
+		var elements []ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject
+		diags := o.Qualifier.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("qualifier").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Qualifier.IsUnknown() && !o.Qualifier.IsNull() {
+		var elements []ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject
+		diags := o.Qualifier.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("qualifier").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Qualifier.IsUnknown() && !o.Qualifier.IsNull() {
+		var elements []ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject
+		diags := o.Qualifier.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("qualifier").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *ApplicationResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource ApplicationResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -3006,68 +3051,44 @@ func ApplicationResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"able_to_transfer_file": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"alg_disable_capability": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"category": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"consume_big_bandwidth": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"data_ident": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default": ApplicationResourceDefaultSchema(),
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -3079,163 +3100,103 @@ func ApplicationResourceSchema() rsschema.Schema {
 
 			"evasive_behavior": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"file_type_ident": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"has_known_vulnerability": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"no_appid_caching": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"parent_app": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"pervasive_use": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prone_to_misuse": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"risk": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"signature": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: ApplicationResourceSignatureSchema(),
 			},
 
 			"subcategory": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tcp_half_closed_timeout": rsschema.Int64Attribute{
 				Description: "timeout for half-close session in seconds",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tcp_time_wait_timeout": rsschema.Int64Attribute{
 				Description: "timeout for session in time_wait state in seconds",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tcp_timeout": rsschema.Int64Attribute{
 				Description: "timeout in seconds",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"technology": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"timeout": rsschema.Int64Attribute{
 				Description: "timeout in seconds",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tunnel_applications": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tunnel_other_application": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"udp_timeout": rsschema.Int64Attribute{
 				Description: "timeout in seconds",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"used_by_malware": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"virus_ident": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3262,10 +3223,7 @@ func (o *ApplicationResourceModel) getTypeFor(name string) attr.Type {
 func ApplicationResourceDefaultSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ident_by_icmp_type": ApplicationResourceDefaultIdentByIcmpTypeSchema(),
@@ -3274,18 +3232,12 @@ func ApplicationResourceDefaultSchema() rsschema.SingleNestedAttribute {
 
 			"ident_by_ip_protocol": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"port": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -3313,10 +3265,7 @@ func (o *ApplicationResourceDefaultObject) getTypeFor(name string) attr.Type {
 func ApplicationResourceDefaultIdentByIcmpTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3330,18 +3279,12 @@ func ApplicationResourceDefaultIdentByIcmpTypeSchema() rsschema.SingleNestedAttr
 
 			"code": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3368,10 +3311,7 @@ func (o *ApplicationResourceDefaultIdentByIcmpTypeObject) getTypeFor(name string
 func ApplicationResourceDefaultIdentByIcmp6TypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3385,18 +3325,12 @@ func ApplicationResourceDefaultIdentByIcmp6TypeSchema() rsschema.SingleNestedAtt
 
 			"code": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3426,43 +3360,29 @@ func ApplicationResourceSignatureSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"comment": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"scope": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("protocol-data-unit"),
 			},
 
 			"order_free": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"and_condition": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: ApplicationResourceSignatureAndConditionSchema(),
 			},
 		},
@@ -3493,18 +3413,12 @@ func ApplicationResourceSignatureAndConditionSchema() rsschema.NestedAttributeOb
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"or_condition": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: ApplicationResourceSignatureAndConditionOrConditionSchema(),
 			},
 		},
@@ -3535,10 +3449,7 @@ func ApplicationResourceSignatureAndConditionOrConditionSchema() rsschema.Nested
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"operator": ApplicationResourceSignatureAndConditionOrConditionOperatorSchema(),
@@ -3567,10 +3478,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionObject) getTypeFor(n
 func ApplicationResourceSignatureAndConditionOrConditionOperatorSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"pattern_match": ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchSchema(),
@@ -3605,10 +3513,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorObject) getT
 func ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3622,26 +3527,17 @@ func ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchSche
 
 			"context": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"pattern": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"qualifier": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQualifierSchema(),
 			},
 		},
@@ -3672,18 +3568,12 @@ func ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatchQual
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3710,10 +3600,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatch
 func ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3727,26 +3614,17 @@ func ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanSchem
 
 			"context": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"qualifier": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQualifierSchema(),
 			},
 		},
@@ -3777,18 +3655,12 @@ func ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQuali
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3815,10 +3687,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanQ
 func ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3832,26 +3701,17 @@ func ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanSchema()
 
 			"context": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"qualifier": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifierSchema(),
 			},
 		},
@@ -3882,18 +3742,12 @@ func ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQualifie
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3920,10 +3774,7 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanQual
 func ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3937,34 +3788,22 @@ func ApplicationResourceSignatureAndConditionOrConditionOperatorEqualToSchema() 
 
 			"context": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"position": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"mask": rsschema.StringAttribute{
 				Description: "4-byte hex value",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -6060,14 +5899,15 @@ type ApplicationImportState struct {
 
 func (o ApplicationImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *ApplicationLocation `json:"location"`
-		Name     *string              `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *ApplicationLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, ApplicationLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -6081,8 +5921,8 @@ func (o ApplicationImportState) MarshalJSON() ([]byte, error) {
 
 func (o *ApplicationImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *ApplicationLocation `json:"location"`
-		Name     *string              `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -6091,10 +5931,14 @@ func (o *ApplicationImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, ApplicationLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

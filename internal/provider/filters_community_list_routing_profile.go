@@ -847,18 +847,13 @@ func FiltersCommunityListRoutingProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe BGP Community-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": FiltersCommunityListRoutingProfileDataSourceTypeSchema(),
@@ -887,10 +882,8 @@ func (o *FiltersCommunityListRoutingProfileDataSourceModel) getTypeFor(name stri
 func FiltersCommunityListRoutingProfileDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"extended": FiltersCommunityListRoutingProfileDataSourceTypeExtendedSchema(),
@@ -923,10 +916,8 @@ func (o *FiltersCommunityListRoutingProfileDataSourceTypeObject) getTypeFor(name
 func FiltersCommunityListRoutingProfileDataSourceTypeExtendedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -939,10 +930,8 @@ func FiltersCommunityListRoutingProfileDataSourceTypeExtendedSchema() dsschema.S
 
 			"extended_entries": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersCommunityListRoutingProfileDataSourceTypeExtendedExtendedEntriesSchema(),
 			},
 		},
@@ -973,26 +962,19 @@ func FiltersCommunityListRoutingProfileDataSourceTypeExtendedExtendedEntriesSche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Extended Community-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"extended_community_regexes": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1020,10 +1002,8 @@ func (o *FiltersCommunityListRoutingProfileDataSourceTypeExtendedExtendedEntries
 func FiltersCommunityListRoutingProfileDataSourceTypeLargeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1036,10 +1016,8 @@ func FiltersCommunityListRoutingProfileDataSourceTypeLargeSchema() dsschema.Sing
 
 			"large_entries": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersCommunityListRoutingProfileDataSourceTypeLargeLargeEntriesSchema(),
 			},
 		},
@@ -1070,26 +1048,19 @@ func FiltersCommunityListRoutingProfileDataSourceTypeLargeLargeEntriesSchema() d
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Large Community-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"large_community_regexes": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1117,10 +1088,8 @@ func (o *FiltersCommunityListRoutingProfileDataSourceTypeLargeLargeEntriesObject
 func FiltersCommunityListRoutingProfileDataSourceTypeRegularSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1133,10 +1102,8 @@ func FiltersCommunityListRoutingProfileDataSourceTypeRegularSchema() dsschema.Si
 
 			"regular_entries": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersCommunityListRoutingProfileDataSourceTypeRegularRegularEntriesSchema(),
 			},
 		},
@@ -1167,26 +1134,19 @@ func FiltersCommunityListRoutingProfileDataSourceTypeRegularRegularEntriesSchema
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Regular Community-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1399,7 +1359,107 @@ type FiltersCommunityListRoutingProfileResourceTypeRegularRegularEntriesObject s
 	Communities types.List   `tfsdk:"communities"`
 }
 
+func (o *FiltersCommunityListRoutingProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj FiltersCommunityListRoutingProfileResourceTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *FiltersCommunityListRoutingProfileResourceTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Extended.IsUnknown() && !o.Extended.IsNull() {
+		var nestedObj FiltersCommunityListRoutingProfileResourceTypeExtendedObject
+		diags := o.Extended.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("extended"))
+		}
+	}
+	if !o.Large.IsUnknown() && !o.Large.IsNull() {
+		var nestedObj FiltersCommunityListRoutingProfileResourceTypeLargeObject
+		diags := o.Large.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("large"))
+		}
+	}
+	if !o.Regular.IsUnknown() && !o.Regular.IsNull() {
+		var nestedObj FiltersCommunityListRoutingProfileResourceTypeRegularObject
+		diags := o.Regular.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("regular"))
+		}
+	}
+}
+
+func (o *FiltersCommunityListRoutingProfileResourceTypeExtendedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ExtendedEntries.IsUnknown() && !o.ExtendedEntries.IsNull() {
+		var elements []FiltersCommunityListRoutingProfileResourceTypeExtendedExtendedEntriesObject
+		diags := o.ExtendedEntries.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("extended_entries").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersCommunityListRoutingProfileResourceTypeExtendedExtendedEntriesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersCommunityListRoutingProfileResourceTypeLargeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.LargeEntries.IsUnknown() && !o.LargeEntries.IsNull() {
+		var elements []FiltersCommunityListRoutingProfileResourceTypeLargeLargeEntriesObject
+		diags := o.LargeEntries.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("large_entries").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersCommunityListRoutingProfileResourceTypeLargeLargeEntriesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersCommunityListRoutingProfileResourceTypeRegularObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RegularEntries.IsUnknown() && !o.RegularEntries.IsNull() {
+		var elements []FiltersCommunityListRoutingProfileResourceTypeRegularRegularEntriesObject
+		diags := o.RegularEntries.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("regular_entries").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersCommunityListRoutingProfileResourceTypeRegularRegularEntriesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *FiltersCommunityListRoutingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource FiltersCommunityListRoutingProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1412,18 +1472,12 @@ func FiltersCommunityListRoutingProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe BGP Community-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": FiltersCommunityListRoutingProfileResourceTypeSchema(),
@@ -1452,10 +1506,7 @@ func (o *FiltersCommunityListRoutingProfileResourceModel) getTypeFor(name string
 func FiltersCommunityListRoutingProfileResourceTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"extended": FiltersCommunityListRoutingProfileResourceTypeExtendedSchema(),
@@ -1488,10 +1539,7 @@ func (o *FiltersCommunityListRoutingProfileResourceTypeObject) getTypeFor(name s
 func FiltersCommunityListRoutingProfileResourceTypeExtendedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1504,10 +1552,7 @@ func FiltersCommunityListRoutingProfileResourceTypeExtendedSchema() rsschema.Sin
 
 			"extended_entries": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersCommunityListRoutingProfileResourceTypeExtendedExtendedEntriesSchema(),
 			},
 		},
@@ -1538,27 +1583,19 @@ func FiltersCommunityListRoutingProfileResourceTypeExtendedExtendedEntriesSchema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Extended Community-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"extended_community_regexes": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1586,10 +1623,7 @@ func (o *FiltersCommunityListRoutingProfileResourceTypeExtendedExtendedEntriesOb
 func FiltersCommunityListRoutingProfileResourceTypeLargeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1602,10 +1636,7 @@ func FiltersCommunityListRoutingProfileResourceTypeLargeSchema() rsschema.Single
 
 			"large_entries": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersCommunityListRoutingProfileResourceTypeLargeLargeEntriesSchema(),
 			},
 		},
@@ -1636,27 +1667,19 @@ func FiltersCommunityListRoutingProfileResourceTypeLargeLargeEntriesSchema() rss
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Large Community-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"large_community_regexes": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1684,10 +1707,7 @@ func (o *FiltersCommunityListRoutingProfileResourceTypeLargeLargeEntriesObject) 
 func FiltersCommunityListRoutingProfileResourceTypeRegularSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1700,10 +1720,7 @@ func FiltersCommunityListRoutingProfileResourceTypeRegularSchema() rsschema.Sing
 
 			"regular_entries": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersCommunityListRoutingProfileResourceTypeRegularRegularEntriesSchema(),
 			},
 		},
@@ -1734,27 +1751,19 @@ func FiltersCommunityListRoutingProfileResourceTypeRegularRegularEntriesSchema()
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Regular Community-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -3007,14 +3016,15 @@ type FiltersCommunityListRoutingProfileImportState struct {
 
 func (o FiltersCommunityListRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *FiltersCommunityListRoutingProfileLocation `json:"location"`
-		Name     *string                                     `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *FiltersCommunityListRoutingProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, FiltersCommunityListRoutingProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -3028,8 +3038,8 @@ func (o FiltersCommunityListRoutingProfileImportState) MarshalJSON() ([]byte, er
 
 func (o *FiltersCommunityListRoutingProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *FiltersCommunityListRoutingProfileLocation `json:"location"`
-		Name     *string                                     `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3038,10 +3048,14 @@ func (o *FiltersCommunityListRoutingProfileImportState) UnmarshalJSON(data []byt
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, FiltersCommunityListRoutingProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

@@ -947,18 +947,13 @@ func FiltersPrefixListRoutingProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Prefix-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": FiltersPrefixListRoutingProfileDataSourceTypeSchema(),
@@ -987,10 +982,8 @@ func (o *FiltersPrefixListRoutingProfileDataSourceModel) getTypeFor(name string)
 func FiltersPrefixListRoutingProfileDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4": FiltersPrefixListRoutingProfileDataSourceTypeIpv4Schema(),
@@ -1021,10 +1014,8 @@ func (o *FiltersPrefixListRoutingProfileDataSourceTypeObject) getTypeFor(name st
 func FiltersPrefixListRoutingProfileDataSourceTypeIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1036,10 +1027,8 @@ func FiltersPrefixListRoutingProfileDataSourceTypeIpv4Schema() dsschema.SingleNe
 
 			"ipv4_entries": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSchema(),
 			},
 		},
@@ -1070,18 +1059,13 @@ func FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesSchema() dssche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Prefix-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix": FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesPrefixSchema(),
@@ -1110,18 +1094,14 @@ func (o *FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesObject) get
 func FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesPrefixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"network": dsschema.StringAttribute{
 				Description: "Select pre-defined Prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"entry": FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesPrefixEntrySchema(),
@@ -1150,10 +1130,8 @@ func (o *FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesPrefixObjec
 func FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesPrefixEntrySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1165,26 +1143,20 @@ func FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesPrefixEntrySche
 
 			"network": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"greater_than_or_equal": dsschema.Int64Attribute{
 				Description: "Maximum Prefix length to be matched",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"less_than_or_equal": dsschema.Int64Attribute{
 				Description: "Minimum Prefix length to be matched",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1211,10 +1183,8 @@ func (o *FiltersPrefixListRoutingProfileDataSourceTypeIpv4Ipv4EntriesPrefixEntry
 func FiltersPrefixListRoutingProfileDataSourceTypeIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1226,10 +1196,8 @@ func FiltersPrefixListRoutingProfileDataSourceTypeIpv6Schema() dsschema.SingleNe
 
 			"ipv6_entries": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersPrefixListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSchema(),
 			},
 		},
@@ -1260,18 +1228,13 @@ func FiltersPrefixListRoutingProfileDataSourceTypeIpv6Ipv6EntriesSchema() dssche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Prefix-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix": FiltersPrefixListRoutingProfileDataSourceTypeIpv6Ipv6EntriesPrefixSchema(),
@@ -1300,18 +1263,14 @@ func (o *FiltersPrefixListRoutingProfileDataSourceTypeIpv6Ipv6EntriesObject) get
 func FiltersPrefixListRoutingProfileDataSourceTypeIpv6Ipv6EntriesPrefixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"network": dsschema.StringAttribute{
 				Description: "Select pre-defined Prefix",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"entry": FiltersPrefixListRoutingProfileDataSourceTypeIpv6Ipv6EntriesPrefixEntrySchema(),
@@ -1340,10 +1299,8 @@ func (o *FiltersPrefixListRoutingProfileDataSourceTypeIpv6Ipv6EntriesPrefixObjec
 func FiltersPrefixListRoutingProfileDataSourceTypeIpv6Ipv6EntriesPrefixEntrySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1355,26 +1312,20 @@ func FiltersPrefixListRoutingProfileDataSourceTypeIpv6Ipv6EntriesPrefixEntrySche
 
 			"network": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"greater_than_or_equal": dsschema.Int64Attribute{
 				Description: "Maximum Prefix length to be matched",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"less_than_or_equal": dsschema.Int64Attribute{
 				Description: "Minimum Prefix length to be matched",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1595,7 +1546,129 @@ type FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesPrefixEntryObject
 	LessThanOrEqual    types.Int64  `tfsdk:"less_than_or_equal"`
 }
 
+func (o *FiltersPrefixListRoutingProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj FiltersPrefixListRoutingProfileResourceTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *FiltersPrefixListRoutingProfileResourceTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersPrefixListRoutingProfileResourceTypeIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj FiltersPrefixListRoutingProfileResourceTypeIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *FiltersPrefixListRoutingProfileResourceTypeIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4Entries.IsUnknown() && !o.Ipv4Entries.IsNull() {
+		var elements []FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesObject
+		diags := o.Ipv4Entries.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ipv4_entries").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Prefix.IsUnknown() && !o.Prefix.IsNull() {
+		var nestedObj FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesPrefixObject
+		diags := o.Prefix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("prefix"))
+		}
+	}
+}
+
+func (o *FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesPrefixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Entry.IsUnknown() && !o.Entry.IsNull() {
+		var nestedObj FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesPrefixEntryObject
+		diags := o.Entry.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("entry"))
+		}
+	}
+}
+
+func (o *FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesPrefixEntryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersPrefixListRoutingProfileResourceTypeIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv6Entries.IsUnknown() && !o.Ipv6Entries.IsNull() {
+		var elements []FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesObject
+		diags := o.Ipv6Entries.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ipv6_entries").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Prefix.IsUnknown() && !o.Prefix.IsNull() {
+		var nestedObj FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesPrefixObject
+		diags := o.Prefix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("prefix"))
+		}
+	}
+}
+
+func (o *FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesPrefixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Entry.IsUnknown() && !o.Entry.IsNull() {
+		var nestedObj FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesPrefixEntryObject
+		diags := o.Entry.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("entry"))
+		}
+	}
+}
+
+func (o *FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesPrefixEntryObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *FiltersPrefixListRoutingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource FiltersPrefixListRoutingProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1608,18 +1681,12 @@ func FiltersPrefixListRoutingProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Prefix-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": FiltersPrefixListRoutingProfileResourceTypeSchema(),
@@ -1648,10 +1715,7 @@ func (o *FiltersPrefixListRoutingProfileResourceModel) getTypeFor(name string) a
 func FiltersPrefixListRoutingProfileResourceTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4": FiltersPrefixListRoutingProfileResourceTypeIpv4Schema(),
@@ -1682,10 +1746,7 @@ func (o *FiltersPrefixListRoutingProfileResourceTypeObject) getTypeFor(name stri
 func FiltersPrefixListRoutingProfileResourceTypeIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1697,10 +1758,7 @@ func FiltersPrefixListRoutingProfileResourceTypeIpv4Schema() rsschema.SingleNest
 
 			"ipv4_entries": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesSchema(),
 			},
 		},
@@ -1731,18 +1789,13 @@ func FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesSchema() rsschema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Prefix-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
@@ -1772,18 +1825,12 @@ func (o *FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesObject) getTy
 func FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesPrefixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"network": rsschema.StringAttribute{
 				Description: "Select pre-defined Prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -1819,10 +1866,7 @@ func (o *FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesPrefixObject)
 func FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesPrefixEntrySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1834,26 +1878,17 @@ func FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesPrefixEntrySchema
 
 			"network": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"greater_than_or_equal": rsschema.Int64Attribute{
 				Description: "Maximum Prefix length to be matched",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"less_than_or_equal": rsschema.Int64Attribute{
 				Description: "Minimum Prefix length to be matched",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1880,10 +1915,7 @@ func (o *FiltersPrefixListRoutingProfileResourceTypeIpv4Ipv4EntriesPrefixEntryOb
 func FiltersPrefixListRoutingProfileResourceTypeIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1895,10 +1927,7 @@ func FiltersPrefixListRoutingProfileResourceTypeIpv6Schema() rsschema.SingleNest
 
 			"ipv6_entries": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesSchema(),
 			},
 		},
@@ -1929,18 +1958,13 @@ func FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesSchema() rsschema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) this Prefix-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
@@ -1970,18 +1994,12 @@ func (o *FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesObject) getTy
 func FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesPrefixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"network": rsschema.StringAttribute{
 				Description: "Select pre-defined Prefix",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -2017,10 +2035,7 @@ func (o *FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesPrefixObject)
 func FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesPrefixEntrySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2032,26 +2047,17 @@ func FiltersPrefixListRoutingProfileResourceTypeIpv6Ipv6EntriesPrefixEntrySchema
 
 			"network": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"greater_than_or_equal": rsschema.Int64Attribute{
 				Description: "Maximum Prefix length to be matched",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"less_than_or_equal": rsschema.Int64Attribute{
 				Description: "Minimum Prefix length to be matched",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3393,14 +3399,15 @@ type FiltersPrefixListRoutingProfileImportState struct {
 
 func (o FiltersPrefixListRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *FiltersPrefixListRoutingProfileLocation `json:"location"`
-		Name     *string                                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *FiltersPrefixListRoutingProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, FiltersPrefixListRoutingProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -3414,8 +3421,8 @@ func (o FiltersPrefixListRoutingProfileImportState) MarshalJSON() ([]byte, error
 
 func (o *FiltersPrefixListRoutingProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *FiltersPrefixListRoutingProfileLocation `json:"location"`
-		Name     *string                                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3424,10 +3431,14 @@ func (o *FiltersPrefixListRoutingProfileImportState) UnmarshalJSON(data []byte) 
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, FiltersPrefixListRoutingProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

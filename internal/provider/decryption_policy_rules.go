@@ -1237,9 +1237,6 @@ func DecryptionPolicyRulesDataSourceSchema() dsschema.Schema {
 			"rules": dsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: DecryptionPolicyRulesDataSourceRulesSchema(),
 			},
 		},
@@ -1270,178 +1267,135 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"category": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"destination_addresses": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"destination_hip": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"disabled": dsschema.BoolAttribute{
 				Description: "Disable the rule",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_zones": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"group_tag": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_fail": dsschema.BoolAttribute{
 				Description: "Log unsuccessful TLS handshakes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_setting": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_success": dsschema.BoolAttribute{
 				Description: "Log successful TLS handshakes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"negate_destination": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"negate_source": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"packet_broker_profile": dsschema.StringAttribute{
 				Description: "packet-broker profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"profile": dsschema.StringAttribute{
 				Description: "decryption profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"services": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"source_addresses": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"source_hip": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"source_user": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"tag": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -1449,10 +1403,8 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 
 			"destination_zones": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -1482,35 +1434,27 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) getTypeFor(name string) att
 func DecryptionPolicyRulesDataSourceRulesTargetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"devices": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: DecryptionPolicyRulesDataSourceRulesTargetDevicesSchema(),
 			},
 
 			"negate": dsschema.BoolAttribute{
 				Description: "Target to all but these specified devices and tags",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tags": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1541,18 +1485,13 @@ func DecryptionPolicyRulesDataSourceRulesTargetDevicesSchema() dsschema.NestedAt
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"vsys": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysSchema(),
 			},
 		},
@@ -1583,10 +1522,7 @@ func DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysSchema() dsschema.Nest
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1613,10 +1549,8 @@ func (o *DecryptionPolicyRulesDataSourceRulesTargetDevicesVsysObject) getTypeFor
 func DecryptionPolicyRulesDataSourceRulesTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ssh_proxy": DecryptionPolicyRulesDataSourceRulesTypeSshProxySchema(),
@@ -1649,10 +1583,8 @@ func (o *DecryptionPolicyRulesDataSourceRulesTypeObject) getTypeFor(name string)
 func DecryptionPolicyRulesDataSourceRulesTypeSshProxySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1686,10 +1618,8 @@ func (o *DecryptionPolicyRulesDataSourceRulesTypeSshProxyObject) getTypeFor(name
 func DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1723,10 +1653,8 @@ func (o *DecryptionPolicyRulesDataSourceRulesTypeSslForwardProxyObject) getTypeF
 func DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1739,10 +1667,8 @@ func DecryptionPolicyRulesDataSourceRulesTypeSslInboundInspectionSchema() dssche
 
 			"certificates": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2004,15 +1930,120 @@ type DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject struct {
 	Certificates types.List `tfsdk:"certificates"`
 }
 
-func (o *DecryptionPolicyRulesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	{
-
-		var resource DecryptionPolicyRulesResourceModel
-		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
-		if resp.Diagnostics.HasError() {
-			return
+func (o *DecryptionPolicyRulesResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Rules.IsUnknown() && !o.Rules.IsNull() {
+		var elements []DecryptionPolicyRulesResourceRulesObject
+		diags := o.Rules.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("rules").AtListIndex(i))
+			}
 		}
+	}
+}
 
+func (o *DecryptionPolicyRulesResourceRulesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Target.IsUnknown() && !o.Target.IsNull() {
+		var nestedObj DecryptionPolicyRulesResourceRulesTargetObject
+		diags := o.Target.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("target"))
+		}
+	}
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj DecryptionPolicyRulesResourceRulesTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTargetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Devices.IsUnknown() && !o.Devices.IsNull() {
+		var elements []DecryptionPolicyRulesResourceRulesTargetDevicesObject
+		diags := o.Devices.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("devices").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTargetDevicesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Vsys.IsUnknown() && !o.Vsys.IsNull() {
+		var elements []DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject
+		diags := o.Vsys.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("vsys").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SshProxy.IsUnknown() && !o.SshProxy.IsNull() {
+		var nestedObj DecryptionPolicyRulesResourceRulesTypeSshProxyObject
+		diags := o.SshProxy.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ssh_proxy"))
+		}
+	}
+	if !o.SslForwardProxy.IsUnknown() && !o.SslForwardProxy.IsNull() {
+		var nestedObj DecryptionPolicyRulesResourceRulesTypeSslForwardProxyObject
+		diags := o.SslForwardProxy.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ssl_forward_proxy"))
+		}
+	}
+	if !o.SslInboundInspection.IsUnknown() && !o.SslInboundInspection.IsNull() {
+		var nestedObj DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject
+		diags := o.SslInboundInspection.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ssl_inbound_inspection"))
+		}
+	}
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTypeSshProxyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTypeSslForwardProxyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *DecryptionPolicyRulesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource DecryptionPolicyRulesResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
+	{
 		if !resource.Position.IsUnknown() {
 			var positionAttribute TerraformPositionObject
 			resp.Diagnostics.Append(resource.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
@@ -2024,11 +2055,6 @@ func (o *DecryptionPolicyRulesResource) ValidateConfig(ctx context.Context, req 
 
 	}
 	{
-		var resource DecryptionPolicyRulesResourceModel
-		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
 
 		entries := make(map[string]struct{})
 		duplicated := make(map[string]struct{})
@@ -2084,9 +2110,6 @@ func DecryptionPolicyRulesResourceSchema() rsschema.Schema {
 			"rules": rsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: DecryptionPolicyRulesResourceRulesSchema(),
 			},
 		},
@@ -2117,18 +2140,13 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("no-decrypt"),
 
 				Validators: []validator.String{
@@ -2142,162 +2160,105 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"category": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"destination_addresses": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"destination_hip": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"disabled": rsschema.BoolAttribute{
 				Description: "Disable the rule",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source_zones": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"group_tag": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_fail": rsschema.BoolAttribute{
 				Description: "Log unsuccessful TLS handshakes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_setting": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_success": rsschema.BoolAttribute{
 				Description: "Log successful TLS handshakes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"negate_destination": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"negate_source": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"packet_broker_profile": rsschema.StringAttribute{
 				Description: "packet-broker profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"profile": rsschema.StringAttribute{
 				Description: "decryption profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"services": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"source_addresses": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"source_hip": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"source_user": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"tag": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -2305,10 +2266,7 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"destination_zones": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -2338,35 +2296,23 @@ func (o *DecryptionPolicyRulesResourceRulesObject) getTypeFor(name string) attr.
 func DecryptionPolicyRulesResourceRulesTargetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"devices": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: DecryptionPolicyRulesResourceRulesTargetDevicesSchema(),
 			},
 
 			"negate": rsschema.BoolAttribute{
 				Description: "Target to all but these specified devices and tags",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tags": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2397,18 +2343,12 @@ func DecryptionPolicyRulesResourceRulesTargetDevicesSchema() rsschema.NestedAttr
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"vsys": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: DecryptionPolicyRulesResourceRulesTargetDevicesVsysSchema(),
 			},
 		},
@@ -2439,10 +2379,7 @@ func DecryptionPolicyRulesResourceRulesTargetDevicesVsysSchema() rsschema.Nested
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2469,10 +2406,7 @@ func (o *DecryptionPolicyRulesResourceRulesTargetDevicesVsysObject) getTypeFor(n
 func DecryptionPolicyRulesResourceRulesTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ssh_proxy": DecryptionPolicyRulesResourceRulesTypeSshProxySchema(),
@@ -2505,10 +2439,7 @@ func (o *DecryptionPolicyRulesResourceRulesTypeObject) getTypeFor(name string) a
 func DecryptionPolicyRulesResourceRulesTypeSshProxySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2542,10 +2473,7 @@ func (o *DecryptionPolicyRulesResourceRulesTypeSshProxyObject) getTypeFor(name s
 func DecryptionPolicyRulesResourceRulesTypeSslForwardProxySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2579,10 +2507,7 @@ func (o *DecryptionPolicyRulesResourceRulesTypeSslForwardProxyObject) getTypeFor
 func DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2595,10 +2520,7 @@ func DecryptionPolicyRulesResourceRulesTypeSslInboundInspectionSchema() rsschema
 
 			"certificates": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -4268,15 +4190,16 @@ type DecryptionPolicyRulesImportState struct {
 
 func (o DecryptionPolicyRulesImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *DecryptionPolicyRulesLocation `json:"location"`
-		Names    []string                       `json:"names"`
-		Position *TerraformPositionObject       `json:"position"`
+		Location interface{}              `json:"location"`
+		Names    []string                 `json:"names"`
+		Position *TerraformPositionObject `json:"position"`
 	}
-	var location_object *DecryptionPolicyRulesLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, DecryptionPolicyRulesLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 	var names_list []string
@@ -4305,9 +4228,9 @@ func (o DecryptionPolicyRulesImportState) MarshalJSON() ([]byte, error) {
 
 func (o *DecryptionPolicyRulesImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *DecryptionPolicyRulesLocation `json:"location"`
-		Names    []string                       `json:"names"`
-		Position *TerraformPositionObject       `json:"position"`
+		Location interface{}              `json:"location"`
+		Names    []string                 `json:"names"`
+		Position *TerraformPositionObject `json:"position"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4316,10 +4239,14 @@ func (o *DecryptionPolicyRulesImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, DecryptionPolicyRulesLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	var names_list types.List

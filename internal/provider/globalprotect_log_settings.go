@@ -1002,87 +1002,66 @@ func GlobalprotectLogSettingsDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"actions": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: GlobalprotectLogSettingsDataSourceActionsSchema(),
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"filter": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"quarantine": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"email_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"http_profile": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"snmp_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"syslog_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"send_to_panorama": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1112,10 +1091,7 @@ func GlobalprotectLogSettingsDataSourceActionsSchema() dsschema.NestedAttributeO
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": GlobalprotectLogSettingsDataSourceActionsTypeSchema(),
@@ -1144,10 +1120,8 @@ func (o *GlobalprotectLogSettingsDataSourceActionsObject) getTypeFor(name string
 func GlobalprotectLogSettingsDataSourceActionsTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"integration": GlobalprotectLogSettingsDataSourceActionsTypeIntegrationSchema(),
@@ -1178,10 +1152,8 @@ func (o *GlobalprotectLogSettingsDataSourceActionsTypeObject) getTypeFor(name st
 func GlobalprotectLogSettingsDataSourceActionsTypeIntegrationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1193,10 +1165,8 @@ func GlobalprotectLogSettingsDataSourceActionsTypeIntegrationSchema() dsschema.S
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1223,10 +1193,8 @@ func (o *GlobalprotectLogSettingsDataSourceActionsTypeIntegrationObject) getType
 func GlobalprotectLogSettingsDataSourceActionsTypeTaggingSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1238,36 +1206,28 @@ func GlobalprotectLogSettingsDataSourceActionsTypeTaggingSchema() dsschema.Singl
 
 			"target": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timeout": dsschema.Int64Attribute{
 				Description: "timeout in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"registration": GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationSchema(),
 
 			"tags": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1295,10 +1255,8 @@ func (o *GlobalprotectLogSettingsDataSourceActionsTypeTaggingObject) getTypeFor(
 func GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"localhost": GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostSchema(),
@@ -1331,10 +1289,8 @@ func (o *GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationObject)
 func GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1368,10 +1324,8 @@ func (o *GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationLocalho
 func GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationPanoramaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1405,10 +1359,8 @@ func (o *GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationPanoram
 func GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationRemoteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1421,10 +1373,8 @@ func GlobalprotectLogSettingsDataSourceActionsTypeTaggingRegistrationRemoteSchem
 
 			"http_profile": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1667,7 +1617,115 @@ type GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject 
 	HttpProfile types.String `tfsdk:"http_profile"`
 }
 
+func (o *GlobalprotectLogSettingsResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Actions.IsUnknown() && !o.Actions.IsNull() {
+		var elements []GlobalprotectLogSettingsResourceActionsObject
+		diags := o.Actions.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("actions").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *GlobalprotectLogSettingsResourceActionsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj GlobalprotectLogSettingsResourceActionsTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *GlobalprotectLogSettingsResourceActionsTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Integration.IsUnknown() && !o.Integration.IsNull() {
+		var nestedObj GlobalprotectLogSettingsResourceActionsTypeIntegrationObject
+		diags := o.Integration.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("integration"))
+		}
+	}
+	if !o.Tagging.IsUnknown() && !o.Tagging.IsNull() {
+		var nestedObj GlobalprotectLogSettingsResourceActionsTypeTaggingObject
+		diags := o.Tagging.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tagging"))
+		}
+	}
+}
+
+func (o *GlobalprotectLogSettingsResourceActionsTypeIntegrationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectLogSettingsResourceActionsTypeTaggingObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Registration.IsUnknown() && !o.Registration.IsNull() {
+		var nestedObj GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationObject
+		diags := o.Registration.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("registration"))
+		}
+	}
+}
+
+func (o *GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Localhost.IsUnknown() && !o.Localhost.IsNull() {
+		var nestedObj GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObject
+		diags := o.Localhost.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("localhost"))
+		}
+	}
+	if !o.Panorama.IsUnknown() && !o.Panorama.IsNull() {
+		var nestedObj GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject
+		diags := o.Panorama.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("panorama"))
+		}
+	}
+	if !o.Remote.IsUnknown() && !o.Remote.IsNull() {
+		var nestedObj GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject
+		diags := o.Remote.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("remote"))
+		}
+	}
+}
+
+func (o *GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *GlobalprotectLogSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource GlobalprotectLogSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1680,87 +1738,57 @@ func GlobalprotectLogSettingsResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"actions": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: GlobalprotectLogSettingsResourceActionsSchema(),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"filter": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"quarantine": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"email_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"http_profile": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"snmp_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"syslog_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"send_to_panorama": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1790,10 +1818,7 @@ func GlobalprotectLogSettingsResourceActionsSchema() rsschema.NestedAttributeObj
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": GlobalprotectLogSettingsResourceActionsTypeSchema(),
@@ -1822,10 +1847,7 @@ func (o *GlobalprotectLogSettingsResourceActionsObject) getTypeFor(name string) 
 func GlobalprotectLogSettingsResourceActionsTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"integration": GlobalprotectLogSettingsResourceActionsTypeIntegrationSchema(),
@@ -1856,10 +1878,7 @@ func (o *GlobalprotectLogSettingsResourceActionsTypeObject) getTypeFor(name stri
 func GlobalprotectLogSettingsResourceActionsTypeIntegrationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1871,10 +1890,8 @@ func GlobalprotectLogSettingsResourceActionsTypeIntegrationSchema() rsschema.Sin
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Azure-Security-Center-Integration"),
 			},
 		},
@@ -1902,10 +1919,7 @@ func (o *GlobalprotectLogSettingsResourceActionsTypeIntegrationObject) getTypeFo
 func GlobalprotectLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1917,28 +1931,22 @@ func GlobalprotectLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleN
 
 			"target": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("source-address"),
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("add-tag"),
 			},
 
 			"timeout": rsschema.Int64Attribute{
 				Description: "timeout in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
@@ -1946,10 +1954,7 @@ func GlobalprotectLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleN
 
 			"tags": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1977,10 +1982,7 @@ func (o *GlobalprotectLogSettingsResourceActionsTypeTaggingObject) getTypeFor(na
 func GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"localhost": GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationLocalhostSchema(),
@@ -2013,10 +2015,7 @@ func (o *GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationObject) g
 func GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationLocalhostSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2050,10 +2049,7 @@ func (o *GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationLocalhost
 func GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationPanoramaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2087,10 +2083,7 @@ func (o *GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationPanoramaO
 func GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationRemoteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2103,10 +2096,7 @@ func GlobalprotectLogSettingsResourceActionsTypeTaggingRegistrationRemoteSchema(
 
 			"http_profile": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3596,14 +3586,15 @@ type GlobalprotectLogSettingsImportState struct {
 
 func (o GlobalprotectLogSettingsImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *GlobalprotectLogSettingsLocation `json:"location"`
-		Name     *string                           `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *GlobalprotectLogSettingsLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, GlobalprotectLogSettingsLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -3617,8 +3608,8 @@ func (o GlobalprotectLogSettingsImportState) MarshalJSON() ([]byte, error) {
 
 func (o *GlobalprotectLogSettingsImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *GlobalprotectLogSettingsLocation `json:"location"`
-		Name     *string                           `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3627,10 +3618,14 @@ func (o *GlobalprotectLogSettingsImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, GlobalprotectLogSettingsLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

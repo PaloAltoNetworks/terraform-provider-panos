@@ -1705,9 +1705,6 @@ func NatPolicyRulesDataSourceSchema() dsschema.Schema {
 			"rules": dsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: NatPolicyRulesDataSourceRulesSchema(),
 			},
 		},
@@ -1738,84 +1735,63 @@ func NatPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"active_active_device_binding": dsschema.StringAttribute{
 				Description: "Device binding configuration in HA Active-Active mode",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"destination_addresses": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"disabled": dsschema.BoolAttribute{
 				Description: "Disable the rule",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_zones": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"group_tag": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"nat_type": dsschema.StringAttribute{
 				Description: "type of nat",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"service": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_addresses": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -1823,10 +1799,8 @@ func NatPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject {
 
 			"tag": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -1834,19 +1808,15 @@ func NatPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject {
 
 			"destination_zone": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"to_interface": dsschema.StringAttribute{
 				Description: "Egress interface from route lookup",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"destination_translation": NatPolicyRulesDataSourceRulesDestinationTranslationSchema(),
@@ -1877,10 +1847,8 @@ func (o *NatPolicyRulesDataSourceRulesObject) getTypeFor(name string) attr.Type 
 func NatPolicyRulesDataSourceRulesSourceTranslationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dynamic_ip": NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpSchema(),
@@ -1913,10 +1881,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationObject) getTypeFor(name s
 func NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1931,10 +1897,8 @@ func NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpSchema() dsschema.Si
 
 			"translated_address": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1962,20 +1926,16 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpObject) getTypeF
 func NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface_address": NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressSchema(),
 
 			"translated_address": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2003,10 +1963,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackObject) 
 func NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2018,26 +1976,20 @@ func NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfaceAdd
 
 			"interface": dsschema.StringAttribute{
 				Description: "Interface name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"floating_ip": dsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2064,10 +2016,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpFallbackInterfac
 func NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2082,10 +2032,8 @@ func NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortSchema() dssc
 
 			"translated_address": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2113,10 +2061,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortObject) g
 func NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2128,26 +2074,20 @@ func NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterfaceAddr
 
 			"interface": dsschema.StringAttribute{
 				Description: "Interface name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"floating_ip": dsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2174,10 +2114,8 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationDynamicIpAndPortInterface
 func NatPolicyRulesDataSourceRulesSourceTranslationStaticIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2190,18 +2128,14 @@ func NatPolicyRulesDataSourceRulesSourceTranslationStaticIpSchema() dsschema.Sin
 
 			"bi_directional": dsschema.StringAttribute{
 				Description: "allow reverse translation from translated address to original address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"translated_address": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2228,35 +2162,27 @@ func (o *NatPolicyRulesDataSourceRulesSourceTranslationStaticIpObject) getTypeFo
 func NatPolicyRulesDataSourceRulesTargetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"devices": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: NatPolicyRulesDataSourceRulesTargetDevicesSchema(),
 			},
 
 			"negate": dsschema.BoolAttribute{
 				Description: "Target to all but these specified devices and tags",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tags": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2287,18 +2213,13 @@ func NatPolicyRulesDataSourceRulesTargetDevicesSchema() dsschema.NestedAttribute
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"vsys": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: NatPolicyRulesDataSourceRulesTargetDevicesVsysSchema(),
 			},
 		},
@@ -2329,10 +2250,7 @@ func NatPolicyRulesDataSourceRulesTargetDevicesVsysSchema() dsschema.NestedAttri
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2359,28 +2277,22 @@ func (o *NatPolicyRulesDataSourceRulesTargetDevicesVsysObject) getTypeFor(name s
 func NatPolicyRulesDataSourceRulesDestinationTranslationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dns_rewrite": NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteSchema(),
 
 			"translated_address": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"translated_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2407,18 +2319,14 @@ func (o *NatPolicyRulesDataSourceRulesDestinationTranslationObject) getTypeFor(n
 func NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"direction": dsschema.StringAttribute{
 				Description: "Select direction to apply DNS rewrite",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2445,34 +2353,26 @@ func (o *NatPolicyRulesDataSourceRulesDestinationTranslationDnsRewriteObject) ge
 func NatPolicyRulesDataSourceRulesDynamicDestinationTranslationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"distribution": dsschema.StringAttribute{
 				Description: "Distribution algorithm for destination address pool",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"translated_address": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"translated_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2758,15 +2658,192 @@ type NatPolicyRulesResourceRulesDynamicDestinationTranslationObject struct {
 	TranslatedPort    types.Int64  `tfsdk:"translated_port"`
 }
 
-func (o *NatPolicyRulesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	{
-
-		var resource NatPolicyRulesResourceModel
-		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
-		if resp.Diagnostics.HasError() {
-			return
+func (o *NatPolicyRulesResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Rules.IsUnknown() && !o.Rules.IsNull() {
+		var elements []NatPolicyRulesResourceRulesObject
+		diags := o.Rules.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("rules").AtListIndex(i))
+			}
 		}
+	}
+}
 
+func (o *NatPolicyRulesResourceRulesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SourceTranslation.IsUnknown() && !o.SourceTranslation.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesSourceTranslationObject
+		diags := o.SourceTranslation.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("source_translation"))
+		}
+	}
+	if !o.Target.IsUnknown() && !o.Target.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesTargetObject
+		diags := o.Target.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("target"))
+		}
+	}
+	if !o.DestinationTranslation.IsUnknown() && !o.DestinationTranslation.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesDestinationTranslationObject
+		diags := o.DestinationTranslation.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("destination_translation"))
+		}
+	}
+	if !o.DynamicDestinationTranslation.IsUnknown() && !o.DynamicDestinationTranslation.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesDynamicDestinationTranslationObject
+		diags := o.DynamicDestinationTranslation.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dynamic_destination_translation"))
+		}
+	}
+}
+
+func (o *NatPolicyRulesResourceRulesSourceTranslationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DynamicIp.IsUnknown() && !o.DynamicIp.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject
+		diags := o.DynamicIp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dynamic_ip"))
+		}
+	}
+	if !o.DynamicIpAndPort.IsUnknown() && !o.DynamicIpAndPort.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject
+		diags := o.DynamicIpAndPort.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dynamic_ip_and_port"))
+		}
+	}
+	if !o.StaticIp.IsUnknown() && !o.StaticIp.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesSourceTranslationStaticIpObject
+		diags := o.StaticIp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("static_ip"))
+		}
+	}
+}
+
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Fallback.IsUnknown() && !o.Fallback.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject
+		diags := o.Fallback.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("fallback"))
+		}
+	}
+}
+
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.InterfaceAddress.IsUnknown() && !o.InterfaceAddress.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject
+		diags := o.InterfaceAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("interface_address"))
+		}
+	}
+}
+
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.InterfaceAddress.IsUnknown() && !o.InterfaceAddress.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject
+		diags := o.InterfaceAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("interface_address"))
+		}
+	}
+}
+
+func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NatPolicyRulesResourceRulesTargetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Devices.IsUnknown() && !o.Devices.IsNull() {
+		var elements []NatPolicyRulesResourceRulesTargetDevicesObject
+		diags := o.Devices.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("devices").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *NatPolicyRulesResourceRulesTargetDevicesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Vsys.IsUnknown() && !o.Vsys.IsNull() {
+		var elements []NatPolicyRulesResourceRulesTargetDevicesVsysObject
+		diags := o.Vsys.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("vsys").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *NatPolicyRulesResourceRulesTargetDevicesVsysObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DnsRewrite.IsUnknown() && !o.DnsRewrite.IsNull() {
+		var nestedObj NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject
+		diags := o.DnsRewrite.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_rewrite"))
+		}
+	}
+}
+
+func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NatPolicyRulesResourceRulesDynamicDestinationTranslationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *NatPolicyRulesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource NatPolicyRulesResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
+	{
 		if !resource.Position.IsUnknown() {
 			var positionAttribute TerraformPositionObject
 			resp.Diagnostics.Append(resource.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
@@ -2778,11 +2855,6 @@ func (o *NatPolicyRulesResource) ValidateConfig(ctx context.Context, req resourc
 
 	}
 	{
-		var resource NatPolicyRulesResourceModel
-		resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
-		if resp.Diagnostics.HasError() {
-			return
-		}
 
 		entries := make(map[string]struct{})
 		duplicated := make(map[string]struct{})
@@ -2838,9 +2910,6 @@ func NatPolicyRulesResourceSchema() rsschema.Schema {
 			"rules": rsschema.ListNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: NatPolicyRulesResourceRulesSchema(),
 			},
 		},
@@ -2871,18 +2940,12 @@ func NatPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"active_active_device_binding": rsschema.StringAttribute{
 				Description: "Device binding configuration in HA Active-Active mode",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -2896,52 +2959,35 @@ func NatPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"destination_addresses": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"disabled": rsschema.BoolAttribute{
 				Description: "Disable the rule",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source_zones": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"group_tag": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"nat_type": rsschema.StringAttribute{
 				Description: "type of nat",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("ipv4"),
 
 				Validators: []validator.String{
@@ -2955,19 +3001,14 @@ func NatPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"service": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("any"),
 			},
 
 			"source_addresses": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -2975,10 +3016,7 @@ func NatPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"tag": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -2986,19 +3024,14 @@ func NatPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 
 			"destination_zone": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"to_interface": rsschema.StringAttribute{
 				Description: "Egress interface from route lookup",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("any"),
 			},
 
@@ -3030,10 +3063,7 @@ func (o *NatPolicyRulesResourceRulesObject) getTypeFor(name string) attr.Type {
 func NatPolicyRulesResourceRulesSourceTranslationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dynamic_ip": NatPolicyRulesResourceRulesSourceTranslationDynamicIpSchema(),
@@ -3066,10 +3096,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationObject) getTypeFor(name str
 func NatPolicyRulesResourceRulesSourceTranslationDynamicIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3084,10 +3111,7 @@ func NatPolicyRulesResourceRulesSourceTranslationDynamicIpSchema() rsschema.Sing
 
 			"translated_address": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -3115,20 +3139,14 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpObject) getTypeFor
 func NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface_address": NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressSchema(),
 
 			"translated_address": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -3156,10 +3174,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackObject) ge
 func NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3171,18 +3186,12 @@ func NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddre
 
 			"interface": rsschema.StringAttribute{
 				Description: "Interface name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"floating_ip": rsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.Expressions{
@@ -3194,10 +3203,7 @@ func NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceAddre
 
 			"ip": rsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3224,10 +3230,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpFallbackInterfaceA
 func NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3242,10 +3245,7 @@ func NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortSchema() rssche
 
 			"translated_address": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -3273,10 +3273,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortObject) get
 func NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3288,18 +3285,12 @@ func NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddres
 
 			"interface": rsschema.StringAttribute{
 				Description: "Interface name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"floating_ip": rsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ConflictsWith(path.Expressions{
@@ -3311,10 +3302,7 @@ func NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAddres
 
 			"ip": rsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3341,10 +3329,7 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationDynamicIpAndPortInterfaceAd
 func NatPolicyRulesResourceRulesSourceTranslationStaticIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3357,19 +3342,14 @@ func NatPolicyRulesResourceRulesSourceTranslationStaticIpSchema() rsschema.Singl
 
 			"bi_directional": rsschema.StringAttribute{
 				Description: "allow reverse translation from translated address to original address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("no"),
 			},
 
 			"translated_address": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3396,35 +3376,23 @@ func (o *NatPolicyRulesResourceRulesSourceTranslationStaticIpObject) getTypeFor(
 func NatPolicyRulesResourceRulesTargetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"devices": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: NatPolicyRulesResourceRulesTargetDevicesSchema(),
 			},
 
 			"negate": rsschema.BoolAttribute{
 				Description: "Target to all but these specified devices and tags",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tags": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -3455,18 +3423,12 @@ func NatPolicyRulesResourceRulesTargetDevicesSchema() rsschema.NestedAttributeOb
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"vsys": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: NatPolicyRulesResourceRulesTargetDevicesVsysSchema(),
 			},
 		},
@@ -3497,10 +3459,7 @@ func NatPolicyRulesResourceRulesTargetDevicesVsysSchema() rsschema.NestedAttribu
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3527,10 +3486,7 @@ func (o *NatPolicyRulesResourceRulesTargetDevicesVsysObject) getTypeFor(name str
 func NatPolicyRulesResourceRulesDestinationTranslationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ConflictsWith(path.Expressions{
@@ -3544,18 +3500,12 @@ func NatPolicyRulesResourceRulesDestinationTranslationSchema() rsschema.SingleNe
 
 			"translated_address": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"translated_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3582,18 +3532,13 @@ func (o *NatPolicyRulesResourceRulesDestinationTranslationObject) getTypeFor(nam
 func NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"direction": rsschema.StringAttribute{
 				Description: "Select direction to apply DNS rewrite",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("reverse"),
 			},
 		},
@@ -3621,35 +3566,24 @@ func (o *NatPolicyRulesResourceRulesDestinationTranslationDnsRewriteObject) getT
 func NatPolicyRulesResourceRulesDynamicDestinationTranslationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"distribution": rsschema.StringAttribute{
 				Description: "Distribution algorithm for destination address pool",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("round-robin"),
 			},
 
 			"translated_address": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"translated_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5761,15 +5695,16 @@ type NatPolicyRulesImportState struct {
 
 func (o NatPolicyRulesImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *NatPolicyRulesLocation  `json:"location"`
+		Location interface{}              `json:"location"`
 		Names    []string                 `json:"names"`
 		Position *TerraformPositionObject `json:"position"`
 	}
-	var location_object *NatPolicyRulesLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, NatPolicyRulesLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 	var names_list []string
@@ -5798,7 +5733,7 @@ func (o NatPolicyRulesImportState) MarshalJSON() ([]byte, error) {
 
 func (o *NatPolicyRulesImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *NatPolicyRulesLocation  `json:"location"`
+		Location interface{}              `json:"location"`
 		Names    []string                 `json:"names"`
 		Position *TerraformPositionObject `json:"position"`
 	}
@@ -5809,10 +5744,14 @@ func (o *NatPolicyRulesImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, NatPolicyRulesLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	var names_list types.List

@@ -15183,18 +15183,13 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceSchema() dsschema.Sch
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Redistribution Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpSchema(),
@@ -15231,10 +15226,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceModel) getTypeFor
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ospf": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfSchema(),
@@ -15269,10 +15262,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpObject) getTyp
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15286,10 +15277,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfSchema() dssch
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapSchema(),
 			},
 		},
@@ -15320,26 +15309,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapSchema
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMatchSchema(),
@@ -15370,90 +15352,68 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapOb
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"as_path_access_list": dsschema.StringAttribute{
 				Description: "AS Path Access List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"regular_communities": dsschema.StringAttribute{
 				Description: "Regular Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"large_communities": dsschema.StringAttribute{
 				Description: "Large Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"extended_communities": dsschema.StringAttribute{
 				Description: "Extended Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": dsschema.StringAttribute{
 				Description: "Match origin",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_preference": dsschema.Int64Attribute{
 				Description: "Match Local Preference of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"peer": dsschema.StringAttribute{
 				Description: "Match Peer Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMatchIpv4Schema(),
@@ -15482,10 +15442,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMatchIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMatchIpv4AddressSchema(),
@@ -15518,26 +15476,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMatchIpv4AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15564,26 +15516,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMatchIpv4NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15610,26 +15556,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMatchIpv4RouteSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15656,28 +15596,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapSetMetricSchema(),
 
 			"metric_type": dsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15704,26 +15638,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -15750,10 +15678,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -15767,10 +15693,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3Schema() dss
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapSchema(),
 			},
 		},
@@ -15801,26 +15725,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapSche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapMatchSchema(),
@@ -15851,90 +15768,68 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"as_path_access_list": dsschema.StringAttribute{
 				Description: "AS Path Access List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"regular_communities": dsschema.StringAttribute{
 				Description: "Regular Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"large_communities": dsschema.StringAttribute{
 				Description: "Large Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"extended_communities": dsschema.StringAttribute{
 				Description: "Extended Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": dsschema.StringAttribute{
 				Description: "Match origin",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_preference": dsschema.Int64Attribute{
 				Description: "Match Local Preference of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"peer": dsschema.StringAttribute{
 				Description: "Match Peer Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapMatchIpv6Schema(),
@@ -15963,10 +15858,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapMatchIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapMatchIpv6AddressSchema(),
@@ -15997,26 +15890,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapMatchIpv6AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16043,26 +15930,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapMatchIpv6NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16089,28 +15970,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapSetMetricSchema(),
 
 			"metric_type": dsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16137,26 +16012,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16183,10 +16052,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3RouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -16200,10 +16067,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibSchema() dssche
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapSchema(),
 			},
 		},
@@ -16234,26 +16099,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapSchema(
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchSchema(),
@@ -16284,90 +16142,68 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapObj
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"as_path_access_list": dsschema.StringAttribute{
 				Description: "AS Path Access List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"regular_communities": dsschema.StringAttribute{
 				Description: "Regular Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"large_communities": dsschema.StringAttribute{
 				Description: "Large Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"extended_communities": dsschema.StringAttribute{
 				Description: "Extended Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": dsschema.StringAttribute{
 				Description: "Match origin",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_preference": dsschema.Int64Attribute{
 				Description: "Match Local Preference of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"peer": dsschema.StringAttribute{
 				Description: "Match Peer Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv4Schema(),
@@ -16398,10 +16234,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv4AddressSchema(),
@@ -16434,26 +16268,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv4AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16480,26 +16308,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv4NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16526,26 +16348,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv4RouteSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16572,10 +16388,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv6AddressSchema(),
@@ -16606,26 +16420,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv6AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16652,26 +16460,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMatchIpv6NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16698,18 +16500,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -16736,10 +16534,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibRouteMapSet
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -16753,10 +16549,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipSchema() dssche
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapSchema(),
 			},
 		},
@@ -16787,26 +16581,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapSchema(
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMatchSchema(),
@@ -16837,90 +16624,68 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapObj
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"as_path_access_list": dsschema.StringAttribute{
 				Description: "AS Path Access List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"regular_communities": dsschema.StringAttribute{
 				Description: "Regular Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"large_communities": dsschema.StringAttribute{
 				Description: "Large Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"extended_communities": dsschema.StringAttribute{
 				Description: "Extended Community Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": dsschema.StringAttribute{
 				Description: "Match origin",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_preference": dsschema.Int64Attribute{
 				Description: "Match Local Preference of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"peer": dsschema.StringAttribute{
 				Description: "Match Peer Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMatchIpv4Schema(),
@@ -16949,10 +16714,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMatchIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMatchIpv4AddressSchema(),
@@ -16985,26 +16748,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMatchIpv4AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17031,26 +16788,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMatchIpv4NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17077,26 +16828,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMatchIpv4RouteSourceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17123,28 +16868,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapSetMetricSchema(),
 
 			"next_hop": dsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17171,26 +16910,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapSet
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17217,10 +16950,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipRouteMapSet
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpSchema(),
@@ -17257,10 +16988,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOb
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -17275,10 +17004,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpSch
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapSchema(),
 			},
 		},
@@ -17309,26 +17036,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRou
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchSchema(),
@@ -17359,26 +17079,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchIpv4Schema(),
@@ -17409,10 +17123,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchIpv4AddressSchema(),
@@ -17443,26 +17155,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchIpv4AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17489,26 +17195,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchIpv4NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17535,10 +17235,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchIpv6AddressSchema(),
@@ -17569,26 +17267,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchIpv6AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17615,26 +17307,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapMatchIpv6NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17661,10 +17347,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"aggregator": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapSetAggregatorSchema(),
@@ -17677,85 +17361,65 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRou
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_preference": dsschema.Int64Attribute{
 				Description: "Set Local Preference of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"weight": dsschema.Int64Attribute{
 				Description: "Set BGP weight of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": dsschema.StringAttribute{
 				Description: "Set BGP origin",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"atomic_aggregate": dsschema.BoolAttribute{
 				Description: "Enable BGP atomic aggregate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"originator_id": dsschema.StringAttribute{
 				Description: "Set BGP Originator Id",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"aspath_prepends": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 
 			"regular_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"large_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"extended_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -17783,26 +17447,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapSetAggregatorSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"as": dsschema.Int64Attribute{
 				Description: "Set BGP Aggregator AS <1-4294967295>",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_id": dsschema.StringAttribute{
 				Description: "Set BGP Aggregator Router ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17829,26 +17487,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17875,26 +17527,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapSetIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv4 Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"next_hop": dsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17921,26 +17567,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBgpRouteMapSetIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv6 Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"next_hop": dsschema.StringAttribute{
 				Description: "Set IPv6 Next-Hop Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -17967,10 +17607,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -17985,10 +17623,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfSc
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapSchema(),
 			},
 		},
@@ -18019,26 +17655,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRo
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapMatchSchema(),
@@ -18069,26 +17698,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapMatchIpv4Schema(),
@@ -18117,10 +17740,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapMatchIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapMatchIpv4AddressSchema(),
@@ -18151,26 +17772,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapMatchIpv4AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18197,26 +17812,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapMatchIpv4NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18243,28 +17852,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapSetMetricSchema(),
 
 			"metric_type": dsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18291,26 +17894,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18337,10 +17934,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -18355,10 +17950,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapSchema(),
 			},
 		},
@@ -18389,26 +17982,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapMatchSchema(),
@@ -18439,26 +18025,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapMatchIpv6Schema(),
@@ -18487,10 +18067,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapMatchIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapMatchIpv6AddressSchema(),
@@ -18521,26 +18099,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapMatchIpv6AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18567,26 +18139,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapMatchIpv6NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18613,28 +18179,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapSetMetricSchema(),
 
 			"metric_type": dsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18661,26 +18221,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOspfv3RouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18707,10 +18261,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -18725,10 +18277,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibSch
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapSchema(),
 			},
 		},
@@ -18759,26 +18309,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRou
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchSchema(),
@@ -18809,26 +18352,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchIpv4Schema(),
@@ -18859,10 +18396,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchIpv4AddressSchema(),
@@ -18893,26 +18428,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchIpv4AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18939,26 +18468,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchIpv4NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -18985,10 +18508,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchIpv6AddressSchema(),
@@ -19019,26 +18540,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchIpv6AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19065,26 +18580,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapMatchIpv6NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19111,18 +18620,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRibRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19149,10 +18654,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -19167,10 +18670,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipSch
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapSchema(),
 			},
 		},
@@ -19201,26 +18702,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRou
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapMatchSchema(),
@@ -19251,26 +18745,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapMatchIpv4Schema(),
@@ -19299,10 +18787,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapMatchIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapMatchIpv4AddressSchema(),
@@ -19333,26 +18819,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapMatchIpv4AddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19379,26 +18859,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapMatchIpv4NextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19425,28 +18899,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapSetMetricSchema(),
 
 			"next_hop": dsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19473,26 +18941,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRipRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19519,10 +18981,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpSchema(),
@@ -19555,10 +19015,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfObject) getTy
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -19571,10 +19029,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpSchema() dssch
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSchema(),
 			},
 		},
@@ -19605,26 +19061,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSchema
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapMatchSchema(),
@@ -19655,34 +19104,26 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapOb
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapMatchAddressSchema(),
@@ -19713,26 +19154,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapMatchAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19759,26 +19194,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapMatchNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19805,10 +19234,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"aggregator": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSetAggregatorSchema(),
@@ -19819,85 +19246,65 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSetSch
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_preference": dsschema.Int64Attribute{
 				Description: "Set Local Preference of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"weight": dsschema.Int64Attribute{
 				Description: "Set BGP weight of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": dsschema.StringAttribute{
 				Description: "Set BGP origin",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"atomic_aggregate": dsschema.BoolAttribute{
 				Description: "Enable BGP atomic aggregate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"originator_id": dsschema.StringAttribute{
 				Description: "Set BGP Originator Id",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"aspath_prepends": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 
 			"regular_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"large_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"extended_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -19925,26 +19332,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSetAggregatorSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"as": dsschema.Int64Attribute{
 				Description: "Set BGP Aggregator AS <1-4294967295>",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_id": dsschema.StringAttribute{
 				Description: "Set BGP Aggregator Router ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -19971,26 +19372,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20017,26 +19412,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSetIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv4 Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"next_hop": dsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20063,10 +19452,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -20079,10 +19466,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibSchema() dssch
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapSchema(),
 			},
 		},
@@ -20113,26 +19498,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapSchema
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapMatchSchema(),
@@ -20163,34 +19541,26 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapOb
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapMatchAddressSchema(),
@@ -20221,26 +19591,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapMatchAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20267,26 +19631,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapMatchNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20313,18 +19671,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20351,10 +19705,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -20367,10 +19719,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipSchema() dssch
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapSchema(),
 			},
 		},
@@ -20401,26 +19751,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapSchema
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapMatchSchema(),
@@ -20451,34 +19794,26 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapOb
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapMatchAddressSchema(),
@@ -20509,26 +19844,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapMatchAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20555,26 +19884,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapMatchNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20601,28 +19924,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapSetMetricSchema(),
 
 			"next_hop": dsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20649,26 +19966,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20695,10 +20006,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpSchema(),
@@ -20729,10 +20038,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3Object) get
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -20744,10 +20051,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpSchema() dss
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapSchema(),
 			},
 		},
@@ -20778,26 +20083,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapSche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapMatchSchema(),
@@ -20828,34 +20126,26 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapMatchAddressSchema(),
@@ -20886,26 +20176,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapMatchAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20932,26 +20216,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapMatchNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -20978,10 +20256,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"aggregator": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapSetAggregatorSchema(),
@@ -20992,85 +20268,65 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapSetS
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_preference": dsschema.Int64Attribute{
 				Description: "Set Local Preference of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"weight": dsschema.Int64Attribute{
 				Description: "Set BGP weight of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": dsschema.StringAttribute{
 				Description: "Set BGP origin",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"atomic_aggregate": dsschema.BoolAttribute{
 				Description: "Enable BGP atomic aggregate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"originator_id": dsschema.StringAttribute{
 				Description: "Set BGP Originator Id",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"aspath_prepends": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 
 			"regular_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"large_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"extended_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -21098,26 +20354,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapSetAggregatorSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"as": dsschema.Int64Attribute{
 				Description: "Set BGP Aggregator AS <1-4294967295>",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_id": dsschema.StringAttribute{
 				Description: "Set BGP Aggregator Router ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21144,26 +20394,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21190,26 +20434,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMapSetIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv6 Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"next_hop": dsschema.StringAttribute{
 				Description: "Set IPv6 Next-Hop Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21236,10 +20474,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -21251,10 +20487,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibSchema() dss
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMapSchema(),
 			},
 		},
@@ -21285,26 +20519,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMapSche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMapMatchSchema(),
@@ -21335,34 +20562,26 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMapMatchAddressSchema(),
@@ -21393,26 +20612,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMapMatchAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21439,26 +20652,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMapMatchNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21485,18 +20692,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21523,10 +20726,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibRouteMap
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpSchema(),
@@ -21559,10 +20760,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipObject) getTyp
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -21575,10 +20774,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpSchema() dssche
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSchema(),
 			},
 		},
@@ -21609,26 +20806,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSchema(
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapMatchSchema(),
@@ -21659,34 +20849,26 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapObj
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapMatchAddressSchema(),
@@ -21717,26 +20899,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapMatchAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21763,26 +20939,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapMatchNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21809,10 +20979,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"aggregator": FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSetAggregatorSchema(),
@@ -21823,85 +20991,65 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSetSche
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_preference": dsschema.Int64Attribute{
 				Description: "Set Local Preference of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"weight": dsschema.Int64Attribute{
 				Description: "Set BGP weight of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": dsschema.StringAttribute{
 				Description: "Set BGP origin",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"atomic_aggregate": dsschema.BoolAttribute{
 				Description: "Enable BGP atomic aggregate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"originator_id": dsschema.StringAttribute{
 				Description: "Set BGP Originator Id",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"aspath_prepends": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 
 			"regular_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"large_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"extended_communities": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -21929,26 +21077,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSet
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSetAggregatorSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"as": dsschema.Int64Attribute{
 				Description: "Set BGP Aggregator AS <1-4294967295>",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"router_id": dsschema.StringAttribute{
 				Description: "Set BGP Aggregator Router ID",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -21975,26 +21117,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSet
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action (BGP MED) of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -22021,26 +21157,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSet
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSetIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv4 Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"next_hop": dsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -22067,10 +21197,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpRouteMapSet
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -22083,10 +21211,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfSchema() dssch
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapSchema(),
 			},
 		},
@@ -22117,26 +21243,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapSchema
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapMatchSchema(),
@@ -22167,34 +21286,26 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapOb
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapMatchAddressSchema(),
@@ -22225,26 +21336,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapMatchAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -22271,26 +21376,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapMatchNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -22317,28 +21416,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapSetMetricSchema(),
 
 			"metric_type": dsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -22365,26 +21458,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapSetMetricSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"value": dsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -22411,10 +21498,8 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -22427,10 +21512,8 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibSchema() dssche
 
 			"route_map": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapSchema(),
 			},
 		},
@@ -22461,26 +21544,19 @@ func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapSchema(
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapMatchSchema(),
@@ -22511,34 +21587,26 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapObj
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapMatchSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tag": dsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapMatchAddressSchema(),
@@ -22569,26 +21637,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapMatchAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -22615,26 +21677,20 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapMatchNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"access_list": dsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -22661,18 +21717,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapMat
 func FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibRouteMapSetSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"source_address": dsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -23615,7 +22667,1839 @@ type FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapSetObject
 	SourceAddress types.String `tfsdk:"source_address"`
 }
 
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Bgp.IsUnknown() && !o.Bgp.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpObject
+		diags := o.Bgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bgp"))
+		}
+	}
+	if !o.ConnectedStatic.IsUnknown() && !o.ConnectedStatic.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticObject
+		diags := o.ConnectedStatic.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("connected_static"))
+		}
+	}
+	if !o.Ospf.IsUnknown() && !o.Ospf.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfObject
+		diags := o.Ospf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospf"))
+		}
+	}
+	if !o.Ospfv3.IsUnknown() && !o.Ospfv3.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3Object
+		diags := o.Ospfv3.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospfv3"))
+		}
+	}
+	if !o.Rip.IsUnknown() && !o.Rip.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipObject
+		diags := o.Rip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rip"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ospf.IsUnknown() && !o.Ospf.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfObject
+		diags := o.Ospf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospf"))
+		}
+	}
+	if !o.Ospfv3.IsUnknown() && !o.Ospfv3.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3Object
+		diags := o.Ospfv3.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospfv3"))
+		}
+	}
+	if !o.Rib.IsUnknown() && !o.Rib.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibObject
+		diags := o.Rib.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rib"))
+		}
+	}
+	if !o.Rip.IsUnknown() && !o.Rip.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipObject
+		diags := o.Rip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rip"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+	if !o.RouteSource.IsUnknown() && !o.RouteSource.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4RouteSourceObject
+		diags := o.RouteSource.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("route_source"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4RouteSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+	if !o.RouteSource.IsUnknown() && !o.RouteSource.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4RouteSourceObject
+		diags := o.RouteSource.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("route_source"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4RouteSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+	if !o.RouteSource.IsUnknown() && !o.RouteSource.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4RouteSourceObject
+		diags := o.RouteSource.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("route_source"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4RouteSourceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Bgp.IsUnknown() && !o.Bgp.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpObject
+		diags := o.Bgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bgp"))
+		}
+	}
+	if !o.Ospf.IsUnknown() && !o.Ospf.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfObject
+		diags := o.Ospf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospf"))
+		}
+	}
+	if !o.Ospfv3.IsUnknown() && !o.Ospfv3.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3Object
+		diags := o.Ospfv3.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospfv3"))
+		}
+	}
+	if !o.Rib.IsUnknown() && !o.Rib.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibObject
+		diags := o.Rib.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rib"))
+		}
+	}
+	if !o.Rip.IsUnknown() && !o.Rip.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipObject
+		diags := o.Rip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rip"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Aggregator.IsUnknown() && !o.Aggregator.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetAggregatorObject
+		diags := o.Aggregator.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("aggregator"))
+		}
+	}
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetAggregatorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4AddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4NextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4NextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Bgp.IsUnknown() && !o.Bgp.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpObject
+		diags := o.Bgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bgp"))
+		}
+	}
+	if !o.Rib.IsUnknown() && !o.Rib.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibObject
+		diags := o.Rib.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rib"))
+		}
+	}
+	if !o.Rip.IsUnknown() && !o.Rip.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipObject
+		diags := o.Rip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rip"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchAddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Aggregator.IsUnknown() && !o.Aggregator.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetAggregatorObject
+		diags := o.Aggregator.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("aggregator"))
+		}
+	}
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetAggregatorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchAddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchAddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Bgp.IsUnknown() && !o.Bgp.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpObject
+		diags := o.Bgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bgp"))
+		}
+	}
+	if !o.Rib.IsUnknown() && !o.Rib.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibObject
+		diags := o.Rib.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rib"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchAddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Aggregator.IsUnknown() && !o.Aggregator.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetAggregatorObject
+		diags := o.Aggregator.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("aggregator"))
+		}
+	}
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetAggregatorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchAddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Bgp.IsUnknown() && !o.Bgp.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpObject
+		diags := o.Bgp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bgp"))
+		}
+	}
+	if !o.Ospf.IsUnknown() && !o.Ospf.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfObject
+		diags := o.Ospf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospf"))
+		}
+	}
+	if !o.Rib.IsUnknown() && !o.Rib.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipRibObject
+		diags := o.Rib.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rib"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchAddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Aggregator.IsUnknown() && !o.Aggregator.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetAggregatorObject
+		diags := o.Aggregator.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("aggregator"))
+		}
+	}
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetAggregatorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchAddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Metric.IsUnknown() && !o.Metric.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSetMetricObject
+		diags := o.Metric.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("metric"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSetMetricObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.RouteMap.IsUnknown() && !o.RouteMap.IsNull() {
+		var elements []FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapObject
+		diags := o.RouteMap.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("route_map").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Match.IsUnknown() && !o.Match.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchObject
+		diags := o.Match.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("match"))
+		}
+	}
+	if !o.Set.IsUnknown() && !o.Set.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapSetObject
+		diags := o.Set.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("set"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchAddressObject
+		diags := o.Address.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("address"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapSetObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *FiltersRouteMapsRedistributionRoutingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource FiltersRouteMapsRedistributionRoutingProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -23628,18 +24512,12 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceSchema() rsschema.Schem
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Redistribution Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileResourceBgpSchema(),
@@ -23676,10 +24554,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceModel) getTypeFor(n
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -23724,10 +24599,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpObject) getTypeF
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -23741,10 +24613,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfSchema() rsschem
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSchema(),
 			},
 		},
@@ -23775,27 +24644,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSchema()
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchSchema(),
@@ -23826,90 +24687,57 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapObje
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"as_path_access_list": rsschema.StringAttribute{
 				Description: "AS Path Access List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"regular_communities": rsschema.StringAttribute{
 				Description: "Regular Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"large_communities": rsschema.StringAttribute{
 				Description: "Large Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"extended_communities": rsschema.StringAttribute{
 				Description: "Extended Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"origin": rsschema.StringAttribute{
 				Description: "Match origin",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_preference": rsschema.Int64Attribute{
 				Description: "Match Local Preference of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"peer": rsschema.StringAttribute{
 				Description: "Match Peer Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4Schema(),
@@ -23938,10 +24766,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4AddressSchema(),
@@ -23974,26 +24799,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24020,26 +24836,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24066,26 +24873,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatchIpv4RouteSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24112,29 +24910,21 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSetMetricSchema(),
 
 			"metric_type": rsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("type-2"),
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24161,26 +24951,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSetO
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24207,10 +24988,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfRouteMapSetM
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -24224,10 +25002,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3Schema() rssch
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSchema(),
 			},
 		},
@@ -24258,27 +25033,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSchema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchSchema(),
@@ -24309,90 +25076,57 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapOb
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"as_path_access_list": rsschema.StringAttribute{
 				Description: "AS Path Access List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"regular_communities": rsschema.StringAttribute{
 				Description: "Regular Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"large_communities": rsschema.StringAttribute{
 				Description: "Large Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"extended_communities": rsschema.StringAttribute{
 				Description: "Extended Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"origin": rsschema.StringAttribute{
 				Description: "Match origin",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_preference": rsschema.Int64Attribute{
 				Description: "Match Local Preference of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"peer": rsschema.StringAttribute{
 				Description: "Match Peer Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6Schema(),
@@ -24421,10 +25155,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6AddressSchema(),
@@ -24455,26 +25186,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24501,26 +25223,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMatchIpv6NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24547,29 +25260,21 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSetMetricSchema(),
 
 			"metric_type": rsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("type-2"),
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24596,26 +25301,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24642,10 +25338,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3RouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -24659,10 +25352,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibSchema() rsschema
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapSchema(),
 			},
 		},
@@ -24693,27 +25383,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapSchema() 
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchSchema(),
@@ -24744,90 +25426,57 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapObjec
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"as_path_access_list": rsschema.StringAttribute{
 				Description: "AS Path Access List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"regular_communities": rsschema.StringAttribute{
 				Description: "Regular Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"large_communities": rsschema.StringAttribute{
 				Description: "Large Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"extended_communities": rsschema.StringAttribute{
 				Description: "Extended Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"origin": rsschema.StringAttribute{
 				Description: "Match origin",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_preference": rsschema.Int64Attribute{
 				Description: "Match Local Preference of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"peer": rsschema.StringAttribute{
 				Description: "Match Peer Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4Schema(),
@@ -24858,10 +25507,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4AddressSchema(),
@@ -24894,26 +25540,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24940,26 +25577,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -24986,26 +25614,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv4RouteSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25032,10 +25651,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6AddressSchema(),
@@ -25066,26 +25682,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25112,26 +25719,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatchIpv6NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25158,18 +25756,12 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25196,10 +25788,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibRouteMapSetOb
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -25213,10 +25802,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipSchema() rsschema
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSchema(),
 			},
 		},
@@ -25247,27 +25833,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSchema() 
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchSchema(),
@@ -25298,90 +25876,57 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapObjec
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"as_path_access_list": rsschema.StringAttribute{
 				Description: "AS Path Access List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"regular_communities": rsschema.StringAttribute{
 				Description: "Regular Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"large_communities": rsschema.StringAttribute{
 				Description: "Large Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"extended_communities": rsschema.StringAttribute{
 				Description: "Extended Community Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"origin": rsschema.StringAttribute{
 				Description: "Match origin",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_preference": rsschema.Int64Attribute{
 				Description: "Match Local Preference of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"peer": rsschema.StringAttribute{
 				Description: "Match Peer Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4Schema(),
@@ -25410,10 +25955,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4AddressSchema(),
@@ -25446,26 +25988,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25492,26 +26025,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25538,26 +26062,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatchIpv4RouteSourceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25584,28 +26099,19 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSetMetricSchema(),
 
 			"next_hop": rsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25632,26 +26138,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSetOb
 func FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25678,10 +26175,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipRouteMapSetMe
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpSchema(),
@@ -25718,10 +26212,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticObje
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -25736,10 +26227,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpSchem
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSchema(),
 			},
 		},
@@ -25770,27 +26258,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRoute
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchSchema(),
@@ -25821,26 +26301,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4Schema(),
@@ -25871,10 +26342,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4AddressSchema(),
@@ -25905,26 +26373,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25951,26 +26410,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv4NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -25997,10 +26447,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6AddressSchema(),
@@ -26031,26 +26478,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26077,26 +26515,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapMatchIpv6NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26123,10 +26552,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"aggregator": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetAggregatorSchema(),
@@ -26139,85 +26565,55 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRoute
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_preference": rsschema.Int64Attribute{
 				Description: "Set Local Preference of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"weight": rsschema.Int64Attribute{
 				Description: "Set BGP weight of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"origin": rsschema.StringAttribute{
 				Description: "Set BGP origin",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"atomic_aggregate": rsschema.BoolAttribute{
 				Description: "Enable BGP atomic aggregate",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"originator_id": rsschema.StringAttribute{
 				Description: "Set BGP Originator Id",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"aspath_prepends": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 
 			"regular_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"large_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"extended_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -26245,26 +26641,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetAggregatorSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"as": rsschema.Int64Attribute{
 				Description: "Set BGP Aggregator AS <1-4294967295>",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"router_id": rsschema.StringAttribute{
 				Description: "Set BGP Aggregator Router ID",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26291,26 +26678,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26337,26 +26715,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv4 Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"next_hop": rsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26383,26 +26752,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpRouteMapSetIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv6 Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"next_hop": rsschema.StringAttribute{
 				Description: "Set IPv6 Next-Hop Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26429,10 +26789,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -26447,10 +26804,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfSche
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapSchema(),
 			},
 		},
@@ -26481,27 +26835,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRout
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchSchema(),
@@ -26532,26 +26878,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4Schema(),
@@ -26580,10 +26917,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4AddressSchema(),
@@ -26614,26 +26948,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26660,26 +26985,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapMatchIpv4NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26706,29 +27022,21 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapSetMetricSchema(),
 
 			"metric_type": rsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("type-2"),
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26755,26 +27063,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -26801,10 +27100,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -26819,10 +27115,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3Sc
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapSchema(),
 			},
 		},
@@ -26853,27 +27146,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3Ro
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchSchema(),
@@ -26904,26 +27189,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6Schema(),
@@ -26952,10 +27228,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6AddressSchema(),
@@ -26986,26 +27259,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27032,26 +27296,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapMatchIpv6NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27078,29 +27333,21 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapSetMetricSchema(),
 
 			"metric_type": rsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("type-2"),
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27127,26 +27374,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspfv3RouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27173,10 +27411,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -27191,10 +27426,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibSchem
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapSchema(),
 			},
 		},
@@ -27225,27 +27457,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRoute
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchSchema(),
@@ -27276,26 +27500,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4Schema(),
@@ -27326,10 +27541,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4AddressSchema(),
@@ -27360,26 +27572,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27406,26 +27609,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv4NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27452,10 +27646,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6AddressSchema(),
@@ -27486,26 +27677,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27532,26 +27714,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapMatchIpv6NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27578,18 +27751,12 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27616,10 +27783,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -27634,10 +27798,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipSchem
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapSchema(),
 			},
 		},
@@ -27668,27 +27829,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRoute
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchSchema(),
@@ -27719,26 +27872,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4Schema(),
@@ -27767,10 +27911,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4AddressSchema(),
@@ -27801,26 +27942,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4AddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27847,26 +27979,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapMatchIpv4NextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27893,28 +28016,19 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapSetMetricSchema(),
 
 			"next_hop": rsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27941,26 +28055,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipR
 func FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -27987,10 +28092,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipR
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpSchema(),
@@ -28023,10 +28125,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfObject) getType
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -28039,10 +28138,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpSchema() rsschem
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSchema(),
 			},
 		},
@@ -28073,27 +28169,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSchema()
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchSchema(),
@@ -28124,34 +28212,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapObje
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchAddressSchema(),
@@ -28182,26 +28258,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28228,26 +28295,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatchNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28274,10 +28332,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"aggregator": FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetAggregatorSchema(),
@@ -28288,85 +28343,55 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetSchem
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_preference": rsschema.Int64Attribute{
 				Description: "Set Local Preference of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"weight": rsschema.Int64Attribute{
 				Description: "Set BGP weight of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"origin": rsschema.StringAttribute{
 				Description: "Set BGP origin",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"atomic_aggregate": rsschema.BoolAttribute{
 				Description: "Enable BGP atomic aggregate",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"originator_id": rsschema.StringAttribute{
 				Description: "Set BGP Originator Id",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"aspath_prepends": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 
 			"regular_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"large_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"extended_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -28394,26 +28419,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetO
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetAggregatorSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"as": rsschema.Int64Attribute{
 				Description: "Set BGP Aggregator AS <1-4294967295>",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"router_id": rsschema.StringAttribute{
 				Description: "Set BGP Aggregator Router ID",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28440,26 +28456,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetA
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28486,26 +28493,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetM
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv4 Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"next_hop": rsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28532,10 +28530,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpRouteMapSetI
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -28548,10 +28543,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibSchema() rsschem
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapSchema(),
 			},
 		},
@@ -28582,27 +28574,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapSchema()
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchSchema(),
@@ -28633,34 +28617,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapObje
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchAddressSchema(),
@@ -28691,26 +28663,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28737,26 +28700,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatchNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28783,18 +28737,12 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -28821,10 +28769,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibRouteMapSetO
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -28837,10 +28782,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipSchema() rsschem
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSchema(),
 			},
 		},
@@ -28871,27 +28813,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSchema()
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchSchema(),
@@ -28922,34 +28856,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapObje
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchAddressSchema(),
@@ -28980,26 +28902,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29026,26 +28939,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatchNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29072,28 +28976,19 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSetMetricSchema(),
 
 			"next_hop": rsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29120,26 +29015,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSetO
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29166,10 +29052,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipRouteMapSetM
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpSchema(),
@@ -29200,10 +29083,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3Object) getTy
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -29215,10 +29095,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpSchema() rssch
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSchema(),
 			},
 		},
@@ -29249,27 +29126,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSchema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchSchema(),
@@ -29300,34 +29169,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapOb
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchAddressSchema(),
@@ -29358,26 +29215,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29404,26 +29252,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMatchNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29450,10 +29289,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"aggregator": FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetAggregatorSchema(),
@@ -29464,85 +29300,55 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetSch
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_preference": rsschema.Int64Attribute{
 				Description: "Set Local Preference of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"weight": rsschema.Int64Attribute{
 				Description: "Set BGP weight of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"origin": rsschema.StringAttribute{
 				Description: "Set BGP origin",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"atomic_aggregate": rsschema.BoolAttribute{
 				Description: "Enable BGP atomic aggregate",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"originator_id": rsschema.StringAttribute{
 				Description: "Set BGP Originator Id",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"aspath_prepends": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 
 			"regular_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"large_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"extended_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -29570,26 +29376,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetAggregatorSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"as": rsschema.Int64Attribute{
 				Description: "Set BGP Aggregator AS <1-4294967295>",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"router_id": rsschema.StringAttribute{
 				Description: "Set BGP Aggregator Router ID",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29616,26 +29413,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29662,26 +29450,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSetIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv6 Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"next_hop": rsschema.StringAttribute{
 				Description: "Set IPv6 Next-Hop Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29708,10 +29487,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -29723,10 +29499,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibSchema() rssch
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapSchema(),
 			},
 		},
@@ -29757,27 +29530,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapSchema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchSchema(),
@@ -29808,34 +29573,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapOb
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchAddressSchema(),
@@ -29866,26 +29619,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29912,26 +29656,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMatchNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29958,18 +29693,12 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapMa
 func FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -29996,10 +29725,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibRouteMapSe
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"bgp": FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpSchema(),
@@ -30032,10 +29758,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipObject) getTypeF
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -30048,10 +29771,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpSchema() rsschema
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSchema(),
 			},
 		},
@@ -30082,27 +29802,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSchema() 
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchSchema(),
@@ -30133,34 +29845,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapObjec
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchAddressSchema(),
@@ -30191,26 +29891,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -30237,26 +29928,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatchNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -30283,10 +29965,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"aggregator": FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetAggregatorSchema(),
@@ -30297,85 +29976,55 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetSchema
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_preference": rsschema.Int64Attribute{
 				Description: "Set Local Preference of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"weight": rsschema.Int64Attribute{
 				Description: "Set BGP weight of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"origin": rsschema.StringAttribute{
 				Description: "Set BGP origin",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"atomic_aggregate": rsschema.BoolAttribute{
 				Description: "Enable BGP atomic aggregate",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"originator_id": rsschema.StringAttribute{
 				Description: "Set BGP Originator Id",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"aspath_prepends": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.Int64Type,
 			},
 
 			"regular_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"large_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"extended_communities": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -30403,26 +30052,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetOb
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetAggregatorSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"as": rsschema.Int64Attribute{
 				Description: "Set BGP Aggregator AS <1-4294967295>",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"router_id": rsschema.StringAttribute{
 				Description: "Set BGP Aggregator Router ID",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -30449,26 +30089,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetAg
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action (BGP MED) of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -30495,26 +30126,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetMe
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv4 Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"next_hop": rsschema.StringAttribute{
 				Description: "Set IPv4 Next-Hop Address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -30541,10 +30163,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpRouteMapSetIp
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -30557,10 +30176,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfSchema() rsschem
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSchema(),
 			},
 		},
@@ -30591,27 +30207,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSchema()
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchSchema(),
@@ -30642,34 +30250,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapObje
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchAddressSchema(),
@@ -30700,26 +30296,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -30746,26 +30333,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatchNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -30792,29 +30370,21 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapMatc
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"metric": FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSetMetricSchema(),
 
 			"metric_type": rsschema.StringAttribute{
 				Description: "Set Metric-Type of route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("type-2"),
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Set Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -30841,26 +30411,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSetO
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSetMetricSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"value": rsschema.Int64Attribute{
 				Description: "Set Metric value of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Set Metric action of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -30887,10 +30448,7 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfRouteMapSetM
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipRibSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -30903,10 +30461,7 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceRipRibSchema() rsschema
 
 			"route_map": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapSchema(),
 			},
 		},
@@ -30937,27 +30492,19 @@ func FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapSchema() 
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) Route Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe Route Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"match": FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchSchema(),
@@ -30988,34 +30535,22 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapObjec
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Match Interface of the route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Match Metric of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tag": rsschema.Int64Attribute{
 				Description: "Match Tag of route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"address": FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchAddressSchema(),
@@ -31046,26 +30581,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -31092,26 +30618,17 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatchNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"access_list": rsschema.StringAttribute{
 				Description: "Access-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Prefix-List Name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -31138,18 +30655,12 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapMatch
 func FiltersRouteMapsRedistributionRoutingProfileResourceRipRibRouteMapSetSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"source_address": rsschema.StringAttribute{
 				Description: "Set Source IPv4 or IPv6 address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -46006,14 +45517,15 @@ type FiltersRouteMapsRedistributionRoutingProfileImportState struct {
 
 func (o FiltersRouteMapsRedistributionRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *FiltersRouteMapsRedistributionRoutingProfileLocation `json:"location"`
-		Name     *string                                               `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *FiltersRouteMapsRedistributionRoutingProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, FiltersRouteMapsRedistributionRoutingProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -46027,8 +45539,8 @@ func (o FiltersRouteMapsRedistributionRoutingProfileImportState) MarshalJSON() (
 
 func (o *FiltersRouteMapsRedistributionRoutingProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *FiltersRouteMapsRedistributionRoutingProfileLocation `json:"location"`
-		Name     *string                                               `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -46037,10 +45549,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileImportState) UnmarshalJSON(
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, FiltersRouteMapsRedistributionRoutingProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

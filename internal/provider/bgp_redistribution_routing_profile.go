@@ -1163,10 +1163,7 @@ func BgpRedistributionRoutingProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ipv4": BgpRedistributionRoutingProfileDataSourceIpv4Schema(),
@@ -1197,10 +1194,8 @@ func (o *BgpRedistributionRoutingProfileDataSourceModel) getTypeFor(name string)
 func BgpRedistributionRoutingProfileDataSourceIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"unicast": BgpRedistributionRoutingProfileDataSourceIpv4UnicastSchema(),
@@ -1229,10 +1224,8 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv4Object) getTypeFor(name st
 func BgpRedistributionRoutingProfileDataSourceIpv4UnicastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1273,34 +1266,26 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv4UnicastObject) getTypeFor(
 func BgpRedistributionRoutingProfileDataSourceIpv4UnicastConnectedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1327,34 +1312,26 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv4UnicastConnectedObject) ge
 func BgpRedistributionRoutingProfileDataSourceIpv4UnicastOspfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1381,34 +1358,26 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv4UnicastOspfObject) getType
 func BgpRedistributionRoutingProfileDataSourceIpv4UnicastRipSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1435,34 +1404,26 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv4UnicastRipObject) getTypeF
 func BgpRedistributionRoutingProfileDataSourceIpv4UnicastStaticSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1489,10 +1450,8 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv4UnicastStaticObject) getTy
 func BgpRedistributionRoutingProfileDataSourceIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"unicast": BgpRedistributionRoutingProfileDataSourceIpv6UnicastSchema(),
@@ -1521,10 +1480,8 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv6Object) getTypeFor(name st
 func BgpRedistributionRoutingProfileDataSourceIpv6UnicastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1563,34 +1520,26 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv6UnicastObject) getTypeFor(
 func BgpRedistributionRoutingProfileDataSourceIpv6UnicastConnectedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1617,34 +1566,26 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv6UnicastConnectedObject) ge
 func BgpRedistributionRoutingProfileDataSourceIpv6UnicastOspfv3Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1671,34 +1612,26 @@ func (o *BgpRedistributionRoutingProfileDataSourceIpv6UnicastOspfv3Object) getTy
 func BgpRedistributionRoutingProfileDataSourceIpv6UnicastStaticSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"metric": dsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"route_map": dsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1933,7 +1866,149 @@ type BgpRedistributionRoutingProfileResourceIpv6UnicastStaticObject struct {
 	RouteMap types.String `tfsdk:"route_map"`
 }
 
+func (o *BgpRedistributionRoutingProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Unicast.IsUnknown() && !o.Unicast.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv4UnicastObject
+		diags := o.Unicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("unicast"))
+		}
+	}
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Connected.IsUnknown() && !o.Connected.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv4UnicastConnectedObject
+		diags := o.Connected.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("connected"))
+		}
+	}
+	if !o.Ospf.IsUnknown() && !o.Ospf.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv4UnicastOspfObject
+		diags := o.Ospf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospf"))
+		}
+	}
+	if !o.Rip.IsUnknown() && !o.Rip.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv4UnicastRipObject
+		diags := o.Rip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rip"))
+		}
+	}
+	if !o.Static.IsUnknown() && !o.Static.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv4UnicastStaticObject
+		diags := o.Static.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("static"))
+		}
+	}
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastConnectedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastOspfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastRipObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastStaticObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Unicast.IsUnknown() && !o.Unicast.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv6UnicastObject
+		diags := o.Unicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("unicast"))
+		}
+	}
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv6UnicastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Connected.IsUnknown() && !o.Connected.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv6UnicastConnectedObject
+		diags := o.Connected.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("connected"))
+		}
+	}
+	if !o.Ospfv3.IsUnknown() && !o.Ospfv3.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv6UnicastOspfv3Object
+		diags := o.Ospfv3.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ospfv3"))
+		}
+	}
+	if !o.Static.IsUnknown() && !o.Static.IsNull() {
+		var nestedObj BgpRedistributionRoutingProfileResourceIpv6UnicastStaticObject
+		diags := o.Static.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("static"))
+		}
+	}
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv6UnicastConnectedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv6UnicastOspfv3Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpRedistributionRoutingProfileResourceIpv6UnicastStaticObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *BgpRedistributionRoutingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource BgpRedistributionRoutingProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1946,10 +2021,7 @@ func BgpRedistributionRoutingProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ipv4": BgpRedistributionRoutingProfileResourceIpv4Schema(),
@@ -1980,10 +2052,7 @@ func (o *BgpRedistributionRoutingProfileResourceModel) getTypeFor(name string) a
 func BgpRedistributionRoutingProfileResourceIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2019,10 +2088,7 @@ func (o *BgpRedistributionRoutingProfileResourceIpv4Object) getTypeFor(name stri
 func BgpRedistributionRoutingProfileResourceIpv4UnicastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2063,34 +2129,22 @@ func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastObject) getTypeFor(na
 func BgpRedistributionRoutingProfileResourceIpv4UnicastConnectedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2117,34 +2171,22 @@ func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastConnectedObject) getT
 func BgpRedistributionRoutingProfileResourceIpv4UnicastOspfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2171,34 +2213,22 @@ func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastOspfObject) getTypeFo
 func BgpRedistributionRoutingProfileResourceIpv4UnicastRipSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2225,34 +2255,22 @@ func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastRipObject) getTypeFor
 func BgpRedistributionRoutingProfileResourceIpv4UnicastStaticSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2279,10 +2297,7 @@ func (o *BgpRedistributionRoutingProfileResourceIpv4UnicastStaticObject) getType
 func BgpRedistributionRoutingProfileResourceIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"unicast": BgpRedistributionRoutingProfileResourceIpv6UnicastSchema(),
@@ -2311,10 +2326,7 @@ func (o *BgpRedistributionRoutingProfileResourceIpv6Object) getTypeFor(name stri
 func BgpRedistributionRoutingProfileResourceIpv6UnicastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2353,34 +2365,22 @@ func (o *BgpRedistributionRoutingProfileResourceIpv6UnicastObject) getTypeFor(na
 func BgpRedistributionRoutingProfileResourceIpv6UnicastConnectedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2407,34 +2407,22 @@ func (o *BgpRedistributionRoutingProfileResourceIpv6UnicastConnectedObject) getT
 func BgpRedistributionRoutingProfileResourceIpv6UnicastOspfv3Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2461,34 +2449,22 @@ func (o *BgpRedistributionRoutingProfileResourceIpv6UnicastOspfv3Object) getType
 func BgpRedistributionRoutingProfileResourceIpv6UnicastStaticSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"metric": rsschema.Int64Attribute{
 				Description: "Set Metric (Field ignored if route-map configured).",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"route_map": rsschema.StringAttribute{
 				Description: "Apply Route-Map on Redistributed Routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4033,14 +4009,15 @@ type BgpRedistributionRoutingProfileImportState struct {
 
 func (o BgpRedistributionRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *BgpRedistributionRoutingProfileLocation `json:"location"`
-		Name     *string                                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *BgpRedistributionRoutingProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, BgpRedistributionRoutingProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -4054,8 +4031,8 @@ func (o BgpRedistributionRoutingProfileImportState) MarshalJSON() ([]byte, error
 
 func (o *BgpRedistributionRoutingProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *BgpRedistributionRoutingProfileLocation `json:"location"`
-		Name     *string                                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4064,10 +4041,14 @@ func (o *BgpRedistributionRoutingProfileImportState) UnmarshalJSON(data []byte) 
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, BgpRedistributionRoutingProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

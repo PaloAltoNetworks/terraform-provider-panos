@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/services/proxy"
@@ -139,8 +140,8 @@ func (o *ProxySettingsDataSourceModel) CopyFromPango(ctx context.Context, client
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			secureProxyPassword_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			secureProxyPassword_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -185,42 +186,33 @@ func ProxySettingsDataSourceSchema() dsschema.Schema {
 
 			"lcaas_use_proxy": dsschema.BoolAttribute{
 				Description: "Enable proxy access to CDL",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"secure_proxy_password": dsschema.StringAttribute{
 				Description: "Secure Proxy password to use",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"secure_proxy_port": dsschema.Int64Attribute{
 				Description: "Port for secure proxy server",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"secure_proxy_server": dsschema.StringAttribute{
 				Description: "Secure Proxy server to use",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"secure_proxy_user": dsschema.StringAttribute{
 				Description: "Secure Proxy user name to use",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -398,7 +390,27 @@ type ProxySettingsResourceModel struct {
 	SecureProxyUser     types.String `tfsdk:"secure_proxy_user"`
 }
 
+func (o *ProxySettingsResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SecureProxyPassword.IsUnknown() && !o.SecureProxyPassword.IsNull() {
+		value := o.SecureProxyPassword.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("secure_proxy_password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("secure_proxy_password").String()),
+			)
+		}
+	}
+}
+
 func (o *ProxySettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource ProxySettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -411,42 +423,28 @@ func ProxySettingsResourceSchema() rsschema.Schema {
 
 			"lcaas_use_proxy": rsschema.BoolAttribute{
 				Description: "Enable proxy access to CDL",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"secure_proxy_password": rsschema.StringAttribute{
 				Description: "Secure Proxy password to use",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"secure_proxy_port": rsschema.Int64Attribute{
 				Description: "Port for secure proxy server",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"secure_proxy_server": rsschema.StringAttribute{
 				Description: "Secure Proxy server to use",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"secure_proxy_user": rsschema.StringAttribute{
 				Description: "Secure Proxy user name to use",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -574,8 +572,8 @@ func (o *ProxySettingsResourceModel) CopyFromPango(ctx context.Context, client p
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			secureProxyPassword_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			secureProxyPassword_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {

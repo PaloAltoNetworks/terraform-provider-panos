@@ -83,18 +83,14 @@ func DeviceGroupParentDataSourceSchema() dsschema.Schema {
 
 			"device_group": dsschema.StringAttribute{
 				Description: "The device group whose parent is being set",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"parent": dsschema.StringAttribute{
 				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -180,6 +176,12 @@ type DeviceGroupParentResourceModel struct {
 }
 
 func (o *DeviceGroupParentResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource DeviceGroupParentResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
 
 // <ResourceSchema>
@@ -192,18 +194,12 @@ func DeviceGroupParentResourceSchema() rsschema.Schema {
 
 			"device_group": rsschema.StringAttribute{
 				Description: "The device group whose parent is being set",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"parent": rsschema.StringAttribute{
 				Description: "The parent device group. Leaving it empty moves 'device-group' under 'shared'.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}

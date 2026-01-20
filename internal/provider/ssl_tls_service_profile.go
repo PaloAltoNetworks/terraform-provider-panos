@@ -323,18 +323,13 @@ func SslTlsServiceProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"certificate": dsschema.StringAttribute{
 				Description: "SSL certificate file name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"protocol_settings": SslTlsServiceProfileDataSourceProtocolSettingsSchema(),
@@ -363,122 +358,92 @@ func (o *SslTlsServiceProfileDataSourceModel) getTypeFor(name string) attr.Type 
 func SslTlsServiceProfileDataSourceProtocolSettingsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"allow_algorithm_3des": dsschema.BoolAttribute{
 				Description: "Allow algorithm 3DES",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_algorithm_aes_128_cbc": dsschema.BoolAttribute{
 				Description: "Allow algorithm AES-128-CBC",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_algorithm_aes_128_gcm": dsschema.BoolAttribute{
 				Description: "Allow algorithm AES-128-GCM",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_algorithm_aes_256_cbc": dsschema.BoolAttribute{
 				Description: "Allow algorithm AES-256-CBC",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_algorithm_aes_256_gcm": dsschema.BoolAttribute{
 				Description: "Allow algorithm AES-256-GCM",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_algorithm_dhe": dsschema.BoolAttribute{
 				Description: "Allow algorithm DHE",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_algorithm_ecdhe": dsschema.BoolAttribute{
 				Description: "Allow algorithm ECDHE",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_algorithm_rc4": dsschema.BoolAttribute{
 				Description: "Allow algorithm RC4",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_algorithm_rsa": dsschema.BoolAttribute{
 				Description: "Allow algorithm RSA",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_authentication_sha1": dsschema.BoolAttribute{
 				Description: "Allow authentication SHA1",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_authentication_sha256": dsschema.BoolAttribute{
 				Description: "Allow authentication SHA256",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"allow_authentication_sha384": dsschema.BoolAttribute{
 				Description: "Allow authentication SHA384",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_version": dsschema.StringAttribute{
 				Description: "Maximum TLS protocol version. Valid values are 'tls1-0', 'tls1-1', 'tls1-2', and max (default).",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"min_version": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -709,7 +674,29 @@ type SslTlsServiceProfileResourceProtocolSettingsObject struct {
 	MinVersion                types.String `tfsdk:"min_version"`
 }
 
+func (o *SslTlsServiceProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ProtocolSettings.IsUnknown() && !o.ProtocolSettings.IsNull() {
+		var nestedObj SslTlsServiceProfileResourceProtocolSettingsObject
+		diags := o.ProtocolSettings.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("protocol_settings"))
+		}
+	}
+}
+
+func (o *SslTlsServiceProfileResourceProtocolSettingsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *SslTlsServiceProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource SslTlsServiceProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -722,18 +709,12 @@ func SslTlsServiceProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"certificate": rsschema.StringAttribute{
 				Description: "SSL certificate file name",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"protocol_settings": SslTlsServiceProfileResourceProtocolSettingsSchema(),
@@ -762,123 +743,80 @@ func (o *SslTlsServiceProfileResourceModel) getTypeFor(name string) attr.Type {
 func SslTlsServiceProfileResourceProtocolSettingsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"allow_algorithm_3des": rsschema.BoolAttribute{
 				Description: "Allow algorithm 3DES",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_algorithm_aes_128_cbc": rsschema.BoolAttribute{
 				Description: "Allow algorithm AES-128-CBC",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_algorithm_aes_128_gcm": rsschema.BoolAttribute{
 				Description: "Allow algorithm AES-128-GCM",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_algorithm_aes_256_cbc": rsschema.BoolAttribute{
 				Description: "Allow algorithm AES-256-CBC",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_algorithm_aes_256_gcm": rsschema.BoolAttribute{
 				Description: "Allow algorithm AES-256-GCM",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_algorithm_dhe": rsschema.BoolAttribute{
 				Description: "Allow algorithm DHE",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_algorithm_ecdhe": rsschema.BoolAttribute{
 				Description: "Allow algorithm ECDHE",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_algorithm_rc4": rsschema.BoolAttribute{
 				Description: "Allow algorithm RC4",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_algorithm_rsa": rsschema.BoolAttribute{
 				Description: "Allow algorithm RSA",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_authentication_sha1": rsschema.BoolAttribute{
 				Description: "Allow authentication SHA1",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_authentication_sha256": rsschema.BoolAttribute{
 				Description: "Allow authentication SHA256",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"allow_authentication_sha384": rsschema.BoolAttribute{
 				Description: "Allow authentication SHA384",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"max_version": rsschema.StringAttribute{
 				Description: "Maximum TLS protocol version. Valid values are 'tls1-0', 'tls1-1', 'tls1-2', and max (default).",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("max"),
 			},
 
 			"min_version": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("tls1-0"),
 			},
 		},
@@ -1748,14 +1686,15 @@ type SslTlsServiceProfileImportState struct {
 
 func (o SslTlsServiceProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *SslTlsServiceProfileLocation `json:"location"`
-		Name     *string                       `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *SslTlsServiceProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, SslTlsServiceProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -1769,8 +1708,8 @@ func (o SslTlsServiceProfileImportState) MarshalJSON() ([]byte, error) {
 
 func (o *SslTlsServiceProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *SslTlsServiceProfileLocation `json:"location"`
-		Name     *string                       `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1779,10 +1718,14 @@ func (o *SslTlsServiceProfileImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, SslTlsServiceProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

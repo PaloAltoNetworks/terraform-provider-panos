@@ -505,6 +505,7 @@ func (p *PanosProvider) EphemeralResources(_ context.Context) []func() ephemeral
 func (p *PanosProvider) Actions(_ context.Context) []func() action.Action {
 	return []func() action.Action{
 		NewCommitAction,
+		NewPushToDevicesAction,
 	}
 }
 

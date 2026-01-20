@@ -630,36 +630,27 @@ func ServiceDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"protocol": ServiceDataSourceProtocolSchema(),
 
 			"tags": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -687,10 +678,8 @@ func (o *ServiceDataSourceModel) getTypeFor(name string) attr.Type {
 func ServiceDataSourceProtocolSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"tcp": ServiceDataSourceProtocolTcpSchema(),
@@ -721,10 +710,8 @@ func (o *ServiceDataSourceProtocolObject) getTypeFor(name string) attr.Type {
 func ServiceDataSourceProtocolTcpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -738,18 +725,14 @@ func ServiceDataSourceProtocolTcpSchema() dsschema.SingleNestedAttribute {
 
 			"destination_port": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_port": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -776,34 +759,26 @@ func (o *ServiceDataSourceProtocolTcpObject) getTypeFor(name string) attr.Type {
 func ServiceDataSourceProtocolTcpOverrideSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"halfclose_timeout": dsschema.Int64Attribute{
 				Description: "tcp session half-close timeout value (in second)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timeout": dsschema.Int64Attribute{
 				Description: "tcp session timeout value (in second)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timewait_timeout": dsschema.Int64Attribute{
 				Description: "tcp session time-wait timeout value (in second)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -830,10 +805,8 @@ func (o *ServiceDataSourceProtocolTcpOverrideObject) getTypeFor(name string) att
 func ServiceDataSourceProtocolUdpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -847,18 +820,14 @@ func ServiceDataSourceProtocolUdpSchema() dsschema.SingleNestedAttribute {
 
 			"destination_port": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"source_port": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -885,18 +854,14 @@ func (o *ServiceDataSourceProtocolUdpObject) getTypeFor(name string) attr.Type {
 func ServiceDataSourceProtocolUdpOverrideSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"timeout": dsschema.Int64Attribute{
 				Description: "udp session timeout value (in second)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1100,7 +1065,77 @@ type ServiceResourceProtocolUdpOverrideObject struct {
 	Timeout types.Int64 `tfsdk:"timeout"`
 }
 
+func (o *ServiceResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Protocol.IsUnknown() && !o.Protocol.IsNull() {
+		var nestedObj ServiceResourceProtocolObject
+		diags := o.Protocol.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("protocol"))
+		}
+	}
+}
+
+func (o *ServiceResourceProtocolObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Tcp.IsUnknown() && !o.Tcp.IsNull() {
+		var nestedObj ServiceResourceProtocolTcpObject
+		diags := o.Tcp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tcp"))
+		}
+	}
+	if !o.Udp.IsUnknown() && !o.Udp.IsNull() {
+		var nestedObj ServiceResourceProtocolUdpObject
+		diags := o.Udp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("udp"))
+		}
+	}
+}
+
+func (o *ServiceResourceProtocolTcpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Override.IsUnknown() && !o.Override.IsNull() {
+		var nestedObj ServiceResourceProtocolTcpOverrideObject
+		diags := o.Override.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("override"))
+		}
+	}
+}
+
+func (o *ServiceResourceProtocolTcpOverrideObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ServiceResourceProtocolUdpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Override.IsUnknown() && !o.Override.IsNull() {
+		var nestedObj ServiceResourceProtocolUdpOverrideObject
+		diags := o.Override.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("override"))
+		}
+	}
+}
+
+func (o *ServiceResourceProtocolUdpOverrideObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *ServiceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource ServiceResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1113,26 +1148,17 @@ func ServiceResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -1145,10 +1171,7 @@ func ServiceResourceSchema() rsschema.Schema {
 
 			"tags": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1176,10 +1199,7 @@ func (o *ServiceResourceModel) getTypeFor(name string) attr.Type {
 func ServiceResourceProtocolSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"tcp": ServiceResourceProtocolTcpSchema(),
@@ -1210,10 +1230,7 @@ func (o *ServiceResourceProtocolObject) getTypeFor(name string) attr.Type {
 func ServiceResourceProtocolTcpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1227,18 +1244,12 @@ func ServiceResourceProtocolTcpSchema() rsschema.SingleNestedAttribute {
 
 			"destination_port": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source_port": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1265,34 +1276,22 @@ func (o *ServiceResourceProtocolTcpObject) getTypeFor(name string) attr.Type {
 func ServiceResourceProtocolTcpOverrideSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"halfclose_timeout": rsschema.Int64Attribute{
 				Description: "tcp session half-close timeout value (in second)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"timeout": rsschema.Int64Attribute{
 				Description: "tcp session timeout value (in second)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"timewait_timeout": rsschema.Int64Attribute{
 				Description: "tcp session time-wait timeout value (in second)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1319,10 +1318,7 @@ func (o *ServiceResourceProtocolTcpOverrideObject) getTypeFor(name string) attr.
 func ServiceResourceProtocolUdpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1336,18 +1332,12 @@ func ServiceResourceProtocolUdpSchema() rsschema.SingleNestedAttribute {
 
 			"destination_port": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"source_port": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1374,18 +1364,13 @@ func (o *ServiceResourceProtocolUdpObject) getTypeFor(name string) attr.Type {
 func ServiceResourceProtocolUdpOverrideSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"timeout": rsschema.Int64Attribute{
 				Description: "udp session timeout value (in second)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(30),
 			},
 		},
@@ -2412,14 +2397,15 @@ type ServiceImportState struct {
 
 func (o ServiceImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *ServiceLocation `json:"location"`
-		Name     *string          `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *ServiceLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, ServiceLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -2433,8 +2419,8 @@ func (o ServiceImportState) MarshalJSON() ([]byte, error) {
 
 func (o *ServiceImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *ServiceLocation `json:"location"`
-		Name     *string          `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2443,10 +2429,14 @@ func (o *ServiceImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, ServiceLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

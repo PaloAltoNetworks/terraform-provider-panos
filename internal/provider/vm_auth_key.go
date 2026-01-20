@@ -38,6 +38,12 @@ type VmAuthKeyResourceModel struct {
 }
 
 func (o *VmAuthKeyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource VmAuthKeyResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
 
 // <ResourceSchema>
@@ -48,26 +54,20 @@ func VmAuthKeyResourceSchema() ephschema.Schema {
 
 			"lifetime": ephschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"vm_auth_key": ephschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"expiration_date": ephschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}

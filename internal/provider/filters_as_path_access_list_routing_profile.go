@@ -233,27 +233,20 @@ func FiltersAsPathAccessListRoutingProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"aspath_entries": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: FiltersAsPathAccessListRoutingProfileDataSourceAspathEntriesSchema(),
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe BGP AS-Path Access-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -283,26 +276,19 @@ func FiltersAsPathAccessListRoutingProfileDataSourceAspathEntriesSchema() dssche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "Permit or Deny (default) this BGP AS-Path Access-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"aspath_regex": dsschema.StringAttribute{
 				Description: "Set regular-expression (1234567890_^|[,{}()]$*+.?-\\) to match the BGP AS path",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -490,7 +476,31 @@ type FiltersAsPathAccessListRoutingProfileResourceAspathEntriesObject struct {
 	AspathRegex types.String `tfsdk:"aspath_regex"`
 }
 
+func (o *FiltersAsPathAccessListRoutingProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AspathEntries.IsUnknown() && !o.AspathEntries.IsNull() {
+		var elements []FiltersAsPathAccessListRoutingProfileResourceAspathEntriesObject
+		diags := o.AspathEntries.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("aspath_entries").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *FiltersAsPathAccessListRoutingProfileResourceAspathEntriesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *FiltersAsPathAccessListRoutingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource FiltersAsPathAccessListRoutingProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -503,27 +513,18 @@ func FiltersAsPathAccessListRoutingProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"aspath_entries": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: FiltersAsPathAccessListRoutingProfileResourceAspathEntriesSchema(),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe BGP AS-Path Access-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -553,27 +554,19 @@ func FiltersAsPathAccessListRoutingProfileResourceAspathEntriesSchema() rsschema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "Permit or Deny (default) this BGP AS-Path Access-List Entry",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("deny"),
 			},
 
 			"aspath_regex": rsschema.StringAttribute{
 				Description: "Set regular-expression (1234567890_^|[,{}()]$*+.?-\\) to match the BGP AS path",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1235,14 +1228,15 @@ type FiltersAsPathAccessListRoutingProfileImportState struct {
 
 func (o FiltersAsPathAccessListRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *FiltersAsPathAccessListRoutingProfileLocation `json:"location"`
-		Name     *string                                        `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *FiltersAsPathAccessListRoutingProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, FiltersAsPathAccessListRoutingProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -1256,8 +1250,8 @@ func (o FiltersAsPathAccessListRoutingProfileImportState) MarshalJSON() ([]byte,
 
 func (o *FiltersAsPathAccessListRoutingProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *FiltersAsPathAccessListRoutingProfileLocation `json:"location"`
-		Name     *string                                        `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1266,10 +1260,14 @@ func (o *FiltersAsPathAccessListRoutingProfileImportState) UnmarshalJSON(data []
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, FiltersAsPathAccessListRoutingProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

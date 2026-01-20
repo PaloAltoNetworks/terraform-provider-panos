@@ -357,69 +357,53 @@ func SslDecryptDataSourceSchema() dsschema.Schema {
 
 			"disabled_ssl_exclude_cert_from_predefined": dsschema.ListAttribute{
 				Description: "List of disabled predefined exclude certificates.",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"forward_trust_certificate_ecdsa": dsschema.StringAttribute{
 				Description: "Forward trust ECDSA certificate.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"forward_trust_certificate_rsa": dsschema.StringAttribute{
 				Description: "Forward trust RSA certificate.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"forward_untrust_certificate_ecdsa": dsschema.StringAttribute{
 				Description: "Forward untrust ECDSA certificate.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"forward_untrust_certificate_rsa": dsschema.StringAttribute{
 				Description: "Forward untrust RSA certificate.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"root_ca_exclude_list": dsschema.ListAttribute{
 				Description: "List of root CA excludes.",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ssl_exclude_cert": dsschema.ListNestedAttribute{
 				Description:  "List of SSL decrypt exclude certificates specs (specified below).",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: SslDecryptDataSourceSslExcludeCertSchema(),
 			},
 
 			"trusted_root_ca": dsschema.ListAttribute{
 				Description: "List of trusted root CAs.",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -450,26 +434,19 @@ func SslDecryptDataSourceSslExcludeCertSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "The description.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exclude": dsschema.BoolAttribute{
 				Description: "Exclude or not.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -687,7 +664,31 @@ type SslDecryptResourceSslExcludeCertObject struct {
 	Exclude     types.Bool   `tfsdk:"exclude"`
 }
 
+func (o *SslDecryptResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.SslExcludeCert.IsUnknown() && !o.SslExcludeCert.IsNull() {
+		var elements []SslDecryptResourceSslExcludeCertObject
+		diags := o.SslExcludeCert.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ssl_exclude_cert").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *SslDecryptResourceSslExcludeCertObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *SslDecryptResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource SslDecryptResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -700,69 +701,45 @@ func SslDecryptResourceSchema() rsschema.Schema {
 
 			"disabled_ssl_exclude_cert_from_predefined": rsschema.ListAttribute{
 				Description: "List of disabled predefined exclude certificates.",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"forward_trust_certificate_ecdsa": rsschema.StringAttribute{
 				Description: "Forward trust ECDSA certificate.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"forward_trust_certificate_rsa": rsschema.StringAttribute{
 				Description: "Forward trust RSA certificate.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"forward_untrust_certificate_ecdsa": rsschema.StringAttribute{
 				Description: "Forward untrust ECDSA certificate.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"forward_untrust_certificate_rsa": rsschema.StringAttribute{
 				Description: "Forward untrust RSA certificate.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"root_ca_exclude_list": rsschema.ListAttribute{
 				Description: "List of root CA excludes.",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"ssl_exclude_cert": rsschema.ListNestedAttribute{
 				Description:  "List of SSL decrypt exclude certificates specs (specified below).",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: SslDecryptResourceSslExcludeCertSchema(),
 			},
 
 			"trusted_root_ca": rsschema.ListAttribute{
 				Description: "List of trusted root CAs.",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -793,26 +770,17 @@ func SslDecryptResourceSslExcludeCertSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "The description.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exclude": rsschema.BoolAttribute{
 				Description: "Exclude or not.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}

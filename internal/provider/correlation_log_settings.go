@@ -993,78 +993,59 @@ func CorrelationLogSettingsDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"actions": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: CorrelationLogSettingsDataSourceActionsSchema(),
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"filter": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"quarantine": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"email_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"http_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"snmp_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"syslog_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1095,10 +1076,7 @@ func CorrelationLogSettingsDataSourceActionsSchema() dsschema.NestedAttributeObj
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": CorrelationLogSettingsDataSourceActionsTypeSchema(),
@@ -1127,10 +1105,8 @@ func (o *CorrelationLogSettingsDataSourceActionsObject) getTypeFor(name string) 
 func CorrelationLogSettingsDataSourceActionsTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"integration": CorrelationLogSettingsDataSourceActionsTypeIntegrationSchema(),
@@ -1161,10 +1137,8 @@ func (o *CorrelationLogSettingsDataSourceActionsTypeObject) getTypeFor(name stri
 func CorrelationLogSettingsDataSourceActionsTypeIntegrationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1176,10 +1150,8 @@ func CorrelationLogSettingsDataSourceActionsTypeIntegrationSchema() dsschema.Sin
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1206,10 +1178,8 @@ func (o *CorrelationLogSettingsDataSourceActionsTypeIntegrationObject) getTypeFo
 func CorrelationLogSettingsDataSourceActionsTypeTaggingSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1221,36 +1191,28 @@ func CorrelationLogSettingsDataSourceActionsTypeTaggingSchema() dsschema.SingleN
 
 			"target": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timeout": dsschema.Int64Attribute{
 				Description: "timeout in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"registration": CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationSchema(),
 
 			"tags": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1278,10 +1240,8 @@ func (o *CorrelationLogSettingsDataSourceActionsTypeTaggingObject) getTypeFor(na
 func CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"localhost": CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostSchema(),
@@ -1314,10 +1274,8 @@ func (o *CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationObject) g
 func CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1351,10 +1309,8 @@ func (o *CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhost
 func CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationPanoramaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1388,10 +1344,8 @@ func (o *CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationPanoramaO
 func CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationRemoteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1404,10 +1358,8 @@ func CorrelationLogSettingsDataSourceActionsTypeTaggingRegistrationRemoteSchema(
 
 			"http_profile": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1649,7 +1601,115 @@ type CorrelationLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject st
 	HttpProfile types.String `tfsdk:"http_profile"`
 }
 
+func (o *CorrelationLogSettingsResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Actions.IsUnknown() && !o.Actions.IsNull() {
+		var elements []CorrelationLogSettingsResourceActionsObject
+		diags := o.Actions.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("actions").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *CorrelationLogSettingsResourceActionsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj CorrelationLogSettingsResourceActionsTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *CorrelationLogSettingsResourceActionsTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Integration.IsUnknown() && !o.Integration.IsNull() {
+		var nestedObj CorrelationLogSettingsResourceActionsTypeIntegrationObject
+		diags := o.Integration.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("integration"))
+		}
+	}
+	if !o.Tagging.IsUnknown() && !o.Tagging.IsNull() {
+		var nestedObj CorrelationLogSettingsResourceActionsTypeTaggingObject
+		diags := o.Tagging.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tagging"))
+		}
+	}
+}
+
+func (o *CorrelationLogSettingsResourceActionsTypeIntegrationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *CorrelationLogSettingsResourceActionsTypeTaggingObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Registration.IsUnknown() && !o.Registration.IsNull() {
+		var nestedObj CorrelationLogSettingsResourceActionsTypeTaggingRegistrationObject
+		diags := o.Registration.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("registration"))
+		}
+	}
+}
+
+func (o *CorrelationLogSettingsResourceActionsTypeTaggingRegistrationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Localhost.IsUnknown() && !o.Localhost.IsNull() {
+		var nestedObj CorrelationLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObject
+		diags := o.Localhost.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("localhost"))
+		}
+	}
+	if !o.Panorama.IsUnknown() && !o.Panorama.IsNull() {
+		var nestedObj CorrelationLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject
+		diags := o.Panorama.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("panorama"))
+		}
+	}
+	if !o.Remote.IsUnknown() && !o.Remote.IsNull() {
+		var nestedObj CorrelationLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject
+		diags := o.Remote.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("remote"))
+		}
+	}
+}
+
+func (o *CorrelationLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *CorrelationLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *CorrelationLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *CorrelationLogSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource CorrelationLogSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1662,78 +1722,51 @@ func CorrelationLogSettingsResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"actions": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: CorrelationLogSettingsResourceActionsSchema(),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"filter": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"quarantine": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"email_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"http_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"snmp_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"syslog_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1764,10 +1797,7 @@ func CorrelationLogSettingsResourceActionsSchema() rsschema.NestedAttributeObjec
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": CorrelationLogSettingsResourceActionsTypeSchema(),
@@ -1796,10 +1826,7 @@ func (o *CorrelationLogSettingsResourceActionsObject) getTypeFor(name string) at
 func CorrelationLogSettingsResourceActionsTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"integration": CorrelationLogSettingsResourceActionsTypeIntegrationSchema(),
@@ -1830,10 +1857,7 @@ func (o *CorrelationLogSettingsResourceActionsTypeObject) getTypeFor(name string
 func CorrelationLogSettingsResourceActionsTypeIntegrationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1845,10 +1869,8 @@ func CorrelationLogSettingsResourceActionsTypeIntegrationSchema() rsschema.Singl
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Azure-Security-Center-Integration"),
 			},
 		},
@@ -1876,10 +1898,7 @@ func (o *CorrelationLogSettingsResourceActionsTypeIntegrationObject) getTypeFor(
 func CorrelationLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1891,28 +1910,22 @@ func CorrelationLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNes
 
 			"target": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("source-address"),
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("add-tag"),
 			},
 
 			"timeout": rsschema.Int64Attribute{
 				Description: "timeout in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
@@ -1920,10 +1933,7 @@ func CorrelationLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNes
 
 			"tags": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1951,10 +1961,7 @@ func (o *CorrelationLogSettingsResourceActionsTypeTaggingObject) getTypeFor(name
 func CorrelationLogSettingsResourceActionsTypeTaggingRegistrationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"localhost": CorrelationLogSettingsResourceActionsTypeTaggingRegistrationLocalhostSchema(),
@@ -1987,10 +1994,7 @@ func (o *CorrelationLogSettingsResourceActionsTypeTaggingRegistrationObject) get
 func CorrelationLogSettingsResourceActionsTypeTaggingRegistrationLocalhostSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2024,10 +2028,7 @@ func (o *CorrelationLogSettingsResourceActionsTypeTaggingRegistrationLocalhostOb
 func CorrelationLogSettingsResourceActionsTypeTaggingRegistrationPanoramaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2061,10 +2062,7 @@ func (o *CorrelationLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObj
 func CorrelationLogSettingsResourceActionsTypeTaggingRegistrationRemoteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2077,10 +2075,7 @@ func CorrelationLogSettingsResourceActionsTypeTaggingRegistrationRemoteSchema() 
 
 			"http_profile": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3562,14 +3557,15 @@ type CorrelationLogSettingsImportState struct {
 
 func (o CorrelationLogSettingsImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *CorrelationLogSettingsLocation `json:"location"`
-		Name     *string                         `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *CorrelationLogSettingsLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, CorrelationLogSettingsLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -3583,8 +3579,8 @@ func (o CorrelationLogSettingsImportState) MarshalJSON() ([]byte, error) {
 
 func (o *CorrelationLogSettingsImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *CorrelationLogSettingsLocation `json:"location"`
-		Name     *string                         `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3593,10 +3589,14 @@ func (o *CorrelationLogSettingsImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, CorrelationLogSettingsLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

@@ -1300,53 +1300,40 @@ func UrlFilteringSecurityProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"alert": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"allow": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"block": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"cloud_inline_cat": dsschema.BoolAttribute{
 				Description: "Enable cloud inline categorization",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"continue": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -1354,101 +1341,77 @@ func UrlFilteringSecurityProfileDataSourceSchema() dsschema.Schema {
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_container_page": dsschema.BoolAttribute{
 				Description: "Track container page",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"http_header_insertion": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionSchema(),
 			},
 
 			"local_inline_cat": dsschema.BoolAttribute{
 				Description: "Enable local inline categorization",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_container_page_only": dsschema.BoolAttribute{
 				Description: "Log container page only",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_http_hdr_referer": dsschema.BoolAttribute{
 				Description: "Log HTTP Header Referer field",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_http_hdr_user_agent": dsschema.BoolAttribute{
 				Description: "Log HTTP Header User-Agent field",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_http_hdr_xff": dsschema.BoolAttribute{
 				Description: "Log HTTP Header X-Forwarded-For field",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mlav_category_exception": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"override": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"safe_search_enforcement": dsschema.BoolAttribute{
 				Description: "Safe-Search will be enforced if it is set ",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1475,54 +1438,42 @@ func (o *UrlFilteringSecurityProfileDataSourceModel) getTypeFor(name string) att
 func UrlFilteringSecurityProfileDataSourceCredentialEnforcementSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"alert": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"allow": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"block": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"continue": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"log_severity": dsschema.StringAttribute{
 				Description: "Log severity when credential matched",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mode": UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeSchema(),
@@ -1551,10 +1502,8 @@ func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementObject) getTy
 func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"disabled": UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledSchema(),
@@ -1563,10 +1512,8 @@ func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeSchema() dssc
 
 			"group_mapping": dsschema.StringAttribute{
 				Description: "Use Group Mapping",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip_user": UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserSchema(),
@@ -1595,10 +1542,8 @@ func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeObject) g
 func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1633,10 +1578,8 @@ func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDisabledO
 func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCredentialsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1671,10 +1614,8 @@ func (o *UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeDomainCre
 func UrlFilteringSecurityProfileDataSourceCredentialEnforcementModeIpUserSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1712,26 +1653,19 @@ func UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionSchema() dsschema.N
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeSchema(),
 			},
 		},
@@ -1762,27 +1696,20 @@ func UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeSchema() dssche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"headers": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersSchema(),
 			},
 
 			"domains": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1813,34 +1740,25 @@ func UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeHeadersSchema()
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"header": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"value": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2061,7 +1979,119 @@ type UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject str
 	Log    types.Bool   `tfsdk:"log"`
 }
 
+func (o *UrlFilteringSecurityProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.CredentialEnforcement.IsUnknown() && !o.CredentialEnforcement.IsNull() {
+		var nestedObj UrlFilteringSecurityProfileResourceCredentialEnforcementObject
+		diags := o.CredentialEnforcement.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("credential_enforcement"))
+		}
+	}
+	if !o.HttpHeaderInsertion.IsUnknown() && !o.HttpHeaderInsertion.IsNull() {
+		var elements []UrlFilteringSecurityProfileResourceHttpHeaderInsertionObject
+		diags := o.HttpHeaderInsertion.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("http_header_insertion").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Mode.IsUnknown() && !o.Mode.IsNull() {
+		var nestedObj UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject
+		diags := o.Mode.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("mode"))
+		}
+	}
+}
+
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Disabled.IsUnknown() && !o.Disabled.IsNull() {
+		var nestedObj UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject
+		diags := o.Disabled.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("disabled"))
+		}
+	}
+	if !o.DomainCredentials.IsUnknown() && !o.DomainCredentials.IsNull() {
+		var nestedObj UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsObject
+		diags := o.DomainCredentials.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("domain_credentials"))
+		}
+	}
+	if !o.IpUser.IsUnknown() && !o.IpUser.IsNull() {
+		var nestedObj UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObject
+		diags := o.IpUser.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip_user"))
+		}
+	}
+}
+
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var elements []UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject
+		diags := o.Type.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("type").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Headers.IsUnknown() && !o.Headers.IsNull() {
+		var elements []UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject
+		diags := o.Headers.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("headers").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *UrlFilteringSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource UrlFilteringSecurityProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -2074,53 +2104,35 @@ func UrlFilteringSecurityProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"alert": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"allow": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"block": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"cloud_inline_cat": rsschema.BoolAttribute{
 				Description: "Enable cloud inline categorization",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"continue": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -2128,18 +2140,12 @@ func UrlFilteringSecurityProfileResourceSchema() rsschema.Schema {
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -2151,85 +2157,55 @@ func UrlFilteringSecurityProfileResourceSchema() rsschema.Schema {
 
 			"enable_container_page": rsschema.BoolAttribute{
 				Description: "Track container page",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"http_header_insertion": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: UrlFilteringSecurityProfileResourceHttpHeaderInsertionSchema(),
 			},
 
 			"local_inline_cat": rsschema.BoolAttribute{
 				Description: "Enable local inline categorization",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_container_page_only": rsschema.BoolAttribute{
 				Description: "Log container page only",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_http_hdr_referer": rsschema.BoolAttribute{
 				Description: "Log HTTP Header Referer field",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_http_hdr_user_agent": rsschema.BoolAttribute{
 				Description: "Log HTTP Header User-Agent field",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log_http_hdr_xff": rsschema.BoolAttribute{
 				Description: "Log HTTP Header X-Forwarded-For field",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"mlav_category_exception": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"override": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"safe_search_enforcement": rsschema.BoolAttribute{
 				Description: "Safe-Search will be enforced if it is set ",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -2256,54 +2232,37 @@ func (o *UrlFilteringSecurityProfileResourceModel) getTypeFor(name string) attr.
 func UrlFilteringSecurityProfileResourceCredentialEnforcementSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"alert": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"allow": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"block": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"continue": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"log_severity": rsschema.StringAttribute{
 				Description: "Log severity when credential matched",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("medium"),
 			},
 
@@ -2333,10 +2292,7 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementObject) getType
 func UrlFilteringSecurityProfileResourceCredentialEnforcementModeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"disabled": UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledSchema(),
@@ -2345,10 +2301,7 @@ func UrlFilteringSecurityProfileResourceCredentialEnforcementModeSchema() rssche
 
 			"group_mapping": rsschema.StringAttribute{
 				Description: "Use Group Mapping",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip_user": UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserSchema(),
@@ -2377,10 +2330,7 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeObject) get
 func UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2415,10 +2365,7 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDisabledObj
 func UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCredentialsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2453,10 +2400,7 @@ func (o *UrlFilteringSecurityProfileResourceCredentialEnforcementModeDomainCrede
 func UrlFilteringSecurityProfileResourceCredentialEnforcementModeIpUserSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2494,26 +2438,17 @@ func UrlFilteringSecurityProfileResourceHttpHeaderInsertionSchema() rsschema.Nes
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeSchema(),
 			},
 		},
@@ -2544,27 +2479,18 @@ func UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeSchema() rsschema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"headers": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersSchema(),
 			},
 
 			"domains": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -2595,34 +2521,22 @@ func UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeHeadersSchema() r
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"header": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"value": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"log": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4247,14 +4161,15 @@ type UrlFilteringSecurityProfileImportState struct {
 
 func (o UrlFilteringSecurityProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *UrlFilteringSecurityProfileLocation `json:"location"`
-		Name     *string                              `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *UrlFilteringSecurityProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, UrlFilteringSecurityProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -4268,8 +4183,8 @@ func (o UrlFilteringSecurityProfileImportState) MarshalJSON() ([]byte, error) {
 
 func (o *UrlFilteringSecurityProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *UrlFilteringSecurityProfileLocation `json:"location"`
-		Name     *string                              `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -4278,10 +4193,14 @@ func (o *UrlFilteringSecurityProfileImportState) UnmarshalJSON(data []byte) erro
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, UrlFilteringSecurityProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

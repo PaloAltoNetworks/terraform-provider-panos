@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/extdynlist"
@@ -2866,8 +2867,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) CopyFromPango(ctx co
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -3175,8 +3176,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) CopyFromPango(ctx cont
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -3484,8 +3485,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) CopyFromPango(ctx cont
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -3793,8 +3794,8 @@ func (o *ExternalDynamicListDataSourceTypeIpAuthObject) CopyFromPango(ctx contex
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -4168,8 +4169,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) CopyFromPango(ctx conte
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -4388,18 +4389,13 @@ func ExternalDynamicListDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": ExternalDynamicListDataSourceTypeSchema(),
@@ -4428,10 +4424,8 @@ func (o *ExternalDynamicListDataSourceModel) getTypeFor(name string) attr.Type {
 func ExternalDynamicListDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"domain": ExternalDynamicListDataSourceTypeDomainSchema(),
@@ -4472,10 +4466,8 @@ func (o *ExternalDynamicListDataSourceTypeObject) getTypeFor(name string) attr.T
 func ExternalDynamicListDataSourceTypeDomainSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4494,45 +4486,35 @@ func ExternalDynamicListDataSourceTypeDomainSchema() dsschema.SingleNestedAttrib
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exception_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"expand_domain": dsschema.BoolAttribute{
 				Description: "Enable/Disable expand domain",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"recurring": ExternalDynamicListDataSourceTypeDomainRecurringSchema(),
 
 			"url": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4559,26 +4541,21 @@ func (o *ExternalDynamicListDataSourceTypeDomainObject) getTypeFor(name string) 
 func ExternalDynamicListDataSourceTypeDomainAuthSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"password": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"username": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4605,10 +4582,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainAuthObject) getTypeFor(name stri
 func ExternalDynamicListDataSourceTypeDomainRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"daily": ExternalDynamicListDataSourceTypeDomainRecurringDailySchema(),
@@ -4645,10 +4620,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringObject) getTypeFor(name
 func ExternalDynamicListDataSourceTypeDomainRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4663,10 +4636,8 @@ func ExternalDynamicListDataSourceTypeDomainRecurringDailySchema() dsschema.Sing
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4693,10 +4664,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringDailyObject) getTypeFor
 func ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4732,10 +4701,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringFiveMinuteObject) getTy
 func ExternalDynamicListDataSourceTypeDomainRecurringHourlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4771,10 +4738,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringHourlyObject) getTypeFo
 func ExternalDynamicListDataSourceTypeDomainRecurringMonthlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4789,18 +4754,14 @@ func ExternalDynamicListDataSourceTypeDomainRecurringMonthlySchema() dsschema.Si
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_month": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4827,10 +4788,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringMonthlyObject) getTypeF
 func ExternalDynamicListDataSourceTypeDomainRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4845,18 +4804,14 @@ func ExternalDynamicListDataSourceTypeDomainRecurringWeeklySchema() dsschema.Sin
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4883,10 +4838,8 @@ func (o *ExternalDynamicListDataSourceTypeDomainRecurringWeeklyObject) getTypeFo
 func ExternalDynamicListDataSourceTypeImeiSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4905,26 +4858,20 @@ func ExternalDynamicListDataSourceTypeImeiSchema() dsschema.SingleNestedAttribut
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exception_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -4932,10 +4879,8 @@ func ExternalDynamicListDataSourceTypeImeiSchema() dsschema.SingleNestedAttribut
 
 			"url": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4962,26 +4907,21 @@ func (o *ExternalDynamicListDataSourceTypeImeiObject) getTypeFor(name string) at
 func ExternalDynamicListDataSourceTypeImeiAuthSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"password": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"username": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5008,10 +4948,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiAuthObject) getTypeFor(name string
 func ExternalDynamicListDataSourceTypeImeiRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"daily": ExternalDynamicListDataSourceTypeImeiRecurringDailySchema(),
@@ -5048,10 +4986,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringObject) getTypeFor(name s
 func ExternalDynamicListDataSourceTypeImeiRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5066,10 +5002,8 @@ func ExternalDynamicListDataSourceTypeImeiRecurringDailySchema() dsschema.Single
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5096,10 +5030,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringDailyObject) getTypeFor(n
 func ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5135,10 +5067,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringFiveMinuteObject) getType
 func ExternalDynamicListDataSourceTypeImeiRecurringHourlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5174,10 +5104,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringHourlyObject) getTypeFor(
 func ExternalDynamicListDataSourceTypeImeiRecurringMonthlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5192,18 +5120,14 @@ func ExternalDynamicListDataSourceTypeImeiRecurringMonthlySchema() dsschema.Sing
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_month": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5230,10 +5154,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringMonthlyObject) getTypeFor
 func ExternalDynamicListDataSourceTypeImeiRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5248,18 +5170,14 @@ func ExternalDynamicListDataSourceTypeImeiRecurringWeeklySchema() dsschema.Singl
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5286,10 +5204,8 @@ func (o *ExternalDynamicListDataSourceTypeImeiRecurringWeeklyObject) getTypeFor(
 func ExternalDynamicListDataSourceTypeImsiSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5308,26 +5224,20 @@ func ExternalDynamicListDataSourceTypeImsiSchema() dsschema.SingleNestedAttribut
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exception_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -5335,10 +5245,8 @@ func ExternalDynamicListDataSourceTypeImsiSchema() dsschema.SingleNestedAttribut
 
 			"url": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5365,26 +5273,21 @@ func (o *ExternalDynamicListDataSourceTypeImsiObject) getTypeFor(name string) at
 func ExternalDynamicListDataSourceTypeImsiAuthSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"password": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"username": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5411,10 +5314,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiAuthObject) getTypeFor(name string
 func ExternalDynamicListDataSourceTypeImsiRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"daily": ExternalDynamicListDataSourceTypeImsiRecurringDailySchema(),
@@ -5451,10 +5352,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringObject) getTypeFor(name s
 func ExternalDynamicListDataSourceTypeImsiRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5469,10 +5368,8 @@ func ExternalDynamicListDataSourceTypeImsiRecurringDailySchema() dsschema.Single
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5499,10 +5396,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringDailyObject) getTypeFor(n
 func ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5538,10 +5433,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringFiveMinuteObject) getType
 func ExternalDynamicListDataSourceTypeImsiRecurringHourlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5577,10 +5470,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringHourlyObject) getTypeFor(
 func ExternalDynamicListDataSourceTypeImsiRecurringMonthlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5595,18 +5486,14 @@ func ExternalDynamicListDataSourceTypeImsiRecurringMonthlySchema() dsschema.Sing
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_month": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5633,10 +5520,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringMonthlyObject) getTypeFor
 func ExternalDynamicListDataSourceTypeImsiRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5651,18 +5536,14 @@ func ExternalDynamicListDataSourceTypeImsiRecurringWeeklySchema() dsschema.Singl
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5689,10 +5570,8 @@ func (o *ExternalDynamicListDataSourceTypeImsiRecurringWeeklyObject) getTypeFor(
 func ExternalDynamicListDataSourceTypeIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5711,26 +5590,20 @@ func ExternalDynamicListDataSourceTypeIpSchema() dsschema.SingleNestedAttribute 
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exception_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -5738,10 +5611,8 @@ func ExternalDynamicListDataSourceTypeIpSchema() dsschema.SingleNestedAttribute 
 
 			"url": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5768,26 +5639,21 @@ func (o *ExternalDynamicListDataSourceTypeIpObject) getTypeFor(name string) attr
 func ExternalDynamicListDataSourceTypeIpAuthSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"password": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"username": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5814,10 +5680,8 @@ func (o *ExternalDynamicListDataSourceTypeIpAuthObject) getTypeFor(name string) 
 func ExternalDynamicListDataSourceTypeIpRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"daily": ExternalDynamicListDataSourceTypeIpRecurringDailySchema(),
@@ -5854,10 +5718,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringObject) getTypeFor(name str
 func ExternalDynamicListDataSourceTypeIpRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5872,10 +5734,8 @@ func ExternalDynamicListDataSourceTypeIpRecurringDailySchema() dsschema.SingleNe
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5902,10 +5762,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringDailyObject) getTypeFor(nam
 func ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5941,10 +5799,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringFiveMinuteObject) getTypeFo
 func ExternalDynamicListDataSourceTypeIpRecurringHourlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5980,10 +5836,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringHourlyObject) getTypeFor(na
 func ExternalDynamicListDataSourceTypeIpRecurringMonthlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5998,18 +5852,14 @@ func ExternalDynamicListDataSourceTypeIpRecurringMonthlySchema() dsschema.Single
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_month": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6036,10 +5886,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringMonthlyObject) getTypeFor(n
 func ExternalDynamicListDataSourceTypeIpRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6054,18 +5902,14 @@ func ExternalDynamicListDataSourceTypeIpRecurringWeeklySchema() dsschema.SingleN
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6092,10 +5936,8 @@ func (o *ExternalDynamicListDataSourceTypeIpRecurringWeeklyObject) getTypeFor(na
 func ExternalDynamicListDataSourceTypePredefinedIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6112,27 +5954,21 @@ func ExternalDynamicListDataSourceTypePredefinedIpSchema() dsschema.SingleNested
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exception_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"url": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6159,10 +5995,8 @@ func (o *ExternalDynamicListDataSourceTypePredefinedIpObject) getTypeFor(name st
 func ExternalDynamicListDataSourceTypePredefinedUrlSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6179,27 +6013,21 @@ func ExternalDynamicListDataSourceTypePredefinedUrlSchema() dsschema.SingleNeste
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exception_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"url": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6226,10 +6054,8 @@ func (o *ExternalDynamicListDataSourceTypePredefinedUrlObject) getTypeFor(name s
 func ExternalDynamicListDataSourceTypeUrlSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6248,26 +6074,20 @@ func ExternalDynamicListDataSourceTypeUrlSchema() dsschema.SingleNestedAttribute
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exception_list": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -6275,10 +6095,8 @@ func ExternalDynamicListDataSourceTypeUrlSchema() dsschema.SingleNestedAttribute
 
 			"url": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6305,26 +6123,21 @@ func (o *ExternalDynamicListDataSourceTypeUrlObject) getTypeFor(name string) att
 func ExternalDynamicListDataSourceTypeUrlAuthSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"password": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 
 			"username": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6351,10 +6164,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlAuthObject) getTypeFor(name string)
 func ExternalDynamicListDataSourceTypeUrlRecurringSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"daily": ExternalDynamicListDataSourceTypeUrlRecurringDailySchema(),
@@ -6391,10 +6202,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringObject) getTypeFor(name st
 func ExternalDynamicListDataSourceTypeUrlRecurringDailySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6409,10 +6218,8 @@ func ExternalDynamicListDataSourceTypeUrlRecurringDailySchema() dsschema.SingleN
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6439,10 +6246,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringDailyObject) getTypeFor(na
 func ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6478,10 +6283,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringFiveMinuteObject) getTypeF
 func ExternalDynamicListDataSourceTypeUrlRecurringHourlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6517,10 +6320,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringHourlyObject) getTypeFor(n
 func ExternalDynamicListDataSourceTypeUrlRecurringMonthlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6535,18 +6336,14 @@ func ExternalDynamicListDataSourceTypeUrlRecurringMonthlySchema() dsschema.Singl
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_month": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6573,10 +6370,8 @@ func (o *ExternalDynamicListDataSourceTypeUrlRecurringMonthlyObject) getTypeFor(
 func ExternalDynamicListDataSourceTypeUrlRecurringWeeklySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6591,18 +6386,14 @@ func ExternalDynamicListDataSourceTypeUrlRecurringWeeklySchema() dsschema.Single
 
 			"at": dsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"day_of_week": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6972,7 +6763,583 @@ type ExternalDynamicListResourceTypeUrlRecurringWeeklyObject struct {
 	DayOfWeek types.String `tfsdk:"day_of_week"`
 }
 
+func (o *ExternalDynamicListResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Domain.IsUnknown() && !o.Domain.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeDomainObject
+		diags := o.Domain.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("domain"))
+		}
+	}
+	if !o.Imei.IsUnknown() && !o.Imei.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImeiObject
+		diags := o.Imei.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("imei"))
+		}
+	}
+	if !o.Imsi.IsUnknown() && !o.Imsi.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImsiObject
+		diags := o.Imsi.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("imsi"))
+		}
+	}
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeIpObject
+		diags := o.Ip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip"))
+		}
+	}
+	if !o.PredefinedIp.IsUnknown() && !o.PredefinedIp.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypePredefinedIpObject
+		diags := o.PredefinedIp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("predefined_ip"))
+		}
+	}
+	if !o.PredefinedUrl.IsUnknown() && !o.PredefinedUrl.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypePredefinedUrlObject
+		diags := o.PredefinedUrl.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("predefined_url"))
+		}
+	}
+	if !o.Url.IsUnknown() && !o.Url.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeUrlObject
+		diags := o.Url.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("url"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeDomainObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Auth.IsUnknown() && !o.Auth.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeDomainAuthObject
+		diags := o.Auth.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("auth"))
+		}
+	}
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeDomainRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeDomainAuthObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Password.IsUnknown() && !o.Password.IsNull() {
+		value := o.Password.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("password").String()),
+			)
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeDomainRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeDomainRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.FiveMinute.IsUnknown() && !o.FiveMinute.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject
+		diags := o.FiveMinute.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("five_minute"))
+		}
+	}
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeDomainRecurringHourlyObject
+		diags := o.Hourly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hourly"))
+		}
+	}
+	if !o.Monthly.IsUnknown() && !o.Monthly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeDomainRecurringMonthlyObject
+		diags := o.Monthly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("monthly"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeDomainRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImeiObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Auth.IsUnknown() && !o.Auth.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImeiAuthObject
+		diags := o.Auth.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("auth"))
+		}
+	}
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImeiRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeImeiAuthObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Password.IsUnknown() && !o.Password.IsNull() {
+		value := o.Password.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("password").String()),
+			)
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeImeiRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImeiRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.FiveMinute.IsUnknown() && !o.FiveMinute.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject
+		diags := o.FiveMinute.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("five_minute"))
+		}
+	}
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImeiRecurringHourlyObject
+		diags := o.Hourly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hourly"))
+		}
+	}
+	if !o.Monthly.IsUnknown() && !o.Monthly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImeiRecurringMonthlyObject
+		diags := o.Monthly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("monthly"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImeiRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImsiObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Auth.IsUnknown() && !o.Auth.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImsiAuthObject
+		diags := o.Auth.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("auth"))
+		}
+	}
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImsiRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeImsiAuthObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Password.IsUnknown() && !o.Password.IsNull() {
+		value := o.Password.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("password").String()),
+			)
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImsiRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.FiveMinute.IsUnknown() && !o.FiveMinute.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject
+		diags := o.FiveMinute.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("five_minute"))
+		}
+	}
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImsiRecurringHourlyObject
+		diags := o.Hourly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hourly"))
+		}
+	}
+	if !o.Monthly.IsUnknown() && !o.Monthly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImsiRecurringMonthlyObject
+		diags := o.Monthly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("monthly"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeImsiRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Auth.IsUnknown() && !o.Auth.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeIpAuthObject
+		diags := o.Auth.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("auth"))
+		}
+	}
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeIpRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpAuthObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Password.IsUnknown() && !o.Password.IsNull() {
+		value := o.Password.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("password").String()),
+			)
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeIpRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.FiveMinute.IsUnknown() && !o.FiveMinute.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject
+		diags := o.FiveMinute.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("five_minute"))
+		}
+	}
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeIpRecurringHourlyObject
+		diags := o.Hourly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hourly"))
+		}
+	}
+	if !o.Monthly.IsUnknown() && !o.Monthly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeIpRecurringMonthlyObject
+		diags := o.Monthly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("monthly"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeIpRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypePredefinedIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypePredefinedUrlObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeUrlObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Auth.IsUnknown() && !o.Auth.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeUrlAuthObject
+		diags := o.Auth.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("auth"))
+		}
+	}
+	if !o.Recurring.IsUnknown() && !o.Recurring.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeUrlRecurringObject
+		diags := o.Recurring.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("recurring"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlAuthObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Password.IsUnknown() && !o.Password.IsNull() {
+		value := o.Password.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("password").String()),
+			)
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Daily.IsUnknown() && !o.Daily.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeUrlRecurringDailyObject
+		diags := o.Daily.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("daily"))
+		}
+	}
+	if !o.FiveMinute.IsUnknown() && !o.FiveMinute.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject
+		diags := o.FiveMinute.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("five_minute"))
+		}
+	}
+	if !o.Hourly.IsUnknown() && !o.Hourly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeUrlRecurringHourlyObject
+		diags := o.Hourly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("hourly"))
+		}
+	}
+	if !o.Monthly.IsUnknown() && !o.Monthly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeUrlRecurringMonthlyObject
+		diags := o.Monthly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("monthly"))
+		}
+	}
+	if !o.Weekly.IsUnknown() && !o.Weekly.IsNull() {
+		var nestedObj ExternalDynamicListResourceTypeUrlRecurringWeeklyObject
+		diags := o.Weekly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("weekly"))
+		}
+	}
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *ExternalDynamicListResourceTypeUrlRecurringWeeklyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *ExternalDynamicListResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource ExternalDynamicListResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -6985,18 +7352,12 @@ func ExternalDynamicListResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -7032,10 +7393,7 @@ func (o *ExternalDynamicListResourceModel) getTypeFor(name string) attr.Type {
 func ExternalDynamicListResourceTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"domain": ExternalDynamicListResourceTypeDomainSchema(),
@@ -7076,10 +7434,7 @@ func (o *ExternalDynamicListResourceTypeObject) getTypeFor(name string) attr.Typ
 func ExternalDynamicListResourceTypeDomainSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7098,46 +7453,33 @@ func ExternalDynamicListResourceTypeDomainSchema() rsschema.SingleNestedAttribut
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exception_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"expand_domain": rsschema.BoolAttribute{
 				Description: "Enable/Disable expand domain",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"recurring": ExternalDynamicListResourceTypeDomainRecurringSchema(),
 
 			"url": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("http://"),
 			},
 		},
@@ -7165,26 +7507,18 @@ func (o *ExternalDynamicListResourceTypeDomainObject) getTypeFor(name string) at
 func ExternalDynamicListResourceTypeDomainAuthSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"password": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"username": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7211,10 +7545,7 @@ func (o *ExternalDynamicListResourceTypeDomainAuthObject) getTypeFor(name string
 func ExternalDynamicListResourceTypeDomainRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"daily": ExternalDynamicListResourceTypeDomainRecurringDailySchema(),
@@ -7251,10 +7582,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringObject) getTypeFor(name s
 func ExternalDynamicListResourceTypeDomainRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7269,10 +7597,8 @@ func ExternalDynamicListResourceTypeDomainRecurringDailySchema() rsschema.Single
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 		},
@@ -7300,10 +7626,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringDailyObject) getTypeFor(n
 func ExternalDynamicListResourceTypeDomainRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7339,10 +7662,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringFiveMinuteObject) getType
 func ExternalDynamicListResourceTypeDomainRecurringHourlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7378,10 +7698,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringHourlyObject) getTypeFor(
 func ExternalDynamicListResourceTypeDomainRecurringMonthlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7396,19 +7713,14 @@ func ExternalDynamicListResourceTypeDomainRecurringMonthlySchema() rsschema.Sing
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_month": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7435,10 +7747,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringMonthlyObject) getTypeFor
 func ExternalDynamicListResourceTypeDomainRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7453,19 +7762,14 @@ func ExternalDynamicListResourceTypeDomainRecurringWeeklySchema() rsschema.Singl
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7492,10 +7796,7 @@ func (o *ExternalDynamicListResourceTypeDomainRecurringWeeklyObject) getTypeFor(
 func ExternalDynamicListResourceTypeImeiSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7514,27 +7815,19 @@ func ExternalDynamicListResourceTypeImeiSchema() rsschema.SingleNestedAttribute 
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exception_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -7542,10 +7835,8 @@ func ExternalDynamicListResourceTypeImeiSchema() rsschema.SingleNestedAttribute 
 
 			"url": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("http://"),
 			},
 		},
@@ -7573,26 +7864,18 @@ func (o *ExternalDynamicListResourceTypeImeiObject) getTypeFor(name string) attr
 func ExternalDynamicListResourceTypeImeiAuthSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"password": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"username": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7619,10 +7902,7 @@ func (o *ExternalDynamicListResourceTypeImeiAuthObject) getTypeFor(name string) 
 func ExternalDynamicListResourceTypeImeiRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"daily": ExternalDynamicListResourceTypeImeiRecurringDailySchema(),
@@ -7659,10 +7939,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringObject) getTypeFor(name str
 func ExternalDynamicListResourceTypeImeiRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7677,10 +7954,8 @@ func ExternalDynamicListResourceTypeImeiRecurringDailySchema() rsschema.SingleNe
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 		},
@@ -7708,10 +7983,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringDailyObject) getTypeFor(nam
 func ExternalDynamicListResourceTypeImeiRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7747,10 +8019,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringFiveMinuteObject) getTypeFo
 func ExternalDynamicListResourceTypeImeiRecurringHourlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7786,10 +8055,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringHourlyObject) getTypeFor(na
 func ExternalDynamicListResourceTypeImeiRecurringMonthlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7804,19 +8070,14 @@ func ExternalDynamicListResourceTypeImeiRecurringMonthlySchema() rsschema.Single
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_month": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7843,10 +8104,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringMonthlyObject) getTypeFor(n
 func ExternalDynamicListResourceTypeImeiRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7861,19 +8119,14 @@ func ExternalDynamicListResourceTypeImeiRecurringWeeklySchema() rsschema.SingleN
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7900,10 +8153,7 @@ func (o *ExternalDynamicListResourceTypeImeiRecurringWeeklyObject) getTypeFor(na
 func ExternalDynamicListResourceTypeImsiSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7922,27 +8172,19 @@ func ExternalDynamicListResourceTypeImsiSchema() rsschema.SingleNestedAttribute 
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exception_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -7950,10 +8192,8 @@ func ExternalDynamicListResourceTypeImsiSchema() rsschema.SingleNestedAttribute 
 
 			"url": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("http://"),
 			},
 		},
@@ -7981,26 +8221,18 @@ func (o *ExternalDynamicListResourceTypeImsiObject) getTypeFor(name string) attr
 func ExternalDynamicListResourceTypeImsiAuthSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"password": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"username": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8027,10 +8259,7 @@ func (o *ExternalDynamicListResourceTypeImsiAuthObject) getTypeFor(name string) 
 func ExternalDynamicListResourceTypeImsiRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"daily": ExternalDynamicListResourceTypeImsiRecurringDailySchema(),
@@ -8067,10 +8296,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringObject) getTypeFor(name str
 func ExternalDynamicListResourceTypeImsiRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8085,10 +8311,8 @@ func ExternalDynamicListResourceTypeImsiRecurringDailySchema() rsschema.SingleNe
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 		},
@@ -8116,10 +8340,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringDailyObject) getTypeFor(nam
 func ExternalDynamicListResourceTypeImsiRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8155,10 +8376,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringFiveMinuteObject) getTypeFo
 func ExternalDynamicListResourceTypeImsiRecurringHourlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8194,10 +8412,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringHourlyObject) getTypeFor(na
 func ExternalDynamicListResourceTypeImsiRecurringMonthlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8212,19 +8427,14 @@ func ExternalDynamicListResourceTypeImsiRecurringMonthlySchema() rsschema.Single
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_month": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8251,10 +8461,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringMonthlyObject) getTypeFor(n
 func ExternalDynamicListResourceTypeImsiRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8269,19 +8476,14 @@ func ExternalDynamicListResourceTypeImsiRecurringWeeklySchema() rsschema.SingleN
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8308,10 +8510,7 @@ func (o *ExternalDynamicListResourceTypeImsiRecurringWeeklyObject) getTypeFor(na
 func ExternalDynamicListResourceTypeIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8330,27 +8529,19 @@ func ExternalDynamicListResourceTypeIpSchema() rsschema.SingleNestedAttribute {
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exception_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -8358,10 +8549,8 @@ func ExternalDynamicListResourceTypeIpSchema() rsschema.SingleNestedAttribute {
 
 			"url": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("http://"),
 			},
 		},
@@ -8389,26 +8578,18 @@ func (o *ExternalDynamicListResourceTypeIpObject) getTypeFor(name string) attr.T
 func ExternalDynamicListResourceTypeIpAuthSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"password": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"username": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8435,10 +8616,7 @@ func (o *ExternalDynamicListResourceTypeIpAuthObject) getTypeFor(name string) at
 func ExternalDynamicListResourceTypeIpRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"daily": ExternalDynamicListResourceTypeIpRecurringDailySchema(),
@@ -8475,10 +8653,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringObject) getTypeFor(name strin
 func ExternalDynamicListResourceTypeIpRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8493,10 +8668,8 @@ func ExternalDynamicListResourceTypeIpRecurringDailySchema() rsschema.SingleNest
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 		},
@@ -8524,10 +8697,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringDailyObject) getTypeFor(name 
 func ExternalDynamicListResourceTypeIpRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8563,10 +8733,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringFiveMinuteObject) getTypeFor(
 func ExternalDynamicListResourceTypeIpRecurringHourlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8602,10 +8769,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringHourlyObject) getTypeFor(name
 func ExternalDynamicListResourceTypeIpRecurringMonthlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8620,19 +8784,14 @@ func ExternalDynamicListResourceTypeIpRecurringMonthlySchema() rsschema.SingleNe
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_month": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8659,10 +8818,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringMonthlyObject) getTypeFor(nam
 func ExternalDynamicListResourceTypeIpRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8677,19 +8833,14 @@ func ExternalDynamicListResourceTypeIpRecurringWeeklySchema() rsschema.SingleNes
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8716,10 +8867,7 @@ func (o *ExternalDynamicListResourceTypeIpRecurringWeeklyObject) getTypeFor(name
 func ExternalDynamicListResourceTypePredefinedIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8736,27 +8884,18 @@ func ExternalDynamicListResourceTypePredefinedIpSchema() rsschema.SingleNestedAt
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exception_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"url": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8783,10 +8922,7 @@ func (o *ExternalDynamicListResourceTypePredefinedIpObject) getTypeFor(name stri
 func ExternalDynamicListResourceTypePredefinedUrlSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8803,27 +8939,18 @@ func ExternalDynamicListResourceTypePredefinedUrlSchema() rsschema.SingleNestedA
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exception_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"url": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8850,10 +8977,7 @@ func (o *ExternalDynamicListResourceTypePredefinedUrlObject) getTypeFor(name str
 func ExternalDynamicListResourceTypeUrlSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8872,27 +8996,19 @@ func ExternalDynamicListResourceTypeUrlSchema() rsschema.SingleNestedAttribute {
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating client certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("None"),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exception_list": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -8900,10 +9016,8 @@ func ExternalDynamicListResourceTypeUrlSchema() rsschema.SingleNestedAttribute {
 
 			"url": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("http://"),
 			},
 		},
@@ -8931,26 +9045,18 @@ func (o *ExternalDynamicListResourceTypeUrlObject) getTypeFor(name string) attr.
 func ExternalDynamicListResourceTypeUrlAuthSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"password": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
 				Sensitive:   true,
 			},
 
 			"username": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8977,10 +9083,7 @@ func (o *ExternalDynamicListResourceTypeUrlAuthObject) getTypeFor(name string) a
 func ExternalDynamicListResourceTypeUrlRecurringSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"daily": ExternalDynamicListResourceTypeUrlRecurringDailySchema(),
@@ -9017,10 +9120,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringObject) getTypeFor(name stri
 func ExternalDynamicListResourceTypeUrlRecurringDailySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9035,10 +9135,8 @@ func ExternalDynamicListResourceTypeUrlRecurringDailySchema() rsschema.SingleNes
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 		},
@@ -9066,10 +9164,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringDailyObject) getTypeFor(name
 func ExternalDynamicListResourceTypeUrlRecurringFiveMinuteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9105,10 +9200,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringFiveMinuteObject) getTypeFor
 func ExternalDynamicListResourceTypeUrlRecurringHourlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9144,10 +9236,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringHourlyObject) getTypeFor(nam
 func ExternalDynamicListResourceTypeUrlRecurringMonthlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9162,19 +9251,14 @@ func ExternalDynamicListResourceTypeUrlRecurringMonthlySchema() rsschema.SingleN
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_month": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9201,10 +9285,7 @@ func (o *ExternalDynamicListResourceTypeUrlRecurringMonthlyObject) getTypeFor(na
 func ExternalDynamicListResourceTypeUrlRecurringWeeklySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9219,19 +9300,14 @@ func ExternalDynamicListResourceTypeUrlRecurringWeeklySchema() rsschema.SingleNe
 
 			"at": rsschema.StringAttribute{
 				Description: "Time specification hh (e.g. 20)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("00"),
 			},
 
 			"day_of_week": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11897,8 +11973,8 @@ func (o *ExternalDynamicListResourceTypeDomainAuthObject) CopyFromPango(ctx cont
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -12206,8 +12282,8 @@ func (o *ExternalDynamicListResourceTypeImeiAuthObject) CopyFromPango(ctx contex
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -12515,8 +12591,8 @@ func (o *ExternalDynamicListResourceTypeImsiAuthObject) CopyFromPango(ctx contex
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -12824,8 +12900,8 @@ func (o *ExternalDynamicListResourceTypeIpAuthObject) CopyFromPango(ctx context.
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -13199,8 +13275,8 @@ func (o *ExternalDynamicListResourceTypeUrlAuthObject) CopyFromPango(ctx context
 		} else if value, found := ev.GetPlaintextValue(valueKey); found {
 			password_value = types.StringValue(value)
 		} else {
-			diags.AddError("Failed to read encrypted values state", fmt.Sprintf("Missing plaintext value for %s", valueKey))
-			return diags
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
 		}
 
 		if !ev.PreferServerState() {
@@ -13850,14 +13926,15 @@ type ExternalDynamicListImportState struct {
 
 func (o ExternalDynamicListImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *ExternalDynamicListLocation `json:"location"`
-		Name     *string                      `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *ExternalDynamicListLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, ExternalDynamicListLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -13871,8 +13948,8 @@ func (o ExternalDynamicListImportState) MarshalJSON() ([]byte, error) {
 
 func (o *ExternalDynamicListImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *ExternalDynamicListLocation `json:"location"`
-		Name     *string                      `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -13881,10 +13958,14 @@ func (o *ExternalDynamicListImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, ExternalDynamicListLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

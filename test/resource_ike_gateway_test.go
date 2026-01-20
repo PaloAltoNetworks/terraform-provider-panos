@@ -2,6 +2,7 @@ package provider_test
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -317,6 +318,25 @@ func TestAccIkeGateway_ProtocolIkev2(t *testing.T) {
 						knownvalue.Bool(true),
 					),
 				},
+			},
+		},
+	})
+}
+
+func TestAccIkeGateway_PlaintextValueMissingRejected(t *testing.T) {
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.ParallelTest(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: ikeGatewayConfig_PlaintextValueMissing,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ExpectError: regexp.MustCompile(`The attribute at path.+`),
 			},
 		},
 	})
@@ -742,6 +762,45 @@ resource "panos_ike_gateway" "example" {
     ikev2 = {
 	  require_cookie = true
 	}
+  }
+}
+
+resource "panos_ethernet_interface" "example" {
+  location = { template = { name = panos_template.example.name, vsys = "vsys1" } }
+
+  name = "ethernet1/1"
+
+  layer3 = {
+    ips = [{ name = "10.0.0.1/32" }]
+  }
+}
+
+resource "panos_template" "example" {
+   location = { panorama = {} }
+   name     = format("%s-tmpl", var.prefix)
+}
+`
+
+const ikeGatewayConfig_PlaintextValueMissing = `
+variable "prefix" { type = string }
+
+resource "panos_ike_gateway" "example" {
+  location = { template = { name = panos_template.example.name } }
+
+  name    = format("%s-gw1", var.prefix)
+
+  authentication = {
+    pre_shared_key = {
+      key = "[PLAINTEXT-VALUE-MISSING]"
+    }
+  }
+
+  local_address = {
+    interface = panos_ethernet_interface.example.name
+  }
+
+  peer_address = {
+    ip = "10.10.0.1/32"
   }
 }
 

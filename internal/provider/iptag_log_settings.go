@@ -1002,87 +1002,66 @@ func IptagLogSettingsDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"actions": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: IptagLogSettingsDataSourceActionsSchema(),
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"filter": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"quarantine": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"email_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"http_profile": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"snmp_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"syslog_profiles": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"send_to_panorama": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1112,10 +1091,7 @@ func IptagLogSettingsDataSourceActionsSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": IptagLogSettingsDataSourceActionsTypeSchema(),
@@ -1144,10 +1120,8 @@ func (o *IptagLogSettingsDataSourceActionsObject) getTypeFor(name string) attr.T
 func IptagLogSettingsDataSourceActionsTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"integration": IptagLogSettingsDataSourceActionsTypeIntegrationSchema(),
@@ -1178,10 +1152,8 @@ func (o *IptagLogSettingsDataSourceActionsTypeObject) getTypeFor(name string) at
 func IptagLogSettingsDataSourceActionsTypeIntegrationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1193,10 +1165,8 @@ func IptagLogSettingsDataSourceActionsTypeIntegrationSchema() dsschema.SingleNes
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1223,10 +1193,8 @@ func (o *IptagLogSettingsDataSourceActionsTypeIntegrationObject) getTypeFor(name
 func IptagLogSettingsDataSourceActionsTypeTaggingSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1238,36 +1206,28 @@ func IptagLogSettingsDataSourceActionsTypeTaggingSchema() dsschema.SingleNestedA
 
 			"target": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timeout": dsschema.Int64Attribute{
 				Description: "timeout in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"registration": IptagLogSettingsDataSourceActionsTypeTaggingRegistrationSchema(),
 
 			"tags": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1295,10 +1255,8 @@ func (o *IptagLogSettingsDataSourceActionsTypeTaggingObject) getTypeFor(name str
 func IptagLogSettingsDataSourceActionsTypeTaggingRegistrationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"localhost": IptagLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostSchema(),
@@ -1331,10 +1289,8 @@ func (o *IptagLogSettingsDataSourceActionsTypeTaggingRegistrationObject) getType
 func IptagLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1368,10 +1324,8 @@ func (o *IptagLogSettingsDataSourceActionsTypeTaggingRegistrationLocalhostObject
 func IptagLogSettingsDataSourceActionsTypeTaggingRegistrationPanoramaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1405,10 +1359,8 @@ func (o *IptagLogSettingsDataSourceActionsTypeTaggingRegistrationPanoramaObject)
 func IptagLogSettingsDataSourceActionsTypeTaggingRegistrationRemoteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1421,10 +1373,8 @@ func IptagLogSettingsDataSourceActionsTypeTaggingRegistrationRemoteSchema() dssc
 
 			"http_profile": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -1667,7 +1617,115 @@ type IptagLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject struct {
 	HttpProfile types.String `tfsdk:"http_profile"`
 }
 
+func (o *IptagLogSettingsResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Actions.IsUnknown() && !o.Actions.IsNull() {
+		var elements []IptagLogSettingsResourceActionsObject
+		diags := o.Actions.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("actions").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *IptagLogSettingsResourceActionsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj IptagLogSettingsResourceActionsTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *IptagLogSettingsResourceActionsTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Integration.IsUnknown() && !o.Integration.IsNull() {
+		var nestedObj IptagLogSettingsResourceActionsTypeIntegrationObject
+		diags := o.Integration.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("integration"))
+		}
+	}
+	if !o.Tagging.IsUnknown() && !o.Tagging.IsNull() {
+		var nestedObj IptagLogSettingsResourceActionsTypeTaggingObject
+		diags := o.Tagging.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tagging"))
+		}
+	}
+}
+
+func (o *IptagLogSettingsResourceActionsTypeIntegrationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IptagLogSettingsResourceActionsTypeTaggingObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Registration.IsUnknown() && !o.Registration.IsNull() {
+		var nestedObj IptagLogSettingsResourceActionsTypeTaggingRegistrationObject
+		diags := o.Registration.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("registration"))
+		}
+	}
+}
+
+func (o *IptagLogSettingsResourceActionsTypeTaggingRegistrationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Localhost.IsUnknown() && !o.Localhost.IsNull() {
+		var nestedObj IptagLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObject
+		diags := o.Localhost.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("localhost"))
+		}
+	}
+	if !o.Panorama.IsUnknown() && !o.Panorama.IsNull() {
+		var nestedObj IptagLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject
+		diags := o.Panorama.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("panorama"))
+		}
+	}
+	if !o.Remote.IsUnknown() && !o.Remote.IsNull() {
+		var nestedObj IptagLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject
+		diags := o.Remote.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("remote"))
+		}
+	}
+}
+
+func (o *IptagLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IptagLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IptagLogSettingsResourceActionsTypeTaggingRegistrationRemoteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *IptagLogSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource IptagLogSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1680,87 +1738,57 @@ func IptagLogSettingsResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"actions": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: IptagLogSettingsResourceActionsSchema(),
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"filter": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"quarantine": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"email_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"http_profile": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"snmp_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"syslog_profiles": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"send_to_panorama": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1790,10 +1818,7 @@ func IptagLogSettingsResourceActionsSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"type": IptagLogSettingsResourceActionsTypeSchema(),
@@ -1822,10 +1847,7 @@ func (o *IptagLogSettingsResourceActionsObject) getTypeFor(name string) attr.Typ
 func IptagLogSettingsResourceActionsTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"integration": IptagLogSettingsResourceActionsTypeIntegrationSchema(),
@@ -1856,10 +1878,7 @@ func (o *IptagLogSettingsResourceActionsTypeObject) getTypeFor(name string) attr
 func IptagLogSettingsResourceActionsTypeIntegrationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1871,10 +1890,8 @@ func IptagLogSettingsResourceActionsTypeIntegrationSchema() rsschema.SingleNeste
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("Azure-Security-Center-Integration"),
 			},
 		},
@@ -1902,10 +1919,7 @@ func (o *IptagLogSettingsResourceActionsTypeIntegrationObject) getTypeFor(name s
 func IptagLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -1917,28 +1931,22 @@ func IptagLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNestedAtt
 
 			"target": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("source-address"),
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("add-tag"),
 			},
 
 			"timeout": rsschema.Int64Attribute{
 				Description: "timeout in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
@@ -1946,10 +1954,7 @@ func IptagLogSettingsResourceActionsTypeTaggingSchema() rsschema.SingleNestedAtt
 
 			"tags": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -1977,10 +1982,7 @@ func (o *IptagLogSettingsResourceActionsTypeTaggingObject) getTypeFor(name strin
 func IptagLogSettingsResourceActionsTypeTaggingRegistrationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"localhost": IptagLogSettingsResourceActionsTypeTaggingRegistrationLocalhostSchema(),
@@ -2013,10 +2015,7 @@ func (o *IptagLogSettingsResourceActionsTypeTaggingRegistrationObject) getTypeFo
 func IptagLogSettingsResourceActionsTypeTaggingRegistrationLocalhostSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2050,10 +2049,7 @@ func (o *IptagLogSettingsResourceActionsTypeTaggingRegistrationLocalhostObject) 
 func IptagLogSettingsResourceActionsTypeTaggingRegistrationPanoramaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2087,10 +2083,7 @@ func (o *IptagLogSettingsResourceActionsTypeTaggingRegistrationPanoramaObject) g
 func IptagLogSettingsResourceActionsTypeTaggingRegistrationRemoteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -2103,10 +2096,7 @@ func IptagLogSettingsResourceActionsTypeTaggingRegistrationRemoteSchema() rssche
 
 			"http_profile": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3596,14 +3586,15 @@ type IptagLogSettingsImportState struct {
 
 func (o IptagLogSettingsImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *IptagLogSettingsLocation `json:"location"`
-		Name     *string                   `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *IptagLogSettingsLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, IptagLogSettingsLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -3617,8 +3608,8 @@ func (o IptagLogSettingsImportState) MarshalJSON() ([]byte, error) {
 
 func (o *IptagLogSettingsImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *IptagLogSettingsLocation `json:"location"`
-		Name     *string                   `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3627,10 +3618,14 @@ func (o *IptagLogSettingsImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, IptagLogSettingsLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

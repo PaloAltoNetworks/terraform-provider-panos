@@ -292,10 +292,8 @@ func DnsSettingsDataSourceSchema() dsschema.Schema {
 
 			"fqdn_refresh_time": dsschema.Int64Attribute{
 				Description: "Seconds for Periodic Timer to refresh expired FQDN object entries",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -322,10 +320,8 @@ func (o *DnsSettingsDataSourceModel) getTypeFor(name string) attr.Type {
 func DnsSettingsDataSourceDnsSettingsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"servers": DnsSettingsDataSourceDnsSettingsServersSchema(),
@@ -354,26 +350,20 @@ func (o *DnsSettingsDataSourceDnsSettingsObject) getTypeFor(name string) attr.Ty
 func DnsSettingsDataSourceDnsSettingsServersSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"primary": dsschema.StringAttribute{
 				Description: "Primary DNS server IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"secondary": dsschema.StringAttribute{
 				Description: "Secondary DNS server IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -555,7 +545,41 @@ type DnsSettingsResourceDnsSettingsServersObject struct {
 	Secondary types.String `tfsdk:"secondary"`
 }
 
+func (o *DnsSettingsResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DnsSettings.IsUnknown() && !o.DnsSettings.IsNull() {
+		var nestedObj DnsSettingsResourceDnsSettingsObject
+		diags := o.DnsSettings.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("dns_settings"))
+		}
+	}
+}
+
+func (o *DnsSettingsResourceDnsSettingsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Servers.IsUnknown() && !o.Servers.IsNull() {
+		var nestedObj DnsSettingsResourceDnsSettingsServersObject
+		diags := o.Servers.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("servers"))
+		}
+	}
+}
+
+func (o *DnsSettingsResourceDnsSettingsServersObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *DnsSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource DnsSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -570,10 +594,8 @@ func DnsSettingsResourceSchema() rsschema.Schema {
 
 			"fqdn_refresh_time": rsschema.Int64Attribute{
 				Description: "Seconds for Periodic Timer to refresh expired FQDN object entries",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1800),
 			},
 		},
@@ -601,10 +623,7 @@ func (o *DnsSettingsResourceModel) getTypeFor(name string) attr.Type {
 func DnsSettingsResourceDnsSettingsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"servers": DnsSettingsResourceDnsSettingsServersSchema(),
@@ -633,26 +652,17 @@ func (o *DnsSettingsResourceDnsSettingsObject) getTypeFor(name string) attr.Type
 func DnsSettingsResourceDnsSettingsServersSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"primary": rsschema.StringAttribute{
 				Description: "Primary DNS server IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"secondary": rsschema.StringAttribute{
 				Description: "Secondary DNS server IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}

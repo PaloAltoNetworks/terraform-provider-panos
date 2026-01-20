@@ -219,9 +219,6 @@ func AddressesDataSourceSchema() dsschema.Schema {
 			"addresses": dsschema.MapNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AddressesDataSourceAddressesSchema(),
 			},
 		},
@@ -252,59 +249,45 @@ func AddressesDataSourceAddressesSchema() dsschema.NestedAttributeObject {
 
 			"description": dsschema.StringAttribute{
 				Description: "The description.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tags": dsschema.ListAttribute{
 				Description: "The administrative tags.",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "The FQDN value.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip_netmask": dsschema.StringAttribute{
 				Description: "The IP netmask value.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip_range": dsschema.StringAttribute{
 				Description: "The IP range value.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip_wildcard": dsschema.StringAttribute{
 				Description: "The IP wildcard value.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -524,7 +507,31 @@ type AddressesResourceAddressesObject struct {
 	IpWildcard      types.String `tfsdk:"ip_wildcard"`
 }
 
+func (o *AddressesResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Addresses.IsUnknown() && !o.Addresses.IsNull() {
+		var elements map[string]AddressesResourceAddressesObject
+		diags := o.Addresses.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for key, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("addresses").AtMapKey(key))
+			}
+		}
+	}
+}
+
+func (o *AddressesResourceAddressesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *AddressesResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource AddressesResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -538,9 +545,6 @@ func AddressesResourceSchema() rsschema.Schema {
 			"addresses": rsschema.MapNestedAttribute{
 				Description:  "",
 				Required:     true,
-				Optional:     false,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AddressesResourceAddressesSchema(),
 			},
 		},
@@ -571,18 +575,12 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 
 			"description": rsschema.StringAttribute{
 				Description: "The description.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -594,19 +592,13 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 
 			"tags": rsschema.ListAttribute{
 				Description: "The administrative tags.",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "The FQDN value.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -620,26 +612,17 @@ func AddressesResourceAddressesSchema() rsschema.NestedAttributeObject {
 
 			"ip_netmask": rsschema.StringAttribute{
 				Description: "The IP netmask value.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip_range": rsschema.StringAttribute{
 				Description: "The IP range value.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip_wildcard": rsschema.StringAttribute{
 				Description: "The IP wildcard value.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1349,14 +1332,15 @@ type AddressesImportState struct {
 
 func (o AddressesImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *AddressesLocation `json:"location"`
-		Names    []string           `json:"names"`
+		Location interface{} `json:"location"`
+		Names    []string    `json:"names"`
 	}
-	var location_object *AddressesLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, AddressesLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 	var names_list []string
@@ -1377,8 +1361,8 @@ func (o AddressesImportState) MarshalJSON() ([]byte, error) {
 
 func (o *AddressesImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *AddressesLocation `json:"location"`
-		Names    []string           `json:"names"`
+		Location interface{} `json:"location"`
+		Names    []string    `json:"names"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1387,10 +1371,14 @@ func (o *AddressesImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, AddressesLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	var names_list types.List

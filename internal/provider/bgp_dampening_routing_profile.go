@@ -156,50 +156,37 @@ func BgpDampeningRoutingProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe BGP Dampening Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"half_life": dsschema.Int64Attribute{
 				Description: "Half-life for the penalty Default:15 (in minutes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"max_suppress_limit": dsschema.Int64Attribute{
 				Description: "Maximum duration (in minutes) a route can be suppressed. Default:60",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"reuse_limit": dsschema.Int64Attribute{
 				Description: "Value to start reusing a route. Default:750",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"suppress_limit": dsschema.Int64Attribute{
 				Description: "Value to start supressing the route. Default:2000",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -385,7 +372,17 @@ type BgpDampeningRoutingProfileResourceModel struct {
 	SuppressLimit    types.Int64  `tfsdk:"suppress_limit"`
 }
 
+func (o *BgpDampeningRoutingProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *BgpDampeningRoutingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource BgpDampeningRoutingProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -398,53 +395,39 @@ func BgpDampeningRoutingProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe BGP Dampening Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"half_life": rsschema.Int64Attribute{
 				Description: "Half-life for the penalty Default:15 (in minutes)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(15),
 			},
 
 			"max_suppress_limit": rsschema.Int64Attribute{
 				Description: "Maximum duration (in minutes) a route can be suppressed. Default:60",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(60),
 			},
 
 			"reuse_limit": rsschema.Int64Attribute{
 				Description: "Value to start reusing a route. Default:750",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(750),
 			},
 
 			"suppress_limit": rsschema.Int64Attribute{
 				Description: "Value to start supressing the route. Default:2000",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(2000),
 			},
 		},
@@ -1031,14 +1014,15 @@ type BgpDampeningRoutingProfileImportState struct {
 
 func (o BgpDampeningRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *BgpDampeningRoutingProfileLocation `json:"location"`
-		Name     *string                             `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *BgpDampeningRoutingProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, BgpDampeningRoutingProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -1052,8 +1036,8 @@ func (o BgpDampeningRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 
 func (o *BgpDampeningRoutingProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *BgpDampeningRoutingProfileLocation `json:"location"`
-		Name     *string                             `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1062,10 +1046,14 @@ func (o *BgpDampeningRoutingProfileImportState) UnmarshalJSON(data []byte) error
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, BgpDampeningRoutingProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

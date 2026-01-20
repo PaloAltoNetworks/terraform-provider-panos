@@ -3613,90 +3613,67 @@ func IpsecTunnelDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"anti_replay": dsschema.BoolAttribute{
 				Description: "Enable Anti-Replay check on this tunnel",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"anti_replay_window": dsschema.StringAttribute{
 				Description: "64,128,256,512,1024,2048,4096",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"comment": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"copy_flow_label": dsschema.BoolAttribute{
 				Description: "Copy IPv6 flow label for 6in6 tunnel from inner packet to IPSec packet (not recommended)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"copy_tos": dsschema.BoolAttribute{
 				Description: "Copy IP TOS bits from inner packet to IPSec packet (not recommended)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disabled": dsschema.BoolAttribute{
 				Description: "Disable the IPSec tunnel",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable_gre_encapsulation": dsschema.BoolAttribute{
 				Description: "allow GRE over IPSec",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipsec_mode": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.BoolAttribute{
 				Description: "use IPv6 for the IPSec tunnel",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tunnel_interface": dsschema.StringAttribute{
 				Description: "to apply IPSec VPN tunnels to tunnel interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tunnel_monitor": IpsecTunnelDataSourceTunnelMonitorSchema(),
@@ -3731,42 +3708,32 @@ func (o *IpsecTunnelDataSourceModel) getTypeFor(name string) attr.Type {
 func IpsecTunnelDataSourceTunnelMonitorSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"destination_ip": dsschema.StringAttribute{
 				Description: "Destination IP to send ICMP probe",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable tunnel monitoring on this tunnel",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"proxy_id": dsschema.StringAttribute{
 				Description: "Which proxy-id (or proxy-id-v6) the monitoring traffic will use",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tunnel_monitor_profile": dsschema.StringAttribute{
 				Description: "monitoring action",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3793,44 +3760,34 @@ func (o *IpsecTunnelDataSourceTunnelMonitorObject) getTypeFor(name string) attr.
 func IpsecTunnelDataSourceAutoKeySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ike_gateway": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: IpsecTunnelDataSourceAutoKeyIkeGatewaySchema(),
 			},
 
 			"ipsec_crypto_profile": dsschema.StringAttribute{
 				Description: "IPSec crypto profile name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"proxy_id": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: IpsecTunnelDataSourceAutoKeyProxyIdSchema(),
 			},
 
 			"proxy_id_v6": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: IpsecTunnelDataSourceAutoKeyProxyIdV6Schema(),
 			},
 		},
@@ -3861,10 +3818,7 @@ func IpsecTunnelDataSourceAutoKeyIkeGatewaySchema() dsschema.NestedAttributeObje
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3894,26 +3848,19 @@ func IpsecTunnelDataSourceAutoKeyProxyIdSchema() dsschema.NestedAttributeObject 
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"local": dsschema.StringAttribute{
 				Description: "IP subnet or IP address represents local network",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"remote": dsschema.StringAttribute{
 				Description: "IP subnet or IP address represents remote network",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"protocol": IpsecTunnelDataSourceAutoKeyProxyIdProtocolSchema(),
@@ -3942,18 +3889,14 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdObject) getTypeFor(name string) attr
 func IpsecTunnelDataSourceAutoKeyProxyIdProtocolSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"number": dsschema.Int64Attribute{
 				Description: "IP protocol number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"any": IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnySchema(),
@@ -3986,10 +3929,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolObject) getTypeFor(name stri
 func IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4024,10 +3965,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolAnyObject) getTypeFor(name s
 func IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4041,18 +3980,14 @@ func IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpSchema() dsschema.SingleNeste
 
 			"local_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"remote_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4079,10 +4014,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdProtocolTcpObject) getTypeFor(name s
 func IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4096,18 +4029,14 @@ func IpsecTunnelDataSourceAutoKeyProxyIdProtocolUdpSchema() dsschema.SingleNeste
 
 			"local_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"remote_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4137,26 +4066,19 @@ func IpsecTunnelDataSourceAutoKeyProxyIdV6Schema() dsschema.NestedAttributeObjec
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"local": dsschema.StringAttribute{
 				Description: "IP subnet or IP address represents local network",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"remote": dsschema.StringAttribute{
 				Description: "IP subnet or IP address represents remote network",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"protocol": IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolSchema(),
@@ -4185,18 +4107,14 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6Object) getTypeFor(name string) at
 func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"number": dsschema.Int64Attribute{
 				Description: "IP protocol number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"any": IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnySchema(),
@@ -4229,10 +4147,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolObject) getTypeFor(name st
 func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4267,10 +4183,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolAnyObject) getTypeFor(name
 func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4284,18 +4198,14 @@ func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpSchema() dsschema.SingleNes
 
 			"local_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"remote_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4322,10 +4232,8 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolTcpObject) getTypeFor(name
 func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4339,18 +4247,14 @@ func IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpSchema() dsschema.SingleNes
 
 			"local_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"remote_port": dsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4377,40 +4281,32 @@ func (o *IpsecTunnelDataSourceAutoKeyProxyIdV6ProtocolUdpObject) getTypeFor(name
 func IpsecTunnelDataSourceGlobalProtectSatelliteSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"external_ca": IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaSchema(),
 
 			"ipv6_preferred": dsschema.BoolAttribute{
 				Description: "Prefer to register to portal in ipv6. Only applicable to fqdn portal-address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_address": IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressSchema(),
 
 			"portal_address": dsschema.StringAttribute{
 				Description: "GlobalProtect portal address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"publish_connected_routes": IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesSchema(),
 
 			"publish_routes": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -4438,26 +4334,20 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteObject) getTypeFor(name stri
 func IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"certificate_profile": dsschema.StringAttribute{
 				Description: "Profile for authenticating GlobalProtect gateway certificates",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"local_certificate": dsschema.StringAttribute{
 				Description: "GlobalProtect satellite certificate file name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4484,18 +4374,14 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteExternalCaObject) getTypeFor
 func IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Interface to communicate with Portal",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"floating_ip": IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpSchema(),
@@ -4526,10 +4412,8 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressObject) getTypeF
 func IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4541,18 +4425,14 @@ func IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpSchema() d
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "Floating IPv6 address in HA Active-Active configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4579,10 +4459,8 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressFloatingIpObject
 func IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4594,18 +4472,14 @@ func IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpSchema() dsschema.
 
 			"ipv4": dsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6": dsschema.StringAttribute{
 				Description: "specify exact local IPv6 address if interface has multiple addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4632,18 +4506,14 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatelliteLocalAddressIpObject) getTyp
 func IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable publishing of connected and static routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4670,30 +4540,24 @@ func (o *IpsecTunnelDataSourceGlobalProtectSatellitePublishConnectedRoutesObject
 func IpsecTunnelDataSourceManualKeySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"local_address": IpsecTunnelDataSourceManualKeyLocalAddressSchema(),
 
 			"local_spi": dsschema.StringAttribute{
 				Description: "Outbound SPI, hex format xxxxxxxx. range 00001000 to 1FFFFFFF",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"peer_address": IpsecTunnelDataSourceManualKeyPeerAddressSchema(),
 
 			"remote_spi": dsschema.StringAttribute{
 				Description: "Inbound SPI, hex format xxxxxxxx.",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ah": IpsecTunnelDataSourceManualKeyAhSchema(),
@@ -4724,34 +4588,26 @@ func (o *IpsecTunnelDataSourceManualKeyObject) getTypeFor(name string) attr.Type
 func IpsecTunnelDataSourceManualKeyLocalAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"interface": dsschema.StringAttribute{
 				Description: "Interface to termate tunnel",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"floating_ip": dsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4778,18 +4634,14 @@ func (o *IpsecTunnelDataSourceManualKeyLocalAddressObject) getTypeFor(name strin
 func IpsecTunnelDataSourceManualKeyPeerAddressSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip": dsschema.StringAttribute{
 				Description: "Tunnel peer IP address",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4816,10 +4668,8 @@ func (o *IpsecTunnelDataSourceManualKeyPeerAddressObject) getTypeFor(name string
 func IpsecTunnelDataSourceManualKeyAhSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4863,10 +4713,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) getTypeFor(name string) attr.Ty
 func IpsecTunnelDataSourceManualKeyAhMd5Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4881,10 +4729,8 @@ func IpsecTunnelDataSourceManualKeyAhMd5Schema() dsschema.SingleNestedAttribute 
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4911,10 +4757,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) getTypeFor(name string) attr
 func IpsecTunnelDataSourceManualKeyAhSha1Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4929,10 +4773,8 @@ func IpsecTunnelDataSourceManualKeyAhSha1Schema() dsschema.SingleNestedAttribute
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4959,10 +4801,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) getTypeFor(name string) att
 func IpsecTunnelDataSourceManualKeyAhSha256Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4977,10 +4817,8 @@ func IpsecTunnelDataSourceManualKeyAhSha256Schema() dsschema.SingleNestedAttribu
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5007,10 +4845,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) getTypeFor(name string) a
 func IpsecTunnelDataSourceManualKeyAhSha384Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5025,10 +4861,8 @@ func IpsecTunnelDataSourceManualKeyAhSha384Schema() dsschema.SingleNestedAttribu
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5055,10 +4889,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) getTypeFor(name string) a
 func IpsecTunnelDataSourceManualKeyAhSha512Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5073,10 +4905,8 @@ func IpsecTunnelDataSourceManualKeyAhSha512Schema() dsschema.SingleNestedAttribu
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5103,10 +4933,8 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) getTypeFor(name string) a
 func IpsecTunnelDataSourceManualKeyEspSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5144,10 +4972,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspObject) getTypeFor(name string) attr.T
 func IpsecTunnelDataSourceManualKeyEspAuthenticationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"md5": IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Schema(),
@@ -5186,10 +5012,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) getTypeFor(name 
 func IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5205,10 +5029,8 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Schema() dsschema.SingleN
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5235,10 +5057,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) getTypeFor(na
 func IpsecTunnelDataSourceManualKeyEspAuthenticationNoneSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5275,10 +5095,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) getTypeFor(n
 func IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5294,10 +5112,8 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Schema() dsschema.Single
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5324,10 +5140,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) getTypeFor(n
 func IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5343,10 +5157,8 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Schema() dsschema.Sing
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5373,10 +5185,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) getTypeFor
 func IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5392,10 +5202,8 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Schema() dsschema.Sing
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5422,10 +5230,8 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) getTypeFor
 func IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5441,10 +5247,8 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Schema() dsschema.Sing
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5471,26 +5275,20 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) getTypeFor
 func IpsecTunnelDataSourceManualKeyEspEncryptionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"algorithm": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"key": dsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total number of sections: des: 2, 3des: 6, aes-128-cbc: 4, aes-192-cbc: 6, aes-256-cbc: 8",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5843,7 +5641,467 @@ type IpsecTunnelResourceManualKeyEspEncryptionObject struct {
 	Key       types.String `tfsdk:"key"`
 }
 
+func (o *IpsecTunnelResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.TunnelMonitor.IsUnknown() && !o.TunnelMonitor.IsNull() {
+		var nestedObj IpsecTunnelResourceTunnelMonitorObject
+		diags := o.TunnelMonitor.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tunnel_monitor"))
+		}
+	}
+	if !o.AutoKey.IsUnknown() && !o.AutoKey.IsNull() {
+		var nestedObj IpsecTunnelResourceAutoKeyObject
+		diags := o.AutoKey.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("auto_key"))
+		}
+	}
+	if !o.GlobalProtectSatellite.IsUnknown() && !o.GlobalProtectSatellite.IsNull() {
+		var nestedObj IpsecTunnelResourceGlobalProtectSatelliteObject
+		diags := o.GlobalProtectSatellite.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("global_protect_satellite"))
+		}
+	}
+	if !o.ManualKey.IsUnknown() && !o.ManualKey.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyObject
+		diags := o.ManualKey.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("manual_key"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceTunnelMonitorObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceAutoKeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.IkeGateway.IsUnknown() && !o.IkeGateway.IsNull() {
+		var elements []IpsecTunnelResourceAutoKeyIkeGatewayObject
+		diags := o.IkeGateway.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ike_gateway").AtListIndex(i))
+			}
+		}
+	}
+	if !o.ProxyId.IsUnknown() && !o.ProxyId.IsNull() {
+		var elements []IpsecTunnelResourceAutoKeyProxyIdObject
+		diags := o.ProxyId.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("proxy_id").AtListIndex(i))
+			}
+		}
+	}
+	if !o.ProxyIdV6.IsUnknown() && !o.ProxyIdV6.IsNull() {
+		var elements []IpsecTunnelResourceAutoKeyProxyIdV6Object
+		diags := o.ProxyIdV6.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("proxy_id_v6").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyIkeGatewayObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Protocol.IsUnknown() && !o.Protocol.IsNull() {
+		var nestedObj IpsecTunnelResourceAutoKeyProxyIdProtocolObject
+		diags := o.Protocol.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("protocol"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Any.IsUnknown() && !o.Any.IsNull() {
+		var nestedObj IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject
+		diags := o.Any.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("any"))
+		}
+	}
+	if !o.Tcp.IsUnknown() && !o.Tcp.IsNull() {
+		var nestedObj IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject
+		diags := o.Tcp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tcp"))
+		}
+	}
+	if !o.Udp.IsUnknown() && !o.Udp.IsNull() {
+		var nestedObj IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject
+		diags := o.Udp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("udp"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolUdpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Protocol.IsUnknown() && !o.Protocol.IsNull() {
+		var nestedObj IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject
+		diags := o.Protocol.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("protocol"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Any.IsUnknown() && !o.Any.IsNull() {
+		var nestedObj IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject
+		diags := o.Any.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("any"))
+		}
+	}
+	if !o.Tcp.IsUnknown() && !o.Tcp.IsNull() {
+		var nestedObj IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject
+		diags := o.Tcp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("tcp"))
+		}
+	}
+	if !o.Udp.IsUnknown() && !o.Udp.IsNull() {
+		var nestedObj IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject
+		diags := o.Udp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("udp"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ExternalCa.IsUnknown() && !o.ExternalCa.IsNull() {
+		var nestedObj IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject
+		diags := o.ExternalCa.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("external_ca"))
+		}
+	}
+	if !o.LocalAddress.IsUnknown() && !o.LocalAddress.IsNull() {
+		var nestedObj IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject
+		diags := o.LocalAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_address"))
+		}
+	}
+	if !o.PublishConnectedRoutes.IsUnknown() && !o.PublishConnectedRoutes.IsNull() {
+		var nestedObj IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject
+		diags := o.PublishConnectedRoutes.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("publish_connected_routes"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.FloatingIp.IsUnknown() && !o.FloatingIp.IsNull() {
+		var nestedObj IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject
+		diags := o.FloatingIp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("floating_ip"))
+		}
+	}
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var nestedObj IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject
+		diags := o.Ip.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ip"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.LocalAddress.IsUnknown() && !o.LocalAddress.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyLocalAddressObject
+		diags := o.LocalAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("local_address"))
+		}
+	}
+	if !o.PeerAddress.IsUnknown() && !o.PeerAddress.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyPeerAddressObject
+		diags := o.PeerAddress.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("peer_address"))
+		}
+	}
+	if !o.Ah.IsUnknown() && !o.Ah.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyAhObject
+		diags := o.Ah.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ah"))
+		}
+	}
+	if !o.Esp.IsUnknown() && !o.Esp.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyEspObject
+		diags := o.Esp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("esp"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyLocalAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyPeerAddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyAhObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Md5.IsUnknown() && !o.Md5.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyAhMd5Object
+		diags := o.Md5.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("md5"))
+		}
+	}
+	if !o.Sha1.IsUnknown() && !o.Sha1.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyAhSha1Object
+		diags := o.Sha1.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha1"))
+		}
+	}
+	if !o.Sha256.IsUnknown() && !o.Sha256.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyAhSha256Object
+		diags := o.Sha256.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha256"))
+		}
+	}
+	if !o.Sha384.IsUnknown() && !o.Sha384.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyAhSha384Object
+		diags := o.Sha384.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha384"))
+		}
+	}
+	if !o.Sha512.IsUnknown() && !o.Sha512.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyAhSha512Object
+		diags := o.Sha512.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha512"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyAhMd5Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyAhSha1Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyAhSha256Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyAhSha384Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyAhSha512Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyEspObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Authentication.IsUnknown() && !o.Authentication.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyEspAuthenticationObject
+		diags := o.Authentication.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("authentication"))
+		}
+	}
+	if !o.Encryption.IsUnknown() && !o.Encryption.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyEspEncryptionObject
+		diags := o.Encryption.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("encryption"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Md5.IsUnknown() && !o.Md5.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyEspAuthenticationMd5Object
+		diags := o.Md5.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("md5"))
+		}
+	}
+	if !o.None.IsUnknown() && !o.None.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyEspAuthenticationNoneObject
+		diags := o.None.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("none"))
+		}
+	}
+	if !o.Sha1.IsUnknown() && !o.Sha1.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyEspAuthenticationSha1Object
+		diags := o.Sha1.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha1"))
+		}
+	}
+	if !o.Sha256.IsUnknown() && !o.Sha256.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyEspAuthenticationSha256Object
+		diags := o.Sha256.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha256"))
+		}
+	}
+	if !o.Sha384.IsUnknown() && !o.Sha384.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyEspAuthenticationSha384Object
+		diags := o.Sha384.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha384"))
+		}
+	}
+	if !o.Sha512.IsUnknown() && !o.Sha512.IsNull() {
+		var nestedObj IpsecTunnelResourceManualKeyEspAuthenticationSha512Object
+		diags := o.Sha512.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sha512"))
+		}
+	}
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *IpsecTunnelResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource IpsecTunnelResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -5856,26 +6114,18 @@ func IpsecTunnelResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"anti_replay": rsschema.BoolAttribute{
 				Description: "Enable Anti-Replay check on this tunnel",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"anti_replay_window": rsschema.StringAttribute{
 				Description: "64,128,256,512,1024,2048,4096",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("1024"),
 
 				Validators: []validator.String{
@@ -5893,50 +6143,33 @@ func IpsecTunnelResourceSchema() rsschema.Schema {
 
 			"comment": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"copy_flow_label": rsschema.BoolAttribute{
 				Description: "Copy IPv6 flow label for 6in6 tunnel from inner packet to IPSec packet (not recommended)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"copy_tos": rsschema.BoolAttribute{
 				Description: "Copy IP TOS bits from inner packet to IPSec packet (not recommended)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disabled": rsschema.BoolAttribute{
 				Description: "Disable the IPSec tunnel",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable_gre_encapsulation": rsschema.BoolAttribute{
 				Description: "allow GRE over IPSec",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipsec_mode": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("tunnel"),
 
 				Validators: []validator.String{
@@ -5949,18 +6182,12 @@ func IpsecTunnelResourceSchema() rsschema.Schema {
 
 			"ipv6": rsschema.BoolAttribute{
 				Description: "use IPv6 for the IPSec tunnel",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tunnel_interface": rsschema.StringAttribute{
 				Description: "to apply IPSec VPN tunnels to tunnel interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tunnel_monitor": IpsecTunnelResourceTunnelMonitorSchema(),
@@ -5995,42 +6222,27 @@ func (o *IpsecTunnelResourceModel) getTypeFor(name string) attr.Type {
 func IpsecTunnelResourceTunnelMonitorSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"destination_ip": rsschema.StringAttribute{
 				Description: "Destination IP to send ICMP probe",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable tunnel monitoring on this tunnel",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"proxy_id": rsschema.StringAttribute{
 				Description: "Which proxy-id (or proxy-id-v6) the monitoring traffic will use",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tunnel_monitor_profile": rsschema.StringAttribute{
 				Description: "monitoring action",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -6057,10 +6269,7 @@ func (o *IpsecTunnelResourceTunnelMonitorObject) getTypeFor(name string) attr.Ty
 func IpsecTunnelResourceAutoKeySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6073,37 +6282,26 @@ func IpsecTunnelResourceAutoKeySchema() rsschema.SingleNestedAttribute {
 
 			"ike_gateway": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: IpsecTunnelResourceAutoKeyIkeGatewaySchema(),
 			},
 
 			"ipsec_crypto_profile": rsschema.StringAttribute{
 				Description: "IPSec crypto profile name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("default"),
 			},
 
 			"proxy_id": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: IpsecTunnelResourceAutoKeyProxyIdSchema(),
 			},
 
 			"proxy_id_v6": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: IpsecTunnelResourceAutoKeyProxyIdV6Schema(),
 			},
 		},
@@ -6134,10 +6332,7 @@ func IpsecTunnelResourceAutoKeyIkeGatewaySchema() rsschema.NestedAttributeObject
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -6167,26 +6362,17 @@ func IpsecTunnelResourceAutoKeyProxyIdSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"local": rsschema.StringAttribute{
 				Description: "IP subnet or IP address represents local network",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"remote": rsschema.StringAttribute{
 				Description: "IP subnet or IP address represents remote network",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"protocol": IpsecTunnelResourceAutoKeyProxyIdProtocolSchema(),
@@ -6215,18 +6401,12 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdObject) getTypeFor(name string) attr.T
 func IpsecTunnelResourceAutoKeyProxyIdProtocolSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"number": rsschema.Int64Attribute{
 				Description: "IP protocol number",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -6268,10 +6448,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolObject) getTypeFor(name string
 func IpsecTunnelResourceAutoKeyProxyIdProtocolAnySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6306,10 +6483,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolAnyObject) getTypeFor(name str
 func IpsecTunnelResourceAutoKeyProxyIdProtocolTcpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6323,19 +6497,15 @@ func IpsecTunnelResourceAutoKeyProxyIdProtocolTcpSchema() rsschema.SingleNestedA
 
 			"local_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"remote_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 		},
@@ -6363,10 +6533,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdProtocolTcpObject) getTypeFor(name str
 func IpsecTunnelResourceAutoKeyProxyIdProtocolUdpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6380,19 +6547,15 @@ func IpsecTunnelResourceAutoKeyProxyIdProtocolUdpSchema() rsschema.SingleNestedA
 
 			"local_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"remote_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 		},
@@ -6423,26 +6586,17 @@ func IpsecTunnelResourceAutoKeyProxyIdV6Schema() rsschema.NestedAttributeObject 
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"local": rsschema.StringAttribute{
 				Description: "IP subnet or IP address represents local network",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"remote": rsschema.StringAttribute{
 				Description: "IP subnet or IP address represents remote network",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"protocol": IpsecTunnelResourceAutoKeyProxyIdV6ProtocolSchema(),
@@ -6471,18 +6625,12 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6Object) getTypeFor(name string) attr
 func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"number": rsschema.Int64Attribute{
 				Description: "IP protocol number",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -6524,10 +6672,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolObject) getTypeFor(name stri
 func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6562,10 +6707,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolAnyObject) getTypeFor(name s
 func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6579,19 +6721,15 @@ func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpSchema() rsschema.SingleNeste
 
 			"local_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"remote_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 		},
@@ -6619,10 +6757,7 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolTcpObject) getTypeFor(name s
 func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6636,19 +6771,15 @@ func IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpSchema() rsschema.SingleNeste
 
 			"local_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 
 			"remote_port": rsschema.Int64Attribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(0),
 			},
 		},
@@ -6676,40 +6807,28 @@ func (o *IpsecTunnelResourceAutoKeyProxyIdV6ProtocolUdpObject) getTypeFor(name s
 func IpsecTunnelResourceGlobalProtectSatelliteSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"external_ca": IpsecTunnelResourceGlobalProtectSatelliteExternalCaSchema(),
 
 			"ipv6_preferred": rsschema.BoolAttribute{
 				Description: "Prefer to register to portal in ipv6. Only applicable to fqdn portal-address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_address": IpsecTunnelResourceGlobalProtectSatelliteLocalAddressSchema(),
 
 			"portal_address": rsschema.StringAttribute{
 				Description: "GlobalProtect portal address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"publish_connected_routes": IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesSchema(),
 
 			"publish_routes": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 		},
@@ -6737,26 +6856,17 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteObject) getTypeFor(name string
 func IpsecTunnelResourceGlobalProtectSatelliteExternalCaSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"certificate_profile": rsschema.StringAttribute{
 				Description: "Profile for authenticating GlobalProtect gateway certificates",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"local_certificate": rsschema.StringAttribute{
 				Description: "GlobalProtect satellite certificate file name",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -6783,18 +6893,12 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteExternalCaObject) getTypeFor(n
 func IpsecTunnelResourceGlobalProtectSatelliteLocalAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Interface to communicate with Portal",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"floating_ip": IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpSchema(),
@@ -6825,10 +6929,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressObject) getTypeFor
 func IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6840,18 +6941,12 @@ func IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpSchema() rss
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "Floating IPv6 address in HA Active-Active configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -6878,10 +6973,7 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressFloatingIpObject) 
 func IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6893,18 +6985,12 @@ func IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpSchema() rsschema.Si
 
 			"ipv4": rsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv6": rsschema.StringAttribute{
 				Description: "specify exact local IPv6 address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -6931,18 +7017,12 @@ func (o *IpsecTunnelResourceGlobalProtectSatelliteLocalAddressIpObject) getTypeF
 func IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable publishing of connected and static routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -6969,30 +7049,21 @@ func (o *IpsecTunnelResourceGlobalProtectSatellitePublishConnectedRoutesObject) 
 func IpsecTunnelResourceManualKeySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"local_address": IpsecTunnelResourceManualKeyLocalAddressSchema(),
 
 			"local_spi": rsschema.StringAttribute{
 				Description: "Outbound SPI, hex format xxxxxxxx. range 00001000 to 1FFFFFFF",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"peer_address": IpsecTunnelResourceManualKeyPeerAddressSchema(),
 
 			"remote_spi": rsschema.StringAttribute{
 				Description: "Inbound SPI, hex format xxxxxxxx.",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ah": IpsecTunnelResourceManualKeyAhSchema(),
@@ -7023,26 +7094,17 @@ func (o *IpsecTunnelResourceManualKeyObject) getTypeFor(name string) attr.Type {
 func IpsecTunnelResourceManualKeyLocalAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"interface": rsschema.StringAttribute{
 				Description: "Interface to termate tunnel",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"floating_ip": rsschema.StringAttribute{
 				Description: "Floating IP address in HA Active-Active configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -7054,10 +7116,7 @@ func IpsecTunnelResourceManualKeyLocalAddressSchema() rsschema.SingleNestedAttri
 
 			"ip": rsschema.StringAttribute{
 				Description: "specify exact IP address if interface has multiple addresses",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7084,18 +7143,12 @@ func (o *IpsecTunnelResourceManualKeyLocalAddressObject) getTypeFor(name string)
 func IpsecTunnelResourceManualKeyPeerAddressSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip": rsschema.StringAttribute{
 				Description: "Tunnel peer IP address",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7122,10 +7175,7 @@ func (o *IpsecTunnelResourceManualKeyPeerAddressObject) getTypeFor(name string) 
 func IpsecTunnelResourceManualKeyAhSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7169,10 +7219,7 @@ func (o *IpsecTunnelResourceManualKeyAhObject) getTypeFor(name string) attr.Type
 func IpsecTunnelResourceManualKeyAhMd5Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7187,10 +7234,7 @@ func IpsecTunnelResourceManualKeyAhMd5Schema() rsschema.SingleNestedAttribute {
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7217,10 +7261,7 @@ func (o *IpsecTunnelResourceManualKeyAhMd5Object) getTypeFor(name string) attr.T
 func IpsecTunnelResourceManualKeyAhSha1Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7235,10 +7276,7 @@ func IpsecTunnelResourceManualKeyAhSha1Schema() rsschema.SingleNestedAttribute {
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7265,10 +7303,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha1Object) getTypeFor(name string) attr.
 func IpsecTunnelResourceManualKeyAhSha256Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7283,10 +7318,7 @@ func IpsecTunnelResourceManualKeyAhSha256Schema() rsschema.SingleNestedAttribute
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7313,10 +7345,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha256Object) getTypeFor(name string) att
 func IpsecTunnelResourceManualKeyAhSha384Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7331,10 +7360,7 @@ func IpsecTunnelResourceManualKeyAhSha384Schema() rsschema.SingleNestedAttribute
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7361,10 +7387,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha384Object) getTypeFor(name string) att
 func IpsecTunnelResourceManualKeyAhSha512Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7379,10 +7402,7 @@ func IpsecTunnelResourceManualKeyAhSha512Schema() rsschema.SingleNestedAttribute
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7409,10 +7429,7 @@ func (o *IpsecTunnelResourceManualKeyAhSha512Object) getTypeFor(name string) att
 func IpsecTunnelResourceManualKeyEspSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7450,10 +7467,7 @@ func (o *IpsecTunnelResourceManualKeyEspObject) getTypeFor(name string) attr.Typ
 func IpsecTunnelResourceManualKeyEspAuthenticationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"md5": IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema(),
@@ -7492,10 +7506,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) getTypeFor(name st
 func IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7511,10 +7522,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema() rsschema.SingleNes
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7541,10 +7549,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) getTypeFor(name
 func IpsecTunnelResourceManualKeyEspAuthenticationNoneSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7581,10 +7586,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) getTypeFor(nam
 func IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7600,10 +7602,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema() rsschema.SingleNe
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7630,10 +7629,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) getTypeFor(nam
 func IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7649,10 +7645,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema() rsschema.Single
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7679,10 +7672,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) getTypeFor(n
 func IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7698,10 +7688,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema() rsschema.Single
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7728,10 +7715,7 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) getTypeFor(n
 func IpsecTunnelResourceManualKeyEspAuthenticationSha512Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7747,10 +7731,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha512Schema() rsschema.Single
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -7777,27 +7758,19 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) getTypeFor(n
 func IpsecTunnelResourceManualKeyEspEncryptionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"algorithm": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("aes-128-cbc"),
 			},
 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total number of sections: des: 2, 3des: 6, aes-128-cbc: 4, aes-192-cbc: 6, aes-256-cbc: 8",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -11671,14 +11644,15 @@ type IpsecTunnelImportState struct {
 
 func (o IpsecTunnelImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *IpsecTunnelLocation `json:"location"`
-		Name     *string              `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *IpsecTunnelLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, IpsecTunnelLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -11692,8 +11666,8 @@ func (o IpsecTunnelImportState) MarshalJSON() ([]byte, error) {
 
 func (o *IpsecTunnelImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *IpsecTunnelLocation `json:"location"`
-		Name     *string              `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -11702,10 +11676,14 @@ func (o *IpsecTunnelImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, IpsecTunnelLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

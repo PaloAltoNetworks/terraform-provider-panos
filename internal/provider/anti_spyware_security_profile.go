@@ -3170,80 +3170,61 @@ func AntiSpywareSecurityProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"botnet_domains": AntiSpywareSecurityProfileDataSourceBotnetDomainsSchema(),
 
 			"cloud_inline_analysis": dsschema.BoolAttribute{
 				Description: "Enable cloud inline analysis",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"inline_exception_edl_url": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"inline_exception_ip_address": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"mica_engine_spyware_enabled": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledSchema(),
 			},
 
 			"rules": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceRulesSchema(),
 			},
 
 			"threat_exception": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceThreatExceptionSchema(),
 			},
 		},
@@ -3271,27 +3252,21 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) getTypeFor(name string) attr
 func AntiSpywareSecurityProfileDataSourceBotnetDomainsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"dns_security_categories": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesSchema(),
 			},
 
 			"lists": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceBotnetDomainsListsSchema(),
 			},
 
@@ -3301,19 +3276,15 @@ func AntiSpywareSecurityProfileDataSourceBotnetDomainsSchema() dsschema.SingleNe
 
 			"threat_exception": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionSchema(),
 			},
 
 			"whitelist": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistSchema(),
 			},
 		},
@@ -3344,34 +3315,25 @@ func AntiSpywareSecurityProfileDataSourceBotnetDomainsDnsSecurityCategoriesSchem
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"log_level": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"packet_capture": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3401,20 +3363,15 @@ func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsSchema() dsschema.Nes
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSchema(),
 
 			"packet_capture": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3441,10 +3398,8 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsObject) getTypeFo
 func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"alert": AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertSchema(),
@@ -3479,10 +3434,8 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionObject) get
 func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3517,10 +3470,8 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAlertObject
 func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3555,10 +3506,8 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionAllowObject
 func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3593,10 +3542,8 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionBlockObject
 func AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -3631,34 +3578,26 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsListsActionSinkholeObj
 func AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"any": dsschema.StringAttribute{
 				Description: "ANY(255)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"https": dsschema.StringAttribute{
 				Description: "HTTPS(65)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"svcb": dsschema.StringAttribute{
 				Description: "SVCB(64)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3685,26 +3624,20 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsRtypeActionObject) get
 func AntiSpywareSecurityProfileDataSourceBotnetDomainsSinkholeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ipv4_address": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv6_address": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3734,10 +3667,7 @@ func AntiSpywareSecurityProfileDataSourceBotnetDomainsThreatExceptionSchema() ds
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -3767,18 +3697,13 @@ func AntiSpywareSecurityProfileDataSourceBotnetDomainsWhitelistSchema() dsschema
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3808,18 +3733,13 @@ func AntiSpywareSecurityProfileDataSourceMicaEngineSpywareEnabledSchema() dssche
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"inline_policy_action": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3849,42 +3769,31 @@ func AntiSpywareSecurityProfileDataSourceRulesSchema() dsschema.NestedAttributeO
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"threat_name": dsschema.StringAttribute{
 				Description: "Threat name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"category": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"packet_capture": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"severity": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -3914,10 +3823,8 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesObject) getTypeFor(name string
 func AntiSpywareSecurityProfileDataSourceRulesActionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"default": AntiSpywareSecurityProfileDataSourceRulesActionDefaultSchema(),
@@ -3960,10 +3867,8 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionObject) getTypeFor(name 
 func AntiSpywareSecurityProfileDataSourceRulesActionDefaultSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4002,10 +3907,8 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionDefaultObject) getTypeFo
 func AntiSpywareSecurityProfileDataSourceRulesActionAllowSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4044,10 +3947,8 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionAllowObject) getTypeFor(
 func AntiSpywareSecurityProfileDataSourceRulesActionAlertSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4086,10 +3987,8 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionAlertObject) getTypeFor(
 func AntiSpywareSecurityProfileDataSourceRulesActionDropSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4128,10 +4027,8 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionDropObject) getTypeFor(n
 func AntiSpywareSecurityProfileDataSourceRulesActionResetClientSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4170,10 +4067,8 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetClientObject) getTy
 func AntiSpywareSecurityProfileDataSourceRulesActionResetServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4212,10 +4107,8 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetServerObject) getTy
 func AntiSpywareSecurityProfileDataSourceRulesActionResetBothSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4254,10 +4147,8 @@ func (o *AntiSpywareSecurityProfileDataSourceRulesActionResetBothObject) getType
 func AntiSpywareSecurityProfileDataSourceRulesActionBlockIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4275,18 +4166,14 @@ func AntiSpywareSecurityProfileDataSourceRulesActionBlockIpSchema() dsschema.Sin
 
 			"track_by": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"duration": dsschema.Int64Attribute{
 				Description: "Duration for block ip",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4316,28 +4203,21 @@ func AntiSpywareSecurityProfileDataSourceThreatExceptionSchema() dsschema.Nested
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"packet_capture": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"action": AntiSpywareSecurityProfileDataSourceThreatExceptionActionSchema(),
 
 			"exempt_ip": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpSchema(),
 			},
 		},
@@ -4365,10 +4245,8 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) getTypeFor(n
 func AntiSpywareSecurityProfileDataSourceThreatExceptionActionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"default": AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultSchema(),
@@ -4411,10 +4289,8 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionObject) getTyp
 func AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4453,10 +4329,8 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDefaultObject)
 func AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4495,10 +4369,8 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAllowObject) g
 func AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4537,10 +4409,8 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionAlertObject) g
 func AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4579,10 +4449,8 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionDropObject) ge
 func AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4621,10 +4489,8 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetBothObjec
 func AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4663,10 +4529,8 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetClientObj
 func AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4705,10 +4569,8 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionActionResetServerObj
 func AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4726,18 +4588,14 @@ func AntiSpywareSecurityProfileDataSourceThreatExceptionActionBlockIpSchema() ds
 
 			"track_by": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"duration": dsschema.Int64Attribute{
 				Description: "Duration for block ip",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -4767,10 +4625,7 @@ func AntiSpywareSecurityProfileDataSourceThreatExceptionExemptIpSchema() dsschem
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5083,7 +4938,441 @@ type AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject struct {
 	Name types.String `tfsdk:"name"`
 }
 
+func (o *AntiSpywareSecurityProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.BotnetDomains.IsUnknown() && !o.BotnetDomains.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceBotnetDomainsObject
+		diags := o.BotnetDomains.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("botnet_domains"))
+		}
+	}
+	if !o.MicaEngineSpywareEnabled.IsUnknown() && !o.MicaEngineSpywareEnabled.IsNull() {
+		var elements []AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject
+		diags := o.MicaEngineSpywareEnabled.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("mica_engine_spyware_enabled").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Rules.IsUnknown() && !o.Rules.IsNull() {
+		var elements []AntiSpywareSecurityProfileResourceRulesObject
+		diags := o.Rules.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("rules").AtListIndex(i))
+			}
+		}
+	}
+	if !o.ThreatException.IsUnknown() && !o.ThreatException.IsNull() {
+		var elements []AntiSpywareSecurityProfileResourceThreatExceptionObject
+		diags := o.ThreatException.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("threat_exception").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.DnsSecurityCategories.IsUnknown() && !o.DnsSecurityCategories.IsNull() {
+		var elements []AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject
+		diags := o.DnsSecurityCategories.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("dns_security_categories").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Lists.IsUnknown() && !o.Lists.IsNull() {
+		var elements []AntiSpywareSecurityProfileResourceBotnetDomainsListsObject
+		diags := o.Lists.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("lists").AtListIndex(i))
+			}
+		}
+	}
+	if !o.RtypeAction.IsUnknown() && !o.RtypeAction.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject
+		diags := o.RtypeAction.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("rtype_action"))
+		}
+	}
+	if !o.Sinkhole.IsUnknown() && !o.Sinkhole.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject
+		diags := o.Sinkhole.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sinkhole"))
+		}
+	}
+	if !o.ThreatException.IsUnknown() && !o.ThreatException.IsNull() {
+		var elements []AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject
+		diags := o.ThreatException.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("threat_exception").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Whitelist.IsUnknown() && !o.Whitelist.IsNull() {
+		var elements []AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject
+		diags := o.Whitelist.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("whitelist").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject
+		diags := o.Action.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("action"))
+		}
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Alert.IsUnknown() && !o.Alert.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject
+		diags := o.Alert.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("alert"))
+		}
+	}
+	if !o.Allow.IsUnknown() && !o.Allow.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject
+		diags := o.Allow.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("allow"))
+		}
+	}
+	if !o.Block.IsUnknown() && !o.Block.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject
+		diags := o.Block.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("block"))
+		}
+	}
+	if !o.Sinkhole.IsUnknown() && !o.Sinkhole.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject
+		diags := o.Sinkhole.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("sinkhole"))
+		}
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceRulesActionObject
+		diags := o.Action.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("action"))
+		}
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Default.IsUnknown() && !o.Default.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceRulesActionDefaultObject
+		diags := o.Default.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("default"))
+		}
+	}
+	if !o.Allow.IsUnknown() && !o.Allow.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceRulesActionAllowObject
+		diags := o.Allow.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("allow"))
+		}
+	}
+	if !o.Alert.IsUnknown() && !o.Alert.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceRulesActionAlertObject
+		diags := o.Alert.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("alert"))
+		}
+	}
+	if !o.Drop.IsUnknown() && !o.Drop.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceRulesActionDropObject
+		diags := o.Drop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("drop"))
+		}
+	}
+	if !o.ResetClient.IsUnknown() && !o.ResetClient.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceRulesActionResetClientObject
+		diags := o.ResetClient.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("reset_client"))
+		}
+	}
+	if !o.ResetServer.IsUnknown() && !o.ResetServer.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceRulesActionResetServerObject
+		diags := o.ResetServer.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("reset_server"))
+		}
+	}
+	if !o.ResetBoth.IsUnknown() && !o.ResetBoth.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceRulesActionResetBothObject
+		diags := o.ResetBoth.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("reset_both"))
+		}
+	}
+	if !o.BlockIp.IsUnknown() && !o.BlockIp.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceRulesActionBlockIpObject
+		diags := o.BlockIp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("block_ip"))
+		}
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceRulesActionBlockIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceThreatExceptionActionObject
+		diags := o.Action.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("action"))
+		}
+	}
+	if !o.ExemptIp.IsUnknown() && !o.ExemptIp.IsNull() {
+		var elements []AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject
+		diags := o.ExemptIp.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("exempt_ip").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Default.IsUnknown() && !o.Default.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject
+		diags := o.Default.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("default"))
+		}
+	}
+	if !o.Allow.IsUnknown() && !o.Allow.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject
+		diags := o.Allow.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("allow"))
+		}
+	}
+	if !o.Alert.IsUnknown() && !o.Alert.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject
+		diags := o.Alert.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("alert"))
+		}
+	}
+	if !o.Drop.IsUnknown() && !o.Drop.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject
+		diags := o.Drop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("drop"))
+		}
+	}
+	if !o.ResetBoth.IsUnknown() && !o.ResetBoth.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject
+		diags := o.ResetBoth.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("reset_both"))
+		}
+	}
+	if !o.ResetClient.IsUnknown() && !o.ResetClient.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject
+		diags := o.ResetClient.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("reset_client"))
+		}
+	}
+	if !o.ResetServer.IsUnknown() && !o.ResetServer.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject
+		diags := o.ResetServer.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("reset_server"))
+		}
+	}
+	if !o.BlockIp.IsUnknown() && !o.BlockIp.IsNull() {
+		var nestedObj AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject
+		diags := o.BlockIp.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("block_ip"))
+		}
+	}
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AntiSpywareSecurityProfileResourceThreatExceptionExemptIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *AntiSpywareSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource AntiSpywareSecurityProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -5096,36 +5385,24 @@ func AntiSpywareSecurityProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"botnet_domains": AntiSpywareSecurityProfileResourceBotnetDomainsSchema(),
 
 			"cloud_inline_analysis": rsschema.BoolAttribute{
 				Description: "Enable cloud inline analysis",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -5137,46 +5414,31 @@ func AntiSpywareSecurityProfileResourceSchema() rsschema.Schema {
 
 			"inline_exception_edl_url": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"inline_exception_ip_address": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"mica_engine_spyware_enabled": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledSchema(),
 			},
 
 			"rules": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileResourceRulesSchema(),
 			},
 
 			"threat_exception": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileResourceThreatExceptionSchema(),
 			},
 		},
@@ -5204,27 +5466,18 @@ func (o *AntiSpywareSecurityProfileResourceModel) getTypeFor(name string) attr.T
 func AntiSpywareSecurityProfileResourceBotnetDomainsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"dns_security_categories": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesSchema(),
 			},
 
 			"lists": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileResourceBotnetDomainsListsSchema(),
 			},
 
@@ -5234,19 +5487,13 @@ func AntiSpywareSecurityProfileResourceBotnetDomainsSchema() rsschema.SingleNest
 
 			"threat_exception": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionSchema(),
 			},
 
 			"whitelist": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistSchema(),
 			},
 		},
@@ -5277,36 +5524,27 @@ func AntiSpywareSecurityProfileResourceBotnetDomainsDnsSecurityCategoriesSchema(
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("default"),
 			},
 
 			"log_level": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("default"),
 			},
 
 			"packet_capture": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("disable"),
 			},
 		},
@@ -5337,20 +5575,15 @@ func AntiSpywareSecurityProfileResourceBotnetDomainsListsSchema() rsschema.Neste
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"action": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSchema(),
 
 			"packet_capture": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("disable"),
 			},
 		},
@@ -5378,10 +5611,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsObject) getTypeFor(
 func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"alert": AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertSchema(),
@@ -5416,10 +5646,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionObject) getTy
 func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5454,10 +5681,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAlertObject) 
 func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5492,10 +5716,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionAllowObject) 
 func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5530,10 +5751,7 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionBlockObject) 
 func AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5568,36 +5786,27 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsListsActionSinkholeObjec
 func AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"any": rsschema.StringAttribute{
 				Description: "ANY(255)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("allow"),
 			},
 
 			"https": rsschema.StringAttribute{
 				Description: "HTTPS(65)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("allow"),
 			},
 
 			"svcb": rsschema.StringAttribute{
 				Description: "SVCB(64)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("allow"),
 			},
 		},
@@ -5625,27 +5834,20 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsRtypeActionObject) getTy
 func AntiSpywareSecurityProfileResourceBotnetDomainsSinkholeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ipv4_address": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("pan-sinkhole-default-ip"),
 			},
 
 			"ipv6_address": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("::1"),
 			},
 		},
@@ -5676,10 +5878,7 @@ func AntiSpywareSecurityProfileResourceBotnetDomainsThreatExceptionSchema() rssc
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5709,18 +5908,12 @@ func AntiSpywareSecurityProfileResourceBotnetDomainsWhitelistSchema() rsschema.N
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5750,18 +5943,13 @@ func AntiSpywareSecurityProfileResourceMicaEngineSpywareEnabledSchema() rsschema
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"inline_policy_action": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("alert"),
 			},
 		},
@@ -5792,45 +5980,33 @@ func AntiSpywareSecurityProfileResourceRulesSchema() rsschema.NestedAttributeObj
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"threat_name": rsschema.StringAttribute{
 				Description: "Threat name",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("any"),
 			},
 
 			"category": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("any"),
 			},
 
 			"packet_capture": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("disable"),
 			},
 
 			"severity": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
@@ -5860,10 +6036,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesObject) getTypeFor(name string) 
 func AntiSpywareSecurityProfileResourceRulesActionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"default": AntiSpywareSecurityProfileResourceRulesActionDefaultSchema(),
@@ -5906,10 +6079,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionObject) getTypeFor(name st
 func AntiSpywareSecurityProfileResourceRulesActionDefaultSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5948,10 +6118,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionDefaultObject) getTypeFor(
 func AntiSpywareSecurityProfileResourceRulesActionAllowSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5990,10 +6157,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionAllowObject) getTypeFor(na
 func AntiSpywareSecurityProfileResourceRulesActionAlertSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6032,10 +6196,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionAlertObject) getTypeFor(na
 func AntiSpywareSecurityProfileResourceRulesActionDropSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6074,10 +6235,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionDropObject) getTypeFor(nam
 func AntiSpywareSecurityProfileResourceRulesActionResetClientSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6116,10 +6274,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionResetClientObject) getType
 func AntiSpywareSecurityProfileResourceRulesActionResetServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6158,10 +6313,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionResetServerObject) getType
 func AntiSpywareSecurityProfileResourceRulesActionResetBothSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6200,10 +6352,7 @@ func (o *AntiSpywareSecurityProfileResourceRulesActionResetBothObject) getTypeFo
 func AntiSpywareSecurityProfileResourceRulesActionBlockIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6221,18 +6370,12 @@ func AntiSpywareSecurityProfileResourceRulesActionBlockIpSchema() rsschema.Singl
 
 			"track_by": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"duration": rsschema.Int64Attribute{
 				Description: "Duration for block ip",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -6262,18 +6405,13 @@ func AntiSpywareSecurityProfileResourceThreatExceptionSchema() rsschema.NestedAt
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"packet_capture": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("disable"),
 			},
 
@@ -6281,10 +6419,7 @@ func AntiSpywareSecurityProfileResourceThreatExceptionSchema() rsschema.NestedAt
 
 			"exempt_ip": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: AntiSpywareSecurityProfileResourceThreatExceptionExemptIpSchema(),
 			},
 		},
@@ -6312,10 +6447,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) getTypeFor(nam
 func AntiSpywareSecurityProfileResourceThreatExceptionActionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"default": AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultSchema(),
@@ -6358,10 +6490,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionObject) getTypeF
 func AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6400,10 +6529,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDefaultObject) g
 func AntiSpywareSecurityProfileResourceThreatExceptionActionAllowSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6442,10 +6568,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAllowObject) get
 func AntiSpywareSecurityProfileResourceThreatExceptionActionAlertSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6484,10 +6607,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionAlertObject) get
 func AntiSpywareSecurityProfileResourceThreatExceptionActionDropSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6526,10 +6646,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionDropObject) getT
 func AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6568,10 +6685,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetBothObject)
 func AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6610,10 +6724,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetClientObjec
 func AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6652,10 +6763,7 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionActionResetServerObjec
 func AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6673,18 +6781,12 @@ func AntiSpywareSecurityProfileResourceThreatExceptionActionBlockIpSchema() rssc
 
 			"track_by": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"duration": rsschema.Int64Attribute{
 				Description: "Duration for block ip",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -6714,10 +6816,7 @@ func AntiSpywareSecurityProfileResourceThreatExceptionExemptIpSchema() rsschema.
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -10175,14 +10274,15 @@ type AntiSpywareSecurityProfileImportState struct {
 
 func (o AntiSpywareSecurityProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *AntiSpywareSecurityProfileLocation `json:"location"`
-		Name     *string                             `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *AntiSpywareSecurityProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, AntiSpywareSecurityProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -10196,8 +10296,8 @@ func (o AntiSpywareSecurityProfileImportState) MarshalJSON() ([]byte, error) {
 
 func (o *AntiSpywareSecurityProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *AntiSpywareSecurityProfileLocation `json:"location"`
-		Name     *string                             `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -10206,10 +10306,14 @@ func (o *AntiSpywareSecurityProfileImportState) UnmarshalJSON(data []byte) error
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, AntiSpywareSecurityProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

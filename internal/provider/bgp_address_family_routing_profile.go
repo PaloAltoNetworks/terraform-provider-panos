@@ -5481,10 +5481,7 @@ func BgpAddressFamilyRoutingProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ipv4": BgpAddressFamilyRoutingProfileDataSourceIpv4Schema(),
@@ -5515,10 +5512,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceModel) getTypeFor(name string) 
 func BgpAddressFamilyRoutingProfileDataSourceIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"multicast": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSchema(),
@@ -5549,10 +5544,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4Object) getTypeFor(name str
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"add_path": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastAddPathSchema(),
@@ -5561,34 +5554,26 @@ func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSchema() dsschema.Sing
 
 			"as_override": dsschema.BoolAttribute{
 				Description: "Override ASNs in outbound updates if AS-Path equals Remote-AS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_originate": dsschema.BoolAttribute{
 				Description: "Originate Default Route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_originate_map": dsschema.StringAttribute{
 				Description: "Route-Map used in Default Originate Configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"maximum_prefix": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixSchema(),
@@ -5601,20 +5586,16 @@ func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSchema() dsschema.Sing
 
 			"route_reflector_client": dsschema.BoolAttribute{
 				Description: "Route Reflector Client",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"send_community": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunitySchema(),
 
 			"soft_reconfig_with_stored_info": dsschema.BoolAttribute{
 				Description: "Soft reconfiguration of peer with stored routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5641,26 +5622,20 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastObject) getTypeFor
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastAddPathSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"tx_all_paths": dsschema.BoolAttribute{
 				Description: "Advertise all paths to peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tx_bestpath_per_as": dsschema.BoolAttribute{
 				Description: "Advertise the bestpath per each neighboring AS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5687,18 +5662,14 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastAddPathObject) get
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastAllowasInSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"occurrence": dsschema.Int64Attribute{
 				Description: "Number of occurrences of AS number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastAllowasInOriginSchema(),
@@ -5727,10 +5698,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastAllowasInObject) g
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastAllowasInOriginSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5763,28 +5732,22 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastAllowasInOriginObj
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"action": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixActionSchema(),
 
 			"max_prefixes": dsschema.Int64Attribute{
 				Description: "Max allowed prefixes from this peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"threshold": dsschema.Int64Attribute{
 				Description: "Threshold value (%) at which to generate a warning msg",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5811,10 +5774,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixObjec
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixActionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"restart": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixActionRestartSchema(),
@@ -5845,10 +5806,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixActio
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixActionRestartSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5860,10 +5819,8 @@ func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixActionRes
 
 			"interval": dsschema.Int64Attribute{
 				Description: "Restart interval in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -5890,10 +5847,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixActio
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixActionWarningOnlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5926,10 +5881,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastMaximumPrefixActio
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"self": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastNextHopSelfSchema(),
@@ -5960,10 +5913,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastNextHopObject) get
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastNextHopSelfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -5996,10 +5947,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastNextHopSelfObject)
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastNextHopSelfForceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6032,18 +5981,14 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastNextHopSelfForceOb
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastOrfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"orf_prefix_list": dsschema.StringAttribute{
 				Description: "Advertise Prefix-List ORF Capability",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6070,10 +6015,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastOrfObject) getType
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastRemovePrivateAsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastRemovePrivateAsAllSchema(),
@@ -6104,10 +6047,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastRemovePrivateAsObj
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastRemovePrivateAsAllSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6140,10 +6081,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastRemovePrivateAsAll
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastRemovePrivateAsReplaceAsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6176,10 +6115,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastRemovePrivateAsRep
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunitySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityAllSchema(),
@@ -6216,10 +6153,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityObjec
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityAllSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6255,10 +6190,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityAllOb
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityBothSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6294,10 +6227,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityBothO
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityExtendedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6333,10 +6264,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityExten
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityLargeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6372,10 +6301,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityLarge
 func BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityStandardSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6411,10 +6338,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4MulticastSendCommunityStand
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"add_path": BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastAddPathSchema(),
@@ -6423,34 +6348,26 @@ func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSchema() dsschema.Single
 
 			"as_override": dsschema.BoolAttribute{
 				Description: "Override ASNs in outbound updates if AS-Path equals Remote-AS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_originate": dsschema.BoolAttribute{
 				Description: "Originate Default Route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_originate_map": dsschema.StringAttribute{
 				Description: "Route-Map used in Default Originate Configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"maximum_prefix": BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixSchema(),
@@ -6463,20 +6380,16 @@ func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSchema() dsschema.Single
 
 			"route_reflector_client": dsschema.BoolAttribute{
 				Description: "Route Reflector Client",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"send_community": BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunitySchema(),
 
 			"soft_reconfig_with_stored_info": dsschema.BoolAttribute{
 				Description: "Soft reconfiguration of peer with stored routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6503,26 +6416,20 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastObject) getTypeFor(n
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastAddPathSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"tx_all_paths": dsschema.BoolAttribute{
 				Description: "Advertise all paths to peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tx_bestpath_per_as": dsschema.BoolAttribute{
 				Description: "Advertise the bestpath per each neighboring AS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6549,18 +6456,14 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastAddPathObject) getTy
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastAllowasInSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"occurrence": dsschema.Int64Attribute{
 				Description: "Number of occurrences of AS number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastAllowasInOriginSchema(),
@@ -6589,10 +6492,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastAllowasInObject) get
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastAllowasInOriginSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6625,28 +6526,22 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastAllowasInOriginObjec
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"action": BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixActionSchema(),
 
 			"max_prefixes": dsschema.Int64Attribute{
 				Description: "Max allowed prefixes from this peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"threshold": dsschema.Int64Attribute{
 				Description: "Threshold value (%) at which to generate a warning msg",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6673,10 +6568,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixObject)
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixActionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"restart": BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixActionRestartSchema(),
@@ -6707,10 +6600,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixActionO
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixActionRestartSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6722,10 +6613,8 @@ func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixActionResta
 
 			"interval": dsschema.Int64Attribute{
 				Description: "Restart interval in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6752,10 +6641,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixActionR
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixActionWarningOnlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6788,10 +6675,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastMaximumPrefixActionW
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"self": BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastNextHopSelfSchema(),
@@ -6822,10 +6707,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastNextHopObject) getTy
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastNextHopSelfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6858,10 +6741,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastNextHopSelfObject) g
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastNextHopSelfForceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -6894,18 +6775,14 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastNextHopSelfForceObje
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastOrfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"orf_prefix_list": dsschema.StringAttribute{
 				Description: "Advertise Prefix-List ORF Capability",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -6932,10 +6809,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastOrfObject) getTypeFo
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastRemovePrivateAsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastRemovePrivateAsAllSchema(),
@@ -6966,10 +6841,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastRemovePrivateAsObjec
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastRemovePrivateAsAllSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7002,10 +6875,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastRemovePrivateAsAllOb
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastRemovePrivateAsReplaceAsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7038,10 +6909,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastRemovePrivateAsRepla
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunitySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityAllSchema(),
@@ -7078,10 +6947,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityObject)
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityAllSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7117,10 +6984,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityAllObje
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityBothSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7156,10 +7021,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityBothObj
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityExtendedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7195,10 +7058,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityExtende
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityLargeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7234,10 +7095,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityLargeOb
 func BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityStandardSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7273,10 +7132,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv4UnicastSendCommunityStandar
 func BgpAddressFamilyRoutingProfileDataSourceIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"unicast": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSchema(),
@@ -7305,10 +7162,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6Object) getTypeFor(name str
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"add_path": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastAddPathSchema(),
@@ -7317,34 +7172,26 @@ func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSchema() dsschema.Single
 
 			"as_override": dsschema.BoolAttribute{
 				Description: "Override ASNs in outbound updates if AS-Path equals Remote-AS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_originate": dsschema.BoolAttribute{
 				Description: "Originate Default Route",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"default_originate_map": dsschema.StringAttribute{
 				Description: "Route-Map used in Default Originate Configuration",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Enable",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"maximum_prefix": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixSchema(),
@@ -7357,20 +7204,16 @@ func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSchema() dsschema.Single
 
 			"route_reflector_client": dsschema.BoolAttribute{
 				Description: "Route Reflector Client",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"send_community": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunitySchema(),
 
 			"soft_reconfig_with_stored_info": dsschema.BoolAttribute{
 				Description: "Soft reconfiguration of peer with stored routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7397,26 +7240,20 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastObject) getTypeFor(n
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastAddPathSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"tx_all_paths": dsschema.BoolAttribute{
 				Description: "Advertise all paths to peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"tx_bestpath_per_as": dsschema.BoolAttribute{
 				Description: "Advertise the bestpath per each neighboring AS",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7443,18 +7280,14 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastAddPathObject) getTy
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastAllowasInSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"occurrence": dsschema.Int64Attribute{
 				Description: "Number of occurrences of AS number",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"origin": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastAllowasInOriginSchema(),
@@ -7483,10 +7316,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastAllowasInObject) get
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastAllowasInOriginSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7519,28 +7350,22 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastAllowasInOriginObjec
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"action": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixActionSchema(),
 
 			"max_prefixes": dsschema.Int64Attribute{
 				Description: "Max allowed prefixes from this peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"threshold": dsschema.Int64Attribute{
 				Description: "Threshold value (%) at which to generate a warning msg",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7567,10 +7392,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixObject)
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixActionSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"restart": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixActionRestartSchema(),
@@ -7601,10 +7424,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixActionO
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixActionRestartSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7616,10 +7437,8 @@ func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixActionResta
 
 			"interval": dsschema.Int64Attribute{
 				Description: "Restart interval in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7646,10 +7465,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixActionR
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixActionWarningOnlySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7682,10 +7499,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastMaximumPrefixActionW
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastNextHopSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"self": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastNextHopSelfSchema(),
@@ -7716,10 +7531,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastNextHopObject) getTy
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastNextHopSelfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7752,10 +7565,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastNextHopSelfObject) g
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastNextHopSelfForceSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7788,18 +7599,14 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastNextHopSelfForceObje
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastOrfSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"orf_prefix_list": dsschema.StringAttribute{
 				Description: "Advertise Prefix-List ORF Capability",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -7826,10 +7633,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastOrfObject) getTypeFo
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastRemovePrivateAsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastRemovePrivateAsAllSchema(),
@@ -7860,10 +7665,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastRemovePrivateAsObjec
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastRemovePrivateAsAllSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7896,10 +7699,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastRemovePrivateAsAllOb
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastRemovePrivateAsReplaceAsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -7932,10 +7733,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastRemovePrivateAsRepla
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunitySchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityAllSchema(),
@@ -7972,10 +7771,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityObject)
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityAllSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8011,10 +7808,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityAllObje
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityBothSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8050,10 +7845,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityBothObj
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityExtendedSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8089,10 +7882,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityExtende
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityLargeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8128,10 +7919,8 @@ func (o *BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityLargeOb
 func BgpAddressFamilyRoutingProfileDataSourceIpv6UnicastSendCommunityStandardSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8555,7 +8344,797 @@ type BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityLargeObject s
 type BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityStandardObject struct {
 }
 
+func (o *BgpAddressFamilyRoutingProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Multicast.IsUnknown() && !o.Multicast.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastObject
+		diags := o.Multicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("multicast"))
+		}
+	}
+	if !o.Unicast.IsUnknown() && !o.Unicast.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastObject
+		diags := o.Unicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("unicast"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AddPath.IsUnknown() && !o.AddPath.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastAddPathObject
+		diags := o.AddPath.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("add_path"))
+		}
+	}
+	if !o.AllowasIn.IsUnknown() && !o.AllowasIn.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastAllowasInObject
+		diags := o.AllowasIn.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("allowas_in"))
+		}
+	}
+	if !o.MaximumPrefix.IsUnknown() && !o.MaximumPrefix.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixObject
+		diags := o.MaximumPrefix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("maximum_prefix"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+	if !o.Orf.IsUnknown() && !o.Orf.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastOrfObject
+		diags := o.Orf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("orf"))
+		}
+	}
+	if !o.RemovePrivateAs.IsUnknown() && !o.RemovePrivateAs.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsObject
+		diags := o.RemovePrivateAs.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("remove_private_as"))
+		}
+	}
+	if !o.SendCommunity.IsUnknown() && !o.SendCommunity.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityObject
+		diags := o.SendCommunity.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("send_community"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastAddPathObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastAllowasInObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Origin.IsUnknown() && !o.Origin.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastAllowasInOriginObject
+		diags := o.Origin.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("origin"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastAllowasInOriginObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionObject
+		diags := o.Action.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("action"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Restart.IsUnknown() && !o.Restart.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionRestartObject
+		diags := o.Restart.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("restart"))
+		}
+	}
+	if !o.WarningOnly.IsUnknown() && !o.WarningOnly.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionWarningOnlyObject
+		diags := o.WarningOnly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("warning_only"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionRestartObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionWarningOnlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Self.IsUnknown() && !o.Self.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSelfObject
+		diags := o.Self.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("self"))
+		}
+	}
+	if !o.SelfForce.IsUnknown() && !o.SelfForce.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSelfForceObject
+		diags := o.SelfForce.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("self_force"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSelfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSelfForceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastOrfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.All.IsUnknown() && !o.All.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsAllObject
+		diags := o.All.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("all"))
+		}
+	}
+	if !o.ReplaceAs.IsUnknown() && !o.ReplaceAs.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsReplaceAsObject
+		diags := o.ReplaceAs.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("replace_as"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsAllObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsReplaceAsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.All.IsUnknown() && !o.All.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityAllObject
+		diags := o.All.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("all"))
+		}
+	}
+	if !o.Both.IsUnknown() && !o.Both.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityBothObject
+		diags := o.Both.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("both"))
+		}
+	}
+	if !o.Extended.IsUnknown() && !o.Extended.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityExtendedObject
+		diags := o.Extended.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("extended"))
+		}
+	}
+	if !o.Large.IsUnknown() && !o.Large.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityLargeObject
+		diags := o.Large.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("large"))
+		}
+	}
+	if !o.Standard.IsUnknown() && !o.Standard.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityStandardObject
+		diags := o.Standard.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("standard"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityAllObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityBothObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityExtendedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityLargeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityStandardObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AddPath.IsUnknown() && !o.AddPath.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastAddPathObject
+		diags := o.AddPath.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("add_path"))
+		}
+	}
+	if !o.AllowasIn.IsUnknown() && !o.AllowasIn.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastAllowasInObject
+		diags := o.AllowasIn.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("allowas_in"))
+		}
+	}
+	if !o.MaximumPrefix.IsUnknown() && !o.MaximumPrefix.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixObject
+		diags := o.MaximumPrefix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("maximum_prefix"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+	if !o.Orf.IsUnknown() && !o.Orf.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastOrfObject
+		diags := o.Orf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("orf"))
+		}
+	}
+	if !o.RemovePrivateAs.IsUnknown() && !o.RemovePrivateAs.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsObject
+		diags := o.RemovePrivateAs.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("remove_private_as"))
+		}
+	}
+	if !o.SendCommunity.IsUnknown() && !o.SendCommunity.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityObject
+		diags := o.SendCommunity.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("send_community"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastAddPathObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastAllowasInObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Origin.IsUnknown() && !o.Origin.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastAllowasInOriginObject
+		diags := o.Origin.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("origin"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastAllowasInOriginObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionObject
+		diags := o.Action.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("action"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Restart.IsUnknown() && !o.Restart.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionRestartObject
+		diags := o.Restart.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("restart"))
+		}
+	}
+	if !o.WarningOnly.IsUnknown() && !o.WarningOnly.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionWarningOnlyObject
+		diags := o.WarningOnly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("warning_only"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionRestartObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionWarningOnlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Self.IsUnknown() && !o.Self.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSelfObject
+		diags := o.Self.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("self"))
+		}
+	}
+	if !o.SelfForce.IsUnknown() && !o.SelfForce.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSelfForceObject
+		diags := o.SelfForce.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("self_force"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSelfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSelfForceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastOrfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.All.IsUnknown() && !o.All.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsAllObject
+		diags := o.All.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("all"))
+		}
+	}
+	if !o.ReplaceAs.IsUnknown() && !o.ReplaceAs.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsReplaceAsObject
+		diags := o.ReplaceAs.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("replace_as"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsAllObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsReplaceAsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.All.IsUnknown() && !o.All.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityAllObject
+		diags := o.All.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("all"))
+		}
+	}
+	if !o.Both.IsUnknown() && !o.Both.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityBothObject
+		diags := o.Both.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("both"))
+		}
+	}
+	if !o.Extended.IsUnknown() && !o.Extended.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityExtendedObject
+		diags := o.Extended.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("extended"))
+		}
+	}
+	if !o.Large.IsUnknown() && !o.Large.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityLargeObject
+		diags := o.Large.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("large"))
+		}
+	}
+	if !o.Standard.IsUnknown() && !o.Standard.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityStandardObject
+		diags := o.Standard.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("standard"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityAllObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityBothObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityExtendedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityLargeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityStandardObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Unicast.IsUnknown() && !o.Unicast.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastObject
+		diags := o.Unicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("unicast"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.AddPath.IsUnknown() && !o.AddPath.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastAddPathObject
+		diags := o.AddPath.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("add_path"))
+		}
+	}
+	if !o.AllowasIn.IsUnknown() && !o.AllowasIn.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastAllowasInObject
+		diags := o.AllowasIn.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("allowas_in"))
+		}
+	}
+	if !o.MaximumPrefix.IsUnknown() && !o.MaximumPrefix.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixObject
+		diags := o.MaximumPrefix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("maximum_prefix"))
+		}
+	}
+	if !o.NextHop.IsUnknown() && !o.NextHop.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopObject
+		diags := o.NextHop.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("next_hop"))
+		}
+	}
+	if !o.Orf.IsUnknown() && !o.Orf.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastOrfObject
+		diags := o.Orf.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("orf"))
+		}
+	}
+	if !o.RemovePrivateAs.IsUnknown() && !o.RemovePrivateAs.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsObject
+		diags := o.RemovePrivateAs.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("remove_private_as"))
+		}
+	}
+	if !o.SendCommunity.IsUnknown() && !o.SendCommunity.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityObject
+		diags := o.SendCommunity.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("send_community"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastAddPathObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastAllowasInObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Origin.IsUnknown() && !o.Origin.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastAllowasInOriginObject
+		diags := o.Origin.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("origin"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastAllowasInOriginObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Action.IsUnknown() && !o.Action.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionObject
+		diags := o.Action.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("action"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Restart.IsUnknown() && !o.Restart.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionRestartObject
+		diags := o.Restart.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("restart"))
+		}
+	}
+	if !o.WarningOnly.IsUnknown() && !o.WarningOnly.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionWarningOnlyObject
+		diags := o.WarningOnly.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("warning_only"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionRestartObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionWarningOnlyObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Self.IsUnknown() && !o.Self.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSelfObject
+		diags := o.Self.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("self"))
+		}
+	}
+	if !o.SelfForce.IsUnknown() && !o.SelfForce.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSelfForceObject
+		diags := o.SelfForce.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("self_force"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSelfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSelfForceObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastOrfObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.All.IsUnknown() && !o.All.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsAllObject
+		diags := o.All.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("all"))
+		}
+	}
+	if !o.ReplaceAs.IsUnknown() && !o.ReplaceAs.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsReplaceAsObject
+		diags := o.ReplaceAs.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("replace_as"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsAllObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsReplaceAsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.All.IsUnknown() && !o.All.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityAllObject
+		diags := o.All.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("all"))
+		}
+	}
+	if !o.Both.IsUnknown() && !o.Both.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityBothObject
+		diags := o.Both.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("both"))
+		}
+	}
+	if !o.Extended.IsUnknown() && !o.Extended.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityExtendedObject
+		diags := o.Extended.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("extended"))
+		}
+	}
+	if !o.Large.IsUnknown() && !o.Large.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityLargeObject
+		diags := o.Large.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("large"))
+		}
+	}
+	if !o.Standard.IsUnknown() && !o.Standard.IsNull() {
+		var nestedObj BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityStandardObject
+		diags := o.Standard.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("standard"))
+		}
+	}
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityAllObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityBothObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityExtendedObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityLargeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityStandardObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *BgpAddressFamilyRoutingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource BgpAddressFamilyRoutingProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -8568,10 +9147,7 @@ func BgpAddressFamilyRoutingProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"ipv4": BgpAddressFamilyRoutingProfileResourceIpv4Schema(),
@@ -8602,10 +9178,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceModel) getTypeFor(name string) at
 func BgpAddressFamilyRoutingProfileResourceIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8643,10 +9216,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4Object) getTypeFor(name strin
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"add_path": BgpAddressFamilyRoutingProfileResourceIpv4MulticastAddPathSchema(),
@@ -8655,34 +9225,22 @@ func BgpAddressFamilyRoutingProfileResourceIpv4MulticastSchema() rsschema.Single
 
 			"as_override": rsschema.BoolAttribute{
 				Description: "Override ASNs in outbound updates if AS-Path equals Remote-AS",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_originate": rsschema.BoolAttribute{
 				Description: "Originate Default Route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_originate_map": rsschema.StringAttribute{
 				Description: "Route-Map used in Default Originate Configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"maximum_prefix": BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixSchema(),
@@ -8695,20 +9253,14 @@ func BgpAddressFamilyRoutingProfileResourceIpv4MulticastSchema() rsschema.Single
 
 			"route_reflector_client": rsschema.BoolAttribute{
 				Description: "Route Reflector Client",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"send_community": BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunitySchema(),
 
 			"soft_reconfig_with_stored_info": rsschema.BoolAttribute{
 				Description: "Soft reconfiguration of peer with stored routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8735,26 +9287,17 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastObject) getTypeFor(n
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastAddPathSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"tx_all_paths": rsschema.BoolAttribute{
 				Description: "Advertise all paths to peer",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tx_bestpath_per_as": rsschema.BoolAttribute{
 				Description: "Advertise the bestpath per each neighboring AS",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8781,18 +9324,12 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastAddPathObject) getTy
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastAllowasInSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"occurrence": rsschema.Int64Attribute{
 				Description: "Number of occurrences of AS number",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -8828,10 +9365,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastAllowasInObject) get
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastAllowasInOriginSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8864,29 +9398,22 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastAllowasInOriginObjec
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"action": BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionSchema(),
 
 			"max_prefixes": rsschema.Int64Attribute{
 				Description: "Max allowed prefixes from this peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1000),
 			},
 
 			"threshold": rsschema.Int64Attribute{
 				Description: "Threshold value (%) at which to generate a warning msg",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(100),
 			},
 		},
@@ -8914,10 +9441,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixObject)
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"restart": BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionRestartSchema(),
@@ -8948,10 +9472,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionO
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionRestartSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -8963,10 +9484,8 @@ func BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionResta
 
 			"interval": rsschema.Int64Attribute{
 				Description: "Restart interval in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 		},
@@ -8994,10 +9513,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionR
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionWarningOnlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9030,10 +9546,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastMaximumPrefixActionW
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"self": BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSelfSchema(),
@@ -9064,10 +9577,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopObject) getTy
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSelfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9100,10 +9610,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSelfObject) g
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSelfForceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9136,18 +9643,13 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastNextHopSelfForceObje
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastOrfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"orf_prefix_list": rsschema.StringAttribute{
 				Description: "Advertise Prefix-List ORF Capability",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("none"),
 			},
 		},
@@ -9175,10 +9677,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastOrfObject) getTypeFo
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsAllSchema(),
@@ -9209,10 +9708,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsObjec
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsAllSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9245,10 +9741,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsAllOb
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsReplaceAsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9281,10 +9774,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastRemovePrivateAsRepla
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunitySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityAllSchema(),
@@ -9321,10 +9811,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityObject)
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityAllSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9360,10 +9847,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityAllObje
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityBothSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9399,10 +9883,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityBothObj
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityExtendedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9438,10 +9919,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityExtende
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityLargeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9477,10 +9955,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityLargeOb
 func BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityStandardSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9516,10 +9991,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4MulticastSendCommunityStandar
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"add_path": BgpAddressFamilyRoutingProfileResourceIpv4UnicastAddPathSchema(),
@@ -9528,34 +10000,22 @@ func BgpAddressFamilyRoutingProfileResourceIpv4UnicastSchema() rsschema.SingleNe
 
 			"as_override": rsschema.BoolAttribute{
 				Description: "Override ASNs in outbound updates if AS-Path equals Remote-AS",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_originate": rsschema.BoolAttribute{
 				Description: "Originate Default Route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_originate_map": rsschema.StringAttribute{
 				Description: "Route-Map used in Default Originate Configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"maximum_prefix": BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixSchema(),
@@ -9568,20 +10028,14 @@ func BgpAddressFamilyRoutingProfileResourceIpv4UnicastSchema() rsschema.SingleNe
 
 			"route_reflector_client": rsschema.BoolAttribute{
 				Description: "Route Reflector Client",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"send_community": BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunitySchema(),
 
 			"soft_reconfig_with_stored_info": rsschema.BoolAttribute{
 				Description: "Soft reconfiguration of peer with stored routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9608,26 +10062,17 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastObject) getTypeFor(nam
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastAddPathSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"tx_all_paths": rsschema.BoolAttribute{
 				Description: "Advertise all paths to peer",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tx_bestpath_per_as": rsschema.BoolAttribute{
 				Description: "Advertise the bestpath per each neighboring AS",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -9654,18 +10099,12 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastAddPathObject) getType
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastAllowasInSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"occurrence": rsschema.Int64Attribute{
 				Description: "Number of occurrences of AS number",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -9701,10 +10140,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastAllowasInObject) getTy
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastAllowasInOriginSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9737,29 +10173,22 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastAllowasInOriginObject)
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"action": BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionSchema(),
 
 			"max_prefixes": rsschema.Int64Attribute{
 				Description: "Max allowed prefixes from this peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1000),
 			},
 
 			"threshold": rsschema.Int64Attribute{
 				Description: "Threshold value (%) at which to generate a warning msg",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(100),
 			},
 		},
@@ -9787,10 +10216,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixObject) g
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"restart": BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionRestartSchema(),
@@ -9821,10 +10247,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionObj
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionRestartSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9836,10 +10259,8 @@ func BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionRestart
 
 			"interval": rsschema.Int64Attribute{
 				Description: "Restart interval in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 		},
@@ -9867,10 +10288,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionRes
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionWarningOnlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9903,10 +10321,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastMaximumPrefixActionWar
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"self": BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSelfSchema(),
@@ -9937,10 +10352,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopObject) getType
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSelfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -9973,10 +10385,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSelfObject) get
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSelfForceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10009,18 +10418,13 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastNextHopSelfForceObject
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastOrfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"orf_prefix_list": rsschema.StringAttribute{
 				Description: "Advertise Prefix-List ORF Capability",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("none"),
 			},
 		},
@@ -10048,10 +10452,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastOrfObject) getTypeFor(
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsAllSchema(),
@@ -10082,10 +10483,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsObject)
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsAllSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10118,10 +10516,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsAllObje
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsReplaceAsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10154,10 +10549,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastRemovePrivateAsReplace
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunitySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityAllSchema(),
@@ -10194,10 +10586,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityObject) g
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityAllSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10233,10 +10622,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityAllObject
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityBothSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10272,10 +10658,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityBothObjec
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityExtendedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10311,10 +10694,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityExtendedO
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityLargeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10350,10 +10730,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityLargeObje
 func BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityStandardSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10389,10 +10766,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv4UnicastSendCommunityStandardO
 func BgpAddressFamilyRoutingProfileResourceIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"unicast": BgpAddressFamilyRoutingProfileResourceIpv6UnicastSchema(),
@@ -10421,10 +10795,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6Object) getTypeFor(name strin
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"add_path": BgpAddressFamilyRoutingProfileResourceIpv6UnicastAddPathSchema(),
@@ -10433,34 +10804,22 @@ func BgpAddressFamilyRoutingProfileResourceIpv6UnicastSchema() rsschema.SingleNe
 
 			"as_override": rsschema.BoolAttribute{
 				Description: "Override ASNs in outbound updates if AS-Path equals Remote-AS",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_originate": rsschema.BoolAttribute{
 				Description: "Originate Default Route",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"default_originate_map": rsschema.StringAttribute{
 				Description: "Route-Map used in Default Originate Configuration",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Enable",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"maximum_prefix": BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixSchema(),
@@ -10473,20 +10832,14 @@ func BgpAddressFamilyRoutingProfileResourceIpv6UnicastSchema() rsschema.SingleNe
 
 			"route_reflector_client": rsschema.BoolAttribute{
 				Description: "Route Reflector Client",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"send_community": BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunitySchema(),
 
 			"soft_reconfig_with_stored_info": rsschema.BoolAttribute{
 				Description: "Soft reconfiguration of peer with stored routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -10513,26 +10866,17 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastObject) getTypeFor(nam
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastAddPathSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"tx_all_paths": rsschema.BoolAttribute{
 				Description: "Advertise all paths to peer",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"tx_bestpath_per_as": rsschema.BoolAttribute{
 				Description: "Advertise the bestpath per each neighboring AS",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -10559,18 +10903,12 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastAddPathObject) getType
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastAllowasInSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"occurrence": rsschema.Int64Attribute{
 				Description: "Number of occurrences of AS number",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.Int64{
 					int64validator.ExactlyOneOf(path.Expressions{
@@ -10606,10 +10944,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastAllowasInObject) getTy
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastAllowasInOriginSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10642,29 +10977,22 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastAllowasInOriginObject)
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"action": BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionSchema(),
 
 			"max_prefixes": rsschema.Int64Attribute{
 				Description: "Max allowed prefixes from this peer",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1000),
 			},
 
 			"threshold": rsschema.Int64Attribute{
 				Description: "Threshold value (%) at which to generate a warning msg",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(100),
 			},
 		},
@@ -10692,10 +11020,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixObject) g
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"restart": BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionRestartSchema(),
@@ -10726,10 +11051,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionObj
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionRestartSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10741,10 +11063,8 @@ func BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionRestart
 
 			"interval": rsschema.Int64Attribute{
 				Description: "Restart interval in minutes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 		},
@@ -10772,10 +11092,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionRes
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionWarningOnlySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10808,10 +11125,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastMaximumPrefixActionWar
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"self": BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSelfSchema(),
@@ -10842,10 +11156,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopObject) getType
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSelfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10878,10 +11189,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSelfObject) get
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSelfForceSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -10914,18 +11222,13 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastNextHopSelfForceObject
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastOrfSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"orf_prefix_list": rsschema.StringAttribute{
 				Description: "Advertise Prefix-List ORF Capability",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("none"),
 			},
 		},
@@ -10953,10 +11256,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastOrfObject) getTypeFor(
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsAllSchema(),
@@ -10987,10 +11287,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsObject)
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsAllSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11023,10 +11320,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsAllObje
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsReplaceAsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11059,10 +11353,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastRemovePrivateAsReplace
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunitySchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"all": BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityAllSchema(),
@@ -11099,10 +11390,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityObject) g
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityAllSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11138,10 +11426,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityAllObject
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityBothSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11177,10 +11462,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityBothObjec
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityExtendedSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11216,10 +11498,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityExtendedO
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityLargeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -11255,10 +11534,7 @@ func (o *BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityLargeObje
 func BgpAddressFamilyRoutingProfileResourceIpv6UnicastSendCommunityStandardSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -16948,14 +17224,15 @@ type BgpAddressFamilyRoutingProfileImportState struct {
 
 func (o BgpAddressFamilyRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *BgpAddressFamilyRoutingProfileLocation `json:"location"`
-		Name     *string                                 `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *BgpAddressFamilyRoutingProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, BgpAddressFamilyRoutingProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -16969,8 +17246,8 @@ func (o BgpAddressFamilyRoutingProfileImportState) MarshalJSON() ([]byte, error)
 
 func (o *BgpAddressFamilyRoutingProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *BgpAddressFamilyRoutingProfileLocation `json:"location"`
-		Name     *string                                 `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -16979,10 +17256,14 @@ func (o *BgpAddressFamilyRoutingProfileImportState) UnmarshalJSON(data []byte) e
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, BgpAddressFamilyRoutingProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

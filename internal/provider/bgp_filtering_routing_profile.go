@@ -2528,18 +2528,13 @@ func BgpFilteringRoutingProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "Describe BGP Filtering Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ipv4": BgpFilteringRoutingProfileDataSourceIpv4Schema(),
@@ -2570,10 +2565,8 @@ func (o *BgpFilteringRoutingProfileDataSourceModel) getTypeFor(name string) attr
 func BgpFilteringRoutingProfileDataSourceIpv4Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"multicast": BgpFilteringRoutingProfileDataSourceIpv4MulticastSchema(),
@@ -2604,10 +2597,8 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4Object) getTypeFor(name string)
 func BgpFilteringRoutingProfileDataSourceIpv4MulticastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"conditional_advertisement": BgpFilteringRoutingProfileDataSourceIpv4MulticastConditionalAdvertisementSchema(),
@@ -2618,10 +2609,8 @@ func BgpFilteringRoutingProfileDataSourceIpv4MulticastSchema() dsschema.SingleNe
 
 			"inherit": dsschema.BoolAttribute{
 				Description: "Either Configure or Inherit Filtering Profile from Unicast",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound_network_filters": BgpFilteringRoutingProfileDataSourceIpv4MulticastOutboundNetworkFiltersSchema(),
@@ -2630,10 +2619,8 @@ func BgpFilteringRoutingProfileDataSourceIpv4MulticastSchema() dsschema.SingleNe
 
 			"unsuppress_map": dsschema.StringAttribute{
 				Description: "Route-Map selectively unsuppress suppressed routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2660,10 +2647,8 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4MulticastObject) getTypeFor(nam
 func BgpFilteringRoutingProfileDataSourceIpv4MulticastConditionalAdvertisementSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"exist": BgpFilteringRoutingProfileDataSourceIpv4MulticastConditionalAdvertisementExistSchema(),
@@ -2694,26 +2679,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4MulticastConditionalAdvertiseme
 func BgpFilteringRoutingProfileDataSourceIpv4MulticastConditionalAdvertisementExistSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"advertise_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exist_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to Match existing routes in BGP local-rib",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2740,26 +2719,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4MulticastConditionalAdvertiseme
 func BgpFilteringRoutingProfileDataSourceIpv4MulticastConditionalAdvertisementNonExistSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"advertise_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"non_exist_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to match non-existing routes in BGP local-rib",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2786,26 +2759,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4MulticastConditionalAdvertiseme
 func BgpFilteringRoutingProfileDataSourceIpv4MulticastFilterListSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"inbound": dsschema.StringAttribute{
 				Description: "Incoming AS-Path Access-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound": dsschema.StringAttribute{
 				Description: "Outgoing AS-Path Access-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2832,26 +2799,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4MulticastFilterListObject) getT
 func BgpFilteringRoutingProfileDataSourceIpv4MulticastInboundNetworkFiltersSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"distribute_list": dsschema.StringAttribute{
 				Description: "Incoming Distribute-List (Access-List)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Incoming Prefix-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2878,26 +2839,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4MulticastInboundNetworkFiltersO
 func BgpFilteringRoutingProfileDataSourceIpv4MulticastOutboundNetworkFiltersSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"distribute_list": dsschema.StringAttribute{
 				Description: "Outgoing Distribute-List (Access-List)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Outgoing Prefix-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2924,26 +2879,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4MulticastOutboundNetworkFilters
 func BgpFilteringRoutingProfileDataSourceIpv4MulticastRouteMapsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"inbound": dsschema.StringAttribute{
 				Description: "Incoming Route-Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound": dsschema.StringAttribute{
 				Description: "Outgoing Route-Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -2970,10 +2919,8 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4MulticastRouteMapsObject) getTy
 func BgpFilteringRoutingProfileDataSourceIpv4UnicastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"conditional_advertisement": BgpFilteringRoutingProfileDataSourceIpv4UnicastConditionalAdvertisementSchema(),
@@ -2988,10 +2935,8 @@ func BgpFilteringRoutingProfileDataSourceIpv4UnicastSchema() dsschema.SingleNest
 
 			"unsuppress_map": dsschema.StringAttribute{
 				Description: "Route-Map selectively unsuppress suppressed routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3018,10 +2963,8 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4UnicastObject) getTypeFor(name 
 func BgpFilteringRoutingProfileDataSourceIpv4UnicastConditionalAdvertisementSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"exist": BgpFilteringRoutingProfileDataSourceIpv4UnicastConditionalAdvertisementExistSchema(),
@@ -3052,26 +2995,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4UnicastConditionalAdvertisement
 func BgpFilteringRoutingProfileDataSourceIpv4UnicastConditionalAdvertisementExistSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"advertise_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exist_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to Match existing routes in BGP local-rib",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3098,26 +3035,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4UnicastConditionalAdvertisement
 func BgpFilteringRoutingProfileDataSourceIpv4UnicastConditionalAdvertisementNonExistSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"advertise_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"non_exist_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to match non-existing routes in BGP local-rib",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3144,26 +3075,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4UnicastConditionalAdvertisement
 func BgpFilteringRoutingProfileDataSourceIpv4UnicastFilterListSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"inbound": dsschema.StringAttribute{
 				Description: "Incoming AS-Path Access-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound": dsschema.StringAttribute{
 				Description: "Outgoing AS-Path Access-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3190,26 +3115,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4UnicastFilterListObject) getTyp
 func BgpFilteringRoutingProfileDataSourceIpv4UnicastInboundNetworkFiltersSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"distribute_list": dsschema.StringAttribute{
 				Description: "Incoming Distribute-List (Access-List)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Incoming Prefix-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3236,26 +3155,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4UnicastInboundNetworkFiltersObj
 func BgpFilteringRoutingProfileDataSourceIpv4UnicastOutboundNetworkFiltersSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"distribute_list": dsschema.StringAttribute{
 				Description: "Outgoing Distribute-List (Access-List)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Outgoing Prefix-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3282,26 +3195,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4UnicastOutboundNetworkFiltersOb
 func BgpFilteringRoutingProfileDataSourceIpv4UnicastRouteMapsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"inbound": dsschema.StringAttribute{
 				Description: "Incoming Route-Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound": dsschema.StringAttribute{
 				Description: "Outgoing Route-Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3328,10 +3235,8 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv4UnicastRouteMapsObject) getType
 func BgpFilteringRoutingProfileDataSourceIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"unicast": BgpFilteringRoutingProfileDataSourceIpv6UnicastSchema(),
@@ -3360,10 +3265,8 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv6Object) getTypeFor(name string)
 func BgpFilteringRoutingProfileDataSourceIpv6UnicastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"conditional_advertisement": BgpFilteringRoutingProfileDataSourceIpv6UnicastConditionalAdvertisementSchema(),
@@ -3378,10 +3281,8 @@ func BgpFilteringRoutingProfileDataSourceIpv6UnicastSchema() dsschema.SingleNest
 
 			"unsuppress_map": dsschema.StringAttribute{
 				Description: "Route-Map selectively unsuppress suppressed routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3408,10 +3309,8 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv6UnicastObject) getTypeFor(name 
 func BgpFilteringRoutingProfileDataSourceIpv6UnicastConditionalAdvertisementSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"exist": BgpFilteringRoutingProfileDataSourceIpv6UnicastConditionalAdvertisementExistSchema(),
@@ -3442,26 +3341,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv6UnicastConditionalAdvertisement
 func BgpFilteringRoutingProfileDataSourceIpv6UnicastConditionalAdvertisementExistSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"advertise_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"exist_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to Match existing routes in BGP local-rib",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3488,26 +3381,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv6UnicastConditionalAdvertisement
 func BgpFilteringRoutingProfileDataSourceIpv6UnicastConditionalAdvertisementNonExistSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"advertise_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"non_exist_map": dsschema.StringAttribute{
 				Description: "Specify Route-Map to match non-existing routes in BGP local-rib",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3534,26 +3421,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv6UnicastConditionalAdvertisement
 func BgpFilteringRoutingProfileDataSourceIpv6UnicastFilterListSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"inbound": dsschema.StringAttribute{
 				Description: "Incoming AS-Path Access-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound": dsschema.StringAttribute{
 				Description: "Outgoing AS-Path Access-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3580,26 +3461,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv6UnicastFilterListObject) getTyp
 func BgpFilteringRoutingProfileDataSourceIpv6UnicastInboundNetworkFiltersSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"distribute_list": dsschema.StringAttribute{
 				Description: "Incoming Distribute-List (Access-List)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Incoming Prefix-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3626,26 +3501,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv6UnicastInboundNetworkFiltersObj
 func BgpFilteringRoutingProfileDataSourceIpv6UnicastOutboundNetworkFiltersSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"distribute_list": dsschema.StringAttribute{
 				Description: "Outgoing Distribute-List (Access-List)",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix_list": dsschema.StringAttribute{
 				Description: "Outgoing Prefix-List",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3672,26 +3541,20 @@ func (o *BgpFilteringRoutingProfileDataSourceIpv6UnicastOutboundNetworkFiltersOb
 func BgpFilteringRoutingProfileDataSourceIpv6UnicastRouteMapsSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"inbound": dsschema.StringAttribute{
 				Description: "Incoming Route-Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"outbound": dsschema.StringAttribute{
 				Description: "Outgoing Route-Map",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -3991,7 +3854,329 @@ type BgpFilteringRoutingProfileResourceIpv6UnicastRouteMapsObject struct {
 	Outbound types.String `tfsdk:"outbound"`
 }
 
+func (o *BgpFilteringRoutingProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Ipv4.IsUnknown() && !o.Ipv4.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4Object
+		diags := o.Ipv4.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv4"))
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Multicast.IsUnknown() && !o.Multicast.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4MulticastObject
+		diags := o.Multicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("multicast"))
+		}
+	}
+	if !o.Unicast.IsUnknown() && !o.Unicast.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4UnicastObject
+		diags := o.Unicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("unicast"))
+		}
+	}
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4MulticastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ConditionalAdvertisement.IsUnknown() && !o.ConditionalAdvertisement.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementObject
+		diags := o.ConditionalAdvertisement.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("conditional_advertisement"))
+		}
+	}
+	if !o.FilterList.IsUnknown() && !o.FilterList.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4MulticastFilterListObject
+		diags := o.FilterList.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("filter_list"))
+		}
+	}
+	if !o.InboundNetworkFilters.IsUnknown() && !o.InboundNetworkFilters.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4MulticastInboundNetworkFiltersObject
+		diags := o.InboundNetworkFilters.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("inbound_network_filters"))
+		}
+	}
+	if !o.OutboundNetworkFilters.IsUnknown() && !o.OutboundNetworkFilters.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4MulticastOutboundNetworkFiltersObject
+		diags := o.OutboundNetworkFilters.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("outbound_network_filters"))
+		}
+	}
+	if !o.RouteMaps.IsUnknown() && !o.RouteMaps.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4MulticastRouteMapsObject
+		diags := o.RouteMaps.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("route_maps"))
+		}
+	}
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Exist.IsUnknown() && !o.Exist.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementExistObject
+		diags := o.Exist.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("exist"))
+		}
+	}
+	if !o.NonExist.IsUnknown() && !o.NonExist.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementNonExistObject
+		diags := o.NonExist.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("non_exist"))
+		}
+	}
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementExistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementNonExistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4MulticastFilterListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4MulticastInboundNetworkFiltersObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4MulticastOutboundNetworkFiltersObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4MulticastRouteMapsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4UnicastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ConditionalAdvertisement.IsUnknown() && !o.ConditionalAdvertisement.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementObject
+		diags := o.ConditionalAdvertisement.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("conditional_advertisement"))
+		}
+	}
+	if !o.FilterList.IsUnknown() && !o.FilterList.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4UnicastFilterListObject
+		diags := o.FilterList.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("filter_list"))
+		}
+	}
+	if !o.InboundNetworkFilters.IsUnknown() && !o.InboundNetworkFilters.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4UnicastInboundNetworkFiltersObject
+		diags := o.InboundNetworkFilters.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("inbound_network_filters"))
+		}
+	}
+	if !o.OutboundNetworkFilters.IsUnknown() && !o.OutboundNetworkFilters.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4UnicastOutboundNetworkFiltersObject
+		diags := o.OutboundNetworkFilters.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("outbound_network_filters"))
+		}
+	}
+	if !o.RouteMaps.IsUnknown() && !o.RouteMaps.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4UnicastRouteMapsObject
+		diags := o.RouteMaps.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("route_maps"))
+		}
+	}
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Exist.IsUnknown() && !o.Exist.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementExistObject
+		diags := o.Exist.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("exist"))
+		}
+	}
+	if !o.NonExist.IsUnknown() && !o.NonExist.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementNonExistObject
+		diags := o.NonExist.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("non_exist"))
+		}
+	}
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementExistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementNonExistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4UnicastFilterListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4UnicastInboundNetworkFiltersObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4UnicastOutboundNetworkFiltersObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv4UnicastRouteMapsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Unicast.IsUnknown() && !o.Unicast.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv6UnicastObject
+		diags := o.Unicast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("unicast"))
+		}
+	}
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv6UnicastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.ConditionalAdvertisement.IsUnknown() && !o.ConditionalAdvertisement.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementObject
+		diags := o.ConditionalAdvertisement.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("conditional_advertisement"))
+		}
+	}
+	if !o.FilterList.IsUnknown() && !o.FilterList.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv6UnicastFilterListObject
+		diags := o.FilterList.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("filter_list"))
+		}
+	}
+	if !o.InboundNetworkFilters.IsUnknown() && !o.InboundNetworkFilters.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv6UnicastInboundNetworkFiltersObject
+		diags := o.InboundNetworkFilters.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("inbound_network_filters"))
+		}
+	}
+	if !o.OutboundNetworkFilters.IsUnknown() && !o.OutboundNetworkFilters.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv6UnicastOutboundNetworkFiltersObject
+		diags := o.OutboundNetworkFilters.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("outbound_network_filters"))
+		}
+	}
+	if !o.RouteMaps.IsUnknown() && !o.RouteMaps.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv6UnicastRouteMapsObject
+		diags := o.RouteMaps.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("route_maps"))
+		}
+	}
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Exist.IsUnknown() && !o.Exist.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementExistObject
+		diags := o.Exist.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("exist"))
+		}
+	}
+	if !o.NonExist.IsUnknown() && !o.NonExist.IsNull() {
+		var nestedObj BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementNonExistObject
+		diags := o.NonExist.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("non_exist"))
+		}
+	}
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementExistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementNonExistObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv6UnicastFilterListObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv6UnicastInboundNetworkFiltersObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv6UnicastOutboundNetworkFiltersObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *BgpFilteringRoutingProfileResourceIpv6UnicastRouteMapsObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
 func (o *BgpFilteringRoutingProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource BgpFilteringRoutingProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -4004,18 +4189,12 @@ func BgpFilteringRoutingProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "Describe BGP Filtering Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ipv4": BgpFilteringRoutingProfileResourceIpv4Schema(),
@@ -4046,10 +4225,7 @@ func (o *BgpFilteringRoutingProfileResourceModel) getTypeFor(name string) attr.T
 func BgpFilteringRoutingProfileResourceIpv4Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 
 		Validators: []validator.Object{
 			objectvalidator.ExactlyOneOf(path.Expressions{
@@ -4087,10 +4263,7 @@ func (o *BgpFilteringRoutingProfileResourceIpv4Object) getTypeFor(name string) a
 func BgpFilteringRoutingProfileResourceIpv4MulticastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"conditional_advertisement": BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementSchema(),
@@ -4101,10 +4274,7 @@ func BgpFilteringRoutingProfileResourceIpv4MulticastSchema() rsschema.SingleNest
 
 			"inherit": rsschema.BoolAttribute{
 				Description: "Either Configure or Inherit Filtering Profile from Unicast",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound_network_filters": BgpFilteringRoutingProfileResourceIpv4MulticastOutboundNetworkFiltersSchema(),
@@ -4113,10 +4283,7 @@ func BgpFilteringRoutingProfileResourceIpv4MulticastSchema() rsschema.SingleNest
 
 			"unsuppress_map": rsschema.StringAttribute{
 				Description: "Route-Map selectively unsuppress suppressed routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4143,10 +4310,7 @@ func (o *BgpFilteringRoutingProfileResourceIpv4MulticastObject) getTypeFor(name 
 func BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"exist": BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementExistSchema(),
@@ -4177,26 +4341,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisement
 func BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementExistSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"advertise_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exist_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to Match existing routes in BGP local-rib",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4223,26 +4378,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisement
 func BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisementNonExistSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"advertise_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"non_exist_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to match non-existing routes in BGP local-rib",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4269,26 +4415,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv4MulticastConditionalAdvertisement
 func BgpFilteringRoutingProfileResourceIpv4MulticastFilterListSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"inbound": rsschema.StringAttribute{
 				Description: "Incoming AS-Path Access-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound": rsschema.StringAttribute{
 				Description: "Outgoing AS-Path Access-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4315,18 +4452,12 @@ func (o *BgpFilteringRoutingProfileResourceIpv4MulticastFilterListObject) getTyp
 func BgpFilteringRoutingProfileResourceIpv4MulticastInboundNetworkFiltersSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"distribute_list": rsschema.StringAttribute{
 				Description: "Incoming Distribute-List (Access-List)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -4338,10 +4469,7 @@ func BgpFilteringRoutingProfileResourceIpv4MulticastInboundNetworkFiltersSchema(
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Incoming Prefix-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4368,18 +4496,12 @@ func (o *BgpFilteringRoutingProfileResourceIpv4MulticastInboundNetworkFiltersObj
 func BgpFilteringRoutingProfileResourceIpv4MulticastOutboundNetworkFiltersSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"distribute_list": rsschema.StringAttribute{
 				Description: "Outgoing Distribute-List (Access-List)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -4391,10 +4513,7 @@ func BgpFilteringRoutingProfileResourceIpv4MulticastOutboundNetworkFiltersSchema
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Outgoing Prefix-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4421,26 +4540,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv4MulticastOutboundNetworkFiltersOb
 func BgpFilteringRoutingProfileResourceIpv4MulticastRouteMapsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"inbound": rsschema.StringAttribute{
 				Description: "Incoming Route-Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound": rsschema.StringAttribute{
 				Description: "Outgoing Route-Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4467,10 +4577,7 @@ func (o *BgpFilteringRoutingProfileResourceIpv4MulticastRouteMapsObject) getType
 func BgpFilteringRoutingProfileResourceIpv4UnicastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"conditional_advertisement": BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementSchema(),
@@ -4485,10 +4592,7 @@ func BgpFilteringRoutingProfileResourceIpv4UnicastSchema() rsschema.SingleNested
 
 			"unsuppress_map": rsschema.StringAttribute{
 				Description: "Route-Map selectively unsuppress suppressed routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4515,10 +4619,7 @@ func (o *BgpFilteringRoutingProfileResourceIpv4UnicastObject) getTypeFor(name st
 func BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"exist": BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementExistSchema(),
@@ -4549,26 +4650,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementOb
 func BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementExistSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"advertise_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exist_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to Match existing routes in BGP local-rib",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4595,26 +4687,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementEx
 func BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementNonExistSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"advertise_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"non_exist_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to match non-existing routes in BGP local-rib",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4641,26 +4724,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv4UnicastConditionalAdvertisementNo
 func BgpFilteringRoutingProfileResourceIpv4UnicastFilterListSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"inbound": rsschema.StringAttribute{
 				Description: "Incoming AS-Path Access-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound": rsschema.StringAttribute{
 				Description: "Outgoing AS-Path Access-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4687,18 +4761,12 @@ func (o *BgpFilteringRoutingProfileResourceIpv4UnicastFilterListObject) getTypeF
 func BgpFilteringRoutingProfileResourceIpv4UnicastInboundNetworkFiltersSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"distribute_list": rsschema.StringAttribute{
 				Description: "Incoming Distribute-List (Access-List)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -4710,10 +4778,7 @@ func BgpFilteringRoutingProfileResourceIpv4UnicastInboundNetworkFiltersSchema() 
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Incoming Prefix-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4740,18 +4805,12 @@ func (o *BgpFilteringRoutingProfileResourceIpv4UnicastInboundNetworkFiltersObjec
 func BgpFilteringRoutingProfileResourceIpv4UnicastOutboundNetworkFiltersSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"distribute_list": rsschema.StringAttribute{
 				Description: "Outgoing Distribute-List (Access-List)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -4763,10 +4822,7 @@ func BgpFilteringRoutingProfileResourceIpv4UnicastOutboundNetworkFiltersSchema()
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Outgoing Prefix-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4793,26 +4849,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv4UnicastOutboundNetworkFiltersObje
 func BgpFilteringRoutingProfileResourceIpv4UnicastRouteMapsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"inbound": rsschema.StringAttribute{
 				Description: "Incoming Route-Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound": rsschema.StringAttribute{
 				Description: "Outgoing Route-Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4839,10 +4886,7 @@ func (o *BgpFilteringRoutingProfileResourceIpv4UnicastRouteMapsObject) getTypeFo
 func BgpFilteringRoutingProfileResourceIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"unicast": BgpFilteringRoutingProfileResourceIpv6UnicastSchema(),
@@ -4871,10 +4915,7 @@ func (o *BgpFilteringRoutingProfileResourceIpv6Object) getTypeFor(name string) a
 func BgpFilteringRoutingProfileResourceIpv6UnicastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"conditional_advertisement": BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementSchema(),
@@ -4889,10 +4930,7 @@ func BgpFilteringRoutingProfileResourceIpv6UnicastSchema() rsschema.SingleNested
 
 			"unsuppress_map": rsschema.StringAttribute{
 				Description: "Route-Map selectively unsuppress suppressed routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4919,10 +4957,7 @@ func (o *BgpFilteringRoutingProfileResourceIpv6UnicastObject) getTypeFor(name st
 func BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"exist": BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementExistSchema(),
@@ -4953,26 +4988,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementOb
 func BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementExistSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"advertise_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"exist_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to Match existing routes in BGP local-rib",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -4999,26 +5025,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementEx
 func BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementNonExistSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"advertise_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map match criteria to advertise routes",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"non_exist_map": rsschema.StringAttribute{
 				Description: "Specify Route-Map to match non-existing routes in BGP local-rib",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5045,26 +5062,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv6UnicastConditionalAdvertisementNo
 func BgpFilteringRoutingProfileResourceIpv6UnicastFilterListSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"inbound": rsschema.StringAttribute{
 				Description: "Incoming AS-Path Access-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound": rsschema.StringAttribute{
 				Description: "Outgoing AS-Path Access-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5091,18 +5099,12 @@ func (o *BgpFilteringRoutingProfileResourceIpv6UnicastFilterListObject) getTypeF
 func BgpFilteringRoutingProfileResourceIpv6UnicastInboundNetworkFiltersSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"distribute_list": rsschema.StringAttribute{
 				Description: "Incoming Distribute-List (Access-List)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -5114,10 +5116,7 @@ func BgpFilteringRoutingProfileResourceIpv6UnicastInboundNetworkFiltersSchema() 
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Incoming Prefix-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5144,18 +5143,12 @@ func (o *BgpFilteringRoutingProfileResourceIpv6UnicastInboundNetworkFiltersObjec
 func BgpFilteringRoutingProfileResourceIpv6UnicastOutboundNetworkFiltersSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"distribute_list": rsschema.StringAttribute{
 				Description: "Outgoing Distribute-List (Access-List)",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -5167,10 +5160,7 @@ func BgpFilteringRoutingProfileResourceIpv6UnicastOutboundNetworkFiltersSchema()
 
 			"prefix_list": rsschema.StringAttribute{
 				Description: "Outgoing Prefix-List",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -5197,26 +5187,17 @@ func (o *BgpFilteringRoutingProfileResourceIpv6UnicastOutboundNetworkFiltersObje
 func BgpFilteringRoutingProfileResourceIpv6UnicastRouteMapsSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"inbound": rsschema.StringAttribute{
 				Description: "Incoming Route-Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"outbound": rsschema.StringAttribute{
 				Description: "Outgoing Route-Map",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -8060,14 +8041,15 @@ type BgpFilteringRoutingProfileImportState struct {
 
 func (o BgpFilteringRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *BgpFilteringRoutingProfileLocation `json:"location"`
-		Name     *string                             `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *BgpFilteringRoutingProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, BgpFilteringRoutingProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -8081,8 +8063,8 @@ func (o BgpFilteringRoutingProfileImportState) MarshalJSON() ([]byte, error) {
 
 func (o *BgpFilteringRoutingProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *BgpFilteringRoutingProfileLocation `json:"location"`
-		Name     *string                             `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -8091,10 +8073,14 @@ func (o *BgpFilteringRoutingProfileImportState) UnmarshalJSON(data []byte) error
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, BgpFilteringRoutingProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object

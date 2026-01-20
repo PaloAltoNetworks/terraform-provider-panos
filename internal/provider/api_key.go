@@ -38,6 +38,12 @@ type ApiKeyResourceModel struct {
 }
 
 func (o *ApiKeyResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource ApiKeyResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 }
 
 // <ResourceSchema>
@@ -48,25 +54,19 @@ func ApiKeyResourceSchema() ephschema.Schema {
 
 			"username": ephschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"password": ephschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
 				Sensitive:   true,
 			},
 
 			"api_key": ephschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
+				Computed:    true,
 				Sensitive:   true,
 			},
 		},
