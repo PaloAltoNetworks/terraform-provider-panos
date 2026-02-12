@@ -5396,7 +5396,6 @@ func (o *FiltersBgpRouteMapRoutingProfileResource) Create(ctx context.Context, r
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *FiltersBgpRouteMapRoutingProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {

@@ -2,6 +2,8 @@ package provider_test
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"testing"
@@ -11,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 
 	"github.com/PaloAltoNetworks/pango/objects/address"
@@ -321,3 +324,68 @@ func panosAddressCreateObject(prefix string, name string) {
 		panic(fmt.Sprintf("Failed to delete object from the device: %v", err))
 	}
 }
+
+func TestAccAddressImportShared(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	name := fmt.Sprintf("test-acc-import-%s", nameSuffix)
+
+	importStateGenerateID := func(state *terraform.State) (string, error) {
+		importState := map[string]any{
+			"location": map[string]any{
+				"shared": map[string]any{},
+			},
+			"name": name,
+		}
+
+		marshalled, err := json.Marshal(importState)
+		if err != nil {
+			return "", fmt.Errorf("Failed to marshal import state: %w", err)
+		}
+
+		return base64.StdEncoding.EncodeToString(marshalled), nil
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccAddressImportSharedConfig,
+				ConfigVariables: map[string]config.Variable{
+					"name": config.StringVariable(name),
+				},
+			},
+			{
+				Config: testAccAddressImportSharedStep,
+				ConfigVariables: map[string]config.Variable{
+					"name": config.StringVariable(name),
+				},
+				ResourceName:      "panos_address.imported",
+				ImportState:       true,
+				ImportStateIdFunc: importStateGenerateID,
+			},
+		},
+	})
+}
+
+const testAccAddressImportSharedConfig = `
+variable "name" { type = string }
+
+resource "panos_address" "test" {
+  location   = { shared = {} }
+  name       = var.name
+  ip_netmask = "10.1.1.1/32"
+}
+`
+
+const testAccAddressImportSharedStep = `
+variable "name" { type = string }
+
+resource "panos_address" "imported" {
+  location   = { shared = {} }
+  name       = var.name
+  ip_netmask = "10.1.1.1/32"
+}
+`

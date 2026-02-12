@@ -34088,7 +34088,6 @@ func (o *AdminRoleResource) Create(ctx context.Context, req resource.CreateReque
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *AdminRoleResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {

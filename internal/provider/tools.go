@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -19,6 +20,19 @@ type Locationer interface {
 type RuleInfo struct {
 	Name string `json:"name"`
 	Uuid string `json:"uuid"`
+}
+
+// formatAttributeNames returns a comma-separated list of attribute names for error messages
+func formatAttributeNames(attrs map[string]rsschema.Attribute) string {
+	if len(attrs) == 0 {
+		return "none"
+	}
+	names := make([]string, 0, len(attrs))
+	for name := range attrs {
+		names = append(names, name)
+	}
+	sort.Strings(names) // deterministic order for testing
+	return strings.Join(names, ", ")
 }
 
 func EncodeLocation(loc Locationer) (string, error) {
@@ -134,9 +148,10 @@ func TypesObjectToMap(obj types.Object, schemaAttr ...rsschema.Attribute) (inter
 					return nil, fmt.Errorf("unknown field %q in location object", key)
 				}
 			}
-			// Validate not empty
-			if len(attrs) == 0 {
-				return nil, fmt.Errorf("location object cannot be empty")
+			// Validate not empty - unless schema expects zero attributes
+			if len(attrs) == 0 && len(schema.Attributes) > 0 {
+				return nil, fmt.Errorf("location object cannot be empty (expected attributes: %s)",
+					formatAttributeNames(schema.Attributes))
 			}
 		}
 	}
@@ -210,7 +225,11 @@ func TypesObjectToMap(obj types.Object, schemaAttr ...rsschema.Attribute) (inter
 
 // MapToTypesObject converts a map[string]interface{} to a Terraform types.Object using the provided schema.
 // This automatically handles missing fields by creating typed null values.
-// Validates that the map doesn't contain unknown fields or is empty.
+//
+// Validation rules:
+// - Rejects unknown fields not in schema
+// - Rejects empty objects when schema defines attributes (even if optional)
+// - Allows empty objects when schema has zero attributes (e.g., SharedLocation)
 func MapToTypesObject(data map[string]interface{}, schemaAttr rsschema.Attribute) (types.Object, error) {
 	schema, ok := schemaAttr.(rsschema.SingleNestedAttribute)
 	if !ok {
@@ -267,9 +286,10 @@ func MapToTypesObject(data map[string]interface{}, schemaAttr rsschema.Attribute
 		}
 	}
 
-	// Validate not empty
-	if len(data) == 0 {
-		return types.ObjectNull(attrTypes), fmt.Errorf("location object cannot be empty")
+	// Validate not empty - unless schema expects zero attributes
+	if len(data) == 0 && len(schema.Attributes) > 0 {
+		return types.ObjectNull(attrTypes), fmt.Errorf("location object cannot be empty (expected attributes: %s)",
+			formatAttributeNames(schema.Attributes))
 	}
 
 	obj, diags := types.ObjectValue(attrTypes, attrValues)

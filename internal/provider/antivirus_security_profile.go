@@ -2247,7 +2247,6 @@ func (o *AntivirusSecurityProfileResource) Create(ctx context.Context, req resou
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *AntivirusSecurityProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {

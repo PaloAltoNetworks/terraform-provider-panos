@@ -70595,7 +70595,6 @@ func (o *VirtualRouterResource) Create(ctx context.Context, req resource.CreateR
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *VirtualRouterResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {

@@ -681,7 +681,6 @@ func (o *BgpTimerRoutingProfileResource) Create(ctx context.Context, req resourc
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *BgpTimerRoutingProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {

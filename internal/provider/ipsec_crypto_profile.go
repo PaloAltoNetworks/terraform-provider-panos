@@ -1987,7 +1987,6 @@ func (o *IpsecCryptoProfileResource) Create(ctx context.Context, req resource.Cr
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *IpsecCryptoProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
