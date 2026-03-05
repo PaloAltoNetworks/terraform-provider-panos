@@ -80,6 +80,7 @@ func (p *PanosProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 					"api_key",
 				),
 				Optional: true,
+				Sensitive: true,
 			},
 			"api_key_in_request": schema.BoolAttribute{
 				Description: ProviderParamDescription(
