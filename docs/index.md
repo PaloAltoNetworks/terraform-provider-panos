@@ -117,7 +117,7 @@ provider "panos" {
 ### Optional
 
 - `additional_headers` (Map of String) Additional HTTP headers to send with API calls Environment variable: `PANOS_HEADERS`. JSON config file variable: `additional_headers`.
-- `api_key` (String) The API key for PAN-OS. Either specify this or give both username and password. Environment variable: `PANOS_API_KEY`. JSON config file variable: `api_key`.
+- `api_key` (String, Sensitive) The API key for PAN-OS. Either specify this or give both username and password. Environment variable: `PANOS_API_KEY`. JSON config file variable: `api_key`.
 - `api_key_in_request` (Boolean) Send the API key in the request body instead of using the authentication header. Environment variable: `PANOS_API_KEY_IN_REQUEST`. JSON config file variable: `api_key_in_request`.
 - `auth_file` (String) Filesystem path to a JSON config file that specifies the provider's params. JSON config file variable: `auth_file`.
 - `config_file` (String) (Local inspection mode) The PAN-OS config file to load read in using `file()` JSON config file variable: `config_file`.
