@@ -12,21 +12,29 @@ import (
 var _ = Expect
 
 var _ = Describe("Entry", func() {
-	existing := []*MockEntryObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
+	var existing []*MockEntryObject
 	var client *MockEntryClient[*MockEntryObject]
 	var service *MockEntryService[*MockEntryObject, MockLocation]
 	var sdk *manager.EntryObjectManager[*MockEntryObject, MockLocation, *MockEntryService[*MockEntryObject, MockLocation]]
 	var batchSize int
 
-	location := MockLocation{}
+	var location MockLocation
 
 	ctx := context.Background()
 
-	BeforeEach(func() {
+	JustBeforeEach(func() {
 		batchSize = 500
 		client = NewMockEntryClient(existing)
 		service = NewMockEntryService[*MockEntryObject, MockLocation](client)
 		sdk = manager.NewEntryObjectManager[*MockEntryObject, MockLocation, *MockEntryService[*MockEntryObject, MockLocation]](client, service, batchSize, MockEntrySpecifier, MockEntryMatcher)
+	})
+
+	BeforeEach(func() {
+		existing = []*MockEntryObject{
+			{Location: "parent", Name: "1", Value: "A"},
+			{Location: "child", Name: "2", Value: "B"},
+			{Location: "child", Name: "3", Value: "C"},
+		}
 	})
 
 	Context("Read()", func() {
@@ -39,33 +47,64 @@ var _ = Describe("Entry", func() {
 				Expect(object).To(BeNil())
 			})
 		})
-		When("reading entry that exists", func() {
+		When("reading entry that exists without any location filter", func() {
 			It("should return nil error and the existing entry", func() {
 				object, err := sdk.Read(ctx, location, []string{}, "1")
 				Expect(err).ToNot(HaveOccurred())
 				Expect(object.Name).To(Equal("1"))
 			})
 		})
+		When("reading entry that exists with matching location filter", func() {
+			BeforeEach(func() {
+				location = MockLocation{
+					Filter: "child",
+				}
+			})
+			It("should return nil error and the existing entry", func() {
+				object, err := sdk.Read(ctx, location, []string{}, "3")
+				Expect(err).ToNot(HaveOccurred())
+				Expect(object.Name).To(Equal("3"))
+			})
+		})
+		When("reading entry that exists with non-matching location filter", func() {
+			BeforeEach(func() {
+				location = MockLocation{
+					Filter: "child",
+				}
+			})
+			It("should return nil error and the existing entry", func() {
+				object, err := sdk.Read(ctx, location, []string{}, "1")
+				Expect(err).Should(MatchError(manager.ErrObjectNotFound))
+				Expect(object).To(BeNil())
+			})
+		})
 	})
 
 	Context("ReadMany()", func() {
-		When("no entries are in the state", func() {
-			It("should return an empty list of entries", func() {
-				entries := []*MockEntryObject{}
-				processed, err := sdk.ReadMany(ctx, location, []string{}, entries)
-				Expect(err).ToNot(HaveOccurred())
-				Expect(processed).To(HaveLen(0))
+		When("location has a filter", func() {
+			BeforeEach(func() {
+				location = MockLocation{
+					Filter: "child",
+				}
 			})
-		})
-		When("there are entries in the state", func() {
-			It("should return a list of entries from the server that match state entries", func() {
-				entries := []*MockEntryObject{{Name: "1"}, {Name: "2"}}
-				processed, err := sdk.ReadMany(ctx, location, []string{}, entries)
+			It("should return a list entries filtered by location", func() {
+				processed, err := sdk.ReadMany(ctx, location, []string{})
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(2))
 
-				Expect(processed[0].EntryName()).To(Equal("1"))
-				Expect(processed[1].EntryName()).To(Equal("2"))
+				Expect(processed[0].EntryName()).To(Equal("2"))
+				Expect(processed[1].EntryName()).To(Equal("3"))
+			})
+		})
+		When("location has no filter", func() {
+			BeforeEach(func() {
+				location = MockLocation{}
+			})
+			It("should return a list of entries from the server that match state entries", func() {
+				processed, err := sdk.ReadMany(ctx, location, []string{})
+				Expect(err).ToNot(HaveOccurred())
+
+				Expect(processed).To(MatchEntries(existing))
 			})
 		})
 	})
@@ -138,7 +177,50 @@ var _ = Describe("Entry", func() {
 	})
 
 	Context("Update()", func() {
+		BeforeEach(func() {
+			existing = []*MockEntryObject{{Name: "entry-to-rename", Value: "original"}}
+		})
+		Context("when just updating an entry", func() {
+			It("should update entry on the server without executing 'rename' command", func() {
+				updatedContent := &MockEntryObject{Name: "entry-to-rename", Value: "updated"}
+				updatedEntry, err := sdk.Update(ctx, location, []string{}, updatedContent, "")
 
+				Expect(err).ToNot(HaveOccurred())
+
+				Expect(updatedEntry).ToNot(BeNil())
+				Expect(updatedEntry.EntryName()).To(Equal("entry-to-rename"))
+				Expect(updatedEntry.Value).To(Equal("updated"))
+
+				Expect(client.MultiConfigOpers[0]).To(HaveExactElements([]MultiConfigOper{
+					{Operation: MultiConfigOperEdit, EntryName: "entry-to-rename"},
+				}))
+
+				expectedAfterUpdate := []*MockEntryObject{{Name: "entry-to-rename", Value: "updated"}}
+				Expect(client.list()).To(MatchEntries(expectedAfterUpdate))
+			})
+		})
+		Context("when renaming an entry", func() {
+
+			It("should rename the entry on the server", func() {
+				updatedContent := &MockEntryObject{Name: "entry-to-rename", Value: "updated"}
+				newName := "renamed-entry"
+				updatedEntry, err := sdk.Update(ctx, location, []string{}, updatedContent, newName)
+
+				Expect(err).ToNot(HaveOccurred())
+
+				Expect(updatedEntry).ToNot(BeNil())
+				Expect(updatedEntry.EntryName()).To(Equal(newName))
+				Expect(updatedEntry.Value).To(Equal("updated"))
+
+				Expect(client.MultiConfigOpers[0]).To(HaveExactElements([]MultiConfigOper{
+					{Operation: MultiConfigOperEdit, EntryName: "entry-to-rename"},
+					{Operation: MultiConfigOperRename, EntryName: "entry-to-rename", NewName: "renamed-entry"},
+				}))
+
+				expectedAfterUpdate := []*MockEntryObject{{Name: newName, Value: "updated"}}
+				Expect(client.list()).To(MatchEntries(expectedAfterUpdate))
+			})
+		})
 	})
 
 	Context("UpdateMany()", func() {
@@ -161,20 +243,33 @@ var _ = Describe("Entry", func() {
 				processed, err := sdk.UpdateMany(ctx, location, []string{}, stateEntries, planEntries)
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(processed).To(HaveExactElements(planEntries))
-				Expect(client.list()).To(HaveExactElements(planEntries))
+				Expect(processed).To(MatchEntries(planEntries))
+				Expect(client.list()).To(MatchEntries(planEntries))
 			})
 		})
 	})
 
 	Context("Delete()", func() {
-		Context("when entries from the plan are missing from the server", func() {
+		When("deleting entries that exist", func() {
+			It("should delete the entries from the server", func() {
+				entries := []string{"1", "3"}
+				err := sdk.Delete(ctx, location, []string{}, entries)
+
+				Expect(err).ToNot(HaveOccurred())
+
+				remaining := client.list()
+				Expect(remaining).To(HaveLen(1))
+				Expect(remaining[0].EntryName()).To(Equal("2"))
+			})
+		})
+
+		When("entries from the plan are missing from the server", func() {
 			It("should not delete anything from the server", func() {
 				entries := []string{"4"}
 				err := sdk.Delete(ctx, location, []string{}, entries)
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(client.list()).To(HaveExactElements(existing))
+				Expect(client.list()).To(MatchEntries(existing))
 			})
 		})
 	})

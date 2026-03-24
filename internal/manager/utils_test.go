@@ -16,7 +16,9 @@ import (
 
 var _ = slog.Debug
 
-type MockLocation struct{}
+type MockLocation struct {
+	Filter string
+}
 
 func (o MockLocation) IsValid() error {
 	panic("unimplemented")
@@ -32,6 +34,14 @@ func (o MockLocation) XpathWithUuid(version version.Number, uuid string) ([]stri
 
 func (o MockLocation) Xpath(version version.Number) ([]string, error) {
 	panic("unimplemented")
+}
+
+func (o MockLocation) LocationFilter() *string {
+	if o.Filter == "" {
+		return nil
+	}
+
+	return &o.Filter
 }
 
 type multiConfigType string
@@ -55,9 +65,13 @@ const (
 )
 
 type MultiConfigOper struct {
-	Operation MultiConfigOperType
-	EntryName string
-	EntryUuid *string
+	Operation   MultiConfigOperType
+	EntryName   string
+	EntryUuid   *string
+	Where       string
+	Destination string
+	NewName     string
+	Value       string
 }
 
 func entryNameFromXpath(xpath string) string {
@@ -96,7 +110,7 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 		entry := e.Value.(E)
 		entriesByName[entry.EntryName()] = entryWithIdx{
 			Entry: entry,
-			State: entryOk,
+			State: entryInitial,
 			Idx:   idx,
 		}
 		idx += 1
@@ -121,14 +135,18 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 		op := oper.XMLName.Local
 
 		operEntry := MultiConfigOper{
-			Operation: MultiConfigOperType(op),
-			EntryName: entryName,
+			Operation:   MultiConfigOperType(op),
+			EntryName:   entryName,
+			Destination: oper.Destination,
+			Where:       oper.Where,
+			NewName:     oper.NewName,
 		}
 
 		slog.Debug("MultiConfig", "operEntry", operEntry)
 
 		switch MultiConfigOperType(op) {
 		case MultiConfigOperSet, MultiConfigOperEdit:
+			slog.Debug("MultiConfig() OperSet/OperEdit")
 			entry := oper.Data.(E)
 
 			if existing, found := entriesByName[entryName]; found {
@@ -136,6 +154,7 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 					entry.SetEntryUuid(existing.Entry.EntryUuid())
 				}
 				existing.Entry = entry
+				entriesByName[entryName] = existing
 			} else {
 				entryUuid := fmt.Sprintf("%05d", uuid)
 				if objectType == multiConfigUuid {
@@ -143,13 +162,30 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 				}
 				entriesByName[entryName] = entryWithIdx{
 					Entry: entry,
-					State: entryOk,
+					State: entryUpdated,
 					Idx:   idx,
 				}
 
 				uuid += 1
 				idx += 1
 			}
+		case MultiConfigOperRename:
+			_, found := entriesByName[oper.NewName]
+			if found {
+				panic(fmt.Sprintf("FIXME: should propagate back error from MultiConfig"))
+			}
+
+			entry, found := entriesByName[entryName]
+			if !found {
+				panic(fmt.Sprintf("FIXME: should propagate back error from MultiConfig"))
+			}
+
+			delete(entriesByName, entryName)
+			entry.Entry.SetEntryName(oper.NewName)
+			entry.State = entryUpdated
+			entriesByName[oper.NewName] = entry
+
+			operEntry.NewName = oper.NewName
 		case MultiConfigOperDelete:
 			entry, found := entriesByName[entryName]
 			if !found {
@@ -220,6 +256,8 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 					}
 					entriesByName[elt.Entry.EntryName()] = elt
 				}
+
+				entriesByName[moved.Entry.EntryName()] = moved
 			case "top":
 				movedOldIdx := moved.Idx
 				moved.Idx = 0
@@ -234,6 +272,9 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 			default:
 				panic(fmt.Sprintf("Unknown move where: %s", oper.Where))
 			}
+
+			operEntry.Where = oper.Where
+			operEntry.Destination = oper.Destination
 		default:
 			panic(fmt.Sprintf("UNKNOWN OPERATION: %s", op))
 		}
@@ -246,7 +287,7 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 	}
 
 	for _, elt := range entriesByName {
-		if elt.State != entryOk {
+		if elt.State == entryDeleted {
 			continue
 		}
 
@@ -269,7 +310,7 @@ func MultiConfig[E sdkmanager.UuidObject](updates *xmlapi.MultiConfig, existingP
 
 	transformed := list.New()
 	for _, elt := range entries {
-		if elt != nil && elt.State == entryOk {
+		if elt != nil && elt.State != entryDeleted {
 			transformed.PushBack(elt.Entry)
 		}
 	}
@@ -296,7 +337,25 @@ func MatchEntries(expected any) types.GomegaMatcher {
 func (o *equalEntries) Match(actual any) (bool, error) {
 	switch entries := actual.(type) {
 	case []*MockEntryObject:
-		panic("unimplemented 1")
+		if typed, ok := o.expected.([]*MockEntryObject); !ok {
+			return false, fmt.Errorf("Expected %T to match %T", o.expected, actual)
+		} else {
+			if len(entries) != len(typed) {
+				return false, nil
+			}
+
+			for idx, elt := range typed {
+				if elt.Name != entries[idx].Name {
+					return false, nil
+				}
+				if elt.Value != entries[idx].Value {
+					return false, nil
+				}
+				if elt.Location != "" && elt.Location != entries[idx].Location {
+					return false, nil
+				}
+			}
+		}
 	case []*MockUuidObject:
 		if typed, ok := o.expected.([]*MockUuidObject); !ok {
 			return false, fmt.Errorf("Expected %T to match %T", o.expected, actual)
@@ -309,6 +368,9 @@ func (o *equalEntries) Match(actual any) (bool, error) {
 					return false, nil
 				}
 				if elt.Value != entries[idx].Value {
+					return false, nil
+				}
+				if elt.Location != entries[idx].Location {
 					return false, nil
 				}
 			}

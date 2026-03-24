@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/profiles/wildfireanalysis"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -72,6 +73,7 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) AttributeTypes() map[st
 
 	var locationObj WildfireAnalysisSecurityProfileLocation
 
+	var rulesObj *WildfireAnalysisSecurityProfileDataSourceRulesObject
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
@@ -79,7 +81,11 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) AttributeTypes() map[st
 		"name":             types.StringType,
 		"description":      types.StringType,
 		"disable_override": types.StringType,
-		"rules":            types.ListType{},
+		"rules": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: rulesObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -93,11 +99,15 @@ func (o WildfireAnalysisSecurityProfileDataSourceModel) EntryName() *string {
 func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
-		"name":        types.StringType,
-		"application": types.ListType{},
-		"file_type":   types.ListType{},
-		"direction":   types.StringType,
-		"analysis":    types.StringType,
+		"name": types.StringType,
+		"application": types.ListType{
+			ElemType: types.StringType,
+		},
+		"file_type": types.ListType{
+			ElemType: types.StringType,
+		},
+		"direction": types.StringType,
+		"analysis":  types.StringType,
 	}
 }
 
@@ -109,7 +119,7 @@ func (o WildfireAnalysisSecurityProfileDataSourceRulesObject) EntryName() *strin
 	return o.Name.ValueStringPointer()
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -123,7 +133,7 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 		}
 		for _, elt := range rules_tf_entries {
 			var entry *wildfireanalysis.Rules
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -141,17 +151,33 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 
 	return diags
 }
-func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	application_pango_entries := make([]string, 0)
-	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var application_pango_entries []string
+	if !o.Application.IsUnknown() && !o.Application.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Application.Elements()))
+		diags.Append(o.Application.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			application_pango_entries = append(application_pango_entries, elt.ValueString())
+		}
 	}
-	fileType_pango_entries := make([]string, 0)
-	diags.Append(o.FileType.ElementsAs(ctx, &fileType_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var fileType_pango_entries []string
+	if !o.FileType.IsUnknown() && !o.FileType.IsNull() {
+		object_entries := make([]types.String, 0, len(o.FileType.Elements()))
+		diags.Append(o.FileType.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			fileType_pango_entries = append(fileType_pango_entries, elt.ValueString())
+		}
 	}
 	direction_value := o.Direction.ValueStringPointer()
 	analysis_value := o.Analysis.ValueStringPointer()
@@ -168,20 +194,36 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyToPango(ctx c
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var rules_list types.List
 	{
 		var rules_tf_entries []WildfireAnalysisSecurityProfileDataSourceRulesObject
-		for _, elt := range obj.Rules {
-			entry := WildfireAnalysisSecurityProfileDataSourceRulesObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Rules.IsNull() {
+			diags.Append(o.Rules.ElementsAs(ctx, &rules_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			rules_tf_entries = append(rules_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Rules {
+			entry := WildfireAnalysisSecurityProfileDataSourceRulesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(rules_tf_entries) {
+				entry = rules_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(rules_tf_entries) {
+				rules_tf_entries[idx] = entry
+			} else {
+				rules_tf_entries = append(rules_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("rules")
@@ -205,12 +247,18 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyFromPango(ctx conte
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var application_list types.List
 	{
 		var list_diags diag.Diagnostics
-		application_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
+
+		entries := make([]string, 0)
+		if o.Application.IsNull() || len(obj.Application) > 0 {
+			entries = obj.Application
+		}
+
+		application_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -219,7 +267,13 @@ func (o *WildfireAnalysisSecurityProfileDataSourceRulesObject) CopyFromPango(ctx
 	var fileType_list types.List
 	{
 		var list_diags diag.Diagnostics
-		fileType_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
+
+		entries := make([]string, 0)
+		if o.FileType.IsNull() || len(obj.FileType) > 0 {
+			entries = obj.FileType
+		}
+
+		fileType_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -256,34 +310,25 @@ func WildfireAnalysisSecurityProfileDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"rules": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: WildfireAnalysisSecurityProfileDataSourceRulesSchema(),
 			},
 		},
@@ -314,44 +359,33 @@ func WildfireAnalysisSecurityProfileDataSourceRulesSchema() dsschema.NestedAttri
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"application": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"file_type": dsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
 				Computed:    true,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"direction": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"analysis": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -407,8 +441,8 @@ func (d *WildfireAnalysisSecurityProfileDataSource) Configure(_ context.Context,
 }
 func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state WildfireAnalysisSecurityProfileDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state WildfireAnalysisSecurityProfileDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -424,7 +458,7 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 
 	{
 		var terraformLocation WildfireAnalysisSecurityProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -454,15 +488,15 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_wildfire_analysis_security_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -472,16 +506,16 @@ func (o *WildfireAnalysisSecurityProfileDataSource) Read(ctx context.Context, re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -528,7 +562,31 @@ type WildfireAnalysisSecurityProfileResourceRulesObject struct {
 	Analysis    types.String `tfsdk:"analysis"`
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *WildfireAnalysisSecurityProfileResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Rules.IsUnknown() && !o.Rules.IsNull() {
+		var elements []WildfireAnalysisSecurityProfileResourceRulesObject
+		diags := o.Rules.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("rules").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *WildfireAnalysisSecurityProfileResourceRulesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *WildfireAnalysisSecurityProfileResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource WildfireAnalysisSecurityProfileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -541,26 +599,17 @@ func WildfireAnalysisSecurityProfileResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -572,10 +621,7 @@ func WildfireAnalysisSecurityProfileResourceSchema() rsschema.Schema {
 
 			"rules": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: WildfireAnalysisSecurityProfileResourceRulesSchema(),
 			},
 		},
@@ -606,44 +652,30 @@ func WildfireAnalysisSecurityProfileResourceRulesSchema() rsschema.NestedAttribu
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"application": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"file_type": rsschema.ListAttribute{
 				Description: "",
-				Required:    false,
 				Optional:    true,
-				Computed:    false,
-				Sensitive:   false,
 				ElementType: types.StringType,
 			},
 
 			"direction": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"analysis": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("public-cloud"),
 			},
 		},
@@ -668,37 +700,38 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) getTypeFor(name str
 	panic("unreachable")
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *WildfireAnalysisSecurityProfileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_wildfire_analysis_security_profile"
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *WildfireAnalysisSecurityProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = WildfireAnalysisSecurityProfileResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *WildfireAnalysisSecurityProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *WildfireAnalysisSecurityProfileResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := wildfireanalysis.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := wildfireanalysis.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*wildfireanalysis.Entry, wildfireanalysis.Location, *wildfireanalysis.Service](r.client, wildfireanalysis.NewService(r.client), batchSize, specifier, wildfireanalysis.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*wildfireanalysis.Entry, wildfireanalysis.Location, *wildfireanalysis.Service](o.client, wildfireanalysis.NewService(o.client), batchSize, specifier, wildfireanalysis.SpecMatches)
 }
 
 func (o *WildfireAnalysisSecurityProfileResourceModel) AttributeTypes() map[string]attr.Type {
 
 	var locationObj WildfireAnalysisSecurityProfileLocation
 
+	var rulesObj *WildfireAnalysisSecurityProfileResourceRulesObject
 	return map[string]attr.Type{
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
@@ -706,7 +739,11 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) AttributeTypes() map[stri
 		"name":             types.StringType,
 		"description":      types.StringType,
 		"disable_override": types.StringType,
-		"rules":            types.ListType{},
+		"rules": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: rulesObj.AttributeTypes(),
+			},
+		},
 	}
 }
 
@@ -720,11 +757,15 @@ func (o WildfireAnalysisSecurityProfileResourceModel) EntryName() *string {
 func (o *WildfireAnalysisSecurityProfileResourceRulesObject) AttributeTypes() map[string]attr.Type {
 
 	return map[string]attr.Type{
-		"name":        types.StringType,
-		"application": types.ListType{},
-		"file_type":   types.ListType{},
-		"direction":   types.StringType,
-		"analysis":    types.StringType,
+		"name": types.StringType,
+		"application": types.ListType{
+			ElemType: types.StringType,
+		},
+		"file_type": types.ListType{
+			ElemType: types.StringType,
+		},
+		"direction": types.StringType,
+		"analysis":  types.StringType,
 	}
 }
 
@@ -736,7 +777,7 @@ func (o WildfireAnalysisSecurityProfileResourceRulesObject) EntryName() *string 
 	return o.Name.ValueStringPointer()
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	disableOverride_value := o.DisableOverride.ValueStringPointer()
@@ -750,7 +791,7 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 		}
 		for _, elt := range rules_tf_entries {
 			var entry *wildfireanalysis.Rules
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -768,17 +809,33 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 
 	return diags
 }
-func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	application_pango_entries := make([]string, 0)
-	diags.Append(o.Application.ElementsAs(ctx, &application_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var application_pango_entries []string
+	if !o.Application.IsUnknown() && !o.Application.IsNull() {
+		object_entries := make([]types.String, 0, len(o.Application.Elements()))
+		diags.Append(o.Application.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			application_pango_entries = append(application_pango_entries, elt.ValueString())
+		}
 	}
-	fileType_pango_entries := make([]string, 0)
-	diags.Append(o.FileType.ElementsAs(ctx, &fileType_pango_entries, false)...)
-	if diags.HasError() {
-		return diags
+	var fileType_pango_entries []string
+	if !o.FileType.IsUnknown() && !o.FileType.IsNull() {
+		object_entries := make([]types.String, 0, len(o.FileType.Elements()))
+		diags.Append(o.FileType.ElementsAs(ctx, &object_entries, false)...)
+		if diags.HasError() {
+			diags.AddError("Explicit Error", "Failed something")
+			return diags
+		}
+
+		for _, elt := range object_entries {
+			fileType_pango_entries = append(fileType_pango_entries, elt.ValueString())
+		}
 	}
 	direction_value := o.Direction.ValueStringPointer()
 	analysis_value := o.Analysis.ValueStringPointer()
@@ -795,20 +852,36 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyToPango(ctx con
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *wildfireanalysis.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var rules_list types.List
 	{
 		var rules_tf_entries []WildfireAnalysisSecurityProfileResourceRulesObject
-		for _, elt := range obj.Rules {
-			entry := WildfireAnalysisSecurityProfileResourceRulesObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Rules.IsNull() {
+			diags.Append(o.Rules.ElementsAs(ctx, &rules_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			rules_tf_entries = append(rules_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Rules {
+			entry := WildfireAnalysisSecurityProfileResourceRulesObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(rules_tf_entries) {
+				entry = rules_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(rules_tf_entries) {
+				rules_tf_entries[idx] = entry
+			} else {
+				rules_tf_entries = append(rules_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("rules")
@@ -832,12 +905,18 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyFromPango(ctx context
 	return diags
 }
 
-func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *wildfireanalysis.Rules, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var application_list types.List
 	{
 		var list_diags diag.Diagnostics
-		application_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.Application)
+
+		entries := make([]string, 0)
+		if o.Application.IsNull() || len(obj.Application) > 0 {
+			entries = obj.Application
+		}
+
+		application_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -846,7 +925,13 @@ func (o *WildfireAnalysisSecurityProfileResourceRulesObject) CopyFromPango(ctx c
 	var fileType_list types.List
 	{
 		var list_diags diag.Diagnostics
-		fileType_list, list_diags = types.ListValueFrom(ctx, types.StringType, obj.FileType)
+
+		entries := make([]string, 0)
+		if o.FileType.IsNull() || len(obj.FileType) > 0 {
+			entries = obj.FileType
+		}
+
+		fileType_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
 		diags.Append(list_diags...)
 		if diags.HasError() {
 			return diags
@@ -875,7 +960,7 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) resourceXpathParentCompon
 	return components, nil
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state WildfireAnalysisSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -890,7 +975,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -941,7 +1026,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 
 	// Load the desired config.
 	var obj *wildfireanalysis.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -959,13 +1044,13 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -977,13 +1062,12 @@ func (r *WildfireAnalysisSecurityProfileResource) Create(ctx context.Context, re
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state WildfireAnalysisSecurityProfileResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state WildfireAnalysisSecurityProfileResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1003,7 +1087,7 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 
 	{
 		var terraformLocation WildfireAnalysisSecurityProfileLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1033,15 +1117,15 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_wildfire_analysis_security_profile_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1051,16 +1135,16 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1073,7 +1157,7 @@ func (o *WildfireAnalysisSecurityProfileResource) Read(ctx context.Context, req 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state WildfireAnalysisSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1130,7 +1214,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1140,13 +1224,18 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *wildfireanalysis.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1157,22 +1246,27 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1186,10 +1280,10 @@ func (r *WildfireAnalysisSecurityProfileResource) Update(ctx context.Context, re
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state WildfireAnalysisSecurityProfileResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1205,7 +1299,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, re
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1245,7 +1339,7 @@ func (r *WildfireAnalysisSecurityProfileResource) Delete(ctx context.Context, re
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1260,14 +1354,15 @@ type WildfireAnalysisSecurityProfileImportState struct {
 
 func (o WildfireAnalysisSecurityProfileImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *WildfireAnalysisSecurityProfileLocation `json:"location"`
-		Name     *string                                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *WildfireAnalysisSecurityProfileLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, WildfireAnalysisSecurityProfileLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -1281,8 +1376,8 @@ func (o WildfireAnalysisSecurityProfileImportState) MarshalJSON() ([]byte, error
 
 func (o *WildfireAnalysisSecurityProfileImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *WildfireAnalysisSecurityProfileLocation `json:"location"`
-		Name     *string                                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1291,10 +1386,14 @@ func (o *WildfireAnalysisSecurityProfileImportState) UnmarshalJSON(data []byte) 
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, WildfireAnalysisSecurityProfileLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object
@@ -1342,7 +1441,7 @@ func WildfireAnalysisSecurityProfileImportStateCreator(ctx context.Context, reso
 	return json.Marshal(importStruct)
 }
 
-func (r *WildfireAnalysisSecurityProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *WildfireAnalysisSecurityProfileResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj WildfireAnalysisSecurityProfileImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

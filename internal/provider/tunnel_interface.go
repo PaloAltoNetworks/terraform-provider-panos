@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/interface/tunnel"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -54,17 +55,17 @@ type TunnelInterfaceDataSourceFilter struct {
 }
 
 type TunnelInterfaceDataSourceModel struct {
-	Location                   types.Object                            `tfsdk:"location"`
-	Name                       types.String                            `tfsdk:"name"`
-	Bonjour                    *TunnelInterfaceDataSourceBonjourObject `tfsdk:"bonjour"`
-	Comment                    types.String                            `tfsdk:"comment"`
-	DfIgnore                   types.Bool                              `tfsdk:"df_ignore"`
-	InterfaceManagementProfile types.String                            `tfsdk:"interface_management_profile"`
-	Ip                         types.List                              `tfsdk:"ip"`
-	Ipv6                       *TunnelInterfaceDataSourceIpv6Object    `tfsdk:"ipv6"`
-	LinkTag                    types.String                            `tfsdk:"link_tag"`
-	Mtu                        types.Int64                             `tfsdk:"mtu"`
-	NetflowProfile             types.String                            `tfsdk:"netflow_profile"`
+	Location                   types.Object `tfsdk:"location"`
+	Name                       types.String `tfsdk:"name"`
+	Bonjour                    types.Object `tfsdk:"bonjour"`
+	Comment                    types.String `tfsdk:"comment"`
+	DfIgnore                   types.Bool   `tfsdk:"df_ignore"`
+	InterfaceManagementProfile types.String `tfsdk:"interface_management_profile"`
+	Ip                         types.List   `tfsdk:"ip"`
+	Ipv6                       types.Object `tfsdk:"ipv6"`
+	LinkTag                    types.String `tfsdk:"link_tag"`
+	Mtu                        types.Int64  `tfsdk:"mtu"`
+	NetflowProfile             types.String `tfsdk:"netflow_profile"`
 }
 type TunnelInterfaceDataSourceBonjourObject struct {
 	Enable   types.Bool  `tfsdk:"enable"`
@@ -80,10 +81,10 @@ type TunnelInterfaceDataSourceIpv6Object struct {
 	InterfaceId types.String `tfsdk:"interface_id"`
 }
 type TunnelInterfaceDataSourceIpv6AddressObject struct {
-	Name              types.String                                       `tfsdk:"name"`
-	EnableOnInterface types.Bool                                         `tfsdk:"enable_on_interface"`
-	Prefix            *TunnelInterfaceDataSourceIpv6AddressPrefixObject  `tfsdk:"prefix"`
-	Anycast           *TunnelInterfaceDataSourceIpv6AddressAnycastObject `tfsdk:"anycast"`
+	Name              types.String `tfsdk:"name"`
+	EnableOnInterface types.Bool   `tfsdk:"enable_on_interface"`
+	Prefix            types.Object `tfsdk:"prefix"`
+	Anycast           types.Object `tfsdk:"anycast"`
 }
 type TunnelInterfaceDataSourceIpv6AddressPrefixObject struct {
 }
@@ -95,6 +96,8 @@ func (o *TunnelInterfaceDataSourceModel) AttributeTypes() map[string]attr.Type {
 	var locationObj TunnelInterfaceLocation
 
 	var bonjourObj *TunnelInterfaceDataSourceBonjourObject
+
+	var ipObj *TunnelInterfaceDataSourceIpObject
 
 	var ipv6Obj *TunnelInterfaceDataSourceIpv6Object
 
@@ -109,7 +112,11 @@ func (o *TunnelInterfaceDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"comment":                      types.StringType,
 		"df_ignore":                    types.BoolType,
 		"interface_management_profile": types.StringType,
-		"ip":                           types.ListType{},
+		"ip": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: ipObj.AttributeTypes(),
+			},
+		},
 		"ipv6": types.ObjectType{
 			AttrTypes: ipv6Obj.AttributeTypes(),
 		},
@@ -158,8 +165,14 @@ func (o TunnelInterfaceDataSourceIpObject) EntryName() *string {
 }
 func (o *TunnelInterfaceDataSourceIpv6Object) AttributeTypes() map[string]attr.Type {
 
+	var addressObj *TunnelInterfaceDataSourceIpv6AddressObject
+
 	return map[string]attr.Type{
-		"address":      types.ListType{},
+		"address": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: addressObj.AttributeTypes(),
+			},
+		},
 		"enabled":      types.BoolType,
 		"interface_id": types.StringType,
 	}
@@ -219,17 +232,21 @@ func (o TunnelInterfaceDataSourceIpv6AddressAnycastObject) EntryName() *string {
 	return nil
 }
 
-func (o *TunnelInterfaceDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var bonjour_entry *tunnel.Bonjour
-	if o.Bonjour != nil {
+	if !o.Bonjour.IsUnknown() && !o.Bonjour.IsNull() {
 		if *obj != nil && (*obj).Bonjour != nil {
 			bonjour_entry = (*obj).Bonjour
 		} else {
 			bonjour_entry = new(tunnel.Bonjour)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Bonjour.CopyToPango(ctx, ancestors, &bonjour_entry, ev)...)
+		var object *TunnelInterfaceDataSourceBonjourObject
+		diags.Append(o.Bonjour.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &bonjour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -247,7 +264,7 @@ func (o *TunnelInterfaceDataSourceModel) CopyToPango(ctx context.Context, ancest
 		}
 		for _, elt := range ip_tf_entries {
 			var entry *tunnel.Ip
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -255,14 +272,18 @@ func (o *TunnelInterfaceDataSourceModel) CopyToPango(ctx context.Context, ancest
 		}
 	}
 	var ipv6_entry *tunnel.Ipv6
-	if o.Ipv6 != nil {
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
 		if *obj != nil && (*obj).Ipv6 != nil {
 			ipv6_entry = (*obj).Ipv6
 		} else {
 			ipv6_entry = new(tunnel.Ipv6)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Ipv6.CopyToPango(ctx, ancestors, &ipv6_entry, ev)...)
+		var object *TunnelInterfaceDataSourceIpv6Object
+		diags.Append(o.Ipv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -287,7 +308,7 @@ func (o *TunnelInterfaceDataSourceModel) CopyToPango(ctx context.Context, ancest
 
 	return diags
 }
-func (o *TunnelInterfaceDataSourceBonjourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceBonjourObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	groupId_value := o.GroupId.ValueInt64Pointer()
@@ -302,7 +323,7 @@ func (o *TunnelInterfaceDataSourceBonjourObject) CopyToPango(ctx context.Context
 
 	return diags
 }
-func (o *TunnelInterfaceDataSourceIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -312,7 +333,7 @@ func (o *TunnelInterfaceDataSourceIpObject) CopyToPango(ctx context.Context, anc
 
 	return diags
 }
-func (o *TunnelInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []TunnelInterfaceDataSourceIpv6AddressObject
 	var address_pango_entries []tunnel.Ipv6Address
@@ -324,7 +345,7 @@ func (o *TunnelInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, a
 		}
 		for _, elt := range address_tf_entries {
 			var entry *tunnel.Ipv6Address
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -343,31 +364,39 @@ func (o *TunnelInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, a
 
 	return diags
 }
-func (o *TunnelInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *tunnel.Ipv6AddressPrefix
-	if o.Prefix != nil {
+	if !o.Prefix.IsUnknown() && !o.Prefix.IsNull() {
 		if *obj != nil && (*obj).Prefix != nil {
 			prefix_entry = (*obj).Prefix
 		} else {
 			prefix_entry = new(tunnel.Ipv6AddressPrefix)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Prefix.CopyToPango(ctx, append(ancestors, o), &prefix_entry, ev)...)
+		var object *TunnelInterfaceDataSourceIpv6AddressPrefixObject
+		diags.Append(o.Prefix.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &prefix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var anycast_entry *tunnel.Ipv6AddressAnycast
-	if o.Anycast != nil {
+	if !o.Anycast.IsUnknown() && !o.Anycast.IsNull() {
 		if *obj != nil && (*obj).Anycast != nil {
 			anycast_entry = (*obj).Anycast
 		} else {
 			anycast_entry = new(tunnel.Ipv6AddressAnycast)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Anycast.CopyToPango(ctx, append(ancestors, o), &anycast_entry, ev)...)
+		var object *TunnelInterfaceDataSourceIpv6AddressAnycastObject
+		diags.Append(o.Anycast.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &anycast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -383,7 +412,7 @@ func (o *TunnelInterfaceDataSourceIpv6AddressObject) CopyToPango(ctx context.Con
 
 	return diags
 }
-func (o *TunnelInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -392,7 +421,7 @@ func (o *TunnelInterfaceDataSourceIpv6AddressPrefixObject) CopyToPango(ctx conte
 
 	return diags
 }
-func (o *TunnelInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -402,38 +431,84 @@ func (o *TunnelInterfaceDataSourceIpv6AddressAnycastObject) CopyToPango(ctx cont
 	return diags
 }
 
-func (o *TunnelInterfaceDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_list types.List
 	{
 		var ip_tf_entries []TunnelInterfaceDataSourceIpObject
-		for _, elt := range obj.Ip {
-			entry := TunnelInterfaceDataSourceIpObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Ip.IsNull() {
+			diags.Append(o.Ip.ElementsAs(ctx, &ip_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			ip_tf_entries = append(ip_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Ip {
+			entry := TunnelInterfaceDataSourceIpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(ip_tf_entries) {
+				entry = ip_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(ip_tf_entries) {
+				ip_tf_entries[idx] = entry
+			} else {
+				ip_tf_entries = append(ip_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("ip")
 		ip_list, list_diags = types.ListValueFrom(ctx, schemaType, ip_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var bonjour_object *TunnelInterfaceDataSourceBonjourObject
-	if obj.Bonjour != nil {
-		bonjour_object = new(TunnelInterfaceDataSourceBonjourObject)
-		diags.Append(bonjour_object.CopyFromPango(ctx, ancestors, obj.Bonjour, ev)...)
+
+	var bonjour_obj *TunnelInterfaceDataSourceBonjourObject
+	if o.Bonjour.IsNull() {
+		bonjour_obj = new(TunnelInterfaceDataSourceBonjourObject)
+	} else {
+		diags.Append(o.Bonjour.As(ctx, &bonjour_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ipv6_object *TunnelInterfaceDataSourceIpv6Object
+	bonjour_object := types.ObjectNull(bonjour_obj.AttributeTypes())
+	if obj.Bonjour != nil {
+		diags.Append(bonjour_obj.CopyFromPango(ctx, client, ancestors, obj.Bonjour, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		bonjour_object, diags_tmp = types.ObjectValueFrom(ctx, bonjour_obj.AttributeTypes(), bonjour_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ipv6_obj *TunnelInterfaceDataSourceIpv6Object
+	if o.Ipv6.IsNull() {
+		ipv6_obj = new(TunnelInterfaceDataSourceIpv6Object)
+	} else {
+		diags.Append(o.Ipv6.As(ctx, &ipv6_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ipv6_object := types.ObjectNull(ipv6_obj.AttributeTypes())
 	if obj.Ipv6 != nil {
-		ipv6_object = new(TunnelInterfaceDataSourceIpv6Object)
-		diags.Append(ipv6_object.CopyFromPango(ctx, ancestors, obj.Ipv6, ev)...)
+		diags.Append(ipv6_obj.CopyFromPango(ctx, client, ancestors, obj.Ipv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ipv6_object, diags_tmp = types.ObjectValueFrom(ctx, ipv6_obj.AttributeTypes(), ipv6_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -477,7 +552,7 @@ func (o *TunnelInterfaceDataSourceModel) CopyFromPango(ctx context.Context, ance
 	return diags
 }
 
-func (o *TunnelInterfaceDataSourceBonjourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceBonjourObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -499,27 +574,43 @@ func (o *TunnelInterfaceDataSourceBonjourObject) CopyFromPango(ctx context.Conte
 	return diags
 }
 
-func (o *TunnelInterfaceDataSourceIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *TunnelInterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []TunnelInterfaceDataSourceIpv6AddressObject
-		for _, elt := range obj.Address {
-			entry := TunnelInterfaceDataSourceIpv6AddressObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Address.IsNull() {
+			diags.Append(o.Address.ElementsAs(ctx, &address_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			address_tf_entries = append(address_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Address {
+			entry := TunnelInterfaceDataSourceIpv6AddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(address_tf_entries) {
+				entry = address_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(address_tf_entries) {
+				address_tf_entries[idx] = entry
+			} else {
+				address_tf_entries = append(address_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("address")
@@ -542,20 +633,50 @@ func (o *TunnelInterfaceDataSourceIpv6Object) CopyFromPango(ctx context.Context,
 	return diags
 }
 
-func (o *TunnelInterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var prefix_object *TunnelInterfaceDataSourceIpv6AddressPrefixObject
-	if obj.Prefix != nil {
-		prefix_object = new(TunnelInterfaceDataSourceIpv6AddressPrefixObject)
-		diags.Append(prefix_object.CopyFromPango(ctx, append(ancestors, o), obj.Prefix, ev)...)
+
+	var prefix_obj *TunnelInterfaceDataSourceIpv6AddressPrefixObject
+	if o.Prefix.IsNull() {
+		prefix_obj = new(TunnelInterfaceDataSourceIpv6AddressPrefixObject)
+	} else {
+		diags.Append(o.Prefix.As(ctx, &prefix_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var anycast_object *TunnelInterfaceDataSourceIpv6AddressAnycastObject
+	prefix_object := types.ObjectNull(prefix_obj.AttributeTypes())
+	if obj.Prefix != nil {
+		diags.Append(prefix_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Prefix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		prefix_object, diags_tmp = types.ObjectValueFrom(ctx, prefix_obj.AttributeTypes(), prefix_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var anycast_obj *TunnelInterfaceDataSourceIpv6AddressAnycastObject
+	if o.Anycast.IsNull() {
+		anycast_obj = new(TunnelInterfaceDataSourceIpv6AddressAnycastObject)
+	} else {
+		diags.Append(o.Anycast.As(ctx, &anycast_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	anycast_object := types.ObjectNull(anycast_obj.AttributeTypes())
 	if obj.Anycast != nil {
-		anycast_object = new(TunnelInterfaceDataSourceIpv6AddressAnycastObject)
-		diags.Append(anycast_object.CopyFromPango(ctx, append(ancestors, o), obj.Anycast, ev)...)
+		diags.Append(anycast_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Anycast, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		anycast_object, diags_tmp = types.ObjectValueFrom(ctx, anycast_obj.AttributeTypes(), anycast_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -573,13 +694,13 @@ func (o *TunnelInterfaceDataSourceIpv6AddressObject) CopyFromPango(ctx context.C
 	return diags
 }
 
-func (o *TunnelInterfaceDataSourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *TunnelInterfaceDataSourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceDataSourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
@@ -598,44 +719,33 @@ func TunnelInterfaceDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"bonjour": TunnelInterfaceDataSourceBonjourSchema(),
 
 			"comment": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"df_ignore": dsschema.BoolAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface_management_profile": dsschema.StringAttribute{
 				Description: "Interface management profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: TunnelInterfaceDataSourceIpSchema(),
 			},
 
@@ -643,26 +753,20 @@ func TunnelInterfaceDataSourceSchema() dsschema.Schema {
 
 			"link_tag": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"mtu": dsschema.Int64Attribute{
 				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"netflow_profile": dsschema.StringAttribute{
 				Description: "Netflow Server Profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -689,34 +793,26 @@ func (o *TunnelInterfaceDataSourceModel) getTypeFor(name string) attr.Type {
 func TunnelInterfaceDataSourceBonjourSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"enable": dsschema.BoolAttribute{
 				Description: "Set to support Bonjour service",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_id": dsschema.Int64Attribute{
 				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ttl_check": dsschema.BoolAttribute{
 				Description: "Set to check and update TTL",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -746,10 +842,7 @@ func TunnelInterfaceDataSourceIpSchema() dsschema.NestedAttributeObject {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -776,35 +869,27 @@ func (o *TunnelInterfaceDataSourceIpObject) getTypeFor(name string) attr.Type {
 func TunnelInterfaceDataSourceIpv6Schema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"address": dsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
 				Computed:     true,
-				Sensitive:    false,
 				NestedObject: TunnelInterfaceDataSourceIpv6AddressSchema(),
 			},
 
 			"enabled": dsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface_id": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -834,18 +919,13 @@ func TunnelInterfaceDataSourceIpv6AddressSchema() dsschema.NestedAttributeObject
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable_on_interface": dsschema.BoolAttribute{
 				Description: "configure this address on interface",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"prefix": TunnelInterfaceDataSourceIpv6AddressPrefixSchema(),
@@ -876,10 +956,8 @@ func (o *TunnelInterfaceDataSourceIpv6AddressObject) getTypeFor(name string) att
 func TunnelInterfaceDataSourceIpv6AddressPrefixSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes:  map[string]dsschema.Attribute{},
 	}
 }
@@ -905,10 +983,8 @@ func (o *TunnelInterfaceDataSourceIpv6AddressPrefixObject) getTypeFor(name strin
 func TunnelInterfaceDataSourceIpv6AddressAnycastSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes:  map[string]dsschema.Attribute{},
 	}
 }
@@ -963,8 +1039,8 @@ func (d *TunnelInterfaceDataSource) Configure(_ context.Context, req datasource.
 }
 func (o *TunnelInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state TunnelInterfaceDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state TunnelInterfaceDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -980,7 +1056,7 @@ func (o *TunnelInterfaceDataSource) Read(ctx context.Context, req datasource.Rea
 
 	{
 		var terraformLocation TunnelInterfaceLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1033,15 +1109,15 @@ func (o *TunnelInterfaceDataSource) Read(ctx context.Context, req datasource.Rea
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_tunnel_interface_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -1051,16 +1127,16 @@ func (o *TunnelInterfaceDataSource) Read(ctx context.Context, req datasource.Rea
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -1093,17 +1169,17 @@ func TunnelInterfaceResourceLocationSchema() rsschema.Attribute {
 }
 
 type TunnelInterfaceResourceModel struct {
-	Location                   types.Object                          `tfsdk:"location"`
-	Name                       types.String                          `tfsdk:"name"`
-	Bonjour                    *TunnelInterfaceResourceBonjourObject `tfsdk:"bonjour"`
-	Comment                    types.String                          `tfsdk:"comment"`
-	DfIgnore                   types.Bool                            `tfsdk:"df_ignore"`
-	InterfaceManagementProfile types.String                          `tfsdk:"interface_management_profile"`
-	Ip                         types.List                            `tfsdk:"ip"`
-	Ipv6                       *TunnelInterfaceResourceIpv6Object    `tfsdk:"ipv6"`
-	LinkTag                    types.String                          `tfsdk:"link_tag"`
-	Mtu                        types.Int64                           `tfsdk:"mtu"`
-	NetflowProfile             types.String                          `tfsdk:"netflow_profile"`
+	Location                   types.Object `tfsdk:"location"`
+	Name                       types.String `tfsdk:"name"`
+	Bonjour                    types.Object `tfsdk:"bonjour"`
+	Comment                    types.String `tfsdk:"comment"`
+	DfIgnore                   types.Bool   `tfsdk:"df_ignore"`
+	InterfaceManagementProfile types.String `tfsdk:"interface_management_profile"`
+	Ip                         types.List   `tfsdk:"ip"`
+	Ipv6                       types.Object `tfsdk:"ipv6"`
+	LinkTag                    types.String `tfsdk:"link_tag"`
+	Mtu                        types.Int64  `tfsdk:"mtu"`
+	NetflowProfile             types.String `tfsdk:"netflow_profile"`
 }
 type TunnelInterfaceResourceBonjourObject struct {
 	Enable   types.Bool  `tfsdk:"enable"`
@@ -1119,17 +1195,103 @@ type TunnelInterfaceResourceIpv6Object struct {
 	InterfaceId types.String `tfsdk:"interface_id"`
 }
 type TunnelInterfaceResourceIpv6AddressObject struct {
-	Name              types.String                                     `tfsdk:"name"`
-	EnableOnInterface types.Bool                                       `tfsdk:"enable_on_interface"`
-	Prefix            *TunnelInterfaceResourceIpv6AddressPrefixObject  `tfsdk:"prefix"`
-	Anycast           *TunnelInterfaceResourceIpv6AddressAnycastObject `tfsdk:"anycast"`
+	Name              types.String `tfsdk:"name"`
+	EnableOnInterface types.Bool   `tfsdk:"enable_on_interface"`
+	Prefix            types.Object `tfsdk:"prefix"`
+	Anycast           types.Object `tfsdk:"anycast"`
 }
 type TunnelInterfaceResourceIpv6AddressPrefixObject struct {
 }
 type TunnelInterfaceResourceIpv6AddressAnycastObject struct {
 }
 
-func (r *TunnelInterfaceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *TunnelInterfaceResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Bonjour.IsUnknown() && !o.Bonjour.IsNull() {
+		var nestedObj TunnelInterfaceResourceBonjourObject
+		diags := o.Bonjour.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("bonjour"))
+		}
+	}
+	if !o.Ip.IsUnknown() && !o.Ip.IsNull() {
+		var elements []TunnelInterfaceResourceIpObject
+		diags := o.Ip.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("ip").AtListIndex(i))
+			}
+		}
+	}
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
+		var nestedObj TunnelInterfaceResourceIpv6Object
+		diags := o.Ipv6.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("ipv6"))
+		}
+	}
+}
+
+func (o *TunnelInterfaceResourceBonjourObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *TunnelInterfaceResourceIpObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *TunnelInterfaceResourceIpv6Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Address.IsUnknown() && !o.Address.IsNull() {
+		var elements []TunnelInterfaceResourceIpv6AddressObject
+		diags := o.Address.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("address").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *TunnelInterfaceResourceIpv6AddressObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Prefix.IsUnknown() && !o.Prefix.IsNull() {
+		var nestedObj TunnelInterfaceResourceIpv6AddressPrefixObject
+		diags := o.Prefix.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("prefix"))
+		}
+	}
+	if !o.Anycast.IsUnknown() && !o.Anycast.IsNull() {
+		var nestedObj TunnelInterfaceResourceIpv6AddressAnycastObject
+		diags := o.Anycast.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("anycast"))
+		}
+	}
+}
+
+func (o *TunnelInterfaceResourceIpv6AddressPrefixObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *TunnelInterfaceResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource TunnelInterfaceResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -1142,44 +1304,29 @@ func TunnelInterfaceResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"bonjour": TunnelInterfaceResourceBonjourSchema(),
 
 			"comment": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"df_ignore": rsschema.BoolAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface_management_profile": rsschema.StringAttribute{
 				Description: "Interface management profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ip": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: TunnelInterfaceResourceIpSchema(),
 			},
 
@@ -1187,26 +1334,17 @@ func TunnelInterfaceResourceSchema() rsschema.Schema {
 
 			"link_tag": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"mtu": rsschema.Int64Attribute{
 				Description: "Maximum Transfer Unit, up to 9216 in Jumbo-Frame mode, up to 1500 otherwise",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"netflow_profile": rsschema.StringAttribute{
 				Description: "Netflow Server Profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1233,35 +1371,24 @@ func (o *TunnelInterfaceResourceModel) getTypeFor(name string) attr.Type {
 func TunnelInterfaceResourceBonjourSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"enable": rsschema.BoolAttribute{
 				Description: "Set to support Bonjour service",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"group_id": rsschema.Int64Attribute{
 				Description: "default 0: NO-Group",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     int64default.StaticInt64(40),
 			},
 
 			"ttl_check": rsschema.BoolAttribute{
 				Description: "Set to check and update TTL",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1291,10 +1418,7 @@ func TunnelInterfaceResourceIpSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1321,35 +1445,24 @@ func (o *TunnelInterfaceResourceIpObject) getTypeFor(name string) attr.Type {
 func TunnelInterfaceResourceIpv6Schema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"address": rsschema.ListNestedAttribute{
 				Description:  "",
-				Required:     false,
 				Optional:     true,
-				Computed:     false,
-				Sensitive:    false,
 				NestedObject: TunnelInterfaceResourceIpv6AddressSchema(),
 			},
 
 			"enabled": rsschema.BoolAttribute{
 				Description: "Enable IPv6 on the interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface_id": rsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 				Default:     stringdefault.StaticString("EUI-64"),
 			},
 		},
@@ -1380,18 +1493,12 @@ func TunnelInterfaceResourceIpv6AddressSchema() rsschema.NestedAttributeObject {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"enable_on_interface": rsschema.BoolAttribute{
 				Description: "configure this address on interface",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"prefix": TunnelInterfaceResourceIpv6AddressPrefixSchema(),
@@ -1422,10 +1529,7 @@ func (o *TunnelInterfaceResourceIpv6AddressObject) getTypeFor(name string) attr.
 func TunnelInterfaceResourceIpv6AddressPrefixSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes:  map[string]rsschema.Attribute{},
 	}
 }
@@ -1451,10 +1555,7 @@ func (o *TunnelInterfaceResourceIpv6AddressPrefixObject) getTypeFor(name string)
 func TunnelInterfaceResourceIpv6AddressAnycastSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes:  map[string]rsschema.Attribute{},
 	}
 }
@@ -1477,32 +1578,32 @@ func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) getTypeFor(name string
 	panic("unreachable")
 }
 
-func (r *TunnelInterfaceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *TunnelInterfaceResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_tunnel_interface"
 }
 
-func (r *TunnelInterfaceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *TunnelInterfaceResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = TunnelInterfaceResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *TunnelInterfaceResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *TunnelInterfaceResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := tunnel.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := tunnel.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewImportableEntryObjectManager(r.client, tunnel.NewService(r.client), batchSize, specifier, tunnel.SpecMatches)
+	o.manager = sdkmanager.NewImportableEntryObjectManager(o.client, tunnel.NewService(o.client), batchSize, specifier, tunnel.SpecMatches)
 }
 
 func (o *TunnelInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
@@ -1510,6 +1611,8 @@ func (o *TunnelInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
 	var locationObj TunnelInterfaceLocation
 
 	var bonjourObj *TunnelInterfaceResourceBonjourObject
+
+	var ipObj *TunnelInterfaceResourceIpObject
 
 	var ipv6Obj *TunnelInterfaceResourceIpv6Object
 
@@ -1524,7 +1627,11 @@ func (o *TunnelInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
 		"comment":                      types.StringType,
 		"df_ignore":                    types.BoolType,
 		"interface_management_profile": types.StringType,
-		"ip":                           types.ListType{},
+		"ip": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: ipObj.AttributeTypes(),
+			},
+		},
 		"ipv6": types.ObjectType{
 			AttrTypes: ipv6Obj.AttributeTypes(),
 		},
@@ -1573,8 +1680,14 @@ func (o TunnelInterfaceResourceIpObject) EntryName() *string {
 }
 func (o *TunnelInterfaceResourceIpv6Object) AttributeTypes() map[string]attr.Type {
 
+	var addressObj *TunnelInterfaceResourceIpv6AddressObject
+
 	return map[string]attr.Type{
-		"address":      types.ListType{},
+		"address": types.ListType{
+			ElemType: types.ObjectType{
+				AttrTypes: addressObj.AttributeTypes(),
+			},
+		},
 		"enabled":      types.BoolType,
 		"interface_id": types.StringType,
 	}
@@ -1634,17 +1747,21 @@ func (o TunnelInterfaceResourceIpv6AddressAnycastObject) EntryName() *string {
 	return nil
 }
 
-func (o *TunnelInterfaceResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var bonjour_entry *tunnel.Bonjour
-	if o.Bonjour != nil {
+	if !o.Bonjour.IsUnknown() && !o.Bonjour.IsNull() {
 		if *obj != nil && (*obj).Bonjour != nil {
 			bonjour_entry = (*obj).Bonjour
 		} else {
 			bonjour_entry = new(tunnel.Bonjour)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Bonjour.CopyToPango(ctx, ancestors, &bonjour_entry, ev)...)
+		var object *TunnelInterfaceResourceBonjourObject
+		diags.Append(o.Bonjour.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &bonjour_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1662,7 +1779,7 @@ func (o *TunnelInterfaceResourceModel) CopyToPango(ctx context.Context, ancestor
 		}
 		for _, elt := range ip_tf_entries {
 			var entry *tunnel.Ip
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1670,14 +1787,18 @@ func (o *TunnelInterfaceResourceModel) CopyToPango(ctx context.Context, ancestor
 		}
 	}
 	var ipv6_entry *tunnel.Ipv6
-	if o.Ipv6 != nil {
+	if !o.Ipv6.IsUnknown() && !o.Ipv6.IsNull() {
 		if *obj != nil && (*obj).Ipv6 != nil {
 			ipv6_entry = (*obj).Ipv6
 		} else {
 			ipv6_entry = new(tunnel.Ipv6)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Ipv6.CopyToPango(ctx, ancestors, &ipv6_entry, ev)...)
+		var object *TunnelInterfaceResourceIpv6Object
+		diags.Append(o.Ipv6.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &ipv6_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1702,7 +1823,7 @@ func (o *TunnelInterfaceResourceModel) CopyToPango(ctx context.Context, ancestor
 
 	return diags
 }
-func (o *TunnelInterfaceResourceBonjourObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceBonjourObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enable_value := o.Enable.ValueBoolPointer()
 	groupId_value := o.GroupId.ValueInt64Pointer()
@@ -1717,7 +1838,7 @@ func (o *TunnelInterfaceResourceBonjourObject) CopyToPango(ctx context.Context, 
 
 	return diags
 }
-func (o *TunnelInterfaceResourceIpObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1727,7 +1848,7 @@ func (o *TunnelInterfaceResourceIpObject) CopyToPango(ctx context.Context, ances
 
 	return diags
 }
-func (o *TunnelInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_tf_entries []TunnelInterfaceResourceIpv6AddressObject
 	var address_pango_entries []tunnel.Ipv6Address
@@ -1739,7 +1860,7 @@ func (o *TunnelInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, anc
 		}
 		for _, elt := range address_tf_entries {
 			var entry *tunnel.Ipv6Address
-			diags.Append(elt.CopyToPango(ctx, append(ancestors, elt), &entry, ev)...)
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
 			}
@@ -1758,31 +1879,39 @@ func (o *TunnelInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, anc
 
 	return diags
 }
-func (o *TunnelInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	enableOnInterface_value := o.EnableOnInterface.ValueBoolPointer()
 	var prefix_entry *tunnel.Ipv6AddressPrefix
-	if o.Prefix != nil {
+	if !o.Prefix.IsUnknown() && !o.Prefix.IsNull() {
 		if *obj != nil && (*obj).Prefix != nil {
 			prefix_entry = (*obj).Prefix
 		} else {
 			prefix_entry = new(tunnel.Ipv6AddressPrefix)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Prefix.CopyToPango(ctx, append(ancestors, o), &prefix_entry, ev)...)
+		var object *TunnelInterfaceResourceIpv6AddressPrefixObject
+		diags.Append(o.Prefix.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &prefix_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
 	}
 	var anycast_entry *tunnel.Ipv6AddressAnycast
-	if o.Anycast != nil {
+	if !o.Anycast.IsUnknown() && !o.Anycast.IsNull() {
 		if *obj != nil && (*obj).Anycast != nil {
 			anycast_entry = (*obj).Anycast
 		} else {
 			anycast_entry = new(tunnel.Ipv6AddressAnycast)
 		}
-		// ModelOrObject: Object
-		diags.Append(o.Anycast.CopyToPango(ctx, append(ancestors, o), &anycast_entry, ev)...)
+		var object *TunnelInterfaceResourceIpv6AddressAnycastObject
+		diags.Append(o.Anycast.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, append(ancestors, o), &anycast_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1798,7 +1927,7 @@ func (o *TunnelInterfaceResourceIpv6AddressObject) CopyToPango(ctx context.Conte
 
 	return diags
 }
-func (o *TunnelInterfaceResourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpv6AddressPrefixObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1807,7 +1936,7 @@ func (o *TunnelInterfaceResourceIpv6AddressPrefixObject) CopyToPango(ctx context
 
 	return diags
 }
-func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **tunnel.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **tunnel.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	if (*obj) == nil {
@@ -1817,38 +1946,84 @@ func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) CopyToPango(ctx contex
 	return diags
 }
 
-func (o *TunnelInterfaceResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var ip_list types.List
 	{
 		var ip_tf_entries []TunnelInterfaceResourceIpObject
-		for _, elt := range obj.Ip {
-			entry := TunnelInterfaceResourceIpObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Ip.IsNull() {
+			diags.Append(o.Ip.ElementsAs(ctx, &ip_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			ip_tf_entries = append(ip_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Ip {
+			entry := TunnelInterfaceResourceIpObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(ip_tf_entries) {
+				entry = ip_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(ip_tf_entries) {
+				ip_tf_entries[idx] = entry
+			} else {
+				ip_tf_entries = append(ip_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("ip")
 		ip_list, list_diags = types.ListValueFrom(ctx, schemaType, ip_tf_entries)
 		diags.Append(list_diags...)
 	}
-	var bonjour_object *TunnelInterfaceResourceBonjourObject
-	if obj.Bonjour != nil {
-		bonjour_object = new(TunnelInterfaceResourceBonjourObject)
-		diags.Append(bonjour_object.CopyFromPango(ctx, ancestors, obj.Bonjour, ev)...)
+
+	var bonjour_obj *TunnelInterfaceResourceBonjourObject
+	if o.Bonjour.IsNull() {
+		bonjour_obj = new(TunnelInterfaceResourceBonjourObject)
+	} else {
+		diags.Append(o.Bonjour.As(ctx, &bonjour_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var ipv6_object *TunnelInterfaceResourceIpv6Object
+	bonjour_object := types.ObjectNull(bonjour_obj.AttributeTypes())
+	if obj.Bonjour != nil {
+		diags.Append(bonjour_obj.CopyFromPango(ctx, client, ancestors, obj.Bonjour, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		bonjour_object, diags_tmp = types.ObjectValueFrom(ctx, bonjour_obj.AttributeTypes(), bonjour_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var ipv6_obj *TunnelInterfaceResourceIpv6Object
+	if o.Ipv6.IsNull() {
+		ipv6_obj = new(TunnelInterfaceResourceIpv6Object)
+	} else {
+		diags.Append(o.Ipv6.As(ctx, &ipv6_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	ipv6_object := types.ObjectNull(ipv6_obj.AttributeTypes())
 	if obj.Ipv6 != nil {
-		ipv6_object = new(TunnelInterfaceResourceIpv6Object)
-		diags.Append(ipv6_object.CopyFromPango(ctx, ancestors, obj.Ipv6, ev)...)
+		diags.Append(ipv6_obj.CopyFromPango(ctx, client, ancestors, obj.Ipv6, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		ipv6_object, diags_tmp = types.ObjectValueFrom(ctx, ipv6_obj.AttributeTypes(), ipv6_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1892,7 +2067,7 @@ func (o *TunnelInterfaceResourceModel) CopyFromPango(ctx context.Context, ancest
 	return diags
 }
 
-func (o *TunnelInterfaceResourceBonjourObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceBonjourObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Bonjour, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var enable_value types.Bool
@@ -1914,27 +2089,43 @@ func (o *TunnelInterfaceResourceBonjourObject) CopyFromPango(ctx context.Context
 	return diags
 }
 
-func (o *TunnelInterfaceResourceIpObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ip, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
 
-func (o *TunnelInterfaceResourceIpv6Object) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpv6Object) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ipv6, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	var address_list types.List
 	{
 		var address_tf_entries []TunnelInterfaceResourceIpv6AddressObject
-		for _, elt := range obj.Address {
-			entry := TunnelInterfaceResourceIpv6AddressObject{
-				Name: types.StringValue(elt.Name),
-			}
-			diags.Append(entry.CopyFromPango(ctx, append(ancestors, entry), &elt, ev)...)
+		if !o.Address.IsNull() {
+			diags.Append(o.Address.ElementsAs(ctx, &address_tf_entries, false)...)
 			if diags.HasError() {
 				return diags
 			}
-			address_tf_entries = append(address_tf_entries, entry)
+		}
+
+		for idx, elt := range obj.Address {
+			entry := TunnelInterfaceResourceIpv6AddressObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(address_tf_entries) {
+				entry = address_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(address_tf_entries) {
+				address_tf_entries[idx] = entry
+			} else {
+				address_tf_entries = append(address_tf_entries, entry)
+			}
 		}
 		var list_diags diag.Diagnostics
 		schemaType := o.getTypeFor("address")
@@ -1957,20 +2148,50 @@ func (o *TunnelInterfaceResourceIpv6Object) CopyFromPango(ctx context.Context, a
 	return diags
 }
 
-func (o *TunnelInterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ipv6Address, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var prefix_object *TunnelInterfaceResourceIpv6AddressPrefixObject
-	if obj.Prefix != nil {
-		prefix_object = new(TunnelInterfaceResourceIpv6AddressPrefixObject)
-		diags.Append(prefix_object.CopyFromPango(ctx, append(ancestors, o), obj.Prefix, ev)...)
+
+	var prefix_obj *TunnelInterfaceResourceIpv6AddressPrefixObject
+	if o.Prefix.IsNull() {
+		prefix_obj = new(TunnelInterfaceResourceIpv6AddressPrefixObject)
+	} else {
+		diags.Append(o.Prefix.As(ctx, &prefix_obj, basetypes.ObjectAsOptions{})...)
 		if diags.HasError() {
 			return diags
 		}
 	}
-	var anycast_object *TunnelInterfaceResourceIpv6AddressAnycastObject
+	prefix_object := types.ObjectNull(prefix_obj.AttributeTypes())
+	if obj.Prefix != nil {
+		diags.Append(prefix_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Prefix, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		prefix_object, diags_tmp = types.ObjectValueFrom(ctx, prefix_obj.AttributeTypes(), prefix_obj)
+		diags.Append(diags_tmp...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+
+	var anycast_obj *TunnelInterfaceResourceIpv6AddressAnycastObject
+	if o.Anycast.IsNull() {
+		anycast_obj = new(TunnelInterfaceResourceIpv6AddressAnycastObject)
+	} else {
+		diags.Append(o.Anycast.As(ctx, &anycast_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	anycast_object := types.ObjectNull(anycast_obj.AttributeTypes())
 	if obj.Anycast != nil {
-		anycast_object = new(TunnelInterfaceResourceIpv6AddressAnycastObject)
-		diags.Append(anycast_object.CopyFromPango(ctx, append(ancestors, o), obj.Anycast, ev)...)
+		diags.Append(anycast_obj.CopyFromPango(ctx, client, append(ancestors, o), obj.Anycast, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		anycast_object, diags_tmp = types.ObjectValueFrom(ctx, anycast_obj.AttributeTypes(), anycast_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1988,13 +2209,13 @@ func (o *TunnelInterfaceResourceIpv6AddressObject) CopyFromPango(ctx context.Con
 	return diags
 }
 
-func (o *TunnelInterfaceResourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpv6AddressPrefixObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ipv6AddressPrefix, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
 }
 
-func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *tunnel.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TunnelInterfaceResourceIpv6AddressAnycastObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *tunnel.Ipv6AddressAnycast, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	return diags
@@ -2005,7 +2226,7 @@ func (o *TunnelInterfaceResourceModel) resourceXpathParentComponents() ([]string
 	return components, nil
 }
 
-func (r *TunnelInterfaceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *TunnelInterfaceResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state TunnelInterfaceResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -2020,7 +2241,7 @@ func (r *TunnelInterfaceResource) Create(ctx context.Context, req resource.Creat
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -2094,7 +2315,7 @@ func (r *TunnelInterfaceResource) Create(ctx context.Context, req resource.Creat
 
 	// Load the desired config.
 	var obj *tunnel.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -2135,21 +2356,21 @@ func (r *TunnelInterfaceResource) Create(ctx context.Context, req resource.Creat
 		}
 	}
 
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
 	if importLocation != nil {
-		err = r.manager.ImportToLocations(ctx, location, []tunnel.ImportLocation{importLocation}, obj.Name)
+		err = o.manager.ImportToLocations(ctx, location, []tunnel.ImportLocation{importLocation}, obj.Name)
 		if err != nil {
 			resp.Diagnostics.AddError("Failed to import resource into location", err.Error())
 			return
 		}
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -2161,13 +2382,12 @@ func (r *TunnelInterfaceResource) Create(ctx context.Context, req resource.Creat
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *TunnelInterfaceResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state TunnelInterfaceResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state TunnelInterfaceResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -2187,7 +2407,7 @@ func (o *TunnelInterfaceResource) Read(ctx context.Context, req resource.ReadReq
 
 	{
 		var terraformLocation TunnelInterfaceLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -2240,15 +2460,15 @@ func (o *TunnelInterfaceResource) Read(ctx context.Context, req resource.ReadReq
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_tunnel_interface_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -2258,16 +2478,16 @@ func (o *TunnelInterfaceResource) Read(ctx context.Context, req resource.ReadReq
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -2280,7 +2500,7 @@ func (o *TunnelInterfaceResource) Read(ctx context.Context, req resource.ReadReq
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *TunnelInterfaceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *TunnelInterfaceResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state TunnelInterfaceResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -2360,7 +2580,7 @@ func (r *TunnelInterfaceResource) Update(ctx context.Context, req resource.Updat
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -2370,13 +2590,18 @@ func (r *TunnelInterfaceResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *tunnel.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -2387,22 +2612,27 @@ func (r *TunnelInterfaceResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -2416,10 +2646,10 @@ func (r *TunnelInterfaceResource) Update(ctx context.Context, req resource.Updat
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *TunnelInterfaceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *TunnelInterfaceResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state TunnelInterfaceResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -2435,7 +2665,7 @@ func (r *TunnelInterfaceResource) Delete(ctx context.Context, req resource.Delet
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -2522,13 +2752,13 @@ func (r *TunnelInterfaceResource) Delete(ctx context.Context, req resource.Delet
 	}
 
 	if importLocation != nil {
-		err = r.manager.UnimportFromLocations(ctx, location, []tunnel.ImportLocation{importLocation}, state.Name.ValueString())
+		err = o.manager.UnimportFromLocations(ctx, location, []tunnel.ImportLocation{importLocation}, state.Name.ValueString())
 	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, []tunnel.ImportLocation{importLocation}, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, []tunnel.ImportLocation{importLocation}, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -2543,14 +2773,15 @@ type TunnelInterfaceImportState struct {
 
 func (o TunnelInterfaceImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *TunnelInterfaceLocation `json:"location"`
-		Name     *string                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *TunnelInterfaceLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, TunnelInterfaceLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -2564,8 +2795,8 @@ func (o TunnelInterfaceImportState) MarshalJSON() ([]byte, error) {
 
 func (o *TunnelInterfaceImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *TunnelInterfaceLocation `json:"location"`
-		Name     *string                  `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2574,10 +2805,14 @@ func (o *TunnelInterfaceImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, TunnelInterfaceLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object
@@ -2625,7 +2860,7 @@ func TunnelInterfaceImportStateCreator(ctx context.Context, resource types.Objec
 	return json.Marshal(importStruct)
 }
 
-func (r *TunnelInterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *TunnelInterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj TunnelInterfaceImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

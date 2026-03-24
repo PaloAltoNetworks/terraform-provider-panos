@@ -69,11 +69,47 @@ func (o *TerraformPositionObject) CopyToPango() movement.Position {
 func (o *TerraformPositionObject) ValidateConfig(resp *resource.ValidateConfigResponse) {
 	allowedPositions := []string{"first", "last", "before", "after"}
 
-	if !slices.Contains(allowedPositions, o.Where.ValueString()) {
-		resp.Diagnostics.AddAttributeWarning(
-			path.Root("position").AtName("where"),
+	var where string
+	if !o.Where.IsUnknown() {
+		where = o.Where.ValueString()
+		if !slices.Contains(allowedPositions, o.Where.ValueString()) {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("position").AtName("where"),
+				"Missing attribute configuration",
+				fmt.Sprintf("where attribute must be one of the valid values: first, last, before, after, found: '%s'", o.Where.ValueString()))
+			return
+		}
+	}
+
+	// where is either a valid position, or an empty string at this point. If where position requires a valid pivot point, and
+	// o.Pivot is known at this time, validate that o.Pivot is neither null nor an empty string.
+	if (where == "after" || where == "before") && !o.Pivot.IsUnknown() && (o.Pivot.IsNull() || o.Pivot.ValueString() == "") {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("position").AtName("pivot"),
 			"Missing attribute configuration",
-			fmt.Sprintf("where attribute must be one of the valid values: first, last, before, after, found: '%s'", o.Where.ValueString()))
+			"position pivot attribute must be set to a valid object when where attribute is set to either 'after' or 'before'")
+		return
+	}
+
+	if where == "first" || where == "last" {
+		if !o.Pivot.IsUnknown() && !o.Pivot.IsNull() {
+			resp.Diagnostics.AddAttributeWarning(
+				path.Root("position").AtName("pivot"),
+				"Unexpected attribute configuration",
+				"pivot attribute is ignored when where is set to 'first' or 'last'")
+		}
+
+		if !o.Directly.IsUnknown() && !o.Directly.IsNull() {
+			resp.Diagnostics.AddAttributeWarning(
+				path.Root("position").AtName("directly"),
+				"Unexpected attribute configuration",
+				"directly attribute is ignored when where is set to 'first' or 'last'")
+		}
+	}
+
+	// If either pivot or direclty are unknown we can't validate that they are both set correcly.
+	if o.Pivot.IsUnknown() || o.Directly.IsUnknown() {
+		return
 	}
 
 	if !o.Pivot.IsNull() && o.Directly.IsNull() {

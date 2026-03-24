@@ -129,3 +129,100 @@ func makeAddressGroupConfig(label string) string {
 
 	return fmt.Sprintf(confiTpl, label, label, label)
 }
+
+const testAccAddressGroup_Hierarchy_Initial_Tmpl = `
+variable prefix { type = string }
+
+resource "panos_device_group" "parent" {
+  location = { panorama = {} }
+
+  name = "dg-${var.prefix}-parent"
+}
+
+resource "panos_device_group" "child" {
+  location = { panorama = {} }
+
+  name = "dg-${var.prefix}-child"
+}
+
+resource "panos_device_group_parent" "relation" {
+  location = { panorama = {} }
+
+  device_group = panos_device_group.child.name
+  parent       = panos_device_group.parent.name
+}
+
+resource "panos_address" "parent" {
+  location = { device_group = { name = panos_device_group.parent.name} }
+
+  name = "addr-${var.prefix}"
+  ip_netmask = "10.0.0.1/32"
+}
+
+resource "panos_address" "child" {
+  location = { device_group = { name = panos_device_group.child.name} }
+
+  name = "addr-${var.prefix}"
+  ip_netmask = "10.0.0.1/32"
+}
+`
+
+const testAccAddressGroup_Hierarchy_Parent_Entries_Tmpl = `
+resource "panos_address_group" "parent" {
+  location = { device_group = { name = panos_device_group.parent.name } }
+
+  name = "ag-${var.prefix}"
+  static = [panos_address.parent.name]
+}
+`
+
+const testAccAddressGroup_Hierarchy_Child_Entries_Tmpl = `
+resource "panos_address_group" "child" {
+  location = { device_group = { name = panos_device_group.child.name} }
+
+  name = "ag-${var.prefix}"
+  static = [panos_address.child.name]
+}
+`
+
+func TestAccAddressGroup_Hierarchy(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	configStep1 := testAccAddressGroup_Hierarchy_Initial_Tmpl
+	configStep2 := mergeConfigs(
+		testAccAddressGroup_Hierarchy_Initial_Tmpl,
+		testAccAddressGroup_Hierarchy_Parent_Entries_Tmpl,
+	)
+	configStep3 := mergeConfigs(
+		testAccAddressGroup_Hierarchy_Initial_Tmpl,
+		testAccAddressGroup_Hierarchy_Parent_Entries_Tmpl,
+		testAccAddressGroup_Hierarchy_Child_Entries_Tmpl,
+	)
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: configStep1,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+			{
+				Config: configStep2,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+			{
+				Config: configStep3,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+		},
+	})
+}

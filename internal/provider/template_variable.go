@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/panorama/template_variable"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -54,10 +55,10 @@ type TemplateVariableDataSourceFilter struct {
 }
 
 type TemplateVariableDataSourceModel struct {
-	Location    types.Object                          `tfsdk:"location"`
-	Name        types.String                          `tfsdk:"name"`
-	Description types.String                          `tfsdk:"description"`
-	Type        *TemplateVariableDataSourceTypeObject `tfsdk:"type"`
+	Location    types.Object `tfsdk:"location"`
+	Name        types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	Type        types.Object `tfsdk:"type"`
 }
 type TemplateVariableDataSourceTypeObject struct {
 	IpNetmask      types.String `tfsdk:"ip_netmask"`
@@ -122,18 +123,22 @@ func (o TemplateVariableDataSourceTypeObject) EntryName() *string {
 	return nil
 }
 
-func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	var type_entry *template_variable.Type
-	if o.Type != nil {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
 		if *obj != nil && (*obj).Type != nil {
 			type_entry = (*obj).Type
 		} else {
 			type_entry = new(template_variable.Type)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Type.CopyToPango(ctx, ancestors, &type_entry, ev)...)
+		var object *TemplateVariableDataSourceTypeObject
+		diags.Append(o.Type.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -148,7 +153,7 @@ func (o *TemplateVariableDataSourceModel) CopyToPango(ctx context.Context, ances
 
 	return diags
 }
-func (o *TemplateVariableDataSourceTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateVariableDataSourceTypeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
@@ -180,12 +185,27 @@ func (o *TemplateVariableDataSourceTypeObject) CopyToPango(ctx context.Context, 
 	return diags
 }
 
-func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var type_object *TemplateVariableDataSourceTypeObject
+
+	var type_obj *TemplateVariableDataSourceTypeObject
+	if o.Type.IsNull() {
+		type_obj = new(TemplateVariableDataSourceTypeObject)
+	} else {
+		diags.Append(o.Type.As(ctx, &type_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	type_object := types.ObjectNull(type_obj.AttributeTypes())
 	if obj.Type != nil {
-		type_object = new(TemplateVariableDataSourceTypeObject)
-		diags.Append(type_object.CopyFromPango(ctx, ancestors, obj.Type, ev)...)
+		diags.Append(type_obj.CopyFromPango(ctx, client, ancestors, obj.Type, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		type_object, diags_tmp = types.ObjectValueFrom(ctx, type_obj.AttributeTypes(), type_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -202,7 +222,7 @@ func (o *TemplateVariableDataSourceModel) CopyFromPango(ctx context.Context, anc
 	return diags
 }
 
-func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateVariableDataSourceTypeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipNetmask_value types.String
@@ -277,18 +297,13 @@ func TemplateVariableDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "The name of the service.",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"type": TemplateVariableDataSourceTypeSchema(),
@@ -317,98 +332,74 @@ func (o *TemplateVariableDataSourceModel) getTypeFor(name string) attr.Type {
 func TemplateVariableDataSourceTypeSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"ip_netmask": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ip_range": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"fqdn": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"group_id": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"device_priority": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"device_id": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"interface": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"as_number": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"qos_profile": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"egress_max": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"link_tag": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -464,8 +455,8 @@ func (d *TemplateVariableDataSource) Configure(_ context.Context, req datasource
 }
 func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state TemplateVariableDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state TemplateVariableDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -481,7 +472,7 @@ func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.Re
 
 	{
 		var terraformLocation TemplateVariableLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -513,15 +504,15 @@ func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.Re
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_template_variable_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -531,16 +522,16 @@ func (o *TemplateVariableDataSource) Read(ctx context.Context, req datasource.Re
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -573,10 +564,10 @@ func TemplateVariableResourceLocationSchema() rsschema.Attribute {
 }
 
 type TemplateVariableResourceModel struct {
-	Location    types.Object                        `tfsdk:"location"`
-	Name        types.String                        `tfsdk:"name"`
-	Description types.String                        `tfsdk:"description"`
-	Type        *TemplateVariableResourceTypeObject `tfsdk:"type"`
+	Location    types.Object `tfsdk:"location"`
+	Name        types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+	Type        types.Object `tfsdk:"type"`
 }
 type TemplateVariableResourceTypeObject struct {
 	IpNetmask      types.String `tfsdk:"ip_netmask"`
@@ -592,7 +583,29 @@ type TemplateVariableResourceTypeObject struct {
 	LinkTag        types.String `tfsdk:"link_tag"`
 }
 
-func (r *TemplateVariableResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *TemplateVariableResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
+		var nestedObj TemplateVariableResourceTypeObject
+		diags := o.Type.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("type"))
+		}
+	}
+}
+
+func (o *TemplateVariableResourceTypeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *TemplateVariableResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource TemplateVariableResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -605,18 +618,12 @@ func TemplateVariableResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "The name of the service.",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"description": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"type": TemplateVariableResourceTypeSchema(),
@@ -645,18 +652,12 @@ func (o *TemplateVariableResourceModel) getTypeFor(name string) attr.Type {
 func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"ip_netmask": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.ExactlyOneOf(path.Expressions{
@@ -677,82 +678,52 @@ func TemplateVariableResourceTypeSchema() rsschema.SingleNestedAttribute {
 
 			"ip_range": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"fqdn": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"group_id": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"device_priority": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"device_id": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"interface": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"as_number": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"qos_profile": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"egress_max": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"link_tag": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -776,31 +747,31 @@ func (o *TemplateVariableResourceTypeObject) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func (r *TemplateVariableResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *TemplateVariableResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_template_variable"
 }
 
-func (r *TemplateVariableResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *TemplateVariableResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = TemplateVariableResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *TemplateVariableResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *TemplateVariableResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := template_variable.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := template_variable.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*template_variable.Entry, template_variable.Location, *template_variable.Service](r.client, template_variable.NewService(r.client), batchSize, specifier, template_variable.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*template_variable.Entry, template_variable.Location, *template_variable.Service](o.client, template_variable.NewService(o.client), batchSize, specifier, template_variable.SpecMatches)
 }
 
 func (o *TemplateVariableResourceModel) AttributeTypes() map[string]attr.Type {
@@ -852,18 +823,22 @@ func (o TemplateVariableResourceTypeObject) EntryName() *string {
 	return nil
 }
 
-func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
 	var type_entry *template_variable.Type
-	if o.Type != nil {
+	if !o.Type.IsUnknown() && !o.Type.IsNull() {
 		if *obj != nil && (*obj).Type != nil {
 			type_entry = (*obj).Type
 		} else {
 			type_entry = new(template_variable.Type)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.Type.CopyToPango(ctx, ancestors, &type_entry, ev)...)
+		var object *TemplateVariableResourceTypeObject
+		diags.Append(o.Type.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &type_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -878,7 +853,7 @@ func (o *TemplateVariableResourceModel) CopyToPango(ctx context.Context, ancesto
 
 	return diags
 }
-func (o *TemplateVariableResourceTypeObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateVariableResourceTypeObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	ipNetmask_value := o.IpNetmask.ValueStringPointer()
 	ipRange_value := o.IpRange.ValueStringPointer()
@@ -910,12 +885,27 @@ func (o *TemplateVariableResourceTypeObject) CopyToPango(ctx context.Context, an
 	return diags
 }
 
-func (o *TemplateVariableResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateVariableResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_variable.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var type_object *TemplateVariableResourceTypeObject
+
+	var type_obj *TemplateVariableResourceTypeObject
+	if o.Type.IsNull() {
+		type_obj = new(TemplateVariableResourceTypeObject)
+	} else {
+		diags.Append(o.Type.As(ctx, &type_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	type_object := types.ObjectNull(type_obj.AttributeTypes())
 	if obj.Type != nil {
-		type_object = new(TemplateVariableResourceTypeObject)
-		diags.Append(type_object.CopyFromPango(ctx, ancestors, obj.Type, ev)...)
+		diags.Append(type_obj.CopyFromPango(ctx, client, ancestors, obj.Type, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		type_object, diags_tmp = types.ObjectValueFrom(ctx, type_obj.AttributeTypes(), type_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -932,7 +922,7 @@ func (o *TemplateVariableResourceModel) CopyFromPango(ctx context.Context, ances
 	return diags
 }
 
-func (o *TemplateVariableResourceTypeObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *TemplateVariableResourceTypeObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *template_variable.Type, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var ipNetmask_value types.String
@@ -999,7 +989,7 @@ func (o *TemplateVariableResourceModel) resourceXpathParentComponents() ([]strin
 	return components, nil
 }
 
-func (r *TemplateVariableResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *TemplateVariableResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state TemplateVariableResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1014,7 +1004,7 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1067,7 +1057,7 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 
 	// Load the desired config.
 	var obj *template_variable.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1085,13 +1075,13 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1103,13 +1093,12 @@ func (r *TemplateVariableResource) Create(ctx context.Context, req resource.Crea
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state TemplateVariableResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state TemplateVariableResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1129,7 +1118,7 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 
 	{
 		var terraformLocation TemplateVariableLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1161,15 +1150,15 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_template_variable_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -1179,16 +1168,16 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1201,7 +1190,7 @@ func (o *TemplateVariableResource) Read(ctx context.Context, req resource.ReadRe
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *TemplateVariableResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *TemplateVariableResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state TemplateVariableResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1260,7 +1249,7 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1270,13 +1259,18 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *template_variable.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1287,22 +1281,27 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1316,10 +1315,10 @@ func (r *TemplateVariableResource) Update(ctx context.Context, req resource.Upda
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *TemplateVariableResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *TemplateVariableResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state TemplateVariableResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1335,7 +1334,7 @@ func (r *TemplateVariableResource) Delete(ctx context.Context, req resource.Dele
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1377,7 +1376,7 @@ func (r *TemplateVariableResource) Delete(ctx context.Context, req resource.Dele
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1392,14 +1391,15 @@ type TemplateVariableImportState struct {
 
 func (o TemplateVariableImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *TemplateVariableLocation `json:"location"`
-		Name     *string                   `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *TemplateVariableLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, TemplateVariableLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -1413,8 +1413,8 @@ func (o TemplateVariableImportState) MarshalJSON() ([]byte, error) {
 
 func (o *TemplateVariableImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *TemplateVariableLocation `json:"location"`
-		Name     *string                   `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1423,10 +1423,14 @@ func (o *TemplateVariableImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, TemplateVariableLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object
@@ -1474,7 +1478,7 @@ func TemplateVariableImportStateCreator(ctx context.Context, resource types.Obje
 	return json.Marshal(importStruct)
 }
 
-func (r *TemplateVariableResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *TemplateVariableResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj TemplateVariableImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)

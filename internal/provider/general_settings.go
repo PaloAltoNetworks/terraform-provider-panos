@@ -11,6 +11,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/device/services/general"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -53,13 +54,13 @@ type GeneralSettingsDataSourceFilter struct {
 }
 
 type GeneralSettingsDataSourceModel struct {
-	Location             types.Object                                `tfsdk:"location"`
-	Domain               types.String                                `tfsdk:"domain"`
-	GeoLocation          *GeneralSettingsDataSourceGeoLocationObject `tfsdk:"geo_location"`
-	Hostname             types.String                                `tfsdk:"hostname"`
-	LoginBanner          types.String                                `tfsdk:"login_banner"`
-	SslTlsServiceProfile types.String                                `tfsdk:"ssl_tls_service_profile"`
-	Timezone             types.String                                `tfsdk:"timezone"`
+	Location             types.Object `tfsdk:"location"`
+	Domain               types.String `tfsdk:"domain"`
+	GeoLocation          types.Object `tfsdk:"geo_location"`
+	Hostname             types.String `tfsdk:"hostname"`
+	LoginBanner          types.String `tfsdk:"login_banner"`
+	SslTlsServiceProfile types.String `tfsdk:"ssl_tls_service_profile"`
+	Timezone             types.String `tfsdk:"timezone"`
 }
 type GeneralSettingsDataSourceGeoLocationObject struct {
 	Latitude  types.String `tfsdk:"latitude"`
@@ -110,18 +111,22 @@ func (o GeneralSettingsDataSourceGeoLocationObject) EntryName() *string {
 	return nil
 }
 
-func (o *GeneralSettingsDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **general.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *GeneralSettingsDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **general.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	domain_value := o.Domain.ValueStringPointer()
 	var geoLocation_entry *general.GeoLocation
-	if o.GeoLocation != nil {
+	if !o.GeoLocation.IsUnknown() && !o.GeoLocation.IsNull() {
 		if *obj != nil && (*obj).GeoLocation != nil {
 			geoLocation_entry = (*obj).GeoLocation
 		} else {
 			geoLocation_entry = new(general.GeoLocation)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.GeoLocation.CopyToPango(ctx, ancestors, &geoLocation_entry, ev)...)
+		var object *GeneralSettingsDataSourceGeoLocationObject
+		diags.Append(o.GeoLocation.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &geoLocation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -143,7 +148,7 @@ func (o *GeneralSettingsDataSourceModel) CopyToPango(ctx context.Context, ancest
 
 	return diags
 }
-func (o *GeneralSettingsDataSourceGeoLocationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **general.GeoLocation, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *GeneralSettingsDataSourceGeoLocationObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **general.GeoLocation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	latitude_value := o.Latitude.ValueStringPointer()
 	longitude_value := o.Longitude.ValueStringPointer()
@@ -157,12 +162,27 @@ func (o *GeneralSettingsDataSourceGeoLocationObject) CopyToPango(ctx context.Con
 	return diags
 }
 
-func (o *GeneralSettingsDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *general.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *GeneralSettingsDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *general.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var geoLocation_object *GeneralSettingsDataSourceGeoLocationObject
+
+	var geoLocation_obj *GeneralSettingsDataSourceGeoLocationObject
+	if o.GeoLocation.IsNull() {
+		geoLocation_obj = new(GeneralSettingsDataSourceGeoLocationObject)
+	} else {
+		diags.Append(o.GeoLocation.As(ctx, &geoLocation_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	geoLocation_object := types.ObjectNull(geoLocation_obj.AttributeTypes())
 	if obj.GeoLocation != nil {
-		geoLocation_object = new(GeneralSettingsDataSourceGeoLocationObject)
-		diags.Append(geoLocation_object.CopyFromPango(ctx, ancestors, obj.GeoLocation, ev)...)
+		diags.Append(geoLocation_obj.CopyFromPango(ctx, client, ancestors, obj.GeoLocation, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		geoLocation_object, diags_tmp = types.ObjectValueFrom(ctx, geoLocation_obj.AttributeTypes(), geoLocation_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -198,7 +218,7 @@ func (o *GeneralSettingsDataSourceModel) CopyFromPango(ctx context.Context, ance
 	return diags
 }
 
-func (o *GeneralSettingsDataSourceGeoLocationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *general.GeoLocation, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *GeneralSettingsDataSourceGeoLocationObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *general.GeoLocation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var latitude_value types.String
@@ -228,44 +248,34 @@ func GeneralSettingsDataSourceSchema() dsschema.Schema {
 
 			"domain": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"geo_location": GeneralSettingsDataSourceGeoLocationSchema(),
 
 			"hostname": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"login_banner": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"ssl_tls_service_profile": dsschema.StringAttribute{
 				Description: "SSL TLS service profile",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"timezone": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -292,26 +302,20 @@ func (o *GeneralSettingsDataSourceModel) getTypeFor(name string) attr.Type {
 func GeneralSettingsDataSourceGeoLocationSchema() dsschema.SingleNestedAttribute {
 	return dsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    true,
 		Optional:    true,
-		Sensitive:   false,
+		Computed:    true,
 		Attributes: map[string]dsschema.Attribute{
 
 			"latitude": dsschema.StringAttribute{
 				Description: "latitude coordinate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"longitude": dsschema.StringAttribute{
 				Description: "longitude coordinate",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -366,8 +370,8 @@ func (d *GeneralSettingsDataSource) Configure(_ context.Context, req datasource.
 }
 func (o *GeneralSettingsDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state GeneralSettingsDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state GeneralSettingsDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -383,7 +387,7 @@ func (o *GeneralSettingsDataSource) Read(ctx context.Context, req datasource.Rea
 
 	{
 		var terraformLocation GeneralSettingsLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -429,7 +433,7 @@ func (o *GeneralSettingsDataSource) Read(ctx context.Context, req datasource.Rea
 		"function":      "Read",
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
@@ -444,16 +448,16 @@ func (o *GeneralSettingsDataSource) Read(ctx context.Context, req datasource.Rea
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -481,20 +485,42 @@ func GeneralSettingsResourceLocationSchema() rsschema.Attribute {
 }
 
 type GeneralSettingsResourceModel struct {
-	Location             types.Object                              `tfsdk:"location"`
-	Domain               types.String                              `tfsdk:"domain"`
-	GeoLocation          *GeneralSettingsResourceGeoLocationObject `tfsdk:"geo_location"`
-	Hostname             types.String                              `tfsdk:"hostname"`
-	LoginBanner          types.String                              `tfsdk:"login_banner"`
-	SslTlsServiceProfile types.String                              `tfsdk:"ssl_tls_service_profile"`
-	Timezone             types.String                              `tfsdk:"timezone"`
+	Location             types.Object `tfsdk:"location"`
+	Domain               types.String `tfsdk:"domain"`
+	GeoLocation          types.Object `tfsdk:"geo_location"`
+	Hostname             types.String `tfsdk:"hostname"`
+	LoginBanner          types.String `tfsdk:"login_banner"`
+	SslTlsServiceProfile types.String `tfsdk:"ssl_tls_service_profile"`
+	Timezone             types.String `tfsdk:"timezone"`
 }
 type GeneralSettingsResourceGeoLocationObject struct {
 	Latitude  types.String `tfsdk:"latitude"`
 	Longitude types.String `tfsdk:"longitude"`
 }
 
-func (r *GeneralSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *GeneralSettingsResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.GeoLocation.IsUnknown() && !o.GeoLocation.IsNull() {
+		var nestedObj GeneralSettingsResourceGeoLocationObject
+		diags := o.GeoLocation.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			nestedObj.ValidateConfig(ctx, resp, path.AtName("geo_location"))
+		}
+	}
+}
+
+func (o *GeneralSettingsResourceGeoLocationObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *GeneralSettingsResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource GeneralSettingsResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -507,44 +533,29 @@ func GeneralSettingsResourceSchema() rsschema.Schema {
 
 			"domain": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"geo_location": GeneralSettingsResourceGeoLocationSchema(),
 
 			"hostname": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"login_banner": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"ssl_tls_service_profile": rsschema.StringAttribute{
 				Description: "SSL TLS service profile",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"timezone": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -1142,26 +1153,17 @@ func (o *GeneralSettingsResourceModel) getTypeFor(name string) attr.Type {
 func GeneralSettingsResourceGeoLocationSchema() rsschema.SingleNestedAttribute {
 	return rsschema.SingleNestedAttribute{
 		Description: "",
-		Required:    false,
-		Computed:    false,
 		Optional:    true,
-		Sensitive:   false,
 		Attributes: map[string]rsschema.Attribute{
 
 			"latitude": rsschema.StringAttribute{
 				Description: "latitude coordinate",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"longitude": rsschema.StringAttribute{
 				Description: "longitude coordinate",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 		},
 	}
@@ -1185,30 +1187,30 @@ func (o *GeneralSettingsResourceGeoLocationObject) getTypeFor(name string) attr.
 	panic("unreachable")
 }
 
-func (r *GeneralSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *GeneralSettingsResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_general_settings"
 }
 
-func (r *GeneralSettingsResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *GeneralSettingsResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = GeneralSettingsResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *GeneralSettingsResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *GeneralSettingsResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := general.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := general.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
-	r.manager = sdkmanager.NewConfigObjectManager(r.client, general.NewService(r.client), specifier)
+	o.manager = sdkmanager.NewConfigObjectManager(o.client, general.NewService(o.client), specifier)
 }
 
 func (o *GeneralSettingsResourceModel) AttributeTypes() map[string]attr.Type {
@@ -1255,18 +1257,22 @@ func (o GeneralSettingsResourceGeoLocationObject) EntryName() *string {
 	return nil
 }
 
-func (o *GeneralSettingsResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **general.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *GeneralSettingsResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **general.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	domain_value := o.Domain.ValueStringPointer()
 	var geoLocation_entry *general.GeoLocation
-	if o.GeoLocation != nil {
+	if !o.GeoLocation.IsUnknown() && !o.GeoLocation.IsNull() {
 		if *obj != nil && (*obj).GeoLocation != nil {
 			geoLocation_entry = (*obj).GeoLocation
 		} else {
 			geoLocation_entry = new(general.GeoLocation)
 		}
-		// ModelOrObject: Model
-		diags.Append(o.GeoLocation.CopyToPango(ctx, ancestors, &geoLocation_entry, ev)...)
+		var object *GeneralSettingsResourceGeoLocationObject
+		diags.Append(o.GeoLocation.As(ctx, &object, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+		diags.Append(object.CopyToPango(ctx, client, ancestors, &geoLocation_entry, ev)...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1288,7 +1294,7 @@ func (o *GeneralSettingsResourceModel) CopyToPango(ctx context.Context, ancestor
 
 	return diags
 }
-func (o *GeneralSettingsResourceGeoLocationObject) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **general.GeoLocation, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *GeneralSettingsResourceGeoLocationObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **general.GeoLocation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	latitude_value := o.Latitude.ValueStringPointer()
 	longitude_value := o.Longitude.ValueStringPointer()
@@ -1302,12 +1308,27 @@ func (o *GeneralSettingsResourceGeoLocationObject) CopyToPango(ctx context.Conte
 	return diags
 }
 
-func (o *GeneralSettingsResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *general.Config, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *GeneralSettingsResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *general.Config, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var geoLocation_object *GeneralSettingsResourceGeoLocationObject
+
+	var geoLocation_obj *GeneralSettingsResourceGeoLocationObject
+	if o.GeoLocation.IsNull() {
+		geoLocation_obj = new(GeneralSettingsResourceGeoLocationObject)
+	} else {
+		diags.Append(o.GeoLocation.As(ctx, &geoLocation_obj, basetypes.ObjectAsOptions{})...)
+		if diags.HasError() {
+			return diags
+		}
+	}
+	geoLocation_object := types.ObjectNull(geoLocation_obj.AttributeTypes())
 	if obj.GeoLocation != nil {
-		geoLocation_object = new(GeneralSettingsResourceGeoLocationObject)
-		diags.Append(geoLocation_object.CopyFromPango(ctx, ancestors, obj.GeoLocation, ev)...)
+		diags.Append(geoLocation_obj.CopyFromPango(ctx, client, ancestors, obj.GeoLocation, ev)...)
+		if diags.HasError() {
+			return diags
+		}
+		var diags_tmp diag.Diagnostics
+		geoLocation_object, diags_tmp = types.ObjectValueFrom(ctx, geoLocation_obj.AttributeTypes(), geoLocation_obj)
+		diags.Append(diags_tmp...)
 		if diags.HasError() {
 			return diags
 		}
@@ -1343,7 +1364,7 @@ func (o *GeneralSettingsResourceModel) CopyFromPango(ctx context.Context, ancest
 	return diags
 }
 
-func (o *GeneralSettingsResourceGeoLocationObject) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *general.GeoLocation, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *GeneralSettingsResourceGeoLocationObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *general.GeoLocation, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var latitude_value types.String
@@ -1365,7 +1386,7 @@ func (o *GeneralSettingsResourceModel) resourceXpathParentComponents() ([]string
 	return components, nil
 }
 
-func (r *GeneralSettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *GeneralSettingsResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state GeneralSettingsResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -1379,7 +1400,7 @@ func (r *GeneralSettingsResource) Create(ctx context.Context, req resource.Creat
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1444,7 +1465,7 @@ func (r *GeneralSettingsResource) Create(ctx context.Context, req resource.Creat
 
 	// Load the desired config.
 	var obj *general.Config
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1462,13 +1483,13 @@ func (r *GeneralSettingsResource) Create(ctx context.Context, req resource.Creat
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1480,13 +1501,12 @@ func (r *GeneralSettingsResource) Create(ctx context.Context, req resource.Creat
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *GeneralSettingsResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state GeneralSettingsResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state GeneralSettingsResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1506,7 +1526,7 @@ func (o *GeneralSettingsResource) Read(ctx context.Context, req resource.ReadReq
 
 	{
 		var terraformLocation GeneralSettingsLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -1552,7 +1572,7 @@ func (o *GeneralSettingsResource) Read(ctx context.Context, req resource.ReadReq
 		"function":      "Read",
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
@@ -1567,16 +1587,16 @@ func (o *GeneralSettingsResource) Read(ctx context.Context, req resource.ReadReq
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -1589,7 +1609,7 @@ func (o *GeneralSettingsResource) Read(ctx context.Context, req resource.ReadReq
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *GeneralSettingsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *GeneralSettingsResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state GeneralSettingsResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1660,7 +1680,7 @@ func (r *GeneralSettingsResource) Update(ctx context.Context, req resource.Updat
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1670,13 +1690,13 @@ func (r *GeneralSettingsResource) Update(ctx context.Context, req resource.Updat
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components)
+	obj, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -1687,22 +1707,19 @@ func (r *GeneralSettingsResource) Update(ctx context.Context, req resource.Updat
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj)
+	updated, err := o.manager.Update(ctx, location, components, obj)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -1716,10 +1733,10 @@ func (r *GeneralSettingsResource) Update(ctx context.Context, req resource.Updat
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *GeneralSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *GeneralSettingsResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state GeneralSettingsResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -1734,7 +1751,7 @@ func (r *GeneralSettingsResource) Delete(ctx context.Context, req resource.Delet
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -1789,7 +1806,7 @@ func (r *GeneralSettingsResource) Delete(ctx context.Context, req resource.Delet
 		return
 	}
 
-	existing, err := r.manager.Read(ctx, location, components)
+	existing, err := o.manager.Read(ctx, location, components)
 	if err != nil {
 		resp.Diagnostics.AddError("Error while deleting resource", err.Error())
 		return
@@ -1798,7 +1815,7 @@ func (r *GeneralSettingsResource) Delete(ctx context.Context, req resource.Delet
 	var obj general.Config
 	obj.Misc = existing.Misc
 
-	err = r.manager.Delete(ctx, location, &obj)
+	err = o.manager.Delete(ctx, location, &obj)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -1806,7 +1823,7 @@ func (r *GeneralSettingsResource) Delete(ctx context.Context, req resource.Delet
 
 }
 
-func (r *GeneralSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *GeneralSettingsResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 }
 

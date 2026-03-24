@@ -8,6 +8,7 @@ import (
 
 	sdk "github.com/PaloAltoNetworks/pango"
 
+	"github.com/hashicorp/terraform-plugin-framework/action"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
 	"github.com/hashicorp/terraform-plugin-framework/function"
@@ -20,7 +21,9 @@ import (
 
 // Ensure the provider implementation interface is sound.
 var (
-	_ provider.Provider = &PanosProvider{}
+	_ provider.Provider              = &PanosProvider{}
+	_ provider.ProviderWithFunctions = &PanosProvider{}
+	_ provider.ProviderWithActions   = &PanosProvider{}
 )
 
 // PanosProvider is the provider implementation.
@@ -306,6 +309,7 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 	resp.DataSourceData = providerData
 	resp.ResourceData = providerData
 	resp.EphemeralResourceData = providerData
+	resp.ActionData = providerData
 
 	// Done.
 	tflog.Info(ctx, "Configured client", map[string]any{"success": true})
@@ -315,13 +319,26 @@ func (p *PanosProvider) Configure(ctx context.Context, req provider.ConfigureReq
 func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewAdminRoleDataSource,
+		NewAuthenticationProfileDataSource,
 		NewCertificateDataSource,
 		NewDnsSettingsDataSource,
 		NewDynamicUpdatesDataSource,
 		NewGeneralSettingsDataSource,
+		NewGlobalprotectGatewayDataSource,
+		NewConfigLogSettingsDataSource,
+		NewCorrelationLogSettingsDataSource,
+		NewGlobalprotectLogSettingsDataSource,
+		NewHipmatchLogSettingsDataSource,
+		NewIptagLogSettingsDataSource,
+		NewSystemLogSettingsDataSource,
+		NewUseridLogSettingsDataSource,
 		NewNtpSettingsDataSource,
 		NewLdapProfileDataSource,
+		NewSyslogProfileDataSource,
+		NewProxySettingsDataSource,
 		NewSslDecryptDataSource,
+		NewDhcpDataSource,
+		NewGlobalprotectPortalDataSource,
 		NewIkeGatewayDataSource,
 		NewAggregateInterfaceDataSource,
 		NewEthernetInterfaceDataSource,
@@ -331,6 +348,18 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewLogicalRouterDataSource,
 		NewAntiSpywareSecurityProfileDataSource,
 		NewInterfaceManagementProfileDataSource,
+		NewBgpAddressFamilyRoutingProfileDataSource,
+		NewBgpAuthRoutingProfileDataSource,
+		NewBgpDampeningRoutingProfileDataSource,
+		NewBgpFilteringRoutingProfileDataSource,
+		NewBgpRedistributionRoutingProfileDataSource,
+		NewBgpTimerRoutingProfileDataSource,
+		NewFiltersAccessListRoutingProfileDataSource,
+		NewFiltersAsPathAccessListRoutingProfileDataSource,
+		NewFiltersBgpRouteMapRoutingProfileDataSource,
+		NewFiltersCommunityListRoutingProfileDataSource,
+		NewFiltersPrefixListRoutingProfileDataSource,
+		NewFiltersRouteMapsRedistributionRoutingProfileDataSource,
 		NewAggregateLayer3SubinterfaceDataSource,
 		NewEthernetLayer3SubinterfaceDataSource,
 		NewIpsecTunnelDataSource,
@@ -368,6 +397,7 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewTemplateDataSource,
 		NewDecryptionPolicyDataSource,
 		NewDecryptionPolicyRulesDataSource,
+		NewDefaultSecurityPolicyDataSource,
 		NewNatPolicyDataSource,
 		NewNatPolicyRulesDataSource,
 		NewSecurityPolicyDataSource,
@@ -379,12 +409,26 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewAdminRoleResource,
+		NewAuthenticationProfileResource,
+		NewCertificateImportResource,
 		NewDnsSettingsResource,
 		NewDynamicUpdatesResource,
 		NewGeneralSettingsResource,
+		NewGlobalprotectGatewayResource,
+		NewConfigLogSettingsResource,
+		NewCorrelationLogSettingsResource,
+		NewGlobalprotectLogSettingsResource,
+		NewHipmatchLogSettingsResource,
+		NewIptagLogSettingsResource,
+		NewSystemLogSettingsResource,
+		NewUseridLogSettingsResource,
 		NewNtpSettingsResource,
 		NewLdapProfileResource,
+		NewSyslogProfileResource,
+		NewProxySettingsResource,
 		NewSslDecryptResource,
+		NewDhcpResource,
+		NewGlobalprotectPortalResource,
 		NewIkeGatewayResource,
 		NewAggregateInterfaceResource,
 		NewEthernetInterfaceResource,
@@ -394,6 +438,18 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewLogicalRouterResource,
 		NewAntiSpywareSecurityProfileResource,
 		NewInterfaceManagementProfileResource,
+		NewBgpAddressFamilyRoutingProfileResource,
+		NewBgpAuthRoutingProfileResource,
+		NewBgpDampeningRoutingProfileResource,
+		NewBgpFilteringRoutingProfileResource,
+		NewBgpRedistributionRoutingProfileResource,
+		NewBgpTimerRoutingProfileResource,
+		NewFiltersAccessListRoutingProfileResource,
+		NewFiltersAsPathAccessListRoutingProfileResource,
+		NewFiltersBgpRouteMapRoutingProfileResource,
+		NewFiltersCommunityListRoutingProfileResource,
+		NewFiltersPrefixListRoutingProfileResource,
+		NewFiltersRouteMapsRedistributionRoutingProfileResource,
 		NewAggregateLayer3SubinterfaceResource,
 		NewEthernetLayer3SubinterfaceResource,
 		NewIpsecTunnelResource,
@@ -431,6 +487,7 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewTemplateResource,
 		NewDecryptionPolicyResource,
 		NewDecryptionPolicyRulesResource,
+		NewDefaultSecurityPolicyResource,
 		NewNatPolicyResource,
 		NewNatPolicyRulesResource,
 		NewSecurityPolicyResource,
@@ -442,6 +499,13 @@ func (p *PanosProvider) EphemeralResources(_ context.Context) []func() ephemeral
 	return []func() ephemeral.EphemeralResource{
 		NewApiKeyResource,
 		NewVmAuthKeyResource,
+	}
+}
+
+func (p *PanosProvider) Actions(_ context.Context) []func() action.Action {
+	return []func() action.Action{
+		NewCommitAction,
+		NewPushToDevicesAction,
 	}
 }
 
@@ -501,8 +565,35 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_application_group": resourceFuncs{
 		CreateImportId: ApplicationGroupImportStateCreator,
 	},
+	"panos_authentication_profile": resourceFuncs{
+		CreateImportId: AuthenticationProfileImportStateCreator,
+	},
+	"panos_bgp_address_family_routing_profile": resourceFuncs{
+		CreateImportId: BgpAddressFamilyRoutingProfileImportStateCreator,
+	},
+	"panos_bgp_auth_routing_profile": resourceFuncs{
+		CreateImportId: BgpAuthRoutingProfileImportStateCreator,
+	},
+	"panos_bgp_dampening_routing_profile": resourceFuncs{
+		CreateImportId: BgpDampeningRoutingProfileImportStateCreator,
+	},
+	"panos_bgp_filtering_routing_profile": resourceFuncs{
+		CreateImportId: BgpFilteringRoutingProfileImportStateCreator,
+	},
+	"panos_bgp_redistribution_routing_profile": resourceFuncs{
+		CreateImportId: BgpRedistributionRoutingProfileImportStateCreator,
+	},
+	"panos_bgp_timer_routing_profile": resourceFuncs{
+		CreateImportId: BgpTimerRoutingProfileImportStateCreator,
+	},
 	"panos_certificate_profile": resourceFuncs{
 		CreateImportId: CertificateProfileImportStateCreator,
+	},
+	"panos_config_log_settings": resourceFuncs{
+		CreateImportId: ConfigLogSettingsImportStateCreator,
+	},
+	"panos_correlation_log_settings": resourceFuncs{
+		CreateImportId: CorrelationLogSettingsImportStateCreator,
 	},
 	"panos_custom_url_category": resourceFuncs{
 		CreateImportId: CustomUrlCategoryImportStateCreator,
@@ -513,8 +604,14 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_decryption_policy_rules": resourceFuncs{
 		CreateImportId: DecryptionPolicyRulesImportStateCreator,
 	},
+	"panos_default_security_policy": resourceFuncs{
+		CreateImportId: DefaultSecurityPolicyImportStateCreator,
+	},
 	"panos_device_group": resourceFuncs{
 		CreateImportId: DeviceGroupImportStateCreator,
+	},
+	"panos_dhcp": resourceFuncs{
+		CreateImportId: DhcpImportStateCreator,
 	},
 	"panos_ethernet_interface": resourceFuncs{
 		CreateImportId: EthernetInterfaceImportStateCreator,
@@ -527,6 +624,36 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_file_blocking_security_profile": resourceFuncs{
 		CreateImportId: FileBlockingSecurityProfileImportStateCreator,
+	},
+	"panos_filters_access_list_routing_profile": resourceFuncs{
+		CreateImportId: FiltersAccessListRoutingProfileImportStateCreator,
+	},
+	"panos_filters_as_path_access_list_routing_profile": resourceFuncs{
+		CreateImportId: FiltersAsPathAccessListRoutingProfileImportStateCreator,
+	},
+	"panos_filters_bgp_route_map_routing_profile": resourceFuncs{
+		CreateImportId: FiltersBgpRouteMapRoutingProfileImportStateCreator,
+	},
+	"panos_filters_community_list_routing_profile": resourceFuncs{
+		CreateImportId: FiltersCommunityListRoutingProfileImportStateCreator,
+	},
+	"panos_filters_prefix_list_routing_profile": resourceFuncs{
+		CreateImportId: FiltersPrefixListRoutingProfileImportStateCreator,
+	},
+	"panos_filters_route_maps_redistribution_routing_profile": resourceFuncs{
+		CreateImportId: FiltersRouteMapsRedistributionRoutingProfileImportStateCreator,
+	},
+	"panos_globalprotect_gateway": resourceFuncs{
+		CreateImportId: GlobalprotectGatewayImportStateCreator,
+	},
+	"panos_globalprotect_log_settings": resourceFuncs{
+		CreateImportId: GlobalprotectLogSettingsImportStateCreator,
+	},
+	"panos_globalprotect_portal": resourceFuncs{
+		CreateImportId: GlobalprotectPortalImportStateCreator,
+	},
+	"panos_hipmatch_log_settings": resourceFuncs{
+		CreateImportId: HipmatchLogSettingsImportStateCreator,
 	},
 	"panos_ike_crypto_profile": resourceFuncs{
 		CreateImportId: IkeCryptoProfileImportStateCreator,
@@ -542,6 +669,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_ipsec_tunnel": resourceFuncs{
 		CreateImportId: IpsecTunnelImportStateCreator,
+	},
+	"panos_iptag_log_settings": resourceFuncs{
+		CreateImportId: IptagLogSettingsImportStateCreator,
 	},
 	"panos_ldap_profile": resourceFuncs{
 		CreateImportId: LdapProfileImportStateCreator,
@@ -579,6 +709,12 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_ssl_tls_service_profile": resourceFuncs{
 		CreateImportId: SslTlsServiceProfileImportStateCreator,
 	},
+	"panos_syslog_profile": resourceFuncs{
+		CreateImportId: SyslogProfileImportStateCreator,
+	},
+	"panos_system_log_settings": resourceFuncs{
+		CreateImportId: SystemLogSettingsImportStateCreator,
+	},
 	"panos_template": resourceFuncs{
 		CreateImportId: TemplateImportStateCreator,
 	},
@@ -593,6 +729,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_url_filtering_security_profile": resourceFuncs{
 		CreateImportId: UrlFilteringSecurityProfileImportStateCreator,
+	},
+	"panos_userid_log_settings": resourceFuncs{
+		CreateImportId: UseridLogSettingsImportStateCreator,
 	},
 	"panos_virtual_router": resourceFuncs{
 		CreateImportId: VirtualRouterImportStateCreator,

@@ -12,6 +12,7 @@ import (
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/objects/admintag"
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -84,7 +85,7 @@ func (o AdministrativeTagDataSourceModel) EntryName() *string {
 	return nil
 }
 
-func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
@@ -101,7 +102,7 @@ func (o *AdministrativeTagDataSourceModel) CopyToPango(ctx context.Context, ance
 	return diags
 }
 
-func (o *AdministrativeTagDataSourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AdministrativeTagDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var color_value types.String
@@ -137,34 +138,25 @@ func AdministrativeTagDataSourceSchema() dsschema.Schema {
 
 			"name": dsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"color": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"comments": dsschema.StringAttribute{
 				Description: "",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 
 			"disable_override": dsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    true,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
+				Computed:    true,
 			},
 		},
 	}
@@ -220,8 +212,8 @@ func (d *AdministrativeTagDataSource) Configure(_ context.Context, req datasourc
 }
 func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
-	var savestate, state AdministrativeTagDataSourceModel
-	resp.Diagnostics.Append(req.Config.Get(ctx, &savestate)...)
+	var state AdministrativeTagDataSourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -237,7 +229,7 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 
 	{
 		var terraformLocation AdministrativeTagLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -278,15 +270,15 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_administrative_tag_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.Diagnostics.AddError("Error reading data", err.Error())
@@ -296,16 +288,16 @@ func (o *AdministrativeTagDataSource) Read(ctx context.Context, req datasource.R
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -345,7 +337,17 @@ type AdministrativeTagResourceModel struct {
 	DisableOverride types.String `tfsdk:"disable_override"`
 }
 
-func (r *AdministrativeTagResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+func (o *AdministrativeTagResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+}
+
+func (o *AdministrativeTagResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+
+	var resource AdministrativeTagResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &resource)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resource.ValidateConfig(ctx, resp, path.Empty())
 }
 
 // <ResourceSchema>
@@ -358,18 +360,12 @@ func AdministrativeTagResourceSchema() rsschema.Schema {
 
 			"name": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
 				Required:    true,
-				Optional:    false,
-				Sensitive:   false,
 			},
 
 			"color": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -420,18 +416,12 @@ func AdministrativeTagResourceSchema() rsschema.Schema {
 
 			"comments": rsschema.StringAttribute{
 				Description: "",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 			},
 
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
-				Computed:    false,
-				Required:    false,
 				Optional:    true,
-				Sensitive:   false,
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -461,31 +451,31 @@ func (o *AdministrativeTagResourceModel) getTypeFor(name string) attr.Type {
 	panic("unreachable")
 }
 
-func (r *AdministrativeTagResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
+func (o *AdministrativeTagResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_administrative_tag"
 }
 
-func (r *AdministrativeTagResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
+func (o *AdministrativeTagResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = AdministrativeTagResourceSchema()
 }
 
 // </ResourceSchema>
 
-func (r *AdministrativeTagResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (o *AdministrativeTagResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	// Prevent panic if the provider has not been configured.
 	if req.ProviderData == nil {
 		return
 	}
 
 	providerData := req.ProviderData.(*ProviderData)
-	r.client = providerData.Client
-	specifier, _, err := admintag.Versioning(r.client.Versioning())
+	o.client = providerData.Client
+	specifier, _, err := admintag.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	r.manager = sdkmanager.NewEntryObjectManager[*admintag.Entry, admintag.Location, *admintag.Service](r.client, admintag.NewService(r.client), batchSize, specifier, admintag.SpecMatches)
+	o.manager = sdkmanager.NewEntryObjectManager[*admintag.Entry, admintag.Location, *admintag.Service](o.client, admintag.NewService(o.client), batchSize, specifier, admintag.SpecMatches)
 }
 
 func (o *AdministrativeTagResourceModel) AttributeTypes() map[string]attr.Type {
@@ -511,7 +501,7 @@ func (o AdministrativeTagResourceModel) EntryName() *string {
 	return nil
 }
 
-func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, ancestors []Ancestor, obj **admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	color_value := o.Color.ValueStringPointer()
 	comments_value := o.Comments.ValueStringPointer()
@@ -528,7 +518,7 @@ func (o *AdministrativeTagResourceModel) CopyToPango(ctx context.Context, ancest
 	return diags
 }
 
-func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, ancestors []Ancestor, obj *admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
+func (o *AdministrativeTagResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *admintag.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	var color_value types.String
@@ -556,7 +546,7 @@ func (o *AdministrativeTagResourceModel) resourceXpathParentComponents() ([]stri
 	return components, nil
 }
 
-func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
+func (o *AdministrativeTagResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var state AdministrativeTagResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -571,7 +561,7 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -633,7 +623,7 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 
 	// Load the desired config.
 	var obj *admintag.Entry
-	resp.Diagnostics.Append(state.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(state.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -651,13 +641,13 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	created, err := r.manager.Create(ctx, location, components, obj)
+	created, err := o.manager.Create(ctx, location, components, obj)
 	if err != nil {
 		resp.Diagnostics.AddError("Error in create", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(state.CopyFromPango(ctx, nil, created, ev)...)
+	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -669,13 +659,12 @@ func (r *AdministrativeTagResource) Create(ctx context.Context, req resource.Cre
 	}
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
-	// Done.
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 
-	var savestate, state AdministrativeTagResourceModel
-	resp.Diagnostics.Append(req.State.Get(ctx, &savestate)...)
+	var state AdministrativeTagResourceModel
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -695,7 +684,7 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 
 	{
 		var terraformLocation AdministrativeTagLocation
-		resp.Diagnostics.Append(savestate.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
 		}
@@ -736,15 +725,15 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	tflog.Info(ctx, "performing resource read", map[string]any{
 		"resource_name": "panos_administrative_tag_resource",
 		"function":      "Read",
-		"name":          savestate.Name.ValueString(),
+		"name":          state.Name.ValueString(),
 	})
 
-	components, err := savestate.resourceXpathParentComponents()
+	components, err := state.resourceXpathParentComponents()
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	object, err := o.manager.Read(ctx, location, components, savestate.Name.ValueString())
+	object, err := o.manager.Read(ctx, location, components, state.Name.ValueString())
 	if err != nil {
 		if errors.Is(err, sdkmanager.ErrObjectNotFound) {
 			resp.State.RemoveResource(ctx)
@@ -754,16 +743,16 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 		return
 	}
 
-	copy_diags := state.CopyFromPango(ctx, nil, object, ev)
+	copy_diags := state.CopyFromPango(ctx, o.client, nil, object, ev)
 	resp.Diagnostics.Append(copy_diags...)
 
 	/*
 			// Keep the timeouts.
 		    // TODO: This won't work for state import.
-			state.Timeouts = savestate.Timeouts
+			state.Timeouts = state.Timeouts
 	*/
 
-	state.Location = savestate.Location
+	state.Location = state.Location
 
 	payload, err := json.Marshal(ev)
 	if err != nil {
@@ -776,7 +765,7 @@ func (o *AdministrativeTagResource) Read(ctx context.Context, req resource.ReadR
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 
 }
-func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+func (o *AdministrativeTagResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 
 	var plan, state AdministrativeTagResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -844,7 +833,7 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -854,13 +843,18 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	obj, err := r.manager.Read(ctx, location, components, plan.Name.ValueString())
+	var obj *admintag.Entry
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		obj, err = o.manager.Read(ctx, location, components, state.Name.ValueString())
+	} else {
+		obj, err = o.manager.Read(ctx, location, components, plan.Name.ValueString())
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	resp.Diagnostics.Append(plan.CopyToPango(ctx, nil, &obj, ev)...)
+	resp.Diagnostics.Append(plan.CopyToPango(ctx, o.client, nil, &obj, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -871,22 +865,27 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	updated, err := r.manager.Update(ctx, location, components, obj, obj.Name)
+	// If name differs between plan and state, we need to set old name for the object
+	// before calling SDK Update() function to properly handle rename + edit cycle.
+	var newName string
+	if state.Name.ValueString() != plan.Name.ValueString() {
+		newName = plan.Name.ValueString()
+		obj.Name = state.Name.ValueString()
+	}
+
+	updated, err := o.manager.Update(ctx, location, components, obj, newName)
 
 	if err != nil {
 		resp.Diagnostics.AddError("Error in update", err.Error())
 		return
 	}
 
-	// Save the location.
-	state.Location = plan.Location
-
 	/*
 		// Keep the timeouts.
 		state.Timeouts = plan.Timeouts
 	*/
 
-	copy_diags := state.CopyFromPango(ctx, nil, updated, ev)
+	copy_diags := plan.CopyFromPango(ctx, o.client, nil, updated, ev)
 	resp.Diagnostics.Append(copy_diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -900,10 +899,10 @@ func (r *AdministrativeTagResource) Update(ctx context.Context, req resource.Upd
 	resp.Private.SetKey(ctx, "encrypted_values", payload)
 
 	// Done.
-	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 
 }
-func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+func (o *AdministrativeTagResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
 
 	var state AdministrativeTagResourceModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
@@ -919,7 +918,7 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 	})
 
 	// Verify mode.
-	if r.client.Hostname == "" {
+	if o.client.Hostname == "" {
 		resp.Diagnostics.AddError("Invalid mode error", InspectionModeError)
 		return
 	}
@@ -970,7 +969,7 @@ func (r *AdministrativeTagResource) Delete(ctx context.Context, req resource.Del
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	err = r.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return
@@ -985,14 +984,15 @@ type AdministrativeTagImportState struct {
 
 func (o AdministrativeTagImportState) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Location *AdministrativeTagLocation `json:"location"`
-		Name     *string                    `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
-	var location_object *AdministrativeTagLocation
+	var location_object interface{}
 	{
-		diags := o.Location.As(context.TODO(), &location_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal location into JSON document", diags.Errors())
+		var err error
+		location_object, err = TypesObjectToMap(o.Location, AdministrativeTagLocationSchema())
+		if err != nil {
+			return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
 		}
 	}
 
@@ -1006,8 +1006,8 @@ func (o AdministrativeTagImportState) MarshalJSON() ([]byte, error) {
 
 func (o *AdministrativeTagImportState) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Location *AdministrativeTagLocation `json:"location"`
-		Name     *string                    `json:"name"`
+		Location interface{} `json:"location"`
+		Name     *string     `json:"name"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -1016,10 +1016,14 @@ func (o *AdministrativeTagImportState) UnmarshalJSON(data []byte) error {
 	}
 	var location_object types.Object
 	{
-		var diags_tmp diag.Diagnostics
-		location_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Location.AttributeTypes(), shadow.Location)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into location", diags_tmp.Errors())
+		location_map, ok := shadow.Location.(map[string]interface{})
+		if !ok {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+		}
+		var err error
+		location_object, err = MapToTypesObject(location_map, AdministrativeTagLocationSchema())
+		if err != nil {
+			return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
 		}
 	}
 	o.Location = location_object
@@ -1067,7 +1071,7 @@ func AdministrativeTagImportStateCreator(ctx context.Context, resource types.Obj
 	return json.Marshal(importStruct)
 }
 
-func (r *AdministrativeTagResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+func (o *AdministrativeTagResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 
 	var obj AdministrativeTagImportState
 	data, err := base64.StdEncoding.DecodeString(req.ID)
