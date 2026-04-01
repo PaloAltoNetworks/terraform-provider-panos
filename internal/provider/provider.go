@@ -348,6 +348,7 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewLogicalRouterDataSource,
 		NewAntiSpywareSecurityProfileDataSource,
 		NewInterfaceManagementProfileDataSource,
+		NewZoneProtectionProfileDataSource,
 		NewBgpAddressFamilyRoutingProfileDataSource,
 		NewBgpAuthRoutingProfileDataSource,
 		NewBgpDampeningRoutingProfileDataSource,
@@ -438,6 +439,7 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewLogicalRouterResource,
 		NewAntiSpywareSecurityProfileResource,
 		NewInterfaceManagementProfileResource,
+		NewZoneProtectionProfileResource,
 		NewBgpAddressFamilyRoutingProfileResource,
 		NewBgpAuthRoutingProfileResource,
 		NewBgpDampeningRoutingProfileResource,
@@ -663,6 +665,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_interface_management_profile": resourceFuncs{
 		CreateImportId: InterfaceManagementProfileImportStateCreator,
+	},
+	"panos_zone_protection_profile": resourceFuncs{
+		CreateImportId: ZoneProtectionProfileImportStateCreator,
 	},
 	"panos_ipsec_crypto_profile": resourceFuncs{
 		CreateImportId: IpsecCryptoProfileImportStateCreator,
