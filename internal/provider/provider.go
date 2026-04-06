@@ -388,6 +388,7 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewSslTlsServiceProfileDataSource,
 		NewUrlFilteringSecurityProfileDataSource,
 		NewVulnerabilitySecurityProfileDataSource,
+		NewDecryptionProfileDataSource,
 		NewWildfireAnalysisSecurityProfileDataSource,
 		NewServiceGroupDataSource,
 		NewServiceDataSource,
@@ -479,6 +480,7 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewSslTlsServiceProfileResource,
 		NewUrlFilteringSecurityProfileResource,
 		NewVulnerabilitySecurityProfileResource,
+		NewDecryptionProfileResource,
 		NewWildfireAnalysisSecurityProfileResource,
 		NewServiceGroupResource,
 		NewServiceResource,
@@ -758,6 +760,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_vulnerability_security_profile": resourceFuncs{
 		CreateImportId: VulnerabilitySecurityProfileImportStateCreator,
+	},
+	"panos_decryption_profile": resourceFuncs{
+		CreateImportId: DecryptionProfileImportStateCreator,
 	},
 	"panos_wildfire_analysis_security_profile": resourceFuncs{
 		CreateImportId: WildfireAnalysisSecurityProfileImportStateCreator,

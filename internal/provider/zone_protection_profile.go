@@ -54,6 +54,7 @@ type ZoneProtectionProfileDataSourceModel struct {
 	Name                       types.String `tfsdk:"name"`
 	Description                types.String `tfsdk:"description"`
 	Flood                      types.Object `tfsdk:"flood"`
+	Scan                       types.List   `tfsdk:"scan"`
 	DiscardIpSpoof             types.Bool   `tfsdk:"discard_ip_spoof"`
 	DiscardStrictSourceRouting types.Bool   `tfsdk:"discard_strict_source_routing"`
 	DiscardLooseSourceRouting  types.Bool   `tfsdk:"discard_loose_source_routing"`
@@ -68,12 +69,14 @@ type ZoneProtectionProfileDataSourceModel struct {
 func (o *ZoneProtectionProfileDataSourceModel) AttributeTypes() map[string]attr.Type {
 	var locationObj ZoneProtectionProfileLocation
 	var floodObj *ZoneProtectionProfileFloodObject
+	var scanObj *ZoneProtectionProfileScanObject
 	return map[string]attr.Type{
-		"location": types.ObjectType{AttrTypes: locationObj.AttributeTypes()},
-		"name":     types.StringType,
+		"location":    types.ObjectType{AttrTypes: locationObj.AttributeTypes()},
+		"name":        types.StringType,
 		"description": types.StringType,
-		"flood": types.ObjectType{AttrTypes: floodObj.AttributeTypes()},
-		"discard_ip_spoof":             types.BoolType,
+		"flood":       types.ObjectType{AttrTypes: floodObj.AttributeTypes()},
+		"scan":        types.ListType{ElemType: types.ObjectType{AttrTypes: scanObj.AttributeTypes()}},
+		"discard_ip_spoof":              types.BoolType,
 		"discard_strict_source_routing": types.BoolType,
 		"discard_loose_source_routing":  types.BoolType,
 		"discard_malformed_option":      types.BoolType,
@@ -97,12 +100,19 @@ func (o *ZoneProtectionProfileDataSourceModel) CopyToPango(ctx context.Context, 
 		return diags
 	}
 
+	scan, d := copyScanToPango(ctx, o.Scan)
+	diags.Append(d...)
+	if diags.HasError() {
+		return diags
+	}
+
 	if *obj == nil {
 		*obj = new(zone_protection.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Description = o.Description.ValueStringPointer()
 	(*obj).Flood = flood
+	(*obj).Scan = scan
 	(*obj).DiscardIpSpoof = o.DiscardIpSpoof.ValueBoolPointer()
 	(*obj).DiscardStrictSourceRouting = o.DiscardStrictSourceRouting.ValueBoolPointer()
 	(*obj).DiscardLooseSourceRouting = o.DiscardLooseSourceRouting.ValueBoolPointer()
@@ -125,9 +135,16 @@ func (o *ZoneProtectionProfileDataSourceModel) CopyFromPango(ctx context.Context
 		return diags
 	}
 
+	scanVal, d := copyScanFromPango(ctx, obj.Scan)
+	diags.Append(d...)
+	if diags.HasError() {
+		return diags
+	}
+
 	o.Name = types.StringValue(obj.Name)
 	o.Description = types.StringPointerValue(obj.Description)
 	o.Flood = floodVal
+	o.Scan = scanVal
 	setBoolFromPtr(&o.DiscardIpSpoof, obj.DiscardIpSpoof)
 	setBoolFromPtr(&o.DiscardStrictSourceRouting, obj.DiscardStrictSourceRouting)
 	setBoolFromPtr(&o.DiscardLooseSourceRouting, obj.DiscardLooseSourceRouting)
@@ -227,6 +244,14 @@ func ZoneProtectionProfileDataSourceSchema() dsschema.Schema {
 				Optional:    true,
 				Computed:    true,
 				Attributes:  ZoneProtectionProfileDataSourceFloodSchema(),
+			},
+			"scan": dsschema.ListNestedAttribute{
+				Description: "Reconnaissance protection (port scan / host sweep) entries.",
+				Optional:    true,
+				Computed:    true,
+				NestedObject: dsschema.NestedAttributeObject{
+					Attributes: ZoneProtectionProfileDataSourceScanSchema(),
+				},
 			},
 			"discard_ip_spoof": dsschema.BoolAttribute{
 				Description: "Discard IP spoofed packets.",
@@ -447,6 +472,7 @@ type ZoneProtectionProfileResourceModel struct {
 	Name                       types.String `tfsdk:"name"`
 	Description                types.String `tfsdk:"description"`
 	Flood                      types.Object `tfsdk:"flood"`
+	Scan                       types.List   `tfsdk:"scan"`
 	DiscardIpSpoof             types.Bool   `tfsdk:"discard_ip_spoof"`
 	DiscardStrictSourceRouting types.Bool   `tfsdk:"discard_strict_source_routing"`
 	DiscardLooseSourceRouting  types.Bool   `tfsdk:"discard_loose_source_routing"`
@@ -461,12 +487,14 @@ type ZoneProtectionProfileResourceModel struct {
 func (o *ZoneProtectionProfileResourceModel) AttributeTypes() map[string]attr.Type {
 	var locationObj ZoneProtectionProfileLocation
 	var floodObj *ZoneProtectionProfileFloodObject
+	var scanObj *ZoneProtectionProfileScanObject
 	return map[string]attr.Type{
-		"location": types.ObjectType{AttrTypes: locationObj.AttributeTypes()},
-		"name":     types.StringType,
+		"location":    types.ObjectType{AttrTypes: locationObj.AttributeTypes()},
+		"name":        types.StringType,
 		"description": types.StringType,
-		"flood": types.ObjectType{AttrTypes: floodObj.AttributeTypes()},
-		"discard_ip_spoof":             types.BoolType,
+		"flood":       types.ObjectType{AttrTypes: floodObj.AttributeTypes()},
+		"scan":        types.ListType{ElemType: types.ObjectType{AttrTypes: scanObj.AttributeTypes()}},
+		"discard_ip_spoof":              types.BoolType,
 		"discard_strict_source_routing": types.BoolType,
 		"discard_loose_source_routing":  types.BoolType,
 		"discard_malformed_option":      types.BoolType,
@@ -502,12 +530,19 @@ func (o *ZoneProtectionProfileResourceModel) CopyToPango(ctx context.Context, cl
 		return diags
 	}
 
+	scan, d := copyScanToPango(ctx, o.Scan)
+	diags.Append(d...)
+	if diags.HasError() {
+		return diags
+	}
+
 	if *obj == nil {
 		*obj = new(zone_protection.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Description = o.Description.ValueStringPointer()
 	(*obj).Flood = flood
+	(*obj).Scan = scan
 	(*obj).DiscardIpSpoof = o.DiscardIpSpoof.ValueBoolPointer()
 	(*obj).DiscardStrictSourceRouting = o.DiscardStrictSourceRouting.ValueBoolPointer()
 	(*obj).DiscardLooseSourceRouting = o.DiscardLooseSourceRouting.ValueBoolPointer()
@@ -530,9 +565,16 @@ func (o *ZoneProtectionProfileResourceModel) CopyFromPango(ctx context.Context, 
 		return diags
 	}
 
+	scanVal, d := copyScanFromPango(ctx, obj.Scan)
+	diags.Append(d...)
+	if diags.HasError() {
+		return diags
+	}
+
 	o.Name = types.StringValue(obj.Name)
 	o.Description = types.StringPointerValue(obj.Description)
 	o.Flood = floodVal
+	o.Scan = scanVal
 	setBoolFromPtr(&o.DiscardIpSpoof, obj.DiscardIpSpoof)
 	setBoolFromPtr(&o.DiscardStrictSourceRouting, obj.DiscardStrictSourceRouting)
 	setBoolFromPtr(&o.DiscardLooseSourceRouting, obj.DiscardLooseSourceRouting)
@@ -568,6 +610,13 @@ func ZoneProtectionProfileResourceSchema() rsschema.Schema {
 				Description: "Flood protection settings.",
 				Optional:    true,
 				Attributes:  ZoneProtectionProfileResourceFloodSchema(),
+			},
+			"scan": rsschema.ListNestedAttribute{
+				Description: "Reconnaissance protection (port scan / host sweep) entries.",
+				Optional:    true,
+				NestedObject: rsschema.NestedAttributeObject{
+					Attributes: ZoneProtectionProfileResourceScanSchema(),
+				},
 			},
 			"discard_ip_spoof": rsschema.BoolAttribute{
 				Description: "Discard IP spoofed packets.",
@@ -1626,6 +1675,223 @@ func floodRatesFromPango(ctx context.Context, r *zone_protection.FloodRates) (ty
 		MaximalRate:  int64PtrToType(r.MaximalRate),
 	}
 	result, d := types.ObjectValueFrom(ctx, tf.AttributeTypes(), tf)
+	diags.Append(d...)
+	return result, diags
+}
+
+// -----------------------------------------------------------------------
+// Scan object types
+// -----------------------------------------------------------------------
+
+// ZoneProtectionProfileScanBlockIpObject maps to pango ScanBlockIp.
+type ZoneProtectionProfileScanBlockIpObject struct {
+	TrackBy  types.String `tfsdk:"track_by"`
+	Duration types.Int64  `tfsdk:"duration"`
+}
+
+func (o *ZoneProtectionProfileScanBlockIpObject) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"track_by": types.StringType,
+		"duration": types.Int64Type,
+	}
+}
+
+// ZoneProtectionProfileScanObject maps to pango ScanEntry.
+// Name is the scan type, e.g. "tcp-port-scan", "udp-port-scan", "host-sweep".
+// Action is mutually exclusive: exactly one of alert, block, block_ip should be set.
+type ZoneProtectionProfileScanObject struct {
+	Name      types.String `tfsdk:"name"`
+	Interval  types.Int64  `tfsdk:"interval"`
+	Threshold types.Int64  `tfsdk:"threshold"`
+	Alert     types.Bool   `tfsdk:"alert"`
+	Block     types.Bool   `tfsdk:"block"`
+	BlockIp   types.Object `tfsdk:"block_ip"`
+}
+
+func (o *ZoneProtectionProfileScanObject) AttributeTypes() map[string]attr.Type {
+	var blockIpObj *ZoneProtectionProfileScanBlockIpObject
+	return map[string]attr.Type{
+		"name":      types.StringType,
+		"interval":  types.Int64Type,
+		"threshold": types.Int64Type,
+		"alert":     types.BoolType,
+		"block":     types.BoolType,
+		"block_ip":  types.ObjectType{AttrTypes: blockIpObj.AttributeTypes()},
+	}
+}
+
+func ZoneProtectionProfileDataSourceScanSchema() map[string]dsschema.Attribute {
+	var blockIpObj *ZoneProtectionProfileScanBlockIpObject
+	return map[string]dsschema.Attribute{
+		"name": dsschema.StringAttribute{
+			Description: "Scan type: tcp-port-scan, udp-port-scan, or host-sweep.",
+			Required:    true,
+		},
+		"interval": dsschema.Int64Attribute{
+			Description: "Interval in seconds.",
+			Optional:    true,
+			Computed:    true,
+		},
+		"threshold": dsschema.Int64Attribute{
+			Description: "Threshold (number of scan attempts).",
+			Optional:    true,
+			Computed:    true,
+		},
+		"alert": dsschema.BoolAttribute{
+			Description: "Action: alert only.",
+			Optional:    true,
+			Computed:    true,
+		},
+		"block": dsschema.BoolAttribute{
+			Description: "Action: block.",
+			Optional:    true,
+			Computed:    true,
+		},
+		"block_ip": dsschema.SingleNestedAttribute{
+			Description: "Action: block IP.",
+			Optional:    true,
+			Computed:    true,
+			Attributes: func() map[string]dsschema.Attribute {
+				_ = blockIpObj
+				return map[string]dsschema.Attribute{
+					"track_by": dsschema.StringAttribute{
+						Description: "Track by attacker or attacker-and-victim.",
+						Optional:    true,
+						Computed:    true,
+					},
+					"duration": dsschema.Int64Attribute{
+						Description: "Block duration in seconds.",
+						Optional:    true,
+						Computed:    true,
+					},
+				}
+			}(),
+		},
+	}
+}
+
+func ZoneProtectionProfileResourceScanSchema() map[string]rsschema.Attribute {
+	return map[string]rsschema.Attribute{
+		"name": rsschema.StringAttribute{
+			Description: "Scan type: tcp-port-scan, udp-port-scan, or host-sweep.",
+			Required:    true,
+		},
+		"interval": rsschema.Int64Attribute{
+			Description: "Interval in seconds.",
+			Optional:    true,
+		},
+		"threshold": rsschema.Int64Attribute{
+			Description: "Threshold (number of scan attempts).",
+			Optional:    true,
+		},
+		"alert": rsschema.BoolAttribute{
+			Description: "Action: alert only.",
+			Optional:    true,
+		},
+		"block": rsschema.BoolAttribute{
+			Description: "Action: block.",
+			Optional:    true,
+		},
+		"block_ip": rsschema.SingleNestedAttribute{
+			Description: "Action: block IP.",
+			Optional:    true,
+			Attributes: map[string]rsschema.Attribute{
+				"track_by": rsschema.StringAttribute{
+					Description: "Track by attacker or attacker-and-victim.",
+					Optional:    true,
+				},
+				"duration": rsschema.Int64Attribute{
+					Description: "Block duration in seconds.",
+					Optional:    true,
+				},
+			},
+		},
+	}
+}
+
+// -----------------------------------------------------------------------
+// Scan conversion helpers
+// -----------------------------------------------------------------------
+
+func copyScanToPango(ctx context.Context, scanList types.List) ([]zone_protection.ScanEntry, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	if scanList.IsNull() || scanList.IsUnknown() {
+		return nil, diags
+	}
+
+	var scanObjs []ZoneProtectionProfileScanObject
+	diags.Append(scanList.ElementsAs(ctx, &scanObjs, false)...)
+	if diags.HasError() {
+		return nil, diags
+	}
+
+	entries := make([]zone_protection.ScanEntry, 0, len(scanObjs))
+	for _, s := range scanObjs {
+		entry := zone_protection.ScanEntry{
+			Name:      s.Name.ValueString(),
+			Interval:  s.Interval.ValueInt64Pointer(),
+			Threshold: s.Threshold.ValueInt64Pointer(),
+		}
+
+		if s.Alert.ValueBool() {
+			entry.Action.Alert = true
+		} else if s.Block.ValueBool() {
+			entry.Action.Block = true
+		} else if !s.BlockIp.IsNull() && !s.BlockIp.IsUnknown() {
+			var blockIpObj ZoneProtectionProfileScanBlockIpObject
+			diags.Append(s.BlockIp.As(ctx, &blockIpObj, basetypes.ObjectAsOptions{})...)
+			if diags.HasError() {
+				return nil, diags
+			}
+			entry.Action.BlockIp = &zone_protection.ScanBlockIp{
+				TrackBy:  blockIpObj.TrackBy.ValueStringPointer(),
+				Duration: blockIpObj.Duration.ValueInt64Pointer(),
+			}
+		}
+		entries = append(entries, entry)
+	}
+	return entries, diags
+}
+
+func copyScanFromPango(ctx context.Context, entries []zone_protection.ScanEntry) (types.List, diag.Diagnostics) {
+	var diags diag.Diagnostics
+	var scanObj *ZoneProtectionProfileScanObject
+	elemType := types.ObjectType{AttrTypes: scanObj.AttributeTypes()}
+
+	if len(entries) == 0 {
+		return types.ListValueMust(elemType, []attr.Value{}), diags
+	}
+
+	tfEntries := make([]ZoneProtectionProfileScanObject, 0, len(entries))
+	for _, e := range entries {
+		var blockIpVal types.Object
+		var blockIpObjT *ZoneProtectionProfileScanBlockIpObject
+		if e.Action.BlockIp != nil {
+			bip := ZoneProtectionProfileScanBlockIpObject{
+				TrackBy:  types.StringPointerValue(e.Action.BlockIp.TrackBy),
+				Duration: int64PtrToType(e.Action.BlockIp.Duration),
+			}
+			var d diag.Diagnostics
+			blockIpVal, d = types.ObjectValueFrom(ctx, bip.AttributeTypes(), bip)
+			diags.Append(d...)
+			if diags.HasError() {
+				return types.ListNull(elemType), diags
+			}
+		} else {
+			blockIpVal = types.ObjectNull(blockIpObjT.AttributeTypes())
+		}
+
+		tfEntries = append(tfEntries, ZoneProtectionProfileScanObject{
+			Name:      types.StringValue(e.Name),
+			Interval:  int64PtrToType(e.Interval),
+			Threshold: int64PtrToType(e.Threshold),
+			Alert:     types.BoolValue(e.Action.Alert),
+			Block:     types.BoolValue(e.Action.Block),
+			BlockIp:   blockIpVal,
+		})
+	}
+
+	result, d := types.ListValueFrom(ctx, elemType, tfEntries)
 	diags.Append(d...)
 	return result, diags
 }
