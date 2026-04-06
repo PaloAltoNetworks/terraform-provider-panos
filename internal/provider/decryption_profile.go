@@ -50,13 +50,12 @@ type DecryptionProfileDataSource struct {
 }
 
 type DecryptionProfileDataSourceModel struct {
-	Location            types.Object `tfsdk:"location"`
-	Name                types.String `tfsdk:"name"`
-	Description         types.String `tfsdk:"description"`
-	SslForwardProxy     types.Object `tfsdk:"ssl_forward_proxy"`
+	Location             types.Object `tfsdk:"location"`
+	Name                 types.String `tfsdk:"name"`
+	SslForwardProxy      types.Object `tfsdk:"ssl_forward_proxy"`
 	SslInboundInspection types.Object `tfsdk:"ssl_inbound_inspection"`
-	SslNoProxy          types.Object `tfsdk:"ssl_no_proxy"`
-	SslProtocolSettings types.Object `tfsdk:"ssl_protocol_settings"`
+	SslNoProxy           types.Object `tfsdk:"ssl_no_proxy"`
+	SslProtocolSettings  types.Object `tfsdk:"ssl_protocol_settings"`
 }
 
 func (o DecryptionProfileDataSourceModel) AncestorName() string { return "" }
@@ -68,7 +67,6 @@ func (o *DecryptionProfileDataSourceModel) CopyToPango(ctx context.Context, clie
 		*obj = new(decryption.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = o.Description.ValueStringPointer()
 	(*obj).SslForwardProxy = copySslForwardProxyToPango(ctx, o.SslForwardProxy, &diags)
 	(*obj).SslInboundInspection = copySslInboundInspectionToPango(ctx, o.SslInboundInspection, &diags)
 	(*obj).SslNoProxy = copySslNoProxyToPango(ctx, o.SslNoProxy, &diags)
@@ -79,7 +77,6 @@ func (o *DecryptionProfileDataSourceModel) CopyToPango(ctx context.Context, clie
 func (o *DecryptionProfileDataSourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *decryption.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
-	o.Description = types.StringPointerValue(obj.Description)
 
 	var d diag.Diagnostics
 	o.SslForwardProxy, d = copySslForwardProxyFromPango(ctx, obj.SslForwardProxy)
@@ -184,13 +181,12 @@ type DecryptionProfileResource struct {
 }
 
 type DecryptionProfileResourceModel struct {
-	Location            types.Object `tfsdk:"location"`
-	Name                types.String `tfsdk:"name"`
-	Description         types.String `tfsdk:"description"`
-	SslForwardProxy     types.Object `tfsdk:"ssl_forward_proxy"`
+	Location             types.Object `tfsdk:"location"`
+	Name                 types.String `tfsdk:"name"`
+	SslForwardProxy      types.Object `tfsdk:"ssl_forward_proxy"`
 	SslInboundInspection types.Object `tfsdk:"ssl_inbound_inspection"`
-	SslNoProxy          types.Object `tfsdk:"ssl_no_proxy"`
-	SslProtocolSettings types.Object `tfsdk:"ssl_protocol_settings"`
+	SslNoProxy           types.Object `tfsdk:"ssl_no_proxy"`
+	SslProtocolSettings  types.Object `tfsdk:"ssl_protocol_settings"`
 }
 
 func (o DecryptionProfileResourceModel) AncestorName() string { return "" }
@@ -214,7 +210,6 @@ func (o *DecryptionProfileResourceModel) CopyToPango(ctx context.Context, client
 		*obj = new(decryption.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
-	(*obj).Description = o.Description.ValueStringPointer()
 	(*obj).SslForwardProxy = copySslForwardProxyToPango(ctx, o.SslForwardProxy, &diags)
 	(*obj).SslInboundInspection = copySslInboundInspectionToPango(ctx, o.SslInboundInspection, &diags)
 	(*obj).SslNoProxy = copySslNoProxyToPango(ctx, o.SslNoProxy, &diags)
@@ -225,7 +220,6 @@ func (o *DecryptionProfileResourceModel) CopyToPango(ctx context.Context, client
 func (o *DecryptionProfileResourceModel) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *decryption.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	o.Name = types.StringValue(obj.Name)
-	o.Description = types.StringPointerValue(obj.Description)
 
 	var d diag.Diagnostics
 	o.SslForwardProxy, d = copySslForwardProxyFromPango(ctx, obj.SslForwardProxy)
@@ -624,13 +618,8 @@ func DecryptionProfileDataSourceSchema() dsschema.Schema {
 				Description: "Decryption profile name.",
 				Required:    true,
 			},
-			"description": dsschema.StringAttribute{
-				Description: "Description of the profile.",
-				Optional:    true,
-				Computed:    true,
-			},
 			"ssl_forward_proxy":      dsschema.SingleNestedAttribute{Description: "SSL forward proxy settings.", Optional: true, Computed: true, Attributes: decryptionProfileSslForwardProxyDsSchema()},
-			"ssl_inbound_inspection": dsschema.SingleNestedAttribute{Description: "SSL inbound inspection settings.", Optional: true, Computed: true, Attributes: decryptionProfileSslInboundInspectionDsSchema()},
+			"ssl_inbound_inspection": dsschema.SingleNestedAttribute{Description: "SSL inbound proxy (inbound inspection) settings.", Optional: true, Computed: true, Attributes: decryptionProfileSslInboundInspectionDsSchema()},
 			"ssl_no_proxy":           dsschema.SingleNestedAttribute{Description: "SSL no-proxy settings.", Optional: true, Computed: true, Attributes: decryptionProfileSslNoProxyDsSchema()},
 			"ssl_protocol_settings":  dsschema.SingleNestedAttribute{Description: "SSL protocol settings.", Optional: true, Computed: true, Attributes: decryptionProfileSslProtocolSettingsDsSchema()},
 		},
@@ -645,12 +634,8 @@ func DecryptionProfileResourceSchema() rsschema.Schema {
 				Description: "Decryption profile name.",
 				Required:    true,
 			},
-			"description": rsschema.StringAttribute{
-				Description: "Description of the profile.",
-				Optional:    true,
-			},
 			"ssl_forward_proxy":      rsschema.SingleNestedAttribute{Description: "SSL forward proxy settings.", Optional: true, Attributes: decryptionProfileSslForwardProxyRsSchema()},
-			"ssl_inbound_inspection": rsschema.SingleNestedAttribute{Description: "SSL inbound inspection settings.", Optional: true, Attributes: decryptionProfileSslInboundInspectionRsSchema()},
+			"ssl_inbound_inspection": rsschema.SingleNestedAttribute{Description: "SSL inbound proxy (inbound inspection) settings.", Optional: true, Attributes: decryptionProfileSslInboundInspectionRsSchema()},
 			"ssl_no_proxy":           rsschema.SingleNestedAttribute{Description: "SSL no-proxy settings.", Optional: true, Attributes: decryptionProfileSslNoProxyRsSchema()},
 			"ssl_protocol_settings":  rsschema.SingleNestedAttribute{Description: "SSL protocol settings.", Optional: true, Attributes: decryptionProfileSslProtocolSettingsRsSchema()},
 		},
@@ -691,19 +676,21 @@ func decryptionProfileSslForwardProxyRsSchema() map[string]rsschema.Attribute {
 
 func decryptionProfileSslInboundInspectionDsSchema() map[string]dsschema.Attribute {
 	return map[string]dsschema.Attribute{
-		"block_if_hsm_unavailable":   dsschema.BoolAttribute{Description: "Block sessions if HSM is unavailable.", Optional: true, Computed: true},
-		"block_if_no_resource":       dsschema.BoolAttribute{Description: "Block sessions if decryption resources are unavailable.", Optional: true, Computed: true},
-		"block_unsupported_cipher":   dsschema.BoolAttribute{Description: "Block sessions if cipher suite is not supported.", Optional: true, Computed: true},
-		"block_unsupported_version":  dsschema.BoolAttribute{Description: "Block sessions if protocol version is not supported.", Optional: true, Computed: true},
+		"block_if_hsm_unavailable":          dsschema.BoolAttribute{Description: "Block sessions if HSM is unavailable.", Optional: true, Computed: true},
+		"block_if_no_resource":              dsschema.BoolAttribute{Description: "Block sessions if decryption resources are unavailable.", Optional: true, Computed: true},
+		"block_tls13_downgrade_no_resource": dsschema.BoolAttribute{Description: "Block TLS 1.3 sessions that cannot be decrypted due to resource constraints.", Optional: true, Computed: true},
+		"block_unsupported_cipher":          dsschema.BoolAttribute{Description: "Block sessions if cipher suite is not supported.", Optional: true, Computed: true},
+		"block_unsupported_version":         dsschema.BoolAttribute{Description: "Block sessions if protocol version is not supported.", Optional: true, Computed: true},
 	}
 }
 
 func decryptionProfileSslInboundInspectionRsSchema() map[string]rsschema.Attribute {
 	return map[string]rsschema.Attribute{
-		"block_if_hsm_unavailable":   rsschema.BoolAttribute{Description: "Block sessions if HSM is unavailable.", Optional: true},
-		"block_if_no_resource":       rsschema.BoolAttribute{Description: "Block sessions if decryption resources are unavailable.", Optional: true},
-		"block_unsupported_cipher":   rsschema.BoolAttribute{Description: "Block sessions if cipher suite is not supported.", Optional: true},
-		"block_unsupported_version":  rsschema.BoolAttribute{Description: "Block sessions if protocol version is not supported.", Optional: true},
+		"block_if_hsm_unavailable":          rsschema.BoolAttribute{Description: "Block sessions if HSM is unavailable.", Optional: true},
+		"block_if_no_resource":              rsschema.BoolAttribute{Description: "Block sessions if decryption resources are unavailable.", Optional: true},
+		"block_tls13_downgrade_no_resource": rsschema.BoolAttribute{Description: "Block TLS 1.3 sessions that cannot be decrypted due to resource constraints.", Optional: true},
+		"block_unsupported_cipher":          rsschema.BoolAttribute{Description: "Block sessions if cipher suite is not supported.", Optional: true},
+		"block_unsupported_version":         rsschema.BoolAttribute{Description: "Block sessions if protocol version is not supported.", Optional: true},
 	}
 }
 
@@ -1037,18 +1024,20 @@ func (o *DecryptionProfileSslForwardProxyObject) AttributeTypes() map[string]att
 }
 
 type DecryptionProfileSslInboundInspectionObject struct {
-	BlockIfHsmUnavailable   types.Bool `tfsdk:"block_if_hsm_unavailable"`
-	BlockIfNoResource       types.Bool `tfsdk:"block_if_no_resource"`
-	BlockUnsupportedCipher  types.Bool `tfsdk:"block_unsupported_cipher"`
-	BlockUnsupportedVersion types.Bool `tfsdk:"block_unsupported_version"`
+	BlockIfHsmUnavailable         types.Bool `tfsdk:"block_if_hsm_unavailable"`
+	BlockIfNoResource             types.Bool `tfsdk:"block_if_no_resource"`
+	BlockTls13DowngradeNoResource types.Bool `tfsdk:"block_tls13_downgrade_no_resource"`
+	BlockUnsupportedCipher        types.Bool `tfsdk:"block_unsupported_cipher"`
+	BlockUnsupportedVersion       types.Bool `tfsdk:"block_unsupported_version"`
 }
 
 func (o *DecryptionProfileSslInboundInspectionObject) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
-		"block_if_hsm_unavailable":   types.BoolType,
-		"block_if_no_resource":       types.BoolType,
-		"block_unsupported_cipher":   types.BoolType,
-		"block_unsupported_version":  types.BoolType,
+		"block_if_hsm_unavailable":          types.BoolType,
+		"block_if_no_resource":              types.BoolType,
+		"block_tls13_downgrade_no_resource": types.BoolType,
+		"block_unsupported_cipher":          types.BoolType,
+		"block_unsupported_version":         types.BoolType,
 	}
 }
 
@@ -1174,10 +1163,11 @@ func copySslInboundInspectionToPango(ctx context.Context, obj types.Object, diag
 		return nil
 	}
 	return &decryption.SslInboundInspection{
-		BlockIfHsmUnavailable:   tfObj.BlockIfHsmUnavailable.ValueBoolPointer(),
-		BlockIfNoResource:       tfObj.BlockIfNoResource.ValueBoolPointer(),
-		BlockUnsupportedCipher:  tfObj.BlockUnsupportedCipher.ValueBoolPointer(),
-		BlockUnsupportedVersion: tfObj.BlockUnsupportedVersion.ValueBoolPointer(),
+		BlockIfHsmUnavailable:         tfObj.BlockIfHsmUnavailable.ValueBoolPointer(),
+		BlockIfNoResource:             tfObj.BlockIfNoResource.ValueBoolPointer(),
+		BlockTls13DowngradeNoResource: tfObj.BlockTls13DowngradeNoResource.ValueBoolPointer(),
+		BlockUnsupportedCipher:        tfObj.BlockUnsupportedCipher.ValueBoolPointer(),
+		BlockUnsupportedVersion:       tfObj.BlockUnsupportedVersion.ValueBoolPointer(),
 	}
 }
 
@@ -1188,10 +1178,11 @@ func copySslInboundInspectionFromPango(ctx context.Context, s *decryption.SslInb
 		return types.ObjectNull(obj.AttributeTypes()), diags
 	}
 	tfObj := DecryptionProfileSslInboundInspectionObject{
-		BlockIfHsmUnavailable:   boolPtrToType(s.BlockIfHsmUnavailable),
-		BlockIfNoResource:       boolPtrToType(s.BlockIfNoResource),
-		BlockUnsupportedCipher:  boolPtrToType(s.BlockUnsupportedCipher),
-		BlockUnsupportedVersion: boolPtrToType(s.BlockUnsupportedVersion),
+		BlockIfHsmUnavailable:         boolPtrToType(s.BlockIfHsmUnavailable),
+		BlockIfNoResource:             boolPtrToType(s.BlockIfNoResource),
+		BlockTls13DowngradeNoResource: boolPtrToType(s.BlockTls13DowngradeNoResource),
+		BlockUnsupportedCipher:        boolPtrToType(s.BlockUnsupportedCipher),
+		BlockUnsupportedVersion:       boolPtrToType(s.BlockUnsupportedVersion),
 	}
 	result, d := types.ObjectValueFrom(ctx, tfObj.AttributeTypes(), tfObj)
 	diags.Append(d...)

@@ -1859,7 +1859,7 @@ func copyScanFromPango(ctx context.Context, entries []zone_protection.ScanEntry)
 	elemType := types.ObjectType{AttrTypes: scanObj.AttributeTypes()}
 
 	if len(entries) == 0 {
-		return types.ListValueMust(elemType, []attr.Value{}), diags
+		return types.ListNull(elemType), diags
 	}
 
 	tfEntries := make([]ZoneProtectionProfileScanObject, 0, len(entries))

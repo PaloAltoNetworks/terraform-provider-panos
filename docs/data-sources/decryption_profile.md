@@ -34,9 +34,8 @@ output "min_tls_version" {
 
 ### Optional / Computed
 
-- `description` (String) Description of the profile.
 - `ssl_forward_proxy` (Attributes) SSL forward proxy decryption settings. (see [below for nested schema](#nestedatt--ssl_forward_proxy))
-- `ssl_inbound_inspection` (Attributes) SSL inbound inspection settings. (see [below for nested schema](#nestedatt--ssl_inbound_inspection))
+- `ssl_inbound_inspection` (Attributes) SSL inbound proxy (inbound inspection) settings. (see [below for nested schema](#nestedatt--ssl_inbound_inspection))
 - `ssl_no_proxy` (Attributes) SSL no-proxy settings. (see [below for nested schema](#nestedatt--ssl_no_proxy))
 - `ssl_protocol_settings` (Attributes) SSL/TLS protocol version and algorithm settings. (see [below for nested schema](#nestedatt--ssl_protocol_settings))
 
@@ -89,6 +88,7 @@ Optional / Computed:
 
 - `block_if_hsm_unavailable` (Boolean) Block sessions if HSM is unavailable.
 - `block_if_no_resource` (Boolean) Block sessions if decryption resources are unavailable.
+- `block_tls13_downgrade_no_resource` (Boolean) Block TLS 1.3 sessions that cannot be decrypted due to resource constraints.
 - `block_unsupported_cipher` (Boolean) Block sessions if cipher suite is not supported.
 - `block_unsupported_version` (Boolean) Block sessions if protocol version is not supported.
 
