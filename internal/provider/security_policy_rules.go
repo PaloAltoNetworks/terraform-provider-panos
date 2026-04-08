@@ -5468,12 +5468,15 @@ func (o *SecurityPolicyRulesResource) Update(ctx context.Context, req resource.U
 		stateEntries[idx] = entry
 	}
 
+	var position movement.Position
 	var positionAttribute TerraformPositionObject
-	resp.Diagnostics.Append(plan.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
-	if resp.Diagnostics.HasError() {
-		return
+	if !plan.Position.IsNull() && !plan.Position.IsUnknown() {
+		resp.Diagnostics.Append(plan.Position.As(ctx, &positionAttribute, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		position = positionAttribute.CopyToPango()
 	}
-	position := positionAttribute.CopyToPango()
 
 	existing, _, err := o.manager.ReadMany(ctx, location, stateEntries, sdkmanager.NonExhaustive, position)
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
@@ -5881,7 +5884,7 @@ func SecurityPolicyRulesLocationSchema() rsschema.Attribute {
 				},
 			},
 			"vsys": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific vsys.",
+				Description: "Located in a specific vsys rulebase",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"ngfw_device": rsschema.StringAttribute{
@@ -5908,11 +5911,11 @@ func SecurityPolicyRulesLocationSchema() rsschema.Attribute {
 				},
 			},
 			"device_group": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific device group.",
+				Description: "Located in a specific device group rulebase",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "The panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -5921,7 +5924,7 @@ func SecurityPolicyRulesLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The device group.",
+						Description: "The device group name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -5930,7 +5933,7 @@ func SecurityPolicyRulesLocationSchema() rsschema.Attribute {
 						},
 					},
 					"rulebase": rsschema.StringAttribute{
-						Description: "The rulebase.",
+						Description: "The rulebase",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("pre-rulebase"),

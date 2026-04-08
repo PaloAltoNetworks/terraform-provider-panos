@@ -10,17 +10,17 @@ import (
 	"github.com/PaloAltoNetworks/pango/xmlapi"
 )
 
-type SDKImportableEntryService[E EntryObject, L EntryLocation, IL ImportLocation] interface {
+type SDKImportableEntryService[E EntryObject, L EntryLocation] interface {
 	CreateWithXpath(context.Context, string, E) error
 	ReadWithXpath(context.Context, string, string) (E, error)
 	List(context.Context, L, string, string, string) ([]E, error)
 	UpdateWithXpath(context.Context, string, E, string) error
-	Delete(context.Context, L, []IL, ...string) error
-	ImportToLocations(context.Context, L, []IL, string) error
-	UnimportFromLocations(context.Context, L, []IL, []string) error
+	Delete(context.Context, L, ...string) error
+	ImportToLocation(context.Context, L, string, string) error
+	UnimportFromLocation(context.Context, L, string, string) error
 }
 
-type ImportableEntryObjectManager[E EntryObject, L EntryLocation, IL ImportLocation, IS SDKImportableEntryService[E, L, IL]] struct {
+type ImportableEntryObjectManager[E EntryObject, L EntryLocation, IS SDKImportableEntryService[E, L]] struct {
 	batchSize int
 	service   IS
 	client    SDKClient
@@ -28,8 +28,8 @@ type ImportableEntryObjectManager[E EntryObject, L EntryLocation, IL ImportLocat
 	matcher   func(E, E) bool
 }
 
-func NewImportableEntryObjectManager[E EntryObject, L EntryLocation, IL ImportLocation, IS SDKImportableEntryService[E, L, IL]](client SDKClient, service IS, batchSize int, specifier func(E) (any, error), matcher func(E, E) bool) *ImportableEntryObjectManager[E, L, IL, IS] {
-	return &ImportableEntryObjectManager[E, L, IL, IS]{
+func NewImportableEntryObjectManager[E EntryObject, L EntryLocation, IS SDKImportableEntryService[E, L]](client SDKClient, service IS, batchSize int, specifier func(E) (any, error), matcher func(E, E) bool) *ImportableEntryObjectManager[E, L, IS] {
+	return &ImportableEntryObjectManager[E, L, IS]{
 		batchSize: batchSize,
 		service:   service,
 		client:    client,
@@ -38,11 +38,11 @@ func NewImportableEntryObjectManager[E EntryObject, L EntryLocation, IL ImportLo
 	}
 }
 
-func (o *ImportableEntryObjectManager[E, L, IL, IS]) ReadMany(ctx context.Context, location L, entries []E) ([]E, error) {
+func (o *ImportableEntryObjectManager[E, L, IS]) ReadMany(ctx context.Context, location L, entries []E) ([]E, error) {
 	return nil, &Error{err: ErrInternal, message: "called ReadMany on an importable singular resource"}
 }
 
-func (o *ImportableEntryObjectManager[E, L, IL, IS]) Read(ctx context.Context, location L, components []string, name string) (E, error) {
+func (o *ImportableEntryObjectManager[E, L, IS]) Read(ctx context.Context, location L, components []string, name string) (E, error) {
 	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(components, util.AsEntryXpath(name))...)
 	if err != nil {
 		return *new(E), err
@@ -59,7 +59,7 @@ func (o *ImportableEntryObjectManager[E, L, IL, IS]) Read(ctx context.Context, l
 	return object, nil
 }
 
-func (o *ImportableEntryObjectManager[E, L, IL, IS]) Create(ctx context.Context, location L, components []string, entry E) (E, error) {
+func (o *ImportableEntryObjectManager[E, L, IS]) Create(ctx context.Context, location L, components []string, entry E) (E, error) {
 	name := entry.EntryName()
 
 	_, err := o.Read(ctx, location, components, name)
@@ -84,7 +84,7 @@ func (o *ImportableEntryObjectManager[E, L, IL, IS]) Create(ctx context.Context,
 	return o.Read(ctx, location, components, name)
 }
 
-func (o *ImportableEntryObjectManager[E, L, IL, IS]) Update(ctx context.Context, location L, components []string, entry E, name string) (E, error) {
+func (o *ImportableEntryObjectManager[E, L, IS]) Update(ctx context.Context, location L, components []string, entry E, name string) (E, error) {
 	xpath, err := location.XpathWithComponents(o.client.Versioning(), append(components, util.AsEntryXpath(entry.EntryName()))...)
 	if err != nil {
 		return *new(E), &Error{err: err, message: "error during Update call"}
@@ -98,7 +98,7 @@ func (o *ImportableEntryObjectManager[E, L, IL, IS]) Update(ctx context.Context,
 	return o.service.ReadWithXpath(ctx, util.AsXpath(xpath), "get")
 }
 
-func (o *ImportableEntryObjectManager[E, L, IL, IS]) Delete(ctx context.Context, location L, importLocations []IL, components []string, names []string) error {
+func (o *ImportableEntryObjectManager[E, L, IS]) Delete(ctx context.Context, location L, components []string, names []string) error {
 	deletes := xmlapi.NewChunkedMultiConfig(o.batchSize, len(names))
 
 	for _, elt := range names {
@@ -123,10 +123,10 @@ func (o *ImportableEntryObjectManager[E, L, IL, IS]) Delete(ctx context.Context,
 	return nil
 }
 
-func (o *ImportableEntryObjectManager[E, L, IL, IS]) ImportToLocations(ctx context.Context, location L, importLocs []IL, entry string) error {
-	return o.service.ImportToLocations(ctx, location, importLocs, entry)
+func (o *ImportableEntryObjectManager[E, L, IS]) ImportToLocation(ctx context.Context, location L, vsys string, entry string) error {
+	return o.service.ImportToLocation(ctx, location, vsys, entry)
 }
 
-func (o *ImportableEntryObjectManager[E, L, IL, IS]) UnimportFromLocations(ctx context.Context, location L, importLocs []IL, entry string) error {
-	return o.service.UnimportFromLocations(ctx, location, importLocs, []string{entry})
+func (o *ImportableEntryObjectManager[E, L, IS]) UnimportFromLocation(ctx context.Context, location L, vsys string, entry string) error {
+	return o.service.UnimportFromLocation(ctx, location, vsys, entry)
 }

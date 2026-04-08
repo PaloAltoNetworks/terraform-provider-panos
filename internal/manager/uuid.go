@@ -189,6 +189,10 @@ func (o *UuidObjectManager[E, L, S]) filterEntriesByLocation(location L, entries
 }
 
 func (o *UuidObjectManager[E, L, S]) moveExhaustive(ctx context.Context, location L, entriesByName map[string]uuidObjectWithState[E], position movement.Position) error {
+	if position == nil {
+		return nil
+	}
+
 	existing, err := o.service.List(ctx, location, "get", "", "")
 	if err != nil && err.Error() != "Object not found" {
 		return &Error{err: err, message: "Failed to list existing entries"}
@@ -237,6 +241,10 @@ type position struct {
 // In that case a care has to be taken to only execute movement on a subset of entries, those that
 // are under Terraform control.
 func (o *UuidObjectManager[E, L, S]) moveNonExhaustive(ctx context.Context, location L, planEntries []E, planEntriesByName map[string]uuidObjectWithState[E], sdkPosition movement.Position) error {
+	if sdkPosition == nil {
+		return nil
+	}
+
 	entries := make([]E, len(planEntriesByName))
 	for _, elt := range planEntriesByName {
 		entries[elt.StateIdx] = elt.Entry
@@ -318,17 +326,21 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 		}
 	}
 
+	var moveErr error
 	switch exhaustive {
 	case Exhaustive:
-		err := o.moveExhaustive(ctx, location, planEntriesByName, sdkPosition)
-		if err != nil {
-			return nil, err
-		}
+		moveErr = o.moveExhaustive(ctx, location, planEntriesByName, sdkPosition)
 	case NonExhaustive:
-		err := o.moveNonExhaustive(ctx, location, planEntries, planEntriesByName, sdkPosition)
-		if err != nil {
-			return nil, err
+		moveErr = o.moveNonExhaustive(ctx, location, planEntries, planEntriesByName, sdkPosition)
+	}
+
+	if moveErr != nil {
+		names := make([]string, 0, len(planEntriesByName))
+		for name := range planEntriesByName {
+			names = append(names, name)
 		}
+		cleanupErr := o.Delete(ctx, location, parentComponents, names, exhaustive)
+		return nil, errors.Join(moveErr, cleanupErr)
 	}
 
 	existing, err = o.service.List(ctx, location, "get", "", "")
@@ -591,17 +603,17 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 		}
 	}
 
+	var moveErr error
 	switch exhaustive {
 	case Exhaustive:
-		err := o.moveExhaustive(ctx, location, processedStateEntries, position)
-		if err != nil {
-			return nil, err
-		}
+		moveErr = o.moveExhaustive(ctx, location, processedStateEntries, position)
 	case NonExhaustive:
-		err := o.moveNonExhaustive(ctx, location, planEntries, planEntriesByName, position)
-		if err != nil {
-			return nil, err
-		}
+		moveErr = o.moveNonExhaustive(ctx, location, planEntries, planEntriesByName, position)
+	}
+
+	if moveErr != nil {
+		cleanupErr := o.cleanUpIncompleteUpdate(ctx, location, parentComponents, processedStateEntries, exhaustive)
+		return nil, errors.Join(moveErr, cleanupErr)
 	}
 
 	existing, err = o.service.List(ctx, location, "get", "", "")

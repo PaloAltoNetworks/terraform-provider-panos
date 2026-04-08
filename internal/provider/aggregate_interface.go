@@ -48,7 +48,7 @@ func NewAggregateInterfaceDataSource() datasource.DataSource {
 
 type AggregateInterfaceDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*aggregate.Entry, aggregate.Location, *aggregate.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*aggregate.Entry, aggregate.Location, *aggregate.Service]
 }
 
 type AggregateInterfaceDataSourceFilter struct {
@@ -12253,7 +12253,7 @@ func (d *AggregateInterfaceDataSource) Configure(_ context.Context, req datasour
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager[*aggregate.Entry, aggregate.Location, *aggregate.Service](d.client, aggregate.NewService(d.client), batchSize, specifier, aggregate.SpecMatches)
+	d.manager = sdkmanager.NewImportableEntryObjectManager(d.client, aggregate.NewService(d.client), batchSize, specifier, aggregate.SpecMatches)
 }
 func (o *AggregateInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -12379,7 +12379,7 @@ func NewAggregateInterfaceResource() resource.Resource {
 
 type AggregateInterfaceResource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*aggregate.Entry, aggregate.Location, *aggregate.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*aggregate.Entry, aggregate.Location, *aggregate.Service]
 }
 
 func AggregateInterfaceResourceLocationSchema() rsschema.Attribute {
@@ -17545,8 +17545,9 @@ func (o *AggregateInterfaceResource) Configure(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
+
 	batchSize := providerData.MultiConfigBatchSize
-	o.manager = sdkmanager.NewEntryObjectManager[*aggregate.Entry, aggregate.Location, *aggregate.Service](o.client, aggregate.NewService(o.client), batchSize, specifier, aggregate.SpecMatches)
+	o.manager = sdkmanager.NewImportableEntryObjectManager(o.client, aggregate.NewService(o.client), batchSize, specifier, aggregate.SpecMatches)
 }
 
 func (o *AggregateInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
@@ -25652,6 +25653,60 @@ func (o *AggregateInterfaceResource) Create(ctx context.Context, req resource.Cr
 		return
 	}
 
+	var importVsys string
+
+	{
+		var terraformLocation AggregateInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		var locationRequiresImport bool
+		if !state.Layer2.IsNull() {
+			locationRequiresImport = true
+		}
+		if !state.Layer3.IsNull() {
+			locationRequiresImport = true
+		}
+
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation AggregateInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
+			}
+		}
+
+	}
+
+	if importVsys != "" {
+		err = o.manager.ImportToLocation(ctx, location, importVsys, obj.Name)
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to import resource into location", err.Error())
+			return
+		}
+	}
+
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -26010,6 +26065,60 @@ func (o *AggregateInterfaceResource) Delete(ctx context.Context, req resource.De
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
+	var importVsys string
+
+	{
+		var terraformLocation AggregateInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		var locationRequiresImport bool
+		if !state.Layer2.IsNull() {
+			locationRequiresImport = true
+		}
+		if !state.Layer3.IsNull() {
+			locationRequiresImport = true
+		}
+
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation AggregateInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
+			}
+		}
+
+	}
+
+	if importVsys != "" {
+		err = o.manager.UnimportFromLocation(ctx, location, importVsys, state.Name.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to unimport resource from location", err.Error())
+			return
+		}
+	}
+
 	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
@@ -26142,6 +26251,7 @@ func (o *AggregateInterfaceResource) ImportState(ctx context.Context, req resour
 type AggregateInterfaceSharedLocation struct {
 }
 type AggregateInterfaceTemplateLocation struct {
+	Vsys           types.String `tfsdk:"vsys"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
@@ -26186,6 +26296,14 @@ func AggregateInterfaceLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"vsys": rsschema.StringAttribute{
+						Description: "",
+						Optional:    true,
+						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -26301,12 +26419,14 @@ func (o AggregateInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
 	}
 
 	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		Vsys:           o.Vsys.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -26317,6 +26437,7 @@ func (o *AggregateInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -26326,6 +26447,7 @@ func (o *AggregateInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Vsys = types.StringPointerValue(shadow.Vsys)
 
 	return nil
 }
@@ -26490,6 +26612,7 @@ func (o *AggregateInterfaceSharedLocation) AttributeTypes() map[string]attr.Type
 }
 func (o *AggregateInterfaceTemplateLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
+		"vsys":            types.StringType,
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
 		"ngfw_device":     types.StringType,

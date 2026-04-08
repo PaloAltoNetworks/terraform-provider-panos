@@ -33,7 +33,7 @@ resource "panos_security_policy_rules" "rules" {
   location = {
     device_group = {
       name = panos_device_group.example.name
-      ruleset = "pre-ruleset"
+      rulebase = "pre-rulebase"
     }
   }
 
@@ -77,7 +77,10 @@ func TestAccSecurityPolicyRulesImport(t *testing.T) {
 		}
 	}
 
-	importStateGenerateIDInvalid := importStateGenerateIDWithPrefixAndRules([]string{"rule-2", "rule-3", "rule-4", "rule-5"})
+	// Import with a superset of rules (rule-5 doesn't exist on server).
+	// ReadMany now handles missing entries gracefully by returning only existing ones,
+	// so this import succeeds with the 3 existing rules rather than failing.
+	importStateGenerateIDPartial := importStateGenerateIDWithPrefixAndRules([]string{"rule-2", "rule-3", "rule-4", "rule-5"})
 	importStateGenerateIDValid := importStateGenerateIDWithPrefixAndRules([]string{"rule-2", "rule-3", "rule-4"})
 
 	resource.Test(t, resource.TestCase{
@@ -99,8 +102,7 @@ func TestAccSecurityPolicyRulesImport(t *testing.T) {
 				},
 				ResourceName:      "panos_security_policy_rules.imported",
 				ImportState:       true,
-				ImportStateIdFunc: importStateGenerateIDInvalid,
-				ExpectError:       regexp.MustCompile("Not all entries found on the server"),
+				ImportStateIdFunc: importStateGenerateIDPartial,
 			},
 			{
 				Config: configStep2,
@@ -1172,6 +1174,283 @@ func TestAccSecurityPolicyRules_UpdateMissing(t *testing.T) {
 	})
 }
 
+const securityPolicyRules_BeforePivot_Initial_Tmpl = `
+variable "prefix" { type = string }
+
+resource "panos_device_group" "dg" {
+  location = { panorama = {} }
+  name = format("%s-dg", var.prefix)
+}
+
+resource "panos_security_policy_rules" "pivot" {
+  location = { device_group = { name = panos_device_group.dg.name } }
+  position = { where = "last" }
+  rules = [{
+    name                  = format("%s-pivot-rule", var.prefix)
+    source_zones          = ["any"]
+    source_addresses      = ["any"]
+    destination_zones     = ["any"]
+    destination_addresses = ["any"]
+    services              = ["any"]
+    applications          = ["any"]
+  }]
+}
+`
+
+const securityPolicyRules_BeforePivot_Rule_Tmpl = `
+variable "destination_addresses" { type = list(string) }
+
+resource "panos_security_policy_rules" "policy" {
+  depends_on = [panos_security_policy_rules.pivot]
+  location   = { device_group = { name = panos_device_group.dg.name } }
+  position = {
+    where    = "before"
+    directly = true
+    pivot    = format("%s-pivot-rule", var.prefix)
+  }
+  rules = [{
+    name                  = format("%s-test-rule", var.prefix)
+    source_zones          = ["any"]
+    source_addresses      = ["any"]
+    destination_zones     = ["any"]
+    destination_addresses = var.destination_addresses
+    services              = ["any"]
+    applications          = ["any"]
+  }]
+
+  lifecycle {
+    ignore_changes = [position]
+  }
+}
+`
+
+func TestAccSecurityPolicyRules_BeforePivotWithUpdate(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	configInitial := securityPolicyRules_BeforePivot_Initial_Tmpl
+	configWithRule := mergeConfigs(
+		securityPolicyRules_BeforePivot_Initial_Tmpl,
+		securityPolicyRules_BeforePivot_Rule_Tmpl,
+	)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck: func() {
+			testAccPreCheck(t)
+		},
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: configInitial,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+			},
+			{
+				Config: configWithRule,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":                config.StringVariable(prefix),
+					"destination_addresses": config.ListVariable(config.StringVariable("10.0.0.1")),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_security_policy_rules.policy",
+						tfjsonpath.New("rules").AtSliceIndex(0).AtMapKey("destination_addresses"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("10.0.0.1"),
+						}),
+					),
+					ExpectServerSecurityRulesOrder(prefix, []string{"test-rule", "pivot-rule"}),
+				},
+			},
+			{
+				Config: configWithRule,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":                config.StringVariable(prefix),
+					"destination_addresses": config.ListVariable(config.StringVariable("10.0.0.1"), config.StringVariable("10.0.0.2")),
+				},
+				PreConfig: func() {
+					CreateServerSecurityRules(prefix, []string{"interloper"}, "pivot-rule")
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_security_policy_rules.policy",
+						tfjsonpath.New("rules").AtSliceIndex(0).AtMapKey("destination_addresses"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("10.0.0.1"),
+							knownvalue.StringExact("10.0.0.2"),
+						}),
+					),
+					ExpectServerSecurityRulesOrder(prefix, []string{"test-rule", "interloper", "pivot-rule"}),
+				},
+			},
+			{
+				Config: configWithRule,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":                config.StringVariable(prefix),
+					"destination_addresses": config.ListVariable(config.StringVariable("10.0.0.1"), config.StringVariable("10.0.0.2")),
+				},
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
 func mergeConfigs(configs ...string) string {
 	return strings.Join(configs, "\n")
+}
+
+func checkNoRulesInRulebase(t *testing.T, prefix string, rulebase string) func() {
+	return func() {
+		t.Helper()
+		location := security.NewDeviceGroupLocation()
+		location.DeviceGroup.DeviceGroup = fmt.Sprintf("%s-dg", prefix)
+		location.DeviceGroup.Rulebase = rulebase
+		service := security.NewService(sdkClient)
+		entries, err := service.List(context.TODO(), *location, "get", "", "")
+		if err != nil {
+			if err.Error() == "Object not found" {
+				return
+			}
+			t.Fatalf("unexpected error listing %s rules: %v", rulebase, err)
+		}
+		for _, entry := range entries {
+			if strings.HasPrefix(entry.Name, prefix) {
+				t.Fatalf("found leaked rule %q in %s after failed apply", entry.Name, rulebase)
+			}
+		}
+	}
+}
+
+const securityPolicyRules_InvalidPivot_Base_Tmpl = `
+variable "prefix" { type = string }
+
+resource "panos_device_group" "dg" {
+  location = { panorama = {} }
+  name = format("%s-dg", var.prefix)
+}
+
+resource "panos_security_policy_rules" "pre" {
+  location = { device_group = { name = panos_device_group.dg.name, rulebase = "pre-rulebase" } }
+  position = { where = "last" }
+  rules = [{
+    name                  = format("%s-pre-rule-1", var.prefix)
+    source_zones          = ["any"]
+    source_addresses      = ["any"]
+    destination_zones     = ["any"]
+    destination_addresses = ["any"]
+    services              = ["any"]
+    applications          = ["any"]
+  }]
+}
+`
+
+const securityPolicyRules_InvalidPivot_NonExistent_Tmpl = `
+resource "panos_security_policy_rules" "post" {
+  location = { device_group = { name = panos_device_group.dg.name, rulebase = "post-rulebase" } }
+  position = { where = "before", directly = true, pivot = format("%s-nonexistent", var.prefix) }
+  rules = [{
+    name                  = format("%s-post-rule-1", var.prefix)
+    source_zones          = ["any"]
+    source_addresses      = ["any"]
+    destination_zones     = ["any"]
+    destination_addresses = ["any"]
+    services              = ["any"]
+    applications          = ["any"]
+  }]
+}
+`
+
+const securityPolicyRules_InvalidPivot_CrossRulebase_Tmpl = `
+resource "panos_security_policy_rules" "post" {
+  location = { device_group = { name = panos_device_group.dg.name, rulebase = "post-rulebase" } }
+  position = { where = "before", directly = true, pivot = format("%s-pre-rule-1", var.prefix) }
+  rules = [{
+    name                  = format("%s-post-rule-1", var.prefix)
+    source_zones          = ["any"]
+    source_addresses      = ["any"]
+    destination_zones     = ["any"]
+    destination_addresses = ["any"]
+    services              = ["any"]
+    applications          = ["any"]
+  }]
+}
+`
+
+func TestAccSecurityPolicyRules_NonExistentPivot(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	configBase := securityPolicyRules_InvalidPivot_Base_Tmpl
+	configNonExistent := mergeConfigs(configBase, securityPolicyRules_InvalidPivot_NonExistent_Tmpl)
+
+	configVars := map[string]config.Variable{
+		"prefix": config.StringVariable(prefix),
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			// Step 1: Create device group + pre-rulebase rule
+			{
+				Config:          configBase,
+				ConfigVariables: configVars,
+			},
+			// Step 2: Add post-rulebase rule with non-existent pivot — expect apply failure
+			{
+				Config:          configNonExistent,
+				ConfigVariables: configVars,
+				ExpectError:     regexp.MustCompile("Failed to move group"),
+			},
+			// Step 3: Verify no rules leaked to post-rulebase
+			{
+				Config:          configBase,
+				ConfigVariables: configVars,
+				PreConfig:       checkNoRulesInRulebase(t, prefix, "post-rulebase"),
+			},
+		},
+	})
+}
+
+func TestAccSecurityPolicyRules_CrossRulebasePivot(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	configBase := securityPolicyRules_InvalidPivot_Base_Tmpl
+	configCrossRulebase := mergeConfigs(configBase, securityPolicyRules_InvalidPivot_CrossRulebase_Tmpl)
+
+	configVars := map[string]config.Variable{
+		"prefix": config.StringVariable(prefix),
+	}
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			// Step 1: Create device group + pre-rulebase rule
+			{
+				Config:          configBase,
+				ConfigVariables: configVars,
+			},
+			// Step 2: Add post-rulebase rule using pre-rulebase rule as pivot — expect apply failure
+			{
+				Config:          configCrossRulebase,
+				ConfigVariables: configVars,
+				ExpectError:     regexp.MustCompile("Failed to move group"),
+			},
+			// Step 3: Verify no rules leaked to post-rulebase
+			{
+				Config:          configBase,
+				ConfigVariables: configVars,
+				PreConfig:       checkNoRulesInRulebase(t, prefix, "post-rulebase"),
+			},
+		},
+	})
 }

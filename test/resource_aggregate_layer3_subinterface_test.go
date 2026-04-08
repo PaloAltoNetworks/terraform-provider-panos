@@ -1548,6 +1548,52 @@ resource "panos_aggregate_layer3_subinterface" "example" {
 }
 `
 
+const aggregateLayer3Subinterface_Import_Zone_Layer3 = `
+variable "prefix" { type = string }
+
+resource "panos_template" "example" {
+  location = { panorama = {} }
+  name = "${var.prefix}-tmpl"
+}
+
+resource "panos_aggregate_interface" "parent" {
+  location = {
+    template = {
+      vsys = "vsys1"
+      name = panos_template.example.name
+    }
+  }
+  name = "ae1"
+  layer3 = {}
+}
+
+resource "panos_aggregate_layer3_subinterface" "example" {
+  location = { template = { name = panos_template.example.name, vsys = "vsys1" } }
+
+  parent = panos_aggregate_interface.parent.name
+  name = "ae1.1"
+  tag = 1
+
+  comment = "Test aggregate layer3 subinterface with zone import"
+
+  ip = [{
+    name = "192.0.2.1/24"
+  }]
+}
+
+resource "panos_zone" "zone" {
+  depends_on = [panos_aggregate_layer3_subinterface.example]
+
+  location = { template = { name = panos_template.example.name } }
+
+  name = "${var.prefix}-zone"
+
+  network = {
+    layer3 = ["ae1.1"]
+  }
+}
+`
+
 func TestAccAggregateLayer3Subinterface_SdwanLinkSettings_UpstreamNat_StaticIp_Address(t *testing.T) {
 	t.Parallel()
 	t.Skip("missing required resource: sdwan profile")
@@ -1613,6 +1659,249 @@ func TestAccAggregateLayer3Subinterface_SdwanLinkSettings_UpstreamNat_StaticIp_A
 						"panos_aggregate_layer3_subinterface.example",
 						tfjsonpath.New("interface_management_profile"),
 						knownvalue.StringExact(prefix),
+					),
+				},
+			},
+		},
+	})
+}
+
+
+func TestAccAggregateLayer3Subinterface_Import_Zone_Layer3(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: aggregateLayer3Subinterface_Import_Zone_Layer3,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("ae1.1"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("tag"),
+						knownvalue.Int64Exact(1),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("comment"),
+						knownvalue.StringExact("Test aggregate layer3 subinterface with zone import"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ip").AtSliceIndex(0).AtMapKey("name"),
+						knownvalue.StringExact("192.0.2.1/24"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.zone",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact(fmt.Sprintf("%s-zone", prefix)),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.zone",
+						tfjsonpath.New("network").AtMapKey("layer3"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("ae1.1"),
+						}),
+					),
+				},
+			},
+		},
+	})
+}
+
+const aggregateLayer3Subinterface_Ipv6_DhcpClient = `
+variable "prefix" { type = string }
+
+resource "panos_template" "example" {
+  location = { panorama = {} }
+  name = "${var.prefix}-tmpl"
+}
+
+resource "panos_aggregate_interface" "parent" {
+  location = {
+    template = {
+      vsys = "vsys1"
+      name = panos_template.example.name
+    }
+  }
+  name = "ae1"
+  layer3 = {}
+}
+
+resource "panos_aggregate_layer3_subinterface" "example" {
+  location = { template = { name = panos_template.example.name, vsys = "vsys1" } }
+
+  parent = panos_aggregate_interface.parent.name
+  name = "ae1.1"
+  tag = 1
+
+  comment = "Test aggregate layer3 subinterface with IPv6 DHCP client (11.0.2+)"
+
+  ipv6 = {
+    enabled = true
+    dhcp_client = {
+      enable = true
+      accept_ra_route = true
+      default_route_metric = 10
+      preference = "high"
+      neighbor_discovery = {
+        dad_attempts = 1
+        enable_dad = true
+        enable_ndp_monitor = true
+        ns_interval = 1000
+        reachable_time = 30000
+      }
+      prefix_delegation = {
+        enable = {
+          yes = {
+            pfx_pool_name = "test-pool"
+            prefix_len = 64
+            prefix_len_hint = true
+          }
+        }
+      }
+      v6_options = {
+        duid_type = "duid-type-llt"
+        enable = {
+          yes = {
+            non_temp_addr = true
+            temp_addr = false
+          }
+        }
+        rapid_commit = true
+      }
+    }
+  }
+}
+`
+
+func TestAccAggregateLayer3Subinterface_Ipv6_DhcpClient(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: aggregateLayer3Subinterface_Ipv6_DhcpClient,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("ae1.1"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("tag"),
+						knownvalue.Int64Exact(1),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("comment"),
+						knownvalue.StringExact("Test aggregate layer3 subinterface with IPv6 DHCP client (11.0.2+)"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("enabled"),
+						knownvalue.Bool(true),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("enable"),
+						knownvalue.Bool(true),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("accept_ra_route"),
+						knownvalue.Bool(true),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("default_route_metric"),
+						knownvalue.Int64Exact(10),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("preference"),
+						knownvalue.StringExact("high"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("neighbor_discovery").AtMapKey("dad_attempts"),
+						knownvalue.Int64Exact(1),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("neighbor_discovery").AtMapKey("enable_dad"),
+						knownvalue.Bool(true),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("neighbor_discovery").AtMapKey("enable_ndp_monitor"),
+						knownvalue.Bool(true),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("neighbor_discovery").AtMapKey("ns_interval"),
+						knownvalue.Int64Exact(1000),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("neighbor_discovery").AtMapKey("reachable_time"),
+						knownvalue.Int64Exact(30000),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("prefix_delegation").AtMapKey("enable").AtMapKey("yes").AtMapKey("pfx_pool_name"),
+						knownvalue.StringExact("test-pool"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("prefix_delegation").AtMapKey("enable").AtMapKey("yes").AtMapKey("prefix_len"),
+						knownvalue.Int64Exact(64),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("prefix_delegation").AtMapKey("enable").AtMapKey("yes").AtMapKey("prefix_len_hint"),
+						knownvalue.Bool(true),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("v6_options").AtMapKey("duid_type"),
+						knownvalue.StringExact("duid-type-llt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("v6_options").AtMapKey("enable").AtMapKey("yes").AtMapKey("non_temp_addr"),
+						knownvalue.Bool(true),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("v6_options").AtMapKey("enable").AtMapKey("yes").AtMapKey("temp_addr"),
+						knownvalue.Bool(false),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_layer3_subinterface.example",
+						tfjsonpath.New("ipv6").AtMapKey("dhcp_client").AtMapKey("v6_options").AtMapKey("rapid_commit"),
+						knownvalue.Bool(true),
 					),
 				},
 			},

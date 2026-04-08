@@ -5909,6 +5909,7 @@ func (o *AuthenticationProfileResource) Delete(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
+
 	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
@@ -6124,7 +6125,7 @@ func AuthenticationProfileLocationSchema() rsschema.Attribute {
 				},
 			},
 			"template": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific template",
+				Description: "A shared resource located within a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{

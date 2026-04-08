@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -274,4 +275,299 @@ func makePanosEthernetInterface_Layer3(label string) string {
     `
 
 	return fmt.Sprintf(configTpl, label)
+}
+
+const testAccEthernetInterfaceLayer3TemplateVsys1WithZone = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_ethernet_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = "vsys1"
+    }
+  }
+
+  name = "ethernet1/1"
+  layer3 = {}
+}
+
+resource "panos_zone" "test" {
+  depends_on = [panos_ethernet_interface.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = "${var.prefix}-zone"
+  enable_user_identification = true
+
+  network = {
+    layer3 = ["ethernet1/1"]
+  }
+}
+`
+
+func TestAccEthernetInterface_Layer3_TemplateVsys1WithZone(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccEthernetInterfaceLayer3TemplateVsys1WithZone,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_ethernet_interface.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("ethernet1/1"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact(fmt.Sprintf("%s-zone", prefix)),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.test",
+						tfjsonpath.New("network").AtMapKey("layer3"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("ethernet1/1"),
+						}),
+					),
+					// Verify actual import in PAN-OS
+					ExpectVsysImportExists(
+						"panos_ethernet_interface.test",
+						"vsys1",
+						ImportTypeInterface,
+					),
+				},
+			},
+		},
+	})
+}
+
+const testAccEthernetInterfaceLayer3TemplateVsysNullWithZone = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_ethernet_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = null
+    }
+  }
+
+  name = "ethernet1/1"
+  layer3 = {}
+}
+`
+
+const testAccEthernetInterfaceLayer3TemplateVsysNullWithZoneStep2 = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_ethernet_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = null
+    }
+  }
+
+  name = "ethernet1/1"
+  layer3 = {}
+}
+
+resource "panos_zone" "test" {
+  depends_on = [panos_ethernet_interface.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = "${var.prefix}-zone"
+
+  network = {
+    layer3 = ["ethernet1/1"]
+  }
+}
+`
+
+func TestAccEthernetInterface_Layer3_TemplateVsysNullWithZone(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccEthernetInterfaceLayer3TemplateVsysNullWithZone,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_ethernet_interface.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("ethernet1/1"),
+					),
+					// Verify IS imported to vsys1 (due to default_value: vsys1 in spec)
+					ExpectVsysImportExists(
+						"panos_ethernet_interface.test",
+						"vsys1",
+						ImportTypeInterface,
+					),
+				},
+			},
+			{
+				Config: testAccEthernetInterfaceLayer3TemplateVsysNullWithZoneStep2,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_zone.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact(fmt.Sprintf("%s-zone", prefix)),
+					),
+				},
+			},
+		},
+	})
+}
+
+const testAccEthernetInterfaceLayer3TemplateVsysEmptyNoZone = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_ethernet_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = ""
+    }
+  }
+
+  name = "ethernet1/1"
+  layer3 = {}
+}
+`
+
+const testAccEthernetInterfaceLayer3TemplateVsysEmptyNoZoneWithZone = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_ethernet_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = ""
+    }
+  }
+
+  name = "ethernet1/1"
+  layer3 = {}
+}
+
+resource "panos_zone" "test" {
+  depends_on = [panos_ethernet_interface.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = "${var.prefix}-zone"
+
+  network = {
+    layer3 = ["ethernet1/1"]
+  }
+}
+`
+
+func TestAccEthernetInterface_Layer3_TemplateVsysEmptyNoZone(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccEthernetInterfaceLayer3TemplateVsysEmptyNoZone,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_ethernet_interface.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("ethernet1/1"),
+					),
+					// Verify NOT imported to vsys1
+					ExpectVsysImportAbsent(
+						"panos_ethernet_interface.test",
+						"vsys1",
+						ImportTypeInterface,
+					),
+				},
+			},
+			{
+				Config: testAccEthernetInterfaceLayer3TemplateVsysEmptyNoZoneWithZone,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ExpectError: regexp.MustCompile("Error in create"),
+			},
+		},
+	})
 }

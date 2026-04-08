@@ -49,7 +49,7 @@ func NewAggregateLayer3SubinterfaceDataSource() datasource.DataSource {
 
 type AggregateLayer3SubinterfaceDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*layer3.Entry, layer3.Location, *layer3.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*layer3.Entry, layer3.Location, *layer3.Service]
 }
 
 type AggregateLayer3SubinterfaceDataSourceFilter struct {
@@ -10060,7 +10060,7 @@ func (d *AggregateLayer3SubinterfaceDataSource) Configure(_ context.Context, req
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager[*layer3.Entry, layer3.Location, *layer3.Service](d.client, layer3.NewService(d.client), batchSize, specifier, layer3.SpecMatches)
+	d.manager = sdkmanager.NewImportableEntryObjectManager(d.client, layer3.NewService(d.client), batchSize, specifier, layer3.SpecMatches)
 }
 func (o *AggregateLayer3SubinterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -10084,15 +10084,6 @@ func (o *AggregateLayer3SubinterfaceDataSource) Read(ctx context.Context, req da
 		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
-		}
-
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &layer3.SharedLocation{}
-			var innerLocation AggregateLayer3SubinterfaceSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -10193,7 +10184,7 @@ func NewAggregateLayer3SubinterfaceResource() resource.Resource {
 
 type AggregateLayer3SubinterfaceResource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*layer3.Entry, layer3.Location, *layer3.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*layer3.Entry, layer3.Location, *layer3.Service]
 }
 
 func AggregateLayer3SubinterfaceResourceLocationSchema() rsschema.Attribute {
@@ -14442,8 +14433,9 @@ func (o *AggregateLayer3SubinterfaceResource) Configure(ctx context.Context, req
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
+
 	batchSize := providerData.MultiConfigBatchSize
-	o.manager = sdkmanager.NewEntryObjectManager[*layer3.Entry, layer3.Location, *layer3.Service](o.client, layer3.NewService(o.client), batchSize, specifier, layer3.SpecMatches)
+	o.manager = sdkmanager.NewImportableEntryObjectManager(o.client, layer3.NewService(o.client), batchSize, specifier, layer3.SpecMatches)
 }
 
 func (o *AggregateLayer3SubinterfaceResourceModel) AttributeTypes() map[string]attr.Type {
@@ -21017,15 +21009,6 @@ func (o *AggregateLayer3SubinterfaceResource) Create(ctx context.Context, req re
 			return
 		}
 
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &layer3.SharedLocation{}
-			var innerLocation AggregateLayer3SubinterfaceSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-		}
-
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &layer3.TemplateLocation{}
 			var innerLocation AggregateLayer3SubinterfaceTemplateLocation
@@ -21092,6 +21075,54 @@ func (o *AggregateLayer3SubinterfaceResource) Create(ctx context.Context, req re
 		return
 	}
 
+	var importVsys string
+
+	{
+		var terraformLocation AggregateLayer3SubinterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		locationRequiresImport := true
+
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation AggregateLayer3SubinterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
+			}
+		}
+
+	}
+
+	if importVsys != "" {
+		err = o.manager.ImportToLocation(ctx, location, importVsys, obj.Name)
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to import resource into location", err.Error())
+			return
+		}
+	}
+
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -21132,15 +21163,6 @@ func (o *AggregateLayer3SubinterfaceResource) Read(ctx context.Context, req reso
 		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
-		}
-
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &layer3.SharedLocation{}
-			var innerLocation AggregateLayer3SubinterfaceSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -21256,15 +21278,6 @@ func (o *AggregateLayer3SubinterfaceResource) Update(ctx context.Context, req re
 		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
 		if resp.Diagnostics.HasError() {
 			return
-		}
-
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &layer3.SharedLocation{}
-			var innerLocation AggregateLayer3SubinterfaceSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
 		}
 
 		if !terraformLocation.Template.IsNull() {
@@ -21408,15 +21421,6 @@ func (o *AggregateLayer3SubinterfaceResource) Delete(ctx context.Context, req re
 			return
 		}
 
-		if !terraformLocation.Shared.IsNull() {
-			location.Shared = &layer3.SharedLocation{}
-			var innerLocation AggregateLayer3SubinterfaceSharedLocation
-			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-		}
-
 		if !terraformLocation.Template.IsNull() {
 			location.Template = &layer3.TemplateLocation{}
 			var innerLocation AggregateLayer3SubinterfaceTemplateLocation
@@ -21457,6 +21461,54 @@ func (o *AggregateLayer3SubinterfaceResource) Delete(ctx context.Context, req re
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
+	var importVsys string
+
+	{
+		var terraformLocation AggregateLayer3SubinterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		locationRequiresImport := true
+
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation AggregateLayer3SubinterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
+			}
+		}
+
+	}
+
+	if importVsys != "" {
+		err = o.manager.UnimportFromLocation(ctx, location, importVsys, state.Name.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to unimport resource from location", err.Error())
+			return
+		}
+	}
+
 	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
@@ -21592,9 +21644,8 @@ func (o *AggregateLayer3SubinterfaceResource) ImportState(ctx context.Context, r
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), obj.Name)...)
 }
 
-type AggregateLayer3SubinterfaceSharedLocation struct {
-}
 type AggregateLayer3SubinterfaceTemplateLocation struct {
+	Vsys           types.String `tfsdk:"vsys"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
@@ -21608,7 +21659,6 @@ type AggregateLayer3SubinterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type AggregateLayer3SubinterfaceLocation struct {
-	Shared        types.Object `tfsdk:"shared"`
 	Template      types.Object `tfsdk:"template"`
 	TemplateStack types.Object `tfsdk:"template_stack"`
 	Ngfw          types.Object `tfsdk:"ngfw"`
@@ -21619,26 +21669,18 @@ func AggregateLayer3SubinterfaceLocationSchema() rsschema.Attribute {
 		Description: "The location of this object.",
 		Required:    true,
 		Attributes: map[string]rsschema.Attribute{
-			"shared": rsschema.SingleNestedAttribute{
-				Description: "Panorama shared object",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
-				},
-
-				Validators: []validator.Object{
-					objectvalidator.ExactlyOneOf(path.Expressions{
-						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("template"),
-						path.MatchRelative().AtParent().AtName("template_stack"),
-						path.MatchRelative().AtParent().AtName("ngfw"),
-					}...),
-				},
-			},
 			"template": rsschema.SingleNestedAttribute{
 				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"vsys": rsschema.StringAttribute{
+						Description: "",
+						Optional:    true,
+						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -21669,6 +21711,14 @@ func AggregateLayer3SubinterfaceLocationSchema() rsschema.Attribute {
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
+				},
+
+				Validators: []validator.Object{
+					objectvalidator.ExactlyOneOf(path.Expressions{
+						path.MatchRelative().AtParent().AtName("template"),
+						path.MatchRelative().AtParent().AtName("template_stack"),
+						path.MatchRelative().AtParent().AtName("ngfw"),
+					}...),
 				},
 			},
 			"template_stack": rsschema.SingleNestedAttribute{
@@ -21729,37 +21779,19 @@ func AggregateLayer3SubinterfaceLocationSchema() rsschema.Attribute {
 	}
 }
 
-func (o AggregateLayer3SubinterfaceSharedLocation) MarshalJSON() ([]byte, error) {
-	type shadow struct {
-	}
-
-	obj := shadow{}
-
-	return json.Marshal(obj)
-}
-
-func (o *AggregateLayer3SubinterfaceSharedLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
 func (o AggregateLayer3SubinterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
 	}
 
 	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		Vsys:           o.Vsys.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -21770,6 +21802,7 @@ func (o *AggregateLayer3SubinterfaceTemplateLocation) UnmarshalJSON(data []byte)
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -21779,6 +21812,7 @@ func (o *AggregateLayer3SubinterfaceTemplateLocation) UnmarshalJSON(data []byte)
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Vsys = types.StringPointerValue(shadow.Vsys)
 
 	return nil
 }
@@ -21842,17 +21876,9 @@ func (o *AggregateLayer3SubinterfaceNgfwLocation) UnmarshalJSON(data []byte) err
 }
 func (o AggregateLayer3SubinterfaceLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
-		Shared        *AggregateLayer3SubinterfaceSharedLocation        `json:"shared,omitempty"`
 		Template      *AggregateLayer3SubinterfaceTemplateLocation      `json:"template,omitempty"`
 		TemplateStack *AggregateLayer3SubinterfaceTemplateStackLocation `json:"template_stack,omitempty"`
 		Ngfw          *AggregateLayer3SubinterfaceNgfwLocation          `json:"ngfw,omitempty"`
-	}
-	var shared_object *AggregateLayer3SubinterfaceSharedLocation
-	{
-		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
-		}
 	}
 	var template_object *AggregateLayer3SubinterfaceTemplateLocation
 	{
@@ -21877,7 +21903,6 @@ func (o AggregateLayer3SubinterfaceLocation) MarshalJSON() ([]byte, error) {
 	}
 
 	obj := shadow{
-		Shared:        shared_object,
 		Template:      template_object,
 		TemplateStack: templateStack_object,
 		Ngfw:          ngfw_object,
@@ -21888,7 +21913,6 @@ func (o AggregateLayer3SubinterfaceLocation) MarshalJSON() ([]byte, error) {
 
 func (o *AggregateLayer3SubinterfaceLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
-		Shared        *AggregateLayer3SubinterfaceSharedLocation        `json:"shared,omitempty"`
 		Template      *AggregateLayer3SubinterfaceTemplateLocation      `json:"template,omitempty"`
 		TemplateStack *AggregateLayer3SubinterfaceTemplateStackLocation `json:"template_stack,omitempty"`
 		Ngfw          *AggregateLayer3SubinterfaceNgfwLocation          `json:"ngfw,omitempty"`
@@ -21897,14 +21921,6 @@ func (o *AggregateLayer3SubinterfaceLocation) UnmarshalJSON(data []byte) error {
 	err := json.Unmarshal(data, &shadow)
 	if err != nil {
 		return err
-	}
-	var shared_object types.Object
-	{
-		var diags_tmp diag.Diagnostics
-		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
-		}
 	}
 	var template_object types.Object
 	{
@@ -21930,7 +21946,6 @@ func (o *AggregateLayer3SubinterfaceLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into ngfw", diags_tmp.Errors())
 		}
 	}
-	o.Shared = shared_object
 	o.Template = template_object
 	o.TemplateStack = templateStack_object
 	o.Ngfw = ngfw_object
@@ -21938,11 +21953,9 @@ func (o *AggregateLayer3SubinterfaceLocation) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (o *AggregateLayer3SubinterfaceSharedLocation) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{}
-}
 func (o *AggregateLayer3SubinterfaceTemplateLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
+		"vsys":            types.StringType,
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
 		"ngfw_device":     types.StringType,
@@ -21961,14 +21974,10 @@ func (o *AggregateLayer3SubinterfaceNgfwLocation) AttributeTypes() map[string]at
 	}
 }
 func (o *AggregateLayer3SubinterfaceLocation) AttributeTypes() map[string]attr.Type {
-	var sharedObj AggregateLayer3SubinterfaceSharedLocation
 	var templateObj AggregateLayer3SubinterfaceTemplateLocation
 	var templateStackObj AggregateLayer3SubinterfaceTemplateStackLocation
 	var ngfwObj AggregateLayer3SubinterfaceNgfwLocation
 	return map[string]attr.Type{
-		"shared": types.ObjectType{
-			AttrTypes: sharedObj.AttributeTypes(),
-		},
 		"template": types.ObjectType{
 			AttrTypes: templateObj.AttributeTypes(),
 		},
