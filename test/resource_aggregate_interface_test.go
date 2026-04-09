@@ -2,6 +2,7 @@ package provider_test
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/config"
@@ -1218,6 +1219,292 @@ resource "panos_aggregate_interface" "iface" {
         passive_pre_negotiation = true
       }
     }
+  }
+}
+`
+
+// Test 1: TestAccAggregateInterface_Layer3_TemplateVsys1WithZone
+func TestAccAggregateInterface_Layer3_TemplateVsys1WithZone(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccAggregateInterfaceLayer3TemplateVsys1WithZone,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_interface.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("ae1"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact(fmt.Sprintf("%s-zone", prefix)),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.test",
+						tfjsonpath.New("network").AtMapKey("layer3"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("ae1"),
+						}),
+					),
+					// Verify actual import in PAN-OS
+					ExpectVsysImportExists(
+						"panos_aggregate_interface.test",
+						"vsys1",
+						ImportTypeInterface,
+					),
+				},
+			},
+		},
+	})
+}
+
+const testAccAggregateInterfaceLayer3TemplateVsys1WithZone = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_aggregate_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = "vsys1"
+    }
+  }
+
+  name = "ae1"
+  layer3 = {}
+}
+
+resource "panos_zone" "test" {
+  depends_on = [panos_aggregate_interface.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = "${var.prefix}-zone"
+  enable_user_identification = true
+
+  network = {
+    layer3 = ["ae1"]
+  }
+}
+`
+
+// Test 2: TestAccAggregateInterface_Layer3_TemplateVsysNullNoZone
+func TestAccAggregateInterface_Layer3_TemplateVsysNullNoZone(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccAggregateInterfaceLayer3TemplateVsysNullNoZone,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_interface.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("ae1"),
+					),
+					// Verify NOT imported to vsys1
+					ExpectVsysImportAbsent(
+						"panos_aggregate_interface.test",
+						"vsys1",
+						ImportTypeInterface,
+					),
+				},
+			},
+			{
+				Config: testAccAggregateInterfaceLayer3TemplateVsysNullNoZoneStep2,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ExpectError: regexp.MustCompile("Error in create"),
+			},
+		},
+	})
+}
+
+const testAccAggregateInterfaceLayer3TemplateVsysNullNoZone = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_aggregate_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = null
+    }
+  }
+
+  name = "ae1"
+  layer3 = {}
+}
+`
+
+const testAccAggregateInterfaceLayer3TemplateVsysNullNoZoneStep2 = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_aggregate_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = null
+    }
+  }
+
+  name = "ae1"
+  layer3 = {}
+}
+
+resource "panos_zone" "test" {
+  depends_on = [panos_aggregate_interface.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = "${var.prefix}-zone"
+
+  network = {
+    layer3 = ["ae1"]
+  }
+}
+`
+
+// Test 3: TestAccAggregateInterface_Layer3_TemplateVsysEmptyNoZone
+func TestAccAggregateInterface_Layer3_TemplateVsysEmptyNoZone(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccAggregateInterfaceLayer3TemplateVsysEmptyNoZone,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_aggregate_interface.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("ae1"),
+					),
+				},
+			},
+			{
+				Config: testAccAggregateInterfaceLayer3TemplateVsysEmptyNoZoneWithZone,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ExpectError: regexp.MustCompile("Error in create"),
+			},
+		},
+	})
+}
+
+const testAccAggregateInterfaceLayer3TemplateVsysEmptyNoZone = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_aggregate_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = ""
+    }
+  }
+
+  name = "ae1"
+  layer3 = {}
+}
+`
+
+const testAccAggregateInterfaceLayer3TemplateVsysEmptyNoZoneWithZone = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_aggregate_interface" "test" {
+  depends_on = [panos_template.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = ""
+    }
+  }
+
+  name = "ae1"
+  layer3 = {}
+}
+
+resource "panos_zone" "test" {
+  depends_on = [panos_aggregate_interface.test]
+
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = "${var.prefix}-zone"
+
+  network = {
+    layer3 = ["ae1"]
   }
 }
 `

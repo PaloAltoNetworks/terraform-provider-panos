@@ -49,7 +49,7 @@ func NewEthernetLayer3SubinterfaceDataSource() datasource.DataSource {
 
 type EthernetLayer3SubinterfaceDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.ImportableEntryObjectManager[*layer3.Entry, layer3.Location, layer3.ImportLocation, *layer3.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*layer3.Entry, layer3.Location, *layer3.Service]
 }
 
 type EthernetLayer3SubinterfaceDataSourceFilter struct {
@@ -10706,7 +10706,7 @@ func NewEthernetLayer3SubinterfaceResource() resource.Resource {
 
 type EthernetLayer3SubinterfaceResource struct {
 	client  *pango.Client
-	manager *sdkmanager.ImportableEntryObjectManager[*layer3.Entry, layer3.Location, layer3.ImportLocation, *layer3.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*layer3.Entry, layer3.Location, *layer3.Service]
 }
 
 func EthernetLayer3SubinterfaceResourceLocationSchema() rsschema.Attribute {
@@ -22148,7 +22148,13 @@ func (o *EthernetLayer3SubinterfaceResource) Create(ctx context.Context, req res
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	var importLocation layer3.ImportLocation
+	created, err := o.manager.Create(ctx, location, components, obj)
+	if err != nil {
+		resp.Diagnostics.AddError("Error in create", err.Error())
+		return
+	}
+
+	var importVsys string
 
 	{
 		var terraformLocation EthernetLayer3SubinterfaceLocation
@@ -22156,29 +22162,40 @@ func (o *EthernetLayer3SubinterfaceResource) Create(ctx context.Context, req res
 		if resp.Diagnostics.HasError() {
 			return
 		}
+		locationRequiresImport := true
 
-		if location.Template != nil {
-			{
-				var terraformInnerLocation EthernetLayer3SubinterfaceTemplateLocation
-				resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation EthernetLayer3SubinterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
 				if resp.Diagnostics.HasError() {
 					return
 				}
-				importLocation = layer3.NewTemplateVsysImportLocation(layer3.TemplateVsysImportLocationSpec{
-					Vsys: terraformInnerLocation.Vsys.ValueString(),
-				})
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
 			}
 		}
+
 	}
 
-	created, err := o.manager.Create(ctx, location, components, obj)
-	if err != nil {
-		resp.Diagnostics.AddError("Error in create", err.Error())
-		return
-	}
-
-	if importLocation != nil {
-		err = o.manager.ImportToLocations(ctx, location, []layer3.ImportLocation{importLocation}, obj.Name)
+	if importVsys != "" {
+		err = o.manager.ImportToLocation(ctx, location, importVsys, obj.Name)
 		if err != nil {
 			resp.Diagnostics.AddError("Failed to import resource into location", err.Error())
 			return
@@ -22550,7 +22567,7 @@ func (o *EthernetLayer3SubinterfaceResource) Delete(ctx context.Context, req res
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	var importLocation layer3.ImportLocation
+	var importVsys string
 
 	{
 		var terraformLocation EthernetLayer3SubinterfaceLocation
@@ -22558,29 +22575,47 @@ func (o *EthernetLayer3SubinterfaceResource) Delete(ctx context.Context, req res
 		if resp.Diagnostics.HasError() {
 			return
 		}
+		locationRequiresImport := true
 
-		if location.Template != nil {
-			{
-				var terraformInnerLocation EthernetLayer3SubinterfaceTemplateLocation
-				resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation EthernetLayer3SubinterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
 				if resp.Diagnostics.HasError() {
 					return
 				}
-				importLocation = layer3.NewTemplateVsysImportLocation(layer3.TemplateVsysImportLocationSpec{
-					Vsys: terraformInnerLocation.Vsys.ValueString(),
-				})
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
 			}
+		}
+
+	}
+
+	if importVsys != "" {
+		err = o.manager.UnimportFromLocation(ctx, location, importVsys, state.Name.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to unimport resource from location", err.Error())
+			return
 		}
 	}
 
-	if importLocation != nil {
-		err = o.manager.UnimportFromLocations(ctx, location, []layer3.ImportLocation{importLocation}, state.Name.ValueString())
-	}
-	if err != nil {
-		resp.Diagnostics.AddError("Error in delete", err.Error())
-		return
-	}
-	err = o.manager.Delete(ctx, location, []layer3.ImportLocation{importLocation}, components, []string{state.Name.ValueString()})
+	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())
 		return

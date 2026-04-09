@@ -13,10 +13,6 @@ description: |-
 
 ```terraform
 resource "panos_zone" "zone" {
-  depends_on = [
-    panos_ethernet_interface.iface1, panos_ethernet_interface.iface2
-  ]
-
   location = {
     template = {
       name = panos_template.example.name
@@ -35,7 +31,11 @@ resource "panos_zone" "zone" {
   enable_user_identification   = true
 
   network = {
-    layer3                          = ["ethernet1/1", "ethernet1/2"]
+    layer3 = [
+      panos_ethernet_interface.iface1.name,
+      panos_ethernet_interface.iface2.name,
+      panos_tunnel_interface.iface3.name,
+    ]
     enable_packet_buffer_protection = true
   }
 }
@@ -62,7 +62,6 @@ resource "panos_ethernet_interface" "iface1" {
 }
 
 resource "panos_ethernet_interface" "iface2" {
-
   location = {
     template = {
       name = panos_template.example.name
@@ -73,6 +72,16 @@ resource "panos_ethernet_interface" "iface2" {
   name = "ethernet1/2"
 
   layer3 = {}
+}
+
+resource "panos_tunnel_interface" "iface3" {
+  location = {
+    template = {
+      name = panos_template.example.name
+    }
+  }
+
+  name = "tunnel.1"
 }
 ```
 

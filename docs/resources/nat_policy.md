@@ -118,18 +118,18 @@ resource "panos_template" "example" {
 
 Optional:
 
-- `device_group` (Attributes) Located in a specific device group. (see [below for nested schema](#nestedatt--location--device_group))
+- `device_group` (Attributes) Located in a specific device group rulebase (see [below for nested schema](#nestedatt--location--device_group))
 - `shared` (Attributes) Located in a shared rulebase (see [below for nested schema](#nestedatt--location--shared))
-- `vsys` (Attributes) Located in a specific vsys. (see [below for nested schema](#nestedatt--location--vsys))
+- `vsys` (Attributes) Located in a specific vsys rulebase (see [below for nested schema](#nestedatt--location--vsys))
 
 <a id="nestedatt--location--device_group"></a>
 ### Nested Schema for `location.device_group`
 
 Optional:
 
-- `name` (String) The device group.
-- `panorama_device` (String) The panorama device.
-- `rulebase` (String) The rulebase.
+- `name` (String) The device group name
+- `panorama_device` (String) The panorama device
+- `rulebase` (String) The rulebase
 
 
 <a id="nestedatt--location--shared"></a>

@@ -12,111 +12,156 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
-func TestAccZone(t *testing.T) {
+func TestAccZone_Basic(t *testing.T) {
 	t.Parallel()
 
 	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
 	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	location := config.ObjectVariable(map[string]config.Variable{
+		"template": config.ObjectVariable(map[string]config.Variable{
+			"name": config.StringVariable(prefix),
+		}),
+	})
 
-	suffix := "tmpl1"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: zoneResourceTmpl,
+				Config: zone_Basic_Tmpl,
 				ConfigVariables: map[string]config.Variable{
-					"prefix":          config.StringVariable(prefix),
-					"template_suffix": config.StringVariable(suffix),
-					"interface_type":  config.StringVariable("layer3"),
+					"prefix":   config.StringVariable(prefix),
+					"location": location,
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
-						"panos_zone.zone",
+						"panos_zone.example",
 						tfjsonpath.New("name"),
-						knownvalue.StringExact(fmt.Sprintf("%s-zone", prefix)),
+						knownvalue.StringExact(prefix),
 					),
 					statecheck.ExpectKnownValue(
-						"panos_zone.zone",
+						"panos_zone.example",
 						tfjsonpath.New("enable_device_identification"),
 						knownvalue.Bool(true),
 					),
 					statecheck.ExpectKnownValue(
-						"panos_zone.zone",
+						"panos_zone.example",
 						tfjsonpath.New("enable_user_identification"),
 						knownvalue.Bool(true),
 					),
 					statecheck.ExpectKnownValue(
-						"panos_zone.zone",
-						tfjsonpath.New("network").
-							AtMapKey("enable_packet_buffer_protection"),
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("enable_packet_buffer_protection"),
 						knownvalue.Bool(true),
 					),
 					statecheck.ExpectKnownValue(
-						"panos_zone.zone",
-						tfjsonpath.New("network").
-							AtMapKey("layer3"),
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("log_setting"),
+						knownvalue.StringExact("log-settings-1"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("zone_protection_profile"),
+						knownvalue.StringExact("zpp-1"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("device_acl").AtMapKey("include_list"),
 						knownvalue.ListExact([]knownvalue.Check{
-							knownvalue.StringExact("ethernet1/1"),
-							knownvalue.StringExact("ethernet1/2"),
+							knownvalue.StringExact("10.1.1.1"),
+							knownvalue.StringExact("10.1.1.2"),
+						}),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("device_acl").AtMapKey("exclude_list"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("10.1.1.3"),
+						}),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("user_acl").AtMapKey("include_list"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("10.2.1.1"),
+							knownvalue.StringExact("10.2.1.2"),
+						}),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("user_acl").AtMapKey("exclude_list"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("10.2.1.3"),
 						}),
 					),
 				},
 			},
 		},
 	})
+}
 
-	suffix = "tmpl2"
-	resource.Test(t, resource.TestCase{
-		PreCheck:                 func() { testAccPreCheck(t) },
-		ProtoV6ProviderFactories: testAccProviders,
-		Steps: []resource.TestStep{
-			{
-				Config: zoneResourceTmpl,
-				ConfigVariables: map[string]config.Variable{
-					"prefix":          config.StringVariable(prefix),
-					"template_suffix": config.StringVariable(suffix),
-					"interface_type":  config.StringVariable("layer2"),
-				},
-				ConfigStateChecks: []statecheck.StateCheck{},
-			},
-		},
+const zone_Basic_Tmpl = `
+variable "prefix" { type = string }
+variable "location" { type = any }
+
+resource "panos_template" "example" {
+	location = { panorama = {} }
+	name = var.prefix
+}
+
+resource "panos_zone_protection_profile" "zpp" {
+	location = var.location
+	name = "zpp-1"
+}
+
+resource "panos_zone" "example" {
+	depends_on = [panos_template.example, panos_zone_protection_profile.zpp]
+	location = var.location
+	name = var.prefix
+	enable_device_identification = true
+	enable_user_identification = true
+	network = {
+		layer3 = []
+		enable_packet_buffer_protection = true
+		log_setting = "log-settings-1"
+		zone_protection_profile = "zpp-1"
+	}
+	device_acl = {
+		include_list = ["10.1.1.1", "10.1.1.2"]
+		exclude_list = ["10.1.1.3"]
+	}
+	user_acl = {
+		include_list = ["10.2.1.1", "10.2.1.2"]
+		exclude_list = ["10.2.1.3"]
+	}
+}
+`
+
+func TestAccZone_NetworkLayer2(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	location := config.ObjectVariable(map[string]config.Variable{
+		"template": config.ObjectVariable(map[string]config.Variable{
+			"name": config.StringVariable(prefix),
+		}),
 	})
 
-	// suffix = "tmpl3"
-	// resource.Test(t, resource.TestCase{
-	// 	PreCheck:                 func() { testAccPreCheck(t) },
-	// 	ProtoV6ProviderFactories: testAccProviders,
-	// 	Steps: []resource.TestStep{
-	// 		{
-	// 			Config: zoneResourceTmpl,
-	// 			ConfigVariables: map[string]config.Variable{
-	// 				"prefix":          config.StringVariable(prefix),
-	// 				"template_suffix": config.StringVariable(suffix),
-	// 				"interface_type":  config.StringVariable("external"),
-	// 			},
-	// 			ConfigStateChecks: []statecheck.StateCheck{},
-	// 		},
-	// 	},
-	// })
-
-	suffix = "tmpl4"
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: zoneResourceTmpl,
+				Config: zone_NetworkLayer2_Tmpl,
 				ConfigVariables: map[string]config.Variable{
-					"prefix":          config.StringVariable(prefix),
-					"template_suffix": config.StringVariable(suffix),
-					"interface_type":  config.StringVariable("tap"),
+					"prefix":   config.StringVariable(prefix),
+					"location": location,
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
 					statecheck.ExpectKnownValue(
-						"panos_zone.zone",
-						tfjsonpath.New("network").
-							AtMapKey("tap"),
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("layer2"),
 						knownvalue.ListExact([]knownvalue.Check{
 							knownvalue.StringExact("ethernet1/1"),
 							knownvalue.StringExact("ethernet1/2"),
@@ -126,103 +171,391 @@ func TestAccZone(t *testing.T) {
 			},
 		},
 	})
-
-	// suffix = "tmpl5"
-	// resource.Test(t, resource.TestCase{
-	// 	PreCheck:                 func() { testAccPreCheck(t) },
-	// 	ProtoV6ProviderFactories: testAccProviders,
-	// 	Steps: []resource.TestStep{
-	// 		{
-	// 			Config: zoneResourceTmpl,
-	// 			ConfigVariables: map[string]config.Variable{
-	// 				"prefix":          config.StringVariable(prefix),
-	// 				"template_suffix": config.StringVariable(suffix),
-	// 				"interface_type":  config.StringVariable("tunnel"),
-	// 			},
-	// 			ConfigStateChecks: []statecheck.StateCheck{
-	// 				statecheck.ExpectKnownValue(
-	// 					"panos_zone.zone",
-	// 					tfjsonpath.New("network").
-	// 						AtMapKey("tunnel"),
-	// 					knownvalue.ObjectExact(map[string]knownvalue.Check{}),
-	// 			},
-	// 		},
-	// 	},
-	// })
 }
 
-const zoneResourceTmpl = `
+const zone_NetworkLayer2_Tmpl = `
 variable "prefix" { type = string }
-variable "template_suffix" { type = string }
-variable "interface_type" { type = string }
+variable "location" { type = any }
 
-locals {
-  interfaces = {
-    layer2 = var.interface_type == "layer2" ? ["ethernet1/1", "ethernet1/2"] : null
-    layer3 = var.interface_type == "layer3" ? ["ethernet1/1", "ethernet1/2"] : null
-    external = var.interface_type == "external" ? ["ethernet1/1", "ethernet1/2"] : null
-    tap = var.interface_type == "tap" ? ["ethernet1/1", "ethernet1/2"] : null
-    tunnel = var.interface_type == "tunnel" ? {} : null
-  }
-
-  create_iface = contains(["layer2", "layer3", "tap"], var.interface_type) ? true : false
-
-  template_name = format("%s-%s", var.prefix, var.template_suffix)
-  network_common = {
-      enable_packet_buffer_protection = true
-      # log_setting                      = ["log-setting"]
-      # zone_protection_profile          = "zone-protection-profile"
-  }
-  network = merge(local.network_common, local.interfaces)
+resource "panos_template" "example" {
+	location = { panorama = {} }
+	name = var.prefix
 }
 
-resource "panos_template" "template" {
-  location = { panorama = {} }
-
-  name = local.template_name
+resource "panos_ethernet_interface" "eth1" {
+	location = var.location
+	name = "ethernet1/1"
+	layer2 = {}
 }
 
-
-resource "panos_ethernet_interface" "iface1" {
-  count = local.create_iface == true ? 1 : 0
-  location = { template = { name = resource.panos_template.template.name, vsys = "vsys1" }}
-
-  name = "ethernet1/1"
-
-  tap = var.interface_type == "tap" ? {} : null
-  layer2 = var.interface_type == "layer2" ? {} : null
-  layer3 = var.interface_type == "layer3" ? {} : null
+resource "panos_ethernet_interface" "eth2" {
+	location = var.location
+	name = "ethernet1/2"
+	layer2 = {}
 }
 
-resource "panos_ethernet_interface" "iface2" {
-  count = local.create_iface == true ? 1 : 0
+resource "panos_zone" "example" {
+	depends_on = [panos_template.example, panos_ethernet_interface.eth1, panos_ethernet_interface.eth2]
+	location = var.location
+	name = var.prefix
+	network = {
+		layer2 = ["ethernet1/1", "ethernet1/2"]
+	}
+}
+`
 
-  location = { template = { name = resource.panos_template.template.name, vsys = "vsys1" }}
+func TestAccZone_NetworkLayer3(t *testing.T) {
+	t.Parallel()
 
-  name = "ethernet1/2"
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	location := config.ObjectVariable(map[string]config.Variable{
+		"template": config.ObjectVariable(map[string]config.Variable{
+			"name": config.StringVariable(prefix),
+		}),
+	})
 
-  tap = var.interface_type == "tap" ? {} : null
-  layer2 = var.interface_type == "layer2" ? {} : null
-  layer3 = var.interface_type == "layer3" ? {} : null
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: zone_NetworkLayer3_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":   config.StringVariable(prefix),
+					"location": location,
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("layer3"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("ethernet1/1"),
+							knownvalue.StringExact("ethernet1/2"),
+						}),
+					),
+				},
+			},
+		},
+	})
 }
 
-resource "panos_zone" "zone" {
-  depends_on = [
-    resource.panos_ethernet_interface.iface1, resource.panos_ethernet_interface.iface2
-  ]
+const zone_NetworkLayer3_Tmpl = `
+variable "prefix" { type = string }
+variable "location" { type = any }
 
-  location = { template = { name = resource.panos_template.template.name }}
+resource "panos_template" "example" {
+	location = { panorama = {} }
+	name = var.prefix
+}
 
-  name = format("%s-zone", var.prefix)
+resource "panos_ethernet_interface" "eth1" {
+	location = var.location
+	name = "ethernet1/1"
+	layer3 = {}
+}
 
-  device_acl = {
-    # exclude_list = ["device-1"]
-    # include_list = ["device-2"]
-  }
+resource "panos_ethernet_interface" "eth2" {
+	location = var.location
+	name = "ethernet1/2"
+	layer3 = {}
+}
 
-  enable_device_identification = true
-  enable_user_identification   = true
+resource "panos_zone" "example" {
+	depends_on = [panos_template.example, panos_ethernet_interface.eth1, panos_ethernet_interface.eth2]
+	location = var.location
+	name = var.prefix
+	network = {
+		layer3 = ["ethernet1/1", "ethernet1/2"]
+	}
+}
+`
 
-  network = local.network
+func TestAccZone_NetworkTap(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	location := config.ObjectVariable(map[string]config.Variable{
+		"template": config.ObjectVariable(map[string]config.Variable{
+			"name": config.StringVariable(prefix),
+		}),
+	})
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: zone_NetworkTap_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":   config.StringVariable(prefix),
+					"location": location,
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("tap"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("ethernet1/1"),
+						}),
+					),
+				},
+			},
+		},
+	})
+}
+
+const zone_NetworkTap_Tmpl = `
+variable "prefix" { type = string }
+variable "location" { type = any }
+
+resource "panos_template" "example" {
+	location = { panorama = {} }
+	name = var.prefix
+}
+
+resource "panos_ethernet_interface" "eth1" {
+	location = var.location
+	name = "ethernet1/1"
+	tap = {}
+}
+
+resource "panos_zone" "example" {
+	depends_on = [panos_template.example, panos_ethernet_interface.eth1]
+	location = var.location
+	name = var.prefix
+	network = {
+		tap = ["ethernet1/1"]
+	}
+}
+`
+
+func TestAccZone_NetworkTunnel(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	location := config.ObjectVariable(map[string]config.Variable{
+		"template": config.ObjectVariable(map[string]config.Variable{
+			"name": config.StringVariable(prefix),
+		}),
+	})
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: zone_NetworkTunnel_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":   config.StringVariable(prefix),
+					"location": location,
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("tunnel"),
+						knownvalue.ObjectExact(map[string]knownvalue.Check{}),
+					),
+				},
+			},
+		},
+	})
+}
+
+const zone_NetworkTunnel_Tmpl = `
+variable "prefix" { type = string }
+variable "location" { type = any }
+
+resource "panos_template" "example" {
+	location = { panorama = {} }
+	name = var.prefix
+}
+
+resource "panos_tunnel_interface" "tun1" {
+	location = var.location
+	name = "tunnel.1"
+}
+
+resource "panos_zone" "example" {
+	depends_on = [panos_template.example, panos_tunnel_interface.tun1]
+	location = var.location
+	name = var.prefix
+	network = {
+		tunnel = {}
+	}
+}
+`
+
+func TestAccZone_NetworkVirtualWire(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	location := config.ObjectVariable(map[string]config.Variable{
+		"template": config.ObjectVariable(map[string]config.Variable{
+			"name": config.StringVariable(prefix),
+		}),
+	})
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: zone_NetworkVirtualWire_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":   config.StringVariable(prefix),
+					"location": location,
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("virtual_wire"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("ethernet1/1"),
+						}),
+					),
+				},
+			},
+		},
+	})
+}
+
+const zone_NetworkVirtualWire_Tmpl = `
+variable "prefix" { type = string }
+variable "location" { type = any }
+
+resource "panos_template" "example" {
+	location = { panorama = {} }
+	name = var.prefix
+}
+
+resource "panos_ethernet_interface" "eth1" {
+	location = var.location
+	name = "ethernet1/1"
+	virtual_wire = {}
+}
+
+resource "panos_zone" "example" {
+	depends_on = [panos_template.example, panos_ethernet_interface.eth1]
+	location = var.location
+	name = var.prefix
+	network = {
+		virtual_wire = ["ethernet1/1"]
+	}
+}
+`
+
+func TestAccZone_NetworkNetInspection(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	location := config.ObjectVariable(map[string]config.Variable{
+		"template": config.ObjectVariable(map[string]config.Variable{
+			"name": config.StringVariable(prefix),
+		}),
+	})
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: zone_NetworkNetInspection_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":   config.StringVariable(prefix),
+					"location": location,
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("net_inspection"),
+						knownvalue.Bool(true),
+					),
+				},
+			},
+		},
+	})
+}
+
+const zone_NetworkNetInspection_Tmpl = `
+variable "prefix" { type = string }
+variable "location" { type = any }
+
+resource "panos_template" "example" {
+	location = { panorama = {} }
+	name = var.prefix
+}
+
+resource "panos_zone" "example" {
+	depends_on = [panos_template.example]
+	location = var.location
+	name = var.prefix
+	network = {
+		layer3 = []
+		net_inspection = true
+	}
+}
+`
+
+func TestAccZone_Layer3WithTunnelInterface(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	location := config.ObjectVariable(map[string]config.Variable{
+		"template": config.ObjectVariable(map[string]config.Variable{
+			"name": config.StringVariable(prefix),
+		}),
+	})
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: zone_Layer3WithTunnelInterface_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":   config.StringVariable(prefix),
+					"location": location,
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("network").AtMapKey("layer3"),
+						knownvalue.ListExact([]knownvalue.Check{
+							knownvalue.StringExact("tunnel.1"),
+						}),
+					),
+				},
+			},
+		},
+	})
+}
+
+const zone_Layer3WithTunnelInterface_Tmpl = `
+variable "prefix" { type = string }
+variable "location" { type = any }
+
+resource "panos_template" "example" {
+	location = { panorama = {} }
+	name = var.prefix
+}
+
+resource "panos_tunnel_interface" "tun1" {
+	location = var.location
+	name = "tunnel.1"
+}
+
+resource "panos_zone" "example" {
+	depends_on = [panos_template.example, panos_tunnel_interface.tun1]
+	location = var.location
+	name = var.prefix
+	network = {
+		layer3 = ["tunnel.1"]
+	}
 }
 `

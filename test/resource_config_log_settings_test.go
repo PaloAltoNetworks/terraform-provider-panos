@@ -27,7 +27,7 @@ func TestAccConfigLogSettings(t *testing.T) {
 				ConfigVariables: map[string]config.Variable{
 					"prefix":           config.StringVariable(prefix),
 					"description":      config.StringVariable("test description"),
-					"filter":           config.StringVariable("(dgname eq default)"),
+					"filter":           config.StringVariable("All Logs"),
 					"send_to_panorama": config.BoolVariable(true),
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
@@ -39,7 +39,7 @@ func TestAccConfigLogSettings(t *testing.T) {
 					statecheck.ExpectKnownValue(
 						"panos_config_log_settings.settings",
 						tfjsonpath.New("filter"),
-						knownvalue.StringExact("(dgname eq default)"),
+						knownvalue.StringExact("All Logs"),
 					),
 					statecheck.ExpectKnownValue(
 						"panos_config_log_settings.settings",
@@ -53,7 +53,7 @@ func TestAccConfigLogSettings(t *testing.T) {
 				ConfigVariables: map[string]config.Variable{
 					"prefix":           config.StringVariable(prefix),
 					"description":      config.StringVariable("updated description"),
-					"filter":           config.StringVariable("(dgname eq default)"),
+					"filter":           config.StringVariable("All Logs"),
 					"send_to_panorama": config.BoolVariable(false),
 				},
 				ConfigStateChecks: []statecheck.StateCheck{
@@ -65,7 +65,7 @@ func TestAccConfigLogSettings(t *testing.T) {
 					statecheck.ExpectKnownValue(
 						"panos_config_log_settings.settings",
 						tfjsonpath.New("filter"),
-						knownvalue.StringExact("(dgname eq default)"),
+						knownvalue.StringExact("All Logs"),
 					),
 					statecheck.ExpectKnownValue(
 						"panos_config_log_settings.settings",

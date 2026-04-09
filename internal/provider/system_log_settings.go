@@ -2146,6 +2146,7 @@ func (o *SystemLogSettingsResource) Delete(ctx context.Context, req resource.Del
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
+
 	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
 		resp.Diagnostics.AddError("Error in delete", err.Error())

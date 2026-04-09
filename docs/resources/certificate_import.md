@@ -133,7 +133,7 @@ Required:
 Optional:
 
 - `passphrase` (String, Sensitive)
-- `private_key` (String)
+- `private_key` (String, Sensitive)
 
 
 <a id="nestedatt--local--pkcs12"></a>

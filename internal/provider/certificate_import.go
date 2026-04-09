@@ -167,6 +167,7 @@ func CertificateImportResourceLocalPemSchema() rsschema.SingleNestedAttribute {
 			"private_key": rsschema.StringAttribute{
 				Description: "",
 				Optional:    true,
+				Sensitive:   true,
 			},
 
 			"passphrase": rsschema.StringAttribute{

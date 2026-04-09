@@ -5848,7 +5848,7 @@ func NatPolicyLocationSchema() rsschema.Attribute {
 				},
 			},
 			"vsys": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific vsys.",
+				Description: "Located in a specific vsys rulebase",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"ngfw_device": rsschema.StringAttribute{
@@ -5875,11 +5875,11 @@ func NatPolicyLocationSchema() rsschema.Attribute {
 				},
 			},
 			"device_group": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific device group.",
+				Description: "Located in a specific device group rulebase",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
 					"panorama_device": rsschema.StringAttribute{
-						Description: "The panorama device.",
+						Description: "The panorama device",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("localhost.localdomain"),
@@ -5888,7 +5888,7 @@ func NatPolicyLocationSchema() rsschema.Attribute {
 						},
 					},
 					"name": rsschema.StringAttribute{
-						Description: "The device group.",
+						Description: "The device group name",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
@@ -5897,7 +5897,7 @@ func NatPolicyLocationSchema() rsschema.Attribute {
 						},
 					},
 					"rulebase": rsschema.StringAttribute{
-						Description: "The rulebase.",
+						Description: "The rulebase",
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString("pre-rulebase"),
