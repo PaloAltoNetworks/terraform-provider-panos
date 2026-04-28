@@ -66,6 +66,8 @@ Required:
 Optional:
 
 - `action` (String)
+- `audit_comment_version` (String) Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.
+- `audit_comment_wo` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only audit comment for this rule. This value is sent to PAN-OS but not read back. Changes are only sent when audit_comment_version is modified. Each time audit_comment_version changes, this comment is added to the audit history with a timestamp.
 - `category` (List of String)
 - `description` (String)
 - `destination_addresses` (List of String)

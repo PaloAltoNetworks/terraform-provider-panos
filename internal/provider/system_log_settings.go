@@ -177,8 +177,14 @@ func (o *SystemLogSettingsDataSourceModel) CopyToPango(ctx context.Context, clie
 		if diags.HasError() {
 			return diags
 		}
+		actions_existing_entries := make(map[string]*system.Actions)
+		if *obj != nil {
+			for idx := range (*obj).Actions {
+				actions_existing_entries[(*obj).Actions[idx].Name] = &(*obj).Actions[idx]
+			}
+		}
 		for _, elt := range actions_tf_entries {
-			var entry *system.Actions
+			entry := actions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1270,8 +1276,14 @@ func (o *SystemLogSettingsResourceModel) CopyToPango(ctx context.Context, client
 		if diags.HasError() {
 			return diags
 		}
+		actions_existing_entries := make(map[string]*system.Actions)
+		if *obj != nil {
+			for idx := range (*obj).Actions {
+				actions_existing_entries[(*obj).Actions[idx].Name] = &(*obj).Actions[idx]
+			}
+		}
 		for _, elt := range actions_tf_entries {
-			var entry *system.Actions
+			entry := actions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

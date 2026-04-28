@@ -121,8 +121,14 @@ func (o *MfaServerProfileDataSourceModel) CopyToPango(ctx context.Context, clien
 		if diags.HasError() {
 			return diags
 		}
+		mfaConfig_existing_entries := make(map[string]*mfa.MfaConfig)
+		if *obj != nil {
+			for idx := range (*obj).MfaConfig {
+				mfaConfig_existing_entries[(*obj).MfaConfig[idx].Name] = &(*obj).MfaConfig[idx]
+			}
+		}
 		for _, elt := range mfaConfig_tf_entries {
-			var entry *mfa.MfaConfig
+			entry := mfaConfig_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -756,8 +762,14 @@ func (o *MfaServerProfileResourceModel) CopyToPango(ctx context.Context, client 
 		if diags.HasError() {
 			return diags
 		}
+		mfaConfig_existing_entries := make(map[string]*mfa.MfaConfig)
+		if *obj != nil {
+			for idx := range (*obj).MfaConfig {
+				mfaConfig_existing_entries[(*obj).MfaConfig[idx].Name] = &(*obj).MfaConfig[idx]
+			}
+		}
 		for _, elt := range mfaConfig_tf_entries {
-			var entry *mfa.MfaConfig
+			entry := mfaConfig_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

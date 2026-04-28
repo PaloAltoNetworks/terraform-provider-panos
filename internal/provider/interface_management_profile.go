@@ -138,8 +138,14 @@ func (o *InterfaceManagementProfileDataSourceModel) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		permittedIps_existing_entries := make(map[string]*interface_management.PermittedIp)
+		if *obj != nil {
+			for idx := range (*obj).PermittedIp {
+				permittedIps_existing_entries[(*obj).PermittedIp[idx].Name] = &(*obj).PermittedIp[idx]
+			}
+		}
 		for _, elt := range permittedIps_tf_entries {
-			var entry *interface_management.PermittedIp
+			entry := permittedIps_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -847,8 +853,14 @@ func (o *InterfaceManagementProfileResourceModel) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		permittedIps_existing_entries := make(map[string]*interface_management.PermittedIp)
+		if *obj != nil {
+			for idx := range (*obj).PermittedIp {
+				permittedIps_existing_entries[(*obj).PermittedIp[idx].Name] = &(*obj).PermittedIp[idx]
+			}
+		}
 		for _, elt := range permittedIps_tf_entries {
-			var entry *interface_management.PermittedIp
+			entry := permittedIps_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

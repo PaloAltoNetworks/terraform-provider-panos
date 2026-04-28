@@ -1730,8 +1730,14 @@ func (o *VlanInterfaceDataSourceModel) CopyToPango(ctx context.Context, client p
 		if diags.HasError() {
 			return diags
 		}
+		arp_existing_entries := make(map[string]*vlan.Arp)
+		if *obj != nil {
+			for idx := range (*obj).Arp {
+				arp_existing_entries[(*obj).Arp[idx].Name] = &(*obj).Arp[idx]
+			}
+		}
 		for _, elt := range arp_tf_entries {
-			var entry *vlan.Arp
+			entry := arp_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1801,8 +1807,14 @@ func (o *VlanInterfaceDataSourceModel) CopyToPango(ctx context.Context, client p
 		if diags.HasError() {
 			return diags
 		}
+		ip_existing_entries := make(map[string]*vlan.Ip)
+		if *obj != nil {
+			for idx := range (*obj).Ip {
+				ip_existing_entries[(*obj).Ip[idx].Name] = &(*obj).Ip[idx]
+			}
+		}
 		for _, elt := range ip_tf_entries {
-			var entry *vlan.Ip
+			entry := ip_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1952,8 +1964,14 @@ func (o *VlanInterfaceDataSourceDdnsConfigObject) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		ddnsVendorConfig_existing_entries := make(map[string]*vlan.DdnsConfigDdnsVendorConfig)
+		if *obj != nil {
+			for idx := range (*obj).DdnsVendorConfig {
+				ddnsVendorConfig_existing_entries[(*obj).DdnsVendorConfig[idx].Name] = &(*obj).DdnsVendorConfig[idx]
+			}
+		}
 		for _, elt := range ddnsVendorConfig_tf_entries {
-			var entry *vlan.DdnsConfigDdnsVendorConfig
+			entry := ddnsVendorConfig_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2054,8 +2072,14 @@ func (o *VlanInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, cli
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*vlan.Ipv6Address)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *vlan.Ipv6Address
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2350,8 +2374,14 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObject) CopyToPan
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*vlan.Ipv6DhcpClientNeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *vlan.Ipv6DhcpClientNeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2469,8 +2499,14 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceMa
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2591,8 +2627,14 @@ func (o *VlanInterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceMa
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*vlan.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *vlan.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2838,8 +2880,14 @@ func (o *VlanInterfaceDataSourceIpv6InheritedObject) CopyToPango(ctx context.Con
 		if diags.HasError() {
 			return diags
 		}
+		assignAddr_existing_entries := make(map[string]*vlan.Ipv6InheritedAssignAddr)
+		if *obj != nil {
+			for idx := range (*obj).AssignAddr {
+				assignAddr_existing_entries[(*obj).AssignAddr[idx].Name] = &(*obj).AssignAddr[idx]
+			}
+		}
 		for _, elt := range assignAddr_tf_entries {
-			var entry *vlan.Ipv6InheritedAssignAddr
+			entry := assignAddr_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3178,8 +3226,14 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryObject) CopyToPang
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*vlan.Ipv6InheritedNeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *vlan.Ipv6InheritedNeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3317,8 +3371,14 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsServerSourceMan
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3441,8 +3501,14 @@ func (o *VlanInterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceMan
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3528,8 +3594,14 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryObject) CopyToPango(ctx con
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*vlan.Ipv6NeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *vlan.Ipv6NeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3644,8 +3716,14 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSuppo
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3661,8 +3739,14 @@ func (o *VlanInterfaceDataSourceIpv6NeighborDiscoveryRouterAdvertisementDnsSuppo
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3714,8 +3798,14 @@ func (o *VlanInterfaceDataSourceNdpProxyObject) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*vlan.NdpProxyAddress)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *vlan.NdpProxyAddress
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -14976,8 +15066,14 @@ func (o *VlanInterfaceResourceModel) CopyToPango(ctx context.Context, client pan
 		if diags.HasError() {
 			return diags
 		}
+		arp_existing_entries := make(map[string]*vlan.Arp)
+		if *obj != nil {
+			for idx := range (*obj).Arp {
+				arp_existing_entries[(*obj).Arp[idx].Name] = &(*obj).Arp[idx]
+			}
+		}
 		for _, elt := range arp_tf_entries {
-			var entry *vlan.Arp
+			entry := arp_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -15047,8 +15143,14 @@ func (o *VlanInterfaceResourceModel) CopyToPango(ctx context.Context, client pan
 		if diags.HasError() {
 			return diags
 		}
+		ip_existing_entries := make(map[string]*vlan.Ip)
+		if *obj != nil {
+			for idx := range (*obj).Ip {
+				ip_existing_entries[(*obj).Ip[idx].Name] = &(*obj).Ip[idx]
+			}
+		}
 		for _, elt := range ip_tf_entries {
-			var entry *vlan.Ip
+			entry := ip_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -15198,8 +15300,14 @@ func (o *VlanInterfaceResourceDdnsConfigObject) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		ddnsVendorConfig_existing_entries := make(map[string]*vlan.DdnsConfigDdnsVendorConfig)
+		if *obj != nil {
+			for idx := range (*obj).DdnsVendorConfig {
+				ddnsVendorConfig_existing_entries[(*obj).DdnsVendorConfig[idx].Name] = &(*obj).DdnsVendorConfig[idx]
+			}
+		}
 		for _, elt := range ddnsVendorConfig_tf_entries {
-			var entry *vlan.DdnsConfigDdnsVendorConfig
+			entry := ddnsVendorConfig_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -15300,8 +15408,14 @@ func (o *VlanInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, clien
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*vlan.Ipv6Address)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *vlan.Ipv6Address
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -15596,8 +15710,14 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryObject) CopyToPango
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*vlan.Ipv6DhcpClientNeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *vlan.Ipv6DhcpClientNeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -15715,8 +15835,14 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsServerSourceManu
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *vlan.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -15837,8 +15963,14 @@ func (o *VlanInterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSuffixSourceManu
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*vlan.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *vlan.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16084,8 +16216,14 @@ func (o *VlanInterfaceResourceIpv6InheritedObject) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		assignAddr_existing_entries := make(map[string]*vlan.Ipv6InheritedAssignAddr)
+		if *obj != nil {
+			for idx := range (*obj).AssignAddr {
+				assignAddr_existing_entries[(*obj).AssignAddr[idx].Name] = &(*obj).AssignAddr[idx]
+			}
+		}
 		for _, elt := range assignAddr_tf_entries {
-			var entry *vlan.Ipv6InheritedAssignAddr
+			entry := assignAddr_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16424,8 +16562,14 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryObject) CopyToPango(
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*vlan.Ipv6InheritedNeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *vlan.Ipv6InheritedNeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16563,8 +16707,14 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsServerSourceManua
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *vlan.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16687,8 +16837,14 @@ func (o *VlanInterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuffixSourceManua
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *vlan.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16774,8 +16930,14 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryObject) CopyToPango(ctx conte
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*vlan.Ipv6NeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *vlan.Ipv6NeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16890,8 +17052,14 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupport
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16907,8 +17075,14 @@ func (o *VlanInterfaceResourceIpv6NeighborDiscoveryRouterAdvertisementDnsSupport
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *vlan.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16960,8 +17134,14 @@ func (o *VlanInterfaceResourceNdpProxyObject) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*vlan.NdpProxyAddress)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *vlan.NdpProxyAddress
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

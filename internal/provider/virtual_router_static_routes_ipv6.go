@@ -496,8 +496,14 @@ func (o *VirtualRouterStaticRoutesIpv6DataSourceStaticRoutesPathMonitorObject) C
 		if diags.HasError() {
 			return diags
 		}
+		monitorDestinations_existing_entries := make(map[string]*staticroute.PathMonitorMonitorDestinations)
+		if *obj != nil {
+			for idx := range (*obj).MonitorDestinations {
+				monitorDestinations_existing_entries[(*obj).MonitorDestinations[idx].Name] = &(*obj).MonitorDestinations[idx]
+			}
+		}
 		for _, elt := range monitorDestinations_tf_entries {
-			var entry *staticroute.PathMonitorMonitorDestinations
+			entry := monitorDestinations_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1566,9 +1572,14 @@ func (o *VirtualRouterStaticRoutesIpv6DataSource) Read(ctx context.Context, req 
 		}
 		return
 	}
+	stateElementsByName := make(map[string]VirtualRouterStaticRoutesIpv6DataSourceStaticRoutesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	objects := make([]VirtualRouterStaticRoutesIpv6DataSourceStaticRoutesObject, len(readEntries))
 	for idx, elt := range readEntries {
-		var object VirtualRouterStaticRoutesIpv6DataSourceStaticRoutesObject
+		object := stateElementsByName[elt.Name]
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -2677,8 +2688,14 @@ func (o *VirtualRouterStaticRoutesIpv6ResourceStaticRoutesPathMonitorObject) Cop
 		if diags.HasError() {
 			return diags
 		}
+		monitorDestinations_existing_entries := make(map[string]*staticroute.PathMonitorMonitorDestinations)
+		if *obj != nil {
+			for idx := range (*obj).MonitorDestinations {
+				monitorDestinations_existing_entries[(*obj).MonitorDestinations[idx].Name] = &(*obj).MonitorDestinations[idx]
+			}
+		}
 		for _, elt := range monitorDestinations_tf_entries {
-			var entry *staticroute.PathMonitorMonitorDestinations
+			entry := monitorDestinations_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3267,7 +3284,7 @@ func (o *VirtualRouterStaticRoutesIpv6Resource) Create(ctx context.Context, req 
 			continue
 		}
 
-		var object VirtualRouterStaticRoutesIpv6ResourceStaticRoutesObject
+		object := elements[idx]
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -3388,9 +3405,14 @@ func (o *VirtualRouterStaticRoutesIpv6Resource) Read(ctx context.Context, req re
 		}
 		return
 	}
+	stateElementsByName := make(map[string]VirtualRouterStaticRoutesIpv6ResourceStaticRoutesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	objects := make([]VirtualRouterStaticRoutesIpv6ResourceStaticRoutesObject, len(readEntries))
 	for idx, elt := range readEntries {
-		var object VirtualRouterStaticRoutesIpv6ResourceStaticRoutesObject
+		object := stateElementsByName[elt.Name]
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return
@@ -3566,7 +3588,7 @@ func (o *VirtualRouterStaticRoutesIpv6Resource) Update(ctx context.Context, req 
 	}
 	objects := make([]*VirtualRouterStaticRoutesIpv6ResourceStaticRoutesObject, len(processed))
 	for idx, elt := range processed {
-		var object VirtualRouterStaticRoutesIpv6ResourceStaticRoutesObject
+		object := elements[idx]
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
 			return

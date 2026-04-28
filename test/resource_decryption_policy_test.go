@@ -235,10 +235,12 @@ func TestAccDecryptionPolicyExtended(t *testing.T) {
 						tfjsonpath.New("rules").
 							AtSliceIndex(0),
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
-							"name":        knownvalue.StringExact("rule"),
-							"description": knownvalue.StringExact("description"),
-							"action":      knownvalue.StringExact("decrypt"),
-							"category":    knownvalue.Null(),
+							"name":                  knownvalue.StringExact("rule"),
+							"audit_comment_version":  knownvalue.Null(),
+							"audit_comment_wo":       knownvalue.Null(),
+							"description":            knownvalue.StringExact("description"),
+							"action":                 knownvalue.StringExact("decrypt"),
+							"category":               knownvalue.Null(),
 							"destination_addresses": knownvalue.ListExact([]knownvalue.Check{
 								knownvalue.StringExact("any"),
 							}),

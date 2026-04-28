@@ -98,7 +98,7 @@ var _ = Describe("Server", func() {
 
 			It("CreateMany() should create new entries on the server, and return them with uuid set", func() {
 				entries := []*MockUuidObject{{Name: "1", Value: "A"}}
-				processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.Exhaustive, movement.PositionFirst{})
+				processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.Exhaustive, movement.PositionFirst{}, map[string]string{})
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(1))
@@ -114,7 +114,7 @@ var _ = Describe("Server", func() {
 			Context("and entries with the same name are being created in NonExhaustive mode", func() {
 				It("should not create any entries and return an error", func() {
 					entries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "4", Value: "D"}}
-					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 
 					Expect(err).To(MatchError(sdkmanager.ErrConflict))
 					Expect(processed).To(BeNil())
@@ -126,7 +126,7 @@ var _ = Describe("Server", func() {
 			Context("and all entries being created are new to the server", func() {
 				It("should create those entries in the correct position", func() {
 					entries := []*MockUuidObject{{Name: "4", Value: "D"}, {Name: "5", Value: "E"}}
-					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 
 					Expect(err).ToNot(HaveOccurred())
 					Expect(processed).To(HaveLen(2))
@@ -142,7 +142,7 @@ var _ = Describe("Server", func() {
 			Context("and entries are created in Exhaustive mode", func() {
 				It("should not return any error and overwrite all entries on the server", func() {
 					entries := []*MockUuidObject{{Name: "1", Value: "A'"}, {Name: "3", Value: "C"}}
-					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.Exhaustive, movement.PositionFirst{})
+					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.Exhaustive, movement.PositionFirst{}, map[string]string{})
 
 					Expect(err).ToNot(HaveOccurred())
 
@@ -174,7 +174,7 @@ var _ = Describe("Server", func() {
 				stateEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
 				planEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "3", Value: "C"}, {Name: "2", Value: "B"}}
 
-				processed, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+				processed, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(3))
@@ -192,7 +192,7 @@ var _ = Describe("Server", func() {
 				stateEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
 				planEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "3", Value: "C"}, {Name: "2", Value: "B"}}
 
-				processed, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.Exhaustive, movement.PositionFirst{})
+				processed, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.Exhaustive, movement.PositionFirst{}, map[string]string{})
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(3))
@@ -212,7 +212,7 @@ var _ = Describe("Server", func() {
 
 			It("should add the entry to the server", func() {
 				planEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
-				processed, err := manager.UpdateMany(ctx, location, []string{}, initial, planEntries, sdkmanager.NonExhaustive, movement.PositionLast{})
+				processed, err := manager.UpdateMany(ctx, location, []string{}, initial, planEntries, sdkmanager.NonExhaustive, movement.PositionLast{}, map[string]string{})
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(3))
@@ -224,7 +224,7 @@ var _ = Describe("Server", func() {
 			It("should delete the entry from the server", func() {
 				planEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "3", Value: "C"}}
 
-				processed, err := manager.UpdateMany(ctx, location, []string{}, initial, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+				processed, err := manager.UpdateMany(ctx, location, []string{}, initial, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(2))
@@ -236,7 +236,7 @@ var _ = Describe("Server", func() {
 			It("should update the entry on the server", func() {
 				planEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B_modified"}, {Name: "3", Value: "C"}}
 
-				processed, err := manager.UpdateMany(ctx, location, []string{}, initial, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+				processed, err := manager.UpdateMany(ctx, location, []string{}, initial, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(3))
@@ -248,7 +248,7 @@ var _ = Describe("Server", func() {
 			It("should rename the entry on the server", func() {
 				planEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "two", Value: "B"}, {Name: "3", Value: "C"}}
 
-				processed, err := manager.UpdateMany(ctx, location, []string{}, initial, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+				processed, err := manager.UpdateMany(ctx, location, []string{}, initial, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(3))
@@ -275,7 +275,7 @@ var _ = Describe("Server", func() {
 				stateEntries := []*MockUuidObject{}
 				planEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}}
 
-				processed, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.Exhaustive, movement.PositionFirst{})
+				processed, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.Exhaustive, movement.PositionFirst{}, map[string]string{})
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(2))
@@ -291,7 +291,7 @@ var _ = Describe("Server", func() {
 			It("should return a conflict error", func() {
 				stateEntries := []*MockUuidObject{{Name: "1", Value: "A"}}
 				planEntries := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "conflict", Value: "new"}}
-				_, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+				_, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 
 				Expect(err).To(MatchError(sdkmanager.ErrConflict))
 			})
@@ -333,7 +333,7 @@ var _ = Describe("Server", func() {
 
 				expectedFinalServerObjects := append(expectedFinalState, &MockUuidObject{Name: "99", Value: "ZZ"})
 
-				processed, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+				processed, err := manager.UpdateMany(ctx, location, []string{}, stateEntries, planEntries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(4))
@@ -369,7 +369,7 @@ var _ = Describe("Server", func() {
 				state := []*MockUuidObject{{Name: "1", Value: ""}, {Name: "2", Value: ""}, {Name: "3", Value: "C"}}
 				plan := []*MockUuidObject{{Name: "1", Value: "A"}, {Name: "2", Value: "B"}, {Name: "3", Value: "C"}}
 
-				processed, err := manager.UpdateMany(ctx, location, []string{}, state, plan, sdkmanager.NonExhaustive, movement.PositionLast{})
+				processed, err := manager.UpdateMany(ctx, location, []string{}, state, plan, sdkmanager.NonExhaustive, movement.PositionLast{}, map[string]string{})
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(MatchEntries(plan))
 				Expect(client.list()).To(MatchEntries(append([]*MockUuidObject{{Name: "4", Value: ""}}, plan...)))
@@ -437,7 +437,7 @@ var _ = Describe("Server", func() {
 				Expect(moveRequired).To(BeFalse())
 				Expect(processed).To(HaveLen(2))
 
-				processed, err = manager.UpdateMany(ctx, location, []string{}, processed, entries, sdkmanager.NonExhaustive, movement.PositionLast{})
+				processed, err = manager.UpdateMany(ctx, location, []string{}, processed, entries, sdkmanager.NonExhaustive, movement.PositionLast{}, map[string]string{})
 				Expect(client.list()).To(HaveLen(3))
 				Expect(err).ToNot(HaveOccurred())
 				Expect(processed).To(HaveLen(3))
@@ -452,7 +452,7 @@ var _ = Describe("Server", func() {
 				It("should create new entries on the top of the list", func() {
 					entries := []*MockUuidObject{{Name: "4", Value: "D"}, {Name: "5", Value: "E"}, {Name: "6", Value: "F"}}
 
-					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 					Expect(err).ToNot(HaveOccurred())
 					Expect(processed).To(HaveLen(3))
 
@@ -470,7 +470,7 @@ var _ = Describe("Server", func() {
 				It("should create new entries on the bottom of the list", func() {
 					entries := []*MockUuidObject{{Name: "4", Value: "D"}, {Name: "5", Value: "E"}, {Name: "6", Value: "F"}}
 
-					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionLast{})
+					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionLast{}, map[string]string{})
 					Expect(err).ToNot(HaveOccurred())
 					Expect(processed).To(HaveLen(3))
 
@@ -488,7 +488,7 @@ var _ = Describe("Server", func() {
 				It("should create new entries directly after first existing element", func() {
 					entries := []*MockUuidObject{{Name: "4", Value: "D"}, {Name: "5", Value: "E"}, {Name: "6", Value: "F"}}
 
-					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionAfter{Directly: true, Pivot: initial[0].Name})
+					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionAfter{Directly: true, Pivot: initial[0].Name}, map[string]string{})
 
 					Expect(err).ToNot(HaveOccurred())
 					Expect(processed).To(HaveLen(3))
@@ -513,7 +513,7 @@ var _ = Describe("Server", func() {
 
 					pivot := initial[2].Name // "3"
 					position := movement.PositionBefore{Directly: true, Pivot: pivot}
-					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, position)
+					processed, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, position, map[string]string{})
 
 					Expect(err).ToNot(HaveOccurred())
 					Expect(processed).To(HaveLen(3))
@@ -532,7 +532,7 @@ var _ = Describe("Server", func() {
 			Context("and there is a duplicate entry within a list", func() {
 				It("should properly raise an error", func() {
 					entries := []*MockUuidObject{{Name: "4", Value: "D"}, {Name: "4", Value: "D"}}
-					_, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionFirst{})
+					_, err := manager.CreateMany(ctx, location, []string{}, entries, sdkmanager.NonExhaustive, movement.PositionFirst{}, map[string]string{})
 
 					Expect(err).To(MatchError(sdkmanager.ErrPlanConflict))
 				})

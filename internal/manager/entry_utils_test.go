@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
+	"github.com/PaloAltoNetworks/pango/util"
 	"github.com/PaloAltoNetworks/pango/version"
 	"github.com/PaloAltoNetworks/pango/xmlapi"
 
@@ -115,6 +116,11 @@ func (o *MockEntryClient[E]) MultiConfig(ctx context.Context, updates *xmlapi.Mu
 	o.MultiConfigOpers = append(o.MultiConfigOpers, opers)
 
 	return nil, nil, nil, nil
+}
+
+func (o *MockEntryClient[E]) Communicate(ctx context.Context, cmd util.PangoCommand, strip bool, ans any) ([]byte, *http.Response, error) {
+	// Mock implementation for Communicate API calls (audit comments, etc.)
+	return nil, nil, nil
 }
 
 func (o *MockEntryClient[E]) list() []E {

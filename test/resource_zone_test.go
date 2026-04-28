@@ -501,6 +501,62 @@ resource "panos_zone" "example" {
 }
 `
 
+func TestAccZone_TemplateStack(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: zone_TemplateStack_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact(fmt.Sprintf("%s-zone", prefix)),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_zone.example",
+						tfjsonpath.New("enable_user_identification"),
+						knownvalue.Bool(true),
+					),
+				},
+			},
+		},
+	})
+}
+
+const zone_TemplateStack_Tmpl = `
+variable "prefix" { type = string }
+
+resource "panos_template" "example" {
+	location = { panorama = {} }
+	name = var.prefix
+}
+
+resource "panos_template_stack" "example" {
+	location = { panorama = {} }
+	name = "${var.prefix}-stack"
+	templates = [panos_template.example.name]
+}
+
+resource "panos_zone" "example" {
+	location = { template_stack = { name = panos_template_stack.example.name } }
+	name = "${var.prefix}-zone"
+	enable_user_identification = true
+	network = {
+		layer3 = []
+	}
+}
+`
+
 func TestAccZone_Layer3WithTunnelInterface(t *testing.T) {
 	t.Parallel()
 

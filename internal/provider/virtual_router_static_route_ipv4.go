@@ -516,8 +516,14 @@ func (o *VirtualRouterStaticRouteIpv4DataSourcePathMonitorObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		monitorDestinations_existing_entries := make(map[string]*staticroute.PathMonitorMonitorDestinations)
+		if *obj != nil {
+			for idx := range (*obj).MonitorDestinations {
+				monitorDestinations_existing_entries[(*obj).MonitorDestinations[idx].Name] = &(*obj).MonitorDestinations[idx]
+			}
+		}
 		for _, elt := range monitorDestinations_tf_entries {
-			var entry *staticroute.PathMonitorMonitorDestinations
+			entry := monitorDestinations_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2937,8 +2943,14 @@ func (o *VirtualRouterStaticRouteIpv4ResourcePathMonitorObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		monitorDestinations_existing_entries := make(map[string]*staticroute.PathMonitorMonitorDestinations)
+		if *obj != nil {
+			for idx := range (*obj).MonitorDestinations {
+				monitorDestinations_existing_entries[(*obj).MonitorDestinations[idx].Name] = &(*obj).MonitorDestinations[idx]
+			}
+		}
 		for _, elt := range monitorDestinations_tf_entries {
-			var entry *staticroute.PathMonitorMonitorDestinations
+			entry := monitorDestinations_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

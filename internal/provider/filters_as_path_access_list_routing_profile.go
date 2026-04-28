@@ -119,8 +119,14 @@ func (o *FiltersAsPathAccessListRoutingProfileDataSourceModel) CopyToPango(ctx c
 		if diags.HasError() {
 			return diags
 		}
+		aspathEntries_existing_entries := make(map[string]*aspathacl.AspathEntry)
+		if *obj != nil {
+			for idx := range (*obj).AspathEntry {
+				aspathEntries_existing_entries[(*obj).AspathEntry[idx].Name] = &(*obj).AspathEntry[idx]
+			}
+		}
 		for _, elt := range aspathEntries_tf_entries {
-			var entry *aspathacl.AspathEntry
+			entry := aspathEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -671,8 +677,14 @@ func (o *FiltersAsPathAccessListRoutingProfileResourceModel) CopyToPango(ctx con
 		if diags.HasError() {
 			return diags
 		}
+		aspathEntries_existing_entries := make(map[string]*aspathacl.AspathEntry)
+		if *obj != nil {
+			for idx := range (*obj).AspathEntry {
+				aspathEntries_existing_entries[(*obj).AspathEntry[idx].Name] = &(*obj).AspathEntry[idx]
+			}
+		}
 		for _, elt := range aspathEntries_tf_entries {
-			var entry *aspathacl.AspathEntry
+			entry := aspathEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

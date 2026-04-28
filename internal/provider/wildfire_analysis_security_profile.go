@@ -131,8 +131,14 @@ func (o *WildfireAnalysisSecurityProfileDataSourceModel) CopyToPango(ctx context
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*wildfireanalysis.Rules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *wildfireanalysis.Rules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -789,8 +795,14 @@ func (o *WildfireAnalysisSecurityProfileResourceModel) CopyToPango(ctx context.C
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*wildfireanalysis.Rules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *wildfireanalysis.Rules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

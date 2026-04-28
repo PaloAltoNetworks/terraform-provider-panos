@@ -262,8 +262,14 @@ func (o *TunnelInterfaceDataSourceModel) CopyToPango(ctx context.Context, client
 		if diags.HasError() {
 			return diags
 		}
+		ip_existing_entries := make(map[string]*tunnel.Ip)
+		if *obj != nil {
+			for idx := range (*obj).Ip {
+				ip_existing_entries[(*obj).Ip[idx].Name] = &(*obj).Ip[idx]
+			}
+		}
 		for _, elt := range ip_tf_entries {
-			var entry *tunnel.Ip
+			entry := ip_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -343,8 +349,14 @@ func (o *TunnelInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*tunnel.Ipv6Address)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *tunnel.Ipv6Address
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1777,8 +1789,14 @@ func (o *TunnelInterfaceResourceModel) CopyToPango(ctx context.Context, client p
 		if diags.HasError() {
 			return diags
 		}
+		ip_existing_entries := make(map[string]*tunnel.Ip)
+		if *obj != nil {
+			for idx := range (*obj).Ip {
+				ip_existing_entries[(*obj).Ip[idx].Name] = &(*obj).Ip[idx]
+			}
+		}
 		for _, elt := range ip_tf_entries {
-			var entry *tunnel.Ip
+			entry := ip_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1858,8 +1876,14 @@ func (o *TunnelInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, cli
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*tunnel.Ipv6Address)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *tunnel.Ipv6Address
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

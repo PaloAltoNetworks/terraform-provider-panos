@@ -1,0 +1,431 @@
+---
+page_title: "panos_pbf_policy_rules Resource - panos"
+subcategory: "Policies"
+description: |-
+  
+---
+
+# panos_pbf_policy_rules (Resource)
+
+
+
+## Example Usage
+
+```terraform
+# Manage a group of Policy Based Forwarding rules with positioning
+
+## Place the rule group at the top of the pre-rulebase
+resource "panos_pbf_policy_rules" "priority_routing" {
+  location = {
+    device_group = {
+      name     = panos_device_group.example.name
+      rulebase = "pre-rulebase"
+    }
+  }
+
+  position = {
+    where = "first"
+  }
+
+  rules = [
+    {
+      name                  = "route-voip-traffic"
+      description           = "Route VoIP traffic through low-latency path"
+      source_addresses      = ["corporate-network"]
+      destination_addresses = ["voip-servers"]
+      services              = ["sip", "rtp"]
+      applications          = ["sip", "voip"]
+
+      from = {
+        zone = ["trust"]
+      }
+
+      action = {
+        forward = {
+          egress_interface = "ethernet1/2"
+          nexthop = {
+            ip_address = "10.10.0.1"
+          }
+          monitor = {
+            ip_address             = "10.10.0.1"
+            profile                = "high-availability"
+            disable_if_unreachable = true
+          }
+        }
+      }
+
+      enforce_symmetric_return = {
+        enabled = true
+      }
+
+      tags = ["voip", "priority"]
+    }
+  ]
+}
+
+## Place the rule group after a specific rule with forward action using FQDN
+resource "panos_pbf_policy_rules" "application_routing" {
+  location = {
+    device_group = {
+      name     = panos_device_group.example.name
+      rulebase = "pre-rulebase"
+    }
+  }
+
+  position = {
+    where    = "after"
+    directly = true
+    pivot    = "route-voip-traffic"
+  }
+
+  rules = [
+    {
+      name                  = "route-backup-traffic"
+      description           = "Route backup traffic through dedicated backup link"
+      source_addresses      = ["backup-servers"]
+      destination_addresses = ["backup-storage"]
+      services              = ["any"]
+      applications          = ["backup"]
+
+      from = {
+        zone = ["dmz"]
+      }
+
+      action = {
+        forward = {
+          egress_interface = "ethernet1/4"
+          nexthop = {
+            fqdn = "backup-gateway.example.com"
+          }
+          monitor = {
+            ip_address             = "10.30.0.1"
+            disable_if_unreachable = false
+          }
+        }
+      }
+
+      schedule = "backup-window"
+      tags     = ["backup", "scheduled"]
+    },
+    {
+      name                  = "block-suspicious-traffic"
+      description           = "Discard traffic from untrusted sources"
+      source_addresses      = ["suspicious-network"]
+      destination_addresses = ["any"]
+      services              = ["any"]
+      applications          = ["any"]
+
+      from = {
+        zone = ["untrust"]
+      }
+
+      action = {
+        discard = {}
+      }
+
+      disabled = false
+      tags     = ["security", "block"]
+    }
+  ]
+}
+
+## Advanced rule with interface-based source and specific target devices
+resource "panos_pbf_policy_rules" "interface_routing" {
+  location = {
+    device_group = {
+      name     = panos_device_group.example.name
+      rulebase = "post-rulebase"
+    }
+  }
+
+  position = {
+    where = "last"
+  }
+
+  rules = [
+    {
+      name                  = "route-iot-devices"
+      description           = "Route IoT device traffic through isolated network segment"
+      source_addresses      = ["iot-network"]
+      destination_addresses = ["cloud-services"]
+      negate_destination    = false
+      services              = ["service-https"]
+      applications          = ["any"]
+      source_users          = ["any"]
+
+      from = {
+        interface = ["ethernet1/5", "ethernet1/6"]
+      }
+
+      action = {
+        forward = {
+          egress_interface = "ethernet1/7"
+          nexthop = {
+            ip_address = "10.40.0.1"
+          }
+        }
+      }
+
+      active_active_device_binding = "both"
+
+      # Target specific devices in the device group
+      target = {
+        devices = [
+          {
+            name = "fw-branch-01"
+            vsys = [
+              { name = "vsys1" }
+            ]
+          }
+        ]
+        negate = false
+        tags   = ["branch-office"]
+      }
+
+      tags = ["iot", "isolated"]
+    },
+    {
+      name                  = "route-to-virtual-system"
+      description           = "Route traffic to a different virtual system for processing"
+      source_addresses      = ["cross-vsys-network"]
+      destination_addresses = ["shared-resources"]
+      services              = ["any"]
+      applications          = ["any"]
+
+      from = {
+        zone = ["trust"]
+      }
+
+      action = {
+        forward_to_vsys = "vsys2"
+      }
+
+      tags = ["cross-vsys"]
+    }
+  ]
+}
+
+resource "panos_device_group" "example" {
+  location = {
+    panorama = {}
+  }
+
+  name = "example-device-group"
+}
+```
+
+<!-- schema generated by tfplugindocs -->
+## Schema
+
+### Required
+
+- `location` (Attributes) The location of this object. (see [below for nested schema](#nestedatt--location))
+- `position` (Attributes) (see [below for nested schema](#nestedatt--position))
+- `rules` (Attributes List) (see [below for nested schema](#nestedatt--rules))
+
+<a id="nestedatt--location"></a>
+### Nested Schema for `location`
+
+Optional:
+
+- `device_group` (Attributes) Located in a specific device group rulebase (see [below for nested schema](#nestedatt--location--device_group))
+- `shared` (Attributes) Located in a shared rulebase (see [below for nested schema](#nestedatt--location--shared))
+- `vsys` (Attributes) Located in a specific vsys rulebase (see [below for nested schema](#nestedatt--location--vsys))
+
+<a id="nestedatt--location--device_group"></a>
+### Nested Schema for `location.device_group`
+
+Optional:
+
+- `name` (String) The device group name
+- `panorama_device` (String) The panorama device
+- `rulebase` (String) The rulebase
+
+
+<a id="nestedatt--location--shared"></a>
+### Nested Schema for `location.shared`
+
+Optional:
+
+- `rulebase` (String) Rulebase name
+
+
+<a id="nestedatt--location--vsys"></a>
+### Nested Schema for `location.vsys`
+
+Optional:
+
+- `name` (String) The vsys name
+- `ngfw_device` (String) The NGFW device
+
+
+
+<a id="nestedatt--position"></a>
+### Nested Schema for `position`
+
+Required:
+
+- `where` (String)
+
+Optional:
+
+- `directly` (Boolean)
+- `pivot` (String)
+
+
+<a id="nestedatt--rules"></a>
+### Nested Schema for `rules`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `action` (Attributes) (see [below for nested schema](#nestedatt--rules--action))
+- `active_active_device_binding` (String) Device binding configuration in HA Active-Active mode
+- `applications` (Set of String)
+- `audit_comment_version` (String) Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.
+- `audit_comment_wo` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only audit comment for this rule. This value is sent to PAN-OS but not read back. Changes are only sent when audit_comment_version is modified. Each time audit_comment_version changes, this comment is added to the audit history with a timestamp.
+- `description` (String)
+- `destination_addresses` (Set of String)
+- `disabled` (Boolean) Disable the rule
+- `enforce_symmetric_return` (Attributes) (see [below for nested schema](#nestedatt--rules--enforce_symmetric_return))
+- `from` (Attributes) (see [below for nested schema](#nestedatt--rules--from))
+- `group_tag` (String)
+- `negate_destination` (Boolean)
+- `negate_source` (Boolean)
+- `schedule` (String)
+- `services` (Set of String)
+- `source_addresses` (Set of String)
+- `source_users` (Set of String)
+- `tags` (Set of String)
+- `target` (Attributes) (see [below for nested schema](#nestedatt--rules--target))
+
+<a id="nestedatt--rules--action"></a>
+### Nested Schema for `rules.action`
+
+Optional:
+
+- `discard` (Attributes) (see [below for nested schema](#nestedatt--rules--action--discard))
+- `forward` (Attributes) (see [below for nested schema](#nestedatt--rules--action--forward))
+- `forward_to_vsys` (String) Virtual system/Shared gateway to route packet to
+- `no_pbf` (Attributes) (see [below for nested schema](#nestedatt--rules--action--no_pbf))
+
+<a id="nestedatt--rules--action--discard"></a>
+### Nested Schema for `rules.action.discard`
+
+
+<a id="nestedatt--rules--action--forward"></a>
+### Nested Schema for `rules.action.forward`
+
+Optional:
+
+- `egress_interface` (String) Interface to route packet to
+- `monitor` (Attributes) (see [below for nested schema](#nestedatt--rules--action--forward--monitor))
+- `nexthop` (Attributes) (see [below for nested schema](#nestedatt--rules--action--forward--nexthop))
+
+<a id="nestedatt--rules--action--forward--monitor"></a>
+### Nested Schema for `rules.action.forward.monitor`
+
+Optional:
+
+- `disable_if_unreachable` (Boolean) Disable this rule if nexthop/monitor ip is unreachable
+- `ip_address` (String) Monitor IP address
+- `profile` (String) Monitoring profile associated with this rule
+
+
+<a id="nestedatt--rules--action--forward--nexthop"></a>
+### Nested Schema for `rules.action.forward.nexthop`
+
+Optional:
+
+- `fqdn` (String) nexthop address FQDN name configuration
+- `ip_address` (String) Next hop IP address
+
+
+
+<a id="nestedatt--rules--action--no_pbf"></a>
+### Nested Schema for `rules.action.no_pbf`
+
+
+
+<a id="nestedatt--rules--enforce_symmetric_return"></a>
+### Nested Schema for `rules.enforce_symmetric_return`
+
+Optional:
+
+- `enabled` (Boolean) Enable symmetric return
+- `nexthop_address_list` (Attributes List) (see [below for nested schema](#nestedatt--rules--enforce_symmetric_return--nexthop_address_list))
+
+<a id="nestedatt--rules--enforce_symmetric_return--nexthop_address_list"></a>
+### Nested Schema for `rules.enforce_symmetric_return.nexthop_address_list`
+
+Required:
+
+- `name` (String)
+
+
+
+<a id="nestedatt--rules--from"></a>
+### Nested Schema for `rules.from`
+
+Optional:
+
+- `interface` (Set of String)
+- `zone` (Set of String)
+
+
+<a id="nestedatt--rules--target"></a>
+### Nested Schema for `rules.target`
+
+Optional:
+
+- `devices` (Attributes List) (see [below for nested schema](#nestedatt--rules--target--devices))
+- `negate` (Boolean) Target to all but these specified devices and tags
+- `tags` (List of String)
+
+<a id="nestedatt--rules--target--devices"></a>
+### Nested Schema for `rules.target.devices`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `vsys` (Attributes List) (see [below for nested schema](#nestedatt--rules--target--devices--vsys))
+
+<a id="nestedatt--rules--target--devices--vsys"></a>
+### Nested Schema for `rules.target.devices.vsys`
+
+Required:
+
+- `name` (String)
+
+## Import
+
+Import is supported using the following syntax:
+
+```shell
+#!/bin/bash
+
+# A set of PBF policy rules can be imported by providing the following base64 encoded object as the ID
+# {
+#     location = {
+#         device_group = {
+#         name = "example-device-group"
+#         rulebase = "pre-rulebase"
+#         panorama_device = "localhost.localdomain"
+#         }
+#     }
+#
+#     position = { where = "after", directly = true, pivot = "route-voip-traffic" }
+#
+#     names = [
+#         "route-backup-traffic",
+#         "block-suspicious-traffic"
+#     ]
+# }
+terraform import panos_pbf_policy_rules.application_routing $(echo '{"location":{"device_group":{"name":"example-device-group","panorama_device":"localhost.localdomain","rulebase":"pre-rulebase"}},"names":["route-backup-traffic","block-suspicious-traffic"],"position":{"directly":true,"pivot":"route-voip-traffic","where":"after"}}' | base64)
+```

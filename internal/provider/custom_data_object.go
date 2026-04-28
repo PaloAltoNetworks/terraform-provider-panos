@@ -358,8 +358,14 @@ func (o *CustomDataObjectDataSourcePatternTypeFilePropertiesObject) CopyToPango(
 		if diags.HasError() {
 			return diags
 		}
+		pattern_existing_entries := make(map[string]*dataobjects.PatternTypeFilePropertiesPattern)
+		if *obj != nil {
+			for idx := range (*obj).Pattern {
+				pattern_existing_entries[(*obj).Pattern[idx].Name] = &(*obj).Pattern[idx]
+			}
+		}
 		for _, elt := range pattern_tf_entries {
-			var entry *dataobjects.PatternTypeFilePropertiesPattern
+			entry := pattern_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -401,8 +407,14 @@ func (o *CustomDataObjectDataSourcePatternTypePredefinedObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		pattern_existing_entries := make(map[string]*dataobjects.PatternTypePredefinedPattern)
+		if *obj != nil {
+			for idx := range (*obj).Pattern {
+				pattern_existing_entries[(*obj).Pattern[idx].Name] = &(*obj).Pattern[idx]
+			}
+		}
 		for _, elt := range pattern_tf_entries {
-			var entry *dataobjects.PatternTypePredefinedPattern
+			entry := pattern_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -452,8 +464,14 @@ func (o *CustomDataObjectDataSourcePatternTypeRegexObject) CopyToPango(ctx conte
 		if diags.HasError() {
 			return diags
 		}
+		pattern_existing_entries := make(map[string]*dataobjects.PatternTypeRegexPattern)
+		if *obj != nil {
+			for idx := range (*obj).Pattern {
+				pattern_existing_entries[(*obj).Pattern[idx].Name] = &(*obj).Pattern[idx]
+			}
+		}
 		for _, elt := range pattern_tf_entries {
-			var entry *dataobjects.PatternTypeRegexPattern
+			entry := pattern_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2075,8 +2093,14 @@ func (o *CustomDataObjectResourcePatternTypeFilePropertiesObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		pattern_existing_entries := make(map[string]*dataobjects.PatternTypeFilePropertiesPattern)
+		if *obj != nil {
+			for idx := range (*obj).Pattern {
+				pattern_existing_entries[(*obj).Pattern[idx].Name] = &(*obj).Pattern[idx]
+			}
+		}
 		for _, elt := range pattern_tf_entries {
-			var entry *dataobjects.PatternTypeFilePropertiesPattern
+			entry := pattern_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2118,8 +2142,14 @@ func (o *CustomDataObjectResourcePatternTypePredefinedObject) CopyToPango(ctx co
 		if diags.HasError() {
 			return diags
 		}
+		pattern_existing_entries := make(map[string]*dataobjects.PatternTypePredefinedPattern)
+		if *obj != nil {
+			for idx := range (*obj).Pattern {
+				pattern_existing_entries[(*obj).Pattern[idx].Name] = &(*obj).Pattern[idx]
+			}
+		}
 		for _, elt := range pattern_tf_entries {
-			var entry *dataobjects.PatternTypePredefinedPattern
+			entry := pattern_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2169,8 +2199,14 @@ func (o *CustomDataObjectResourcePatternTypeRegexObject) CopyToPango(ctx context
 		if diags.HasError() {
 			return diags
 		}
+		pattern_existing_entries := make(map[string]*dataobjects.PatternTypeRegexPattern)
+		if *obj != nil {
+			for idx := range (*obj).Pattern {
+				pattern_existing_entries[(*obj).Pattern[idx].Name] = &(*obj).Pattern[idx]
+			}
+		}
 		for _, elt := range pattern_tf_entries {
-			var entry *dataobjects.PatternTypeRegexPattern
+			entry := pattern_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

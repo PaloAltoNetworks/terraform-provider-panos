@@ -8,7 +8,9 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 
+	"github.com/PaloAltoNetworks/pango/audit"
 	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/movement"
 	"github.com/PaloAltoNetworks/pango/util"
@@ -258,7 +260,7 @@ func (o *UuidObjectManager[E, L, S]) moveNonExhaustive(ctx context.Context, loca
 	return nil
 }
 
-func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L, parentComponents []string, planEntries []E, exhaustive ExhaustiveType, sdkPosition movement.Position) ([]E, error) {
+func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L, parentComponents []string, planEntries []E, exhaustive ExhaustiveType, sdkPosition movement.Position, auditComments map[string]string) ([]E, error) {
 	var diags diag.Diagnostics
 
 	planEntriesByName := o.entriesByName(planEntries, entryUnknown)
@@ -343,6 +345,37 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 		return nil, errors.Join(moveErr, cleanupErr)
 	}
 
+	// Op API calls cannot be batched with Config operations in MultiConfig (API limitation),
+	// so we send audit comments sequentially after the main configuration succeeds
+	tflog.Debug(ctx, "Processing audit comments", map[string]interface{}{"count": len(auditComments), "comments": auditComments})
+	for entryName, comment := range auditComments {
+		components := append(parentComponents, util.AsEntryXpath(entryName))
+		path, err := location.XpathWithComponents(o.client.Versioning(), components...)
+		if err != nil {
+			tflog.Error(ctx, "Failed to create xpath for audit comment", map[string]interface{}{"entry": entryName, "error": err.Error()})
+			return nil, fmt.Errorf("failed to create xpath for audit comment: %w", err)
+		}
+
+		opCmd := &xmlapi.Op{
+			Command: audit.SetComment{
+				Xpath:   util.AsXpath(path),
+				Comment: comment,
+			},
+			Target: o.client.GetTarget(),
+		}
+
+		tflog.Debug(ctx, "Sending audit comment via Communicate", map[string]interface{}{"entry": entryName, "xpath": util.AsXpath(path), "comment": comment})
+		_, _, err = o.client.Communicate(ctx, opCmd, false, nil)
+		if err != nil {
+			tflog.Error(ctx, "Failed to send audit comment", map[string]interface{}{"entry": entryName, "error": err.Error()})
+			// Continue on audit comment errors - MultiConfig has already committed the rule changes,
+			// so we cannot roll back. We must save state with the successful rule operations.
+			continue
+		}
+		tflog.Debug(ctx, "Successfully sent audit comment", map[string]interface{}{"entry": entryName})
+	}
+	tflog.Debug(ctx, "Completed processing audit comments")
+
 	existing, err = o.service.List(ctx, location, "get", "", "")
 	if err != nil && !sdkerrors.IsObjectNotFound(err) {
 		return nil, fmt.Errorf("Failed to list remote entries: %w", err)
@@ -360,7 +393,7 @@ func (o *UuidObjectManager[E, L, S]) CreateMany(ctx context.Context, location L,
 	return entries, nil
 }
 
-func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L, parentComponents []string, stateEntries []E, planEntries []E, exhaustive ExhaustiveType, position movement.Position) ([]E, error) {
+func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L, parentComponents []string, stateEntries []E, planEntries []E, exhaustive ExhaustiveType, position movement.Position, auditComments map[string]string) ([]E, error) {
 	stateEntriesByName := o.entriesByName(stateEntries, entryUnknown)
 	planEntriesByName := o.entriesByName(planEntries, entryUnknown)
 	if len(planEntriesByName) != len(planEntries) {
@@ -615,6 +648,37 @@ func (o *UuidObjectManager[E, L, S]) UpdateMany(ctx context.Context, location L,
 		cleanupErr := o.cleanUpIncompleteUpdate(ctx, location, parentComponents, processedStateEntries, exhaustive)
 		return nil, errors.Join(moveErr, cleanupErr)
 	}
+
+	// Op API calls cannot be batched with Config operations in MultiConfig (API limitation),
+	// so we send audit comments sequentially after the main configuration succeeds
+	tflog.Debug(ctx, "Processing audit comments", map[string]interface{}{"count": len(auditComments), "comments": auditComments})
+	for entryName, comment := range auditComments {
+		components := append(parentComponents, util.AsEntryXpath(entryName))
+		path, err := location.XpathWithComponents(o.client.Versioning(), components...)
+		if err != nil {
+			tflog.Error(ctx, "Failed to create xpath for audit comment", map[string]interface{}{"entry": entryName, "error": err.Error()})
+			return nil, fmt.Errorf("failed to create xpath for audit comment: %w", err)
+		}
+
+		opCmd := &xmlapi.Op{
+			Command: audit.SetComment{
+				Xpath:   util.AsXpath(path),
+				Comment: comment,
+			},
+			Target: o.client.GetTarget(),
+		}
+
+		tflog.Debug(ctx, "Sending audit comment via Communicate", map[string]interface{}{"entry": entryName, "xpath": util.AsXpath(path), "comment": comment})
+		_, _, err = o.client.Communicate(ctx, opCmd, false, nil)
+		if err != nil {
+			tflog.Error(ctx, "Failed to send audit comment", map[string]interface{}{"entry": entryName, "error": err.Error()})
+			// Continue on audit comment errors - MultiConfig has already committed the rule changes,
+			// so we cannot roll back. We must save state with the successful rule operations.
+			continue
+		}
+		tflog.Debug(ctx, "Successfully sent audit comment", map[string]interface{}{"entry": entryName})
+	}
+	tflog.Debug(ctx, "Completed processing audit comments")
 
 	existing, err = o.service.List(ctx, location, "get", "", "")
 	if err != nil && !sdkerrors.IsObjectNotFound(err) {

@@ -596,8 +596,14 @@ func (o *DhcpDataSourceRelayIpv6Object) CopyToPango(ctx context.Context, client 
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*dhcp.RelayIpv6Server)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *dhcp.RelayIpv6Server
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -668,8 +674,14 @@ func (o *DhcpDataSourceServerObject) CopyToPango(ctx context.Context, client pan
 		if diags.HasError() {
 			return diags
 		}
+		reserved_existing_entries := make(map[string]*dhcp.ServerReserved)
+		if *obj != nil {
+			for idx := range (*obj).Reserved {
+				reserved_existing_entries[(*obj).Reserved[idx].Name] = &(*obj).Reserved[idx]
+			}
+		}
 		for _, elt := range reserved_tf_entries {
-			var entry *dhcp.ServerReserved
+			entry := reserved_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -789,8 +801,14 @@ func (o *DhcpDataSourceServerOptionObject) CopyToPango(ctx context.Context, clie
 		if diags.HasError() {
 			return diags
 		}
+		userDefined_existing_entries := make(map[string]*dhcp.ServerOptionUserDefined)
+		if *obj != nil {
+			for idx := range (*obj).UserDefined {
+				userDefined_existing_entries[(*obj).UserDefined[idx].Name] = &(*obj).UserDefined[idx]
+			}
+		}
 		for _, elt := range userDefined_tf_entries {
-			var entry *dhcp.ServerOptionUserDefined
+			entry := userDefined_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4012,8 +4030,14 @@ func (o *DhcpResourceRelayIpv6Object) CopyToPango(ctx context.Context, client pa
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*dhcp.RelayIpv6Server)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *dhcp.RelayIpv6Server
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4084,8 +4108,14 @@ func (o *DhcpResourceServerObject) CopyToPango(ctx context.Context, client pango
 		if diags.HasError() {
 			return diags
 		}
+		reserved_existing_entries := make(map[string]*dhcp.ServerReserved)
+		if *obj != nil {
+			for idx := range (*obj).Reserved {
+				reserved_existing_entries[(*obj).Reserved[idx].Name] = &(*obj).Reserved[idx]
+			}
+		}
 		for _, elt := range reserved_tf_entries {
-			var entry *dhcp.ServerReserved
+			entry := reserved_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4205,8 +4235,14 @@ func (o *DhcpResourceServerOptionObject) CopyToPango(ctx context.Context, client
 		if diags.HasError() {
 			return diags
 		}
+		userDefined_existing_entries := make(map[string]*dhcp.ServerOptionUserDefined)
+		if *obj != nil {
+			for idx := range (*obj).UserDefined {
+				userDefined_existing_entries[(*obj).UserDefined[idx].Name] = &(*obj).UserDefined[idx]
+			}
+		}
 		for _, elt := range userDefined_tf_entries {
-			var entry *dhcp.ServerOptionUserDefined
+			entry := userDefined_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

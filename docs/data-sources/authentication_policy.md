@@ -65,6 +65,7 @@ Required:
 
 Optional:
 
+- `audit_comment_version` (String) Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.
 - `authentication_enforcement` (String) Authentication enforcement object to use for authentication.
 - `category` (Set of String)
 - `description` (String)

@@ -171,8 +171,14 @@ func (o *CertificateProfileDataSourceModel) CopyToPango(ctx context.Context, cli
 		if diags.HasError() {
 			return diags
 		}
+		certificate_existing_entries := make(map[string]*certificate.Certificate)
+		if *obj != nil {
+			for idx := range (*obj).Certificate {
+				certificate_existing_entries[(*obj).Certificate[idx].Name] = &(*obj).Certificate[idx]
+			}
+		}
 		for _, elt := range certificate_tf_entries {
-			var entry *certificate.Certificate
+			entry := certificate_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1175,8 +1181,14 @@ func (o *CertificateProfileResourceModel) CopyToPango(ctx context.Context, clien
 		if diags.HasError() {
 			return diags
 		}
+		certificate_existing_entries := make(map[string]*certificate.Certificate)
+		if *obj != nil {
+			for idx := range (*obj).Certificate {
+				certificate_existing_entries[(*obj).Certificate[idx].Name] = &(*obj).Certificate[idx]
+			}
+		}
 		for _, elt := range certificate_tf_entries {
-			var entry *certificate.Certificate
+			entry := certificate_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

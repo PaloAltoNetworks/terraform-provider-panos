@@ -164,8 +164,14 @@ func (o *SslDecryptDataSourceModel) CopyToPango(ctx context.Context, client pang
 		if diags.HasError() {
 			return diags
 		}
+		sslExcludeCert_existing_entries := make(map[string]*ssldecrypt.SslExcludeCert)
+		if *obj != nil {
+			for idx := range (*obj).SslExcludeCert {
+				sslExcludeCert_existing_entries[(*obj).SslExcludeCert[idx].Name] = &(*obj).SslExcludeCert[idx]
+			}
+		}
 		for _, elt := range sslExcludeCert_tf_entries {
-			var entry *ssldecrypt.SslExcludeCert
+			entry := sslExcludeCert_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -925,8 +931,14 @@ func (o *SslDecryptResourceModel) CopyToPango(ctx context.Context, client pangou
 		if diags.HasError() {
 			return diags
 		}
+		sslExcludeCert_existing_entries := make(map[string]*ssldecrypt.SslExcludeCert)
+		if *obj != nil {
+			for idx := range (*obj).SslExcludeCert {
+				sslExcludeCert_existing_entries[(*obj).SslExcludeCert[idx].Name] = &(*obj).SslExcludeCert[idx]
+			}
+		}
 		for _, elt := range sslExcludeCert_tf_entries {
-			var entry *ssldecrypt.SslExcludeCert
+			entry := sslExcludeCert_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

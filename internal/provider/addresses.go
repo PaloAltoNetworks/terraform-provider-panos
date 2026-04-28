@@ -447,7 +447,10 @@ func (o *AddressesDataSource) Read(ctx context.Context, req datasource.ReadReque
 			continue
 		}
 
-		var object AddressesDataSourceAddressesObject
+		object, found := elements[elt.Name]
+		if !found {
+			object = AddressesDataSourceAddressesObject{}
+		}
 		object.name = elt.Name
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
@@ -913,10 +916,10 @@ func (o *AddressesResource) Create(ctx context.Context, req resource.CreateReque
 	}
 
 	for _, elt := range created {
-		if _, found := elements[elt.Name]; !found {
+		object, found := elements[elt.Name]
+		if !found {
 			continue
 		}
-		var object AddressesResourceAddressesObject
 		object.name = elt.Name
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
@@ -1045,7 +1048,10 @@ func (o *AddressesResource) Read(ctx context.Context, req resource.ReadRequest, 
 			continue
 		}
 
-		var object AddressesResourceAddressesObject
+		object, found := elements[elt.Name]
+		if !found {
+			object = AddressesResourceAddressesObject{}
+		}
 		object.name = elt.Name
 		resp.Diagnostics.Append(object.CopyFromPango(ctx, o.client, nil, elt, ev)...)
 		if resp.Diagnostics.HasError() {
@@ -1218,7 +1224,10 @@ func (o *AddressesResource) Update(ctx context.Context, req resource.UpdateReque
 	}
 	objects := make(map[string]*AddressesResourceAddressesObject, len(processed))
 	for _, elt := range processed {
-		var object AddressesResourceAddressesObject
+		object, found := elements[elt.Name]
+		if !found {
+			object = AddressesResourceAddressesObject{}
+		}
 		object.name = elt.Name
 		copy_diags := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)

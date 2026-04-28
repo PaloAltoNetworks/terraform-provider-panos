@@ -4027,8 +4027,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfObject) Co
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.BgpOspfRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.BgpOspfRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4297,8 +4303,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpOspfv3Object) 
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.BgpOspfv3RouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.BgpOspfv3RouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4536,8 +4548,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRibObject) Cop
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.BgpRibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.BgpRibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4862,8 +4880,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceBgpRipObject) Cop
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.BgpRipRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.BgpRipRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -5231,8 +5255,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticBg
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticBgpRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticBgpRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -5700,8 +5730,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticOspfRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticOspfRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -5923,8 +5959,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticOs
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticOspfv3RouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticOspfv3RouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6146,8 +6188,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticRibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticRibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6425,8 +6473,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceConnectedStaticRi
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticRipRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticRipRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6711,8 +6765,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfBgpObject) Co
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.OspfBgpRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.OspfBgpRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7035,8 +7095,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRibObject) Co
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.OspfRibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.OspfRibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7200,8 +7266,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfRipObject) Co
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.OspfRipRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.OspfRipRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7443,8 +7515,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3BgpObject) 
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.Ospfv3BgpRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.Ospfv3BgpRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7767,8 +7845,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceOspfv3RibObject) 
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.Ospfv3RibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.Ospfv3RibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7995,8 +8079,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipBgpObject) Cop
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.RipBgpRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.RipBgpRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8319,8 +8409,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipOspfObject) Co
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.RipOspfRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.RipOspfRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8517,8 +8613,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileDataSourceRipRibObject) Cop
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.RipRibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.RipRibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -33918,8 +34020,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfObject) Copy
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.BgpOspfRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.BgpOspfRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -34188,8 +34296,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpOspfv3Object) Co
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.BgpOspfv3RouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.BgpOspfv3RouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -34427,8 +34541,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRibObject) CopyT
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.BgpRibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.BgpRibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -34753,8 +34873,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceBgpRipObject) CopyT
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.BgpRipRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.BgpRipRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -35122,8 +35248,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticBgpO
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticBgpRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticBgpRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -35591,8 +35723,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticOspfRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticOspfRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -35814,8 +35952,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticOspf
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticOspfv3RouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticOspfv3RouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -36037,8 +36181,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRibO
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticRibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticRibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -36316,8 +36466,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceConnectedStaticRipO
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.ConnectedStaticRipRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.ConnectedStaticRipRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -36602,8 +36758,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfBgpObject) Copy
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.OspfBgpRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.OspfBgpRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -36926,8 +37088,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRibObject) Copy
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.OspfRibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.OspfRibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -37091,8 +37259,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfRipObject) Copy
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.OspfRipRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.OspfRipRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -37334,8 +37508,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3BgpObject) Co
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.Ospfv3BgpRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.Ospfv3BgpRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -37658,8 +37838,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceOspfv3RibObject) Co
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.Ospfv3RibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.Ospfv3RibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -37886,8 +38072,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipBgpObject) CopyT
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.RipBgpRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.RipBgpRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -38210,8 +38402,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipOspfObject) Copy
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.RipOspfRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.RipOspfRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -38408,8 +38606,14 @@ func (o *FiltersRouteMapsRedistributionRoutingProfileResourceRipRibObject) CopyT
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*routemapsredistribution.RipRibRouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *routemapsredistribution.RipRibRouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

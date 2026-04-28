@@ -740,8 +740,14 @@ func (o *GlobalprotectGatewayDataSourceModel) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		clientAuth_existing_entries := make(map[string]*gateway.ClientAuth)
+		if *obj != nil {
+			for idx := range (*obj).ClientAuth {
+				clientAuth_existing_entries[(*obj).ClientAuth[idx].Name] = &(*obj).ClientAuth[idx]
+			}
+		}
 		for _, elt := range clientAuth_tf_entries {
-			var entry *gateway.ClientAuth
+			entry := clientAuth_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -757,8 +763,14 @@ func (o *GlobalprotectGatewayDataSourceModel) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		hipNotification_existing_entries := make(map[string]*gateway.HipNotification)
+		if *obj != nil {
+			for idx := range (*obj).HipNotification {
+				hipNotification_existing_entries[(*obj).HipNotification[idx].Name] = &(*obj).HipNotification[idx]
+			}
+		}
 		for _, elt := range hipNotification_tf_entries {
-			var entry *gateway.HipNotification
+			entry := hipNotification_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -795,8 +807,14 @@ func (o *GlobalprotectGatewayDataSourceModel) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		remoteUserTunnelConfigs_existing_entries := make(map[string]*gateway.RemoteUserTunnelConfigs)
+		if *obj != nil {
+			for idx := range (*obj).RemoteUserTunnelConfigs {
+				remoteUserTunnelConfigs_existing_entries[(*obj).RemoteUserTunnelConfigs[idx].Name] = &(*obj).RemoteUserTunnelConfigs[idx]
+			}
+		}
 		for _, elt := range remoteUserTunnelConfigs_tf_entries {
-			var entry *gateway.RemoteUserTunnelConfigs
+			entry := remoteUserTunnelConfigs_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -812,8 +830,14 @@ func (o *GlobalprotectGatewayDataSourceModel) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		roles_existing_entries := make(map[string]*gateway.Roles)
+		if *obj != nil {
+			for idx := range (*obj).Roles {
+				roles_existing_entries[(*obj).Roles[idx].Name] = &(*obj).Roles[idx]
+			}
+		}
 		for _, elt := range roles_tf_entries {
-			var entry *gateway.Roles
+			entry := roles_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1410,8 +1434,14 @@ func (o *GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingIncl
 		if diags.HasError() {
 			return diags
 		}
+		list_existing_entries := make(map[string]*gateway.RemoteUserTunnelConfigsSplitTunnelingIncludeDomainsList)
+		if *obj != nil {
+			for idx := range (*obj).List {
+				list_existing_entries[(*obj).List[idx].Name] = &(*obj).List[idx]
+			}
+		}
 		for _, elt := range list_tf_entries {
-			var entry *gateway.RemoteUserTunnelConfigsSplitTunnelingIncludeDomainsList
+			entry := list_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1461,8 +1491,14 @@ func (o *GlobalprotectGatewayDataSourceRemoteUserTunnelConfigsSplitTunnelingExcl
 		if diags.HasError() {
 			return diags
 		}
+		list_existing_entries := make(map[string]*gateway.RemoteUserTunnelConfigsSplitTunnelingExcludeDomainsList)
+		if *obj != nil {
+			for idx := range (*obj).List {
+				list_existing_entries[(*obj).List[idx].Name] = &(*obj).List[idx]
+			}
+		}
 		for _, elt := range list_tf_entries {
-			var entry *gateway.RemoteUserTunnelConfigsSplitTunnelingExcludeDomainsList
+			entry := list_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6426,8 +6462,14 @@ func (o *GlobalprotectGatewayResourceModel) CopyToPango(ctx context.Context, cli
 		if diags.HasError() {
 			return diags
 		}
+		clientAuth_existing_entries := make(map[string]*gateway.ClientAuth)
+		if *obj != nil {
+			for idx := range (*obj).ClientAuth {
+				clientAuth_existing_entries[(*obj).ClientAuth[idx].Name] = &(*obj).ClientAuth[idx]
+			}
+		}
 		for _, elt := range clientAuth_tf_entries {
-			var entry *gateway.ClientAuth
+			entry := clientAuth_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6443,8 +6485,14 @@ func (o *GlobalprotectGatewayResourceModel) CopyToPango(ctx context.Context, cli
 		if diags.HasError() {
 			return diags
 		}
+		hipNotification_existing_entries := make(map[string]*gateway.HipNotification)
+		if *obj != nil {
+			for idx := range (*obj).HipNotification {
+				hipNotification_existing_entries[(*obj).HipNotification[idx].Name] = &(*obj).HipNotification[idx]
+			}
+		}
 		for _, elt := range hipNotification_tf_entries {
-			var entry *gateway.HipNotification
+			entry := hipNotification_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6481,8 +6529,14 @@ func (o *GlobalprotectGatewayResourceModel) CopyToPango(ctx context.Context, cli
 		if diags.HasError() {
 			return diags
 		}
+		remoteUserTunnelConfigs_existing_entries := make(map[string]*gateway.RemoteUserTunnelConfigs)
+		if *obj != nil {
+			for idx := range (*obj).RemoteUserTunnelConfigs {
+				remoteUserTunnelConfigs_existing_entries[(*obj).RemoteUserTunnelConfigs[idx].Name] = &(*obj).RemoteUserTunnelConfigs[idx]
+			}
+		}
 		for _, elt := range remoteUserTunnelConfigs_tf_entries {
-			var entry *gateway.RemoteUserTunnelConfigs
+			entry := remoteUserTunnelConfigs_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6498,8 +6552,14 @@ func (o *GlobalprotectGatewayResourceModel) CopyToPango(ctx context.Context, cli
 		if diags.HasError() {
 			return diags
 		}
+		roles_existing_entries := make(map[string]*gateway.Roles)
+		if *obj != nil {
+			for idx := range (*obj).Roles {
+				roles_existing_entries[(*obj).Roles[idx].Name] = &(*obj).Roles[idx]
+			}
+		}
 		for _, elt := range roles_tf_entries {
-			var entry *gateway.Roles
+			entry := roles_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7096,8 +7156,14 @@ func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingInclud
 		if diags.HasError() {
 			return diags
 		}
+		list_existing_entries := make(map[string]*gateway.RemoteUserTunnelConfigsSplitTunnelingIncludeDomainsList)
+		if *obj != nil {
+			for idx := range (*obj).List {
+				list_existing_entries[(*obj).List[idx].Name] = &(*obj).List[idx]
+			}
+		}
 		for _, elt := range list_tf_entries {
-			var entry *gateway.RemoteUserTunnelConfigsSplitTunnelingIncludeDomainsList
+			entry := list_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7147,8 +7213,14 @@ func (o *GlobalprotectGatewayResourceRemoteUserTunnelConfigsSplitTunnelingExclud
 		if diags.HasError() {
 			return diags
 		}
+		list_existing_entries := make(map[string]*gateway.RemoteUserTunnelConfigsSplitTunnelingExcludeDomainsList)
+		if *obj != nil {
+			for idx := range (*obj).List {
+				list_existing_entries[(*obj).List[idx].Name] = &(*obj).List[idx]
+			}
+		}
 		for _, elt := range list_tf_entries {
-			var entry *gateway.RemoteUserTunnelConfigsSplitTunnelingExcludeDomainsList
+			entry := list_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

@@ -243,8 +243,14 @@ func (o *LldpProfileDataSourceOptionTlvsManagementAddressObject) CopyToPango(ctx
 		if diags.HasError() {
 			return diags
 		}
+		iplist_existing_entries := make(map[string]*lldp.OptionTlvsManagementAddressIplist)
+		if *obj != nil {
+			for idx := range (*obj).Iplist {
+				iplist_existing_entries[(*obj).Iplist[idx].Name] = &(*obj).Iplist[idx]
+			}
+		}
 		for _, elt := range iplist_tf_entries {
-			var entry *lldp.OptionTlvsManagementAddressIplist
+			entry := iplist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1249,8 +1255,14 @@ func (o *LldpProfileResourceOptionTlvsManagementAddressObject) CopyToPango(ctx c
 		if diags.HasError() {
 			return diags
 		}
+		iplist_existing_entries := make(map[string]*lldp.OptionTlvsManagementAddressIplist)
+		if *obj != nil {
+			for idx := range (*obj).Iplist {
+				iplist_existing_entries[(*obj).Iplist[idx].Name] = &(*obj).Iplist[idx]
+			}
+		}
 		for _, elt := range iplist_tf_entries {
-			var entry *lldp.OptionTlvsManagementAddressIplist
+			entry := iplist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

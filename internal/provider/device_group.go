@@ -137,8 +137,14 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, client pan
 		if diags.HasError() {
 			return diags
 		}
+		devices_existing_entries := make(map[string]*devicegroup.Devices)
+		if *obj != nil {
+			for idx := range (*obj).Devices {
+				devices_existing_entries[(*obj).Devices[idx].Name] = &(*obj).Devices[idx]
+			}
+		}
 		for _, elt := range devices_tf_entries {
-			var entry *devicegroup.Devices
+			entry := devices_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -737,8 +743,14 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, client pango
 		if diags.HasError() {
 			return diags
 		}
+		devices_existing_entries := make(map[string]*devicegroup.Devices)
+		if *obj != nil {
+			for idx := range (*obj).Devices {
+				devices_existing_entries[(*obj).Devices[idx].Name] = &(*obj).Devices[idx]
+			}
+		}
 		for _, elt := range devices_tf_entries {
-			var entry *devicegroup.Devices
+			entry := devices_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

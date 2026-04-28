@@ -2019,8 +2019,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigObject) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		configs_existing_entries := make(map[string]*portal.ClientConfigConfigs)
+		if *obj != nil {
+			for idx := range (*obj).Configs {
+				configs_existing_entries[(*obj).Configs[idx].Name] = &(*obj).Configs[idx]
+			}
+		}
 		for _, elt := range configs_tf_entries {
-			var entry *portal.ClientConfigConfigs
+			entry := configs_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2036,8 +2042,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigObject) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		rootCa_existing_entries := make(map[string]*portal.ClientConfigRootCa)
+		if *obj != nil {
+			for idx := range (*obj).RootCa {
+				rootCa_existing_entries[(*obj).RootCa[idx].Name] = &(*obj).RootCa[idx]
+			}
+		}
 		for _, elt := range rootCa_tf_entries {
-			var entry *portal.ClientConfigRootCa
+			entry := rootCa_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2414,8 +2426,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaObj
 		if diags.HasError() {
 			return diags
 		}
+		registryKey_existing_entries := make(map[string]*portal.ClientConfigConfigsCustomChecksCriteriaRegistryKey)
+		if *obj != nil {
+			for idx := range (*obj).RegistryKey {
+				registryKey_existing_entries[(*obj).RegistryKey[idx].Name] = &(*obj).RegistryKey[idx]
+			}
+		}
 		for _, elt := range registryKey_tf_entries {
-			var entry *portal.ClientConfigConfigsCustomChecksCriteriaRegistryKey
+			entry := registryKey_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2431,8 +2449,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaObj
 		if diags.HasError() {
 			return diags
 		}
+		plist_existing_entries := make(map[string]*portal.ClientConfigConfigsCustomChecksCriteriaPlist)
+		if *obj != nil {
+			for idx := range (*obj).Plist {
+				plist_existing_entries[(*obj).Plist[idx].Name] = &(*obj).Plist[idx]
+			}
+		}
 		for _, elt := range plist_tf_entries {
-			var entry *portal.ClientConfigConfigsCustomChecksCriteriaPlist
+			entry := plist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2461,8 +2485,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaReg
 		if diags.HasError() {
 			return diags
 		}
+		registryValue_existing_entries := make(map[string]*portal.ClientConfigConfigsCustomChecksCriteriaRegistryKeyRegistryValue)
+		if *obj != nil {
+			for idx := range (*obj).RegistryValue {
+				registryValue_existing_entries[(*obj).RegistryValue[idx].Name] = &(*obj).RegistryValue[idx]
+			}
+		}
 		for _, elt := range registryValue_tf_entries {
-			var entry *portal.ClientConfigConfigsCustomChecksCriteriaRegistryKeyRegistryValue
+			entry := registryValue_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2506,8 +2536,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsCustomChecksCriteriaPli
 		if diags.HasError() {
 			return diags
 		}
+		key_existing_entries := make(map[string]*portal.ClientConfigConfigsCustomChecksCriteriaPlistKey)
+		if *obj != nil {
+			for idx := range (*obj).Key {
+				key_existing_entries[(*obj).Key[idx].Name] = &(*obj).Key[idx]
+			}
+		}
 		for _, elt := range key_tf_entries {
-			var entry *portal.ClientConfigConfigsCustomChecksCriteriaPlistKey
+			entry := key_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2594,8 +2630,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGatewaysInternalObject)
 		if diags.HasError() {
 			return diags
 		}
+		list_existing_entries := make(map[string]*portal.ClientConfigConfigsGatewaysInternalList)
+		if *obj != nil {
+			for idx := range (*obj).List {
+				list_existing_entries[(*obj).List[idx].Name] = &(*obj).List[idx]
+			}
+		}
 		for _, elt := range list_tf_entries {
-			var entry *portal.ClientConfigConfigsGatewaysInternalList
+			entry := list_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2693,8 +2735,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalObject)
 		if diags.HasError() {
 			return diags
 		}
+		list_existing_entries := make(map[string]*portal.ClientConfigConfigsGatewaysExternalList)
+		if *obj != nil {
+			for idx := range (*obj).List {
+				list_existing_entries[(*obj).List[idx].Name] = &(*obj).List[idx]
+			}
+		}
 		for _, elt := range list_tf_entries {
-			var entry *portal.ClientConfigConfigsGatewaysExternalList
+			entry := list_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2721,8 +2769,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGatewaysExternalListObj
 		if diags.HasError() {
 			return diags
 		}
+		priorityRule_existing_entries := make(map[string]*portal.ClientConfigConfigsGatewaysExternalListPriorityRule)
+		if *obj != nil {
+			for idx := range (*obj).PriorityRule {
+				priorityRule_existing_entries[(*obj).PriorityRule[idx].Name] = &(*obj).PriorityRule[idx]
+			}
+		}
 		for _, elt := range priorityRule_tf_entries {
-			var entry *portal.ClientConfigConfigsGatewaysExternalListPriorityRule
+			entry := priorityRule_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2947,8 +3001,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionExclusionO
 		if diags.HasError() {
 			return diags
 		}
+		category_existing_entries := make(map[string]*portal.ClientConfigConfigsHipCollectionExclusionCategory)
+		if *obj != nil {
+			for idx := range (*obj).Category {
+				category_existing_entries[(*obj).Category[idx].Name] = &(*obj).Category[idx]
+			}
+		}
 		for _, elt := range category_tf_entries {
-			var entry *portal.ClientConfigConfigsHipCollectionExclusionCategory
+			entry := category_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2974,8 +3034,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionExclusionC
 		if diags.HasError() {
 			return diags
 		}
+		vendor_existing_entries := make(map[string]*portal.ClientConfigConfigsHipCollectionExclusionCategoryVendor)
+		if *obj != nil {
+			for idx := range (*obj).Vendor {
+				vendor_existing_entries[(*obj).Vendor[idx].Name] = &(*obj).Vendor[idx]
+			}
+		}
 		for _, elt := range vendor_tf_entries {
-			var entry *portal.ClientConfigConfigsHipCollectionExclusionCategoryVendor
+			entry := vendor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3089,8 +3155,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChec
 		if diags.HasError() {
 			return diags
 		}
+		registryKey_existing_entries := make(map[string]*portal.ClientConfigConfigsHipCollectionCustomChecksWindowsRegistryKey)
+		if *obj != nil {
+			for idx := range (*obj).RegistryKey {
+				registryKey_existing_entries[(*obj).RegistryKey[idx].Name] = &(*obj).RegistryKey[idx]
+			}
+		}
 		for _, elt := range registryKey_tf_entries {
-			var entry *portal.ClientConfigConfigsHipCollectionCustomChecksWindowsRegistryKey
+			entry := registryKey_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3154,8 +3226,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsHipCollectionCustomChec
 		if diags.HasError() {
 			return diags
 		}
+		plist_existing_entries := make(map[string]*portal.ClientConfigConfigsHipCollectionCustomChecksMacOsPlist)
+		if *obj != nil {
+			for idx := range (*obj).Plist {
+				plist_existing_entries[(*obj).Plist[idx].Name] = &(*obj).Plist[idx]
+			}
+		}
 		for _, elt := range plist_tf_entries {
-			var entry *portal.ClientConfigConfigsHipCollectionCustomChecksMacOsPlist
+			entry := plist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3251,8 +3329,14 @@ func (o *GlobalprotectPortalDataSourceClientConfigConfigsGpAppConfigObject) Copy
 		if diags.HasError() {
 			return diags
 		}
+		config_existing_entries := make(map[string]*portal.ClientConfigConfigsGpAppConfigConfig)
+		if *obj != nil {
+			for idx := range (*obj).Config {
+				config_existing_entries[(*obj).Config[idx].Name] = &(*obj).Config[idx]
+			}
+		}
 		for _, elt := range config_tf_entries {
-			var entry *portal.ClientConfigConfigsGpAppConfigConfig
+			entry := config_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3463,8 +3547,14 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnObject) CopyToPango(ctx conte
 		if diags.HasError() {
 			return diags
 		}
+		appsToUserMapping_existing_entries := make(map[string]*portal.ClientlessVpnAppsToUserMapping)
+		if *obj != nil {
+			for idx := range (*obj).AppsToUserMapping {
+				appsToUserMapping_existing_entries[(*obj).AppsToUserMapping[idx].Name] = &(*obj).AppsToUserMapping[idx]
+			}
+		}
 		for _, elt := range appsToUserMapping_tf_entries {
-			var entry *portal.ClientlessVpnAppsToUserMapping
+			entry := appsToUserMapping_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3534,8 +3624,14 @@ func (o *GlobalprotectPortalDataSourceClientlessVpnObject) CopyToPango(ctx conte
 		if diags.HasError() {
 			return diags
 		}
+		proxyServerSetting_existing_entries := make(map[string]*portal.ClientlessVpnProxyServerSetting)
+		if *obj != nil {
+			for idx := range (*obj).ProxyServerSetting {
+				proxyServerSetting_existing_entries[(*obj).ProxyServerSetting[idx].Name] = &(*obj).ProxyServerSetting[idx]
+			}
+		}
 		for _, elt := range proxyServerSetting_tf_entries {
-			var entry *portal.ClientlessVpnProxyServerSetting
+			entry := proxyServerSetting_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3829,8 +3925,14 @@ func (o *GlobalprotectPortalDataSourcePortalConfigObject) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		clientAuth_existing_entries := make(map[string]*portal.PortalConfigClientAuth)
+		if *obj != nil {
+			for idx := range (*obj).ClientAuth {
+				clientAuth_existing_entries[(*obj).ClientAuth[idx].Name] = &(*obj).ClientAuth[idx]
+			}
+		}
 		for _, elt := range clientAuth_tf_entries {
-			var entry *portal.PortalConfigClientAuth
+			entry := clientAuth_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4005,8 +4107,14 @@ func (o *GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksMac
 		if diags.HasError() {
 			return diags
 		}
+		plist_existing_entries := make(map[string]*portal.PortalConfigConfigSelectionCustomChecksMacOsPlist)
+		if *obj != nil {
+			for idx := range (*obj).Plist {
+				plist_existing_entries[(*obj).Plist[idx].Name] = &(*obj).Plist[idx]
+			}
+		}
 		for _, elt := range plist_tf_entries {
-			var entry *portal.PortalConfigConfigSelectionCustomChecksMacOsPlist
+			entry := plist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4056,8 +4164,14 @@ func (o *GlobalprotectPortalDataSourcePortalConfigConfigSelectionCustomChecksWin
 		if diags.HasError() {
 			return diags
 		}
+		registryKey_existing_entries := make(map[string]*portal.PortalConfigConfigSelectionCustomChecksWindowsRegistryKey)
+		if *obj != nil {
+			for idx := range (*obj).RegistryKey {
+				registryKey_existing_entries[(*obj).RegistryKey[idx].Name] = &(*obj).RegistryKey[idx]
+			}
+		}
 		for _, elt := range registryKey_tf_entries {
-			var entry *portal.PortalConfigConfigSelectionCustomChecksWindowsRegistryKey
+			entry := registryKey_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4199,8 +4313,14 @@ func (o *GlobalprotectPortalDataSourceSatelliteConfigObject) CopyToPango(ctx con
 		if diags.HasError() {
 			return diags
 		}
+		configs_existing_entries := make(map[string]*portal.SatelliteConfigConfigs)
+		if *obj != nil {
+			for idx := range (*obj).Configs {
+				configs_existing_entries[(*obj).Configs[idx].Name] = &(*obj).Configs[idx]
+			}
+		}
 		for _, elt := range configs_tf_entries {
-			var entry *portal.SatelliteConfigConfigs
+			entry := configs_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4342,8 +4462,14 @@ func (o *GlobalprotectPortalDataSourceSatelliteConfigConfigsObject) CopyToPango(
 		if diags.HasError() {
 			return diags
 		}
+		gateways_existing_entries := make(map[string]*portal.SatelliteConfigConfigsGateways)
+		if *obj != nil {
+			for idx := range (*obj).Gateways {
+				gateways_existing_entries[(*obj).Gateways[idx].Name] = &(*obj).Gateways[idx]
+			}
+		}
 		for _, elt := range gateways_tf_entries {
-			var entry *portal.SatelliteConfigConfigsGateways
+			entry := gateways_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17174,8 +17300,14 @@ func (o *GlobalprotectPortalResourceClientConfigObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		configs_existing_entries := make(map[string]*portal.ClientConfigConfigs)
+		if *obj != nil {
+			for idx := range (*obj).Configs {
+				configs_existing_entries[(*obj).Configs[idx].Name] = &(*obj).Configs[idx]
+			}
+		}
 		for _, elt := range configs_tf_entries {
-			var entry *portal.ClientConfigConfigs
+			entry := configs_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17191,8 +17323,14 @@ func (o *GlobalprotectPortalResourceClientConfigObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		rootCa_existing_entries := make(map[string]*portal.ClientConfigRootCa)
+		if *obj != nil {
+			for idx := range (*obj).RootCa {
+				rootCa_existing_entries[(*obj).RootCa[idx].Name] = &(*obj).RootCa[idx]
+			}
+		}
 		for _, elt := range rootCa_tf_entries {
-			var entry *portal.ClientConfigRootCa
+			entry := rootCa_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17569,8 +17707,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaObjec
 		if diags.HasError() {
 			return diags
 		}
+		registryKey_existing_entries := make(map[string]*portal.ClientConfigConfigsCustomChecksCriteriaRegistryKey)
+		if *obj != nil {
+			for idx := range (*obj).RegistryKey {
+				registryKey_existing_entries[(*obj).RegistryKey[idx].Name] = &(*obj).RegistryKey[idx]
+			}
+		}
 		for _, elt := range registryKey_tf_entries {
-			var entry *portal.ClientConfigConfigsCustomChecksCriteriaRegistryKey
+			entry := registryKey_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17586,8 +17730,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaObjec
 		if diags.HasError() {
 			return diags
 		}
+		plist_existing_entries := make(map[string]*portal.ClientConfigConfigsCustomChecksCriteriaPlist)
+		if *obj != nil {
+			for idx := range (*obj).Plist {
+				plist_existing_entries[(*obj).Plist[idx].Name] = &(*obj).Plist[idx]
+			}
+		}
 		for _, elt := range plist_tf_entries {
-			var entry *portal.ClientConfigConfigsCustomChecksCriteriaPlist
+			entry := plist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17616,8 +17766,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaRegis
 		if diags.HasError() {
 			return diags
 		}
+		registryValue_existing_entries := make(map[string]*portal.ClientConfigConfigsCustomChecksCriteriaRegistryKeyRegistryValue)
+		if *obj != nil {
+			for idx := range (*obj).RegistryValue {
+				registryValue_existing_entries[(*obj).RegistryValue[idx].Name] = &(*obj).RegistryValue[idx]
+			}
+		}
 		for _, elt := range registryValue_tf_entries {
-			var entry *portal.ClientConfigConfigsCustomChecksCriteriaRegistryKeyRegistryValue
+			entry := registryValue_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17661,8 +17817,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsCustomChecksCriteriaPlist
 		if diags.HasError() {
 			return diags
 		}
+		key_existing_entries := make(map[string]*portal.ClientConfigConfigsCustomChecksCriteriaPlistKey)
+		if *obj != nil {
+			for idx := range (*obj).Key {
+				key_existing_entries[(*obj).Key[idx].Name] = &(*obj).Key[idx]
+			}
+		}
 		for _, elt := range key_tf_entries {
-			var entry *portal.ClientConfigConfigsCustomChecksCriteriaPlistKey
+			entry := key_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17749,8 +17911,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysInternalObject) C
 		if diags.HasError() {
 			return diags
 		}
+		list_existing_entries := make(map[string]*portal.ClientConfigConfigsGatewaysInternalList)
+		if *obj != nil {
+			for idx := range (*obj).List {
+				list_existing_entries[(*obj).List[idx].Name] = &(*obj).List[idx]
+			}
+		}
 		for _, elt := range list_tf_entries {
-			var entry *portal.ClientConfigConfigsGatewaysInternalList
+			entry := list_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17848,8 +18016,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalObject) C
 		if diags.HasError() {
 			return diags
 		}
+		list_existing_entries := make(map[string]*portal.ClientConfigConfigsGatewaysExternalList)
+		if *obj != nil {
+			for idx := range (*obj).List {
+				list_existing_entries[(*obj).List[idx].Name] = &(*obj).List[idx]
+			}
+		}
 		for _, elt := range list_tf_entries {
-			var entry *portal.ClientConfigConfigsGatewaysExternalList
+			entry := list_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17876,8 +18050,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGatewaysExternalListObjec
 		if diags.HasError() {
 			return diags
 		}
+		priorityRule_existing_entries := make(map[string]*portal.ClientConfigConfigsGatewaysExternalListPriorityRule)
+		if *obj != nil {
+			for idx := range (*obj).PriorityRule {
+				priorityRule_existing_entries[(*obj).PriorityRule[idx].Name] = &(*obj).PriorityRule[idx]
+			}
+		}
 		for _, elt := range priorityRule_tf_entries {
-			var entry *portal.ClientConfigConfigsGatewaysExternalListPriorityRule
+			entry := priorityRule_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -18102,8 +18282,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionObj
 		if diags.HasError() {
 			return diags
 		}
+		category_existing_entries := make(map[string]*portal.ClientConfigConfigsHipCollectionExclusionCategory)
+		if *obj != nil {
+			for idx := range (*obj).Category {
+				category_existing_entries[(*obj).Category[idx].Name] = &(*obj).Category[idx]
+			}
+		}
 		for _, elt := range category_tf_entries {
-			var entry *portal.ClientConfigConfigsHipCollectionExclusionCategory
+			entry := category_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -18129,8 +18315,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionExclusionCat
 		if diags.HasError() {
 			return diags
 		}
+		vendor_existing_entries := make(map[string]*portal.ClientConfigConfigsHipCollectionExclusionCategoryVendor)
+		if *obj != nil {
+			for idx := range (*obj).Vendor {
+				vendor_existing_entries[(*obj).Vendor[idx].Name] = &(*obj).Vendor[idx]
+			}
+		}
 		for _, elt := range vendor_tf_entries {
-			var entry *portal.ClientConfigConfigsHipCollectionExclusionCategoryVendor
+			entry := vendor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -18244,8 +18436,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecks
 		if diags.HasError() {
 			return diags
 		}
+		registryKey_existing_entries := make(map[string]*portal.ClientConfigConfigsHipCollectionCustomChecksWindowsRegistryKey)
+		if *obj != nil {
+			for idx := range (*obj).RegistryKey {
+				registryKey_existing_entries[(*obj).RegistryKey[idx].Name] = &(*obj).RegistryKey[idx]
+			}
+		}
 		for _, elt := range registryKey_tf_entries {
-			var entry *portal.ClientConfigConfigsHipCollectionCustomChecksWindowsRegistryKey
+			entry := registryKey_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -18309,8 +18507,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsHipCollectionCustomChecks
 		if diags.HasError() {
 			return diags
 		}
+		plist_existing_entries := make(map[string]*portal.ClientConfigConfigsHipCollectionCustomChecksMacOsPlist)
+		if *obj != nil {
+			for idx := range (*obj).Plist {
+				plist_existing_entries[(*obj).Plist[idx].Name] = &(*obj).Plist[idx]
+			}
+		}
 		for _, elt := range plist_tf_entries {
-			var entry *portal.ClientConfigConfigsHipCollectionCustomChecksMacOsPlist
+			entry := plist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -18406,8 +18610,14 @@ func (o *GlobalprotectPortalResourceClientConfigConfigsGpAppConfigObject) CopyTo
 		if diags.HasError() {
 			return diags
 		}
+		config_existing_entries := make(map[string]*portal.ClientConfigConfigsGpAppConfigConfig)
+		if *obj != nil {
+			for idx := range (*obj).Config {
+				config_existing_entries[(*obj).Config[idx].Name] = &(*obj).Config[idx]
+			}
+		}
 		for _, elt := range config_tf_entries {
-			var entry *portal.ClientConfigConfigsGpAppConfigConfig
+			entry := config_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -18618,8 +18828,14 @@ func (o *GlobalprotectPortalResourceClientlessVpnObject) CopyToPango(ctx context
 		if diags.HasError() {
 			return diags
 		}
+		appsToUserMapping_existing_entries := make(map[string]*portal.ClientlessVpnAppsToUserMapping)
+		if *obj != nil {
+			for idx := range (*obj).AppsToUserMapping {
+				appsToUserMapping_existing_entries[(*obj).AppsToUserMapping[idx].Name] = &(*obj).AppsToUserMapping[idx]
+			}
+		}
 		for _, elt := range appsToUserMapping_tf_entries {
-			var entry *portal.ClientlessVpnAppsToUserMapping
+			entry := appsToUserMapping_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -18689,8 +18905,14 @@ func (o *GlobalprotectPortalResourceClientlessVpnObject) CopyToPango(ctx context
 		if diags.HasError() {
 			return diags
 		}
+		proxyServerSetting_existing_entries := make(map[string]*portal.ClientlessVpnProxyServerSetting)
+		if *obj != nil {
+			for idx := range (*obj).ProxyServerSetting {
+				proxyServerSetting_existing_entries[(*obj).ProxyServerSetting[idx].Name] = &(*obj).ProxyServerSetting[idx]
+			}
+		}
 		for _, elt := range proxyServerSetting_tf_entries {
-			var entry *portal.ClientlessVpnProxyServerSetting
+			entry := proxyServerSetting_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -18984,8 +19206,14 @@ func (o *GlobalprotectPortalResourcePortalConfigObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		clientAuth_existing_entries := make(map[string]*portal.PortalConfigClientAuth)
+		if *obj != nil {
+			for idx := range (*obj).ClientAuth {
+				clientAuth_existing_entries[(*obj).ClientAuth[idx].Name] = &(*obj).ClientAuth[idx]
+			}
+		}
 		for _, elt := range clientAuth_tf_entries {
-			var entry *portal.PortalConfigClientAuth
+			entry := clientAuth_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -19160,8 +19388,14 @@ func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksMacOs
 		if diags.HasError() {
 			return diags
 		}
+		plist_existing_entries := make(map[string]*portal.PortalConfigConfigSelectionCustomChecksMacOsPlist)
+		if *obj != nil {
+			for idx := range (*obj).Plist {
+				plist_existing_entries[(*obj).Plist[idx].Name] = &(*obj).Plist[idx]
+			}
+		}
 		for _, elt := range plist_tf_entries {
-			var entry *portal.PortalConfigConfigSelectionCustomChecksMacOsPlist
+			entry := plist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -19211,8 +19445,14 @@ func (o *GlobalprotectPortalResourcePortalConfigConfigSelectionCustomChecksWindo
 		if diags.HasError() {
 			return diags
 		}
+		registryKey_existing_entries := make(map[string]*portal.PortalConfigConfigSelectionCustomChecksWindowsRegistryKey)
+		if *obj != nil {
+			for idx := range (*obj).RegistryKey {
+				registryKey_existing_entries[(*obj).RegistryKey[idx].Name] = &(*obj).RegistryKey[idx]
+			}
+		}
 		for _, elt := range registryKey_tf_entries {
-			var entry *portal.PortalConfigConfigSelectionCustomChecksWindowsRegistryKey
+			entry := registryKey_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -19354,8 +19594,14 @@ func (o *GlobalprotectPortalResourceSatelliteConfigObject) CopyToPango(ctx conte
 		if diags.HasError() {
 			return diags
 		}
+		configs_existing_entries := make(map[string]*portal.SatelliteConfigConfigs)
+		if *obj != nil {
+			for idx := range (*obj).Configs {
+				configs_existing_entries[(*obj).Configs[idx].Name] = &(*obj).Configs[idx]
+			}
+		}
 		for _, elt := range configs_tf_entries {
-			var entry *portal.SatelliteConfigConfigs
+			entry := configs_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -19497,8 +19743,14 @@ func (o *GlobalprotectPortalResourceSatelliteConfigConfigsObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		gateways_existing_entries := make(map[string]*portal.SatelliteConfigConfigsGateways)
+		if *obj != nil {
+			for idx := range (*obj).Gateways {
+				gateways_existing_entries[(*obj).Gateways[idx].Name] = &(*obj).Gateways[idx]
+			}
+		}
 		for _, elt := range gateways_tf_entries {
-			var entry *portal.SatelliteConfigConfigsGateways
+			entry := gateways_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

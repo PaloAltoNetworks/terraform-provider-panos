@@ -486,8 +486,14 @@ func (o *FiltersBgpRouteMapRoutingProfileDataSourceModel) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*bgproutemap.RouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *bgproutemap.RouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3998,8 +4004,14 @@ func (o *FiltersBgpRouteMapRoutingProfileResourceModel) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		routeMap_existing_entries := make(map[string]*bgproutemap.RouteMap)
+		if *obj != nil {
+			for idx := range (*obj).RouteMap {
+				routeMap_existing_entries[(*obj).RouteMap[idx].Name] = &(*obj).RouteMap[idx]
+			}
+		}
 		for _, elt := range routeMap_tf_entries {
-			var entry *bgproutemap.RouteMap
+			entry := routeMap_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

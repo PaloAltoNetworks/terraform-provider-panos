@@ -361,8 +361,14 @@ func (o *DnsProxyDataSourceModel) CopyToPango(ctx context.Context, client pangou
 		if diags.HasError() {
 			return diags
 		}
+		domainServers_existing_entries := make(map[string]*dnsproxy.DomainServers)
+		if *obj != nil {
+			for idx := range (*obj).DomainServers {
+				domainServers_existing_entries[(*obj).DomainServers[idx].Name] = &(*obj).DomainServers[idx]
+			}
+		}
 		for _, elt := range domainServers_tf_entries {
-			var entry *dnsproxy.DomainServers
+			entry := domainServers_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -392,8 +398,14 @@ func (o *DnsProxyDataSourceModel) CopyToPango(ctx context.Context, client pangou
 		if diags.HasError() {
 			return diags
 		}
+		staticEntries_existing_entries := make(map[string]*dnsproxy.StaticEntries)
+		if *obj != nil {
+			for idx := range (*obj).StaticEntries {
+				staticEntries_existing_entries[(*obj).StaticEntries[idx].Name] = &(*obj).StaticEntries[idx]
+			}
+		}
 		for _, elt := range staticEntries_tf_entries {
-			var entry *dnsproxy.StaticEntries
+			entry := staticEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2538,8 +2550,14 @@ func (o *DnsProxyResourceModel) CopyToPango(ctx context.Context, client pangouti
 		if diags.HasError() {
 			return diags
 		}
+		domainServers_existing_entries := make(map[string]*dnsproxy.DomainServers)
+		if *obj != nil {
+			for idx := range (*obj).DomainServers {
+				domainServers_existing_entries[(*obj).DomainServers[idx].Name] = &(*obj).DomainServers[idx]
+			}
+		}
 		for _, elt := range domainServers_tf_entries {
-			var entry *dnsproxy.DomainServers
+			entry := domainServers_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2569,8 +2587,14 @@ func (o *DnsProxyResourceModel) CopyToPango(ctx context.Context, client pangouti
 		if diags.HasError() {
 			return diags
 		}
+		staticEntries_existing_entries := make(map[string]*dnsproxy.StaticEntries)
+		if *obj != nil {
+			for idx := range (*obj).StaticEntries {
+				staticEntries_existing_entries[(*obj).StaticEntries[idx].Name] = &(*obj).StaticEntries[idx]
+			}
+		}
 		for _, elt := range staticEntries_tf_entries {
-			var entry *dnsproxy.StaticEntries
+			entry := staticEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

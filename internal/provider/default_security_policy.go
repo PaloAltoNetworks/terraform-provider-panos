@@ -1065,9 +1065,14 @@ func (o *DefaultSecurityPolicyDataSource) Read(ctx context.Context, req datasour
 		return
 	}
 
+	stateElementsByName := make(map[string]DefaultSecurityPolicyDataSourceRulesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	var objects []DefaultSecurityPolicyDataSourceRulesObject
 	for _, elt := range readEntries {
-		var object DefaultSecurityPolicyDataSourceRulesObject
+		object := stateElementsByName[elt.Name]
 		err := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
@@ -2184,6 +2189,8 @@ func (o *DefaultSecurityPolicyResource) Create(ctx context.Context, req resource
 		}
 	}
 
+	auditComments := make(map[string]string)
+
 	var elements []DefaultSecurityPolicyResourceRulesObject
 	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
 	if resp.Diagnostics.HasError() {
@@ -2205,14 +2212,14 @@ func (o *DefaultSecurityPolicyResource) Create(ctx context.Context, req resource
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	processed, err := o.manager.CreateMany(ctx, location, components, entries, sdkmanager.Exhaustive, movement.PositionFirst{})
+	processed, err := o.manager.CreateMany(ctx, location, components, entries, sdkmanager.Exhaustive, movement.PositionFirst{}, auditComments)
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
 		return
 	}
 	objects := make([]DefaultSecurityPolicyResourceRulesObject, len(processed))
 	for idx, elt := range processed {
-		var object DefaultSecurityPolicyResourceRulesObject
+		object := elements[idx]
 		copy_diags := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {
@@ -2321,9 +2328,14 @@ func (o *DefaultSecurityPolicyResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
+	stateElementsByName := make(map[string]DefaultSecurityPolicyResourceRulesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	var objects []DefaultSecurityPolicyResourceRulesObject
 	for _, elt := range readEntries {
-		var object DefaultSecurityPolicyResourceRulesObject
+		object := stateElementsByName[elt.Name]
 		err := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
@@ -2433,6 +2445,8 @@ func (o *DefaultSecurityPolicyResource) Update(ctx context.Context, req resource
 		existingEntriesByName[elt.Name] = elt
 	}
 
+	auditComments := make(map[string]string)
+
 	resp.Diagnostics.Append(plan.Rules.ElementsAs(ctx, &elements, false)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -2454,14 +2468,14 @@ func (o *DefaultSecurityPolicyResource) Update(ctx context.Context, req resource
 		return
 	}
 
-	processed, err := o.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.Exhaustive, position)
+	processed, err := o.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.Exhaustive, position, auditComments)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to udpate entries", err.Error())
 	}
 
 	objects := make([]*DefaultSecurityPolicyResourceRulesObject, len(processed))
 	for idx, elt := range processed {
-		var object DefaultSecurityPolicyResourceRulesObject
+		object := elements[idx]
 		copy_diags := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {

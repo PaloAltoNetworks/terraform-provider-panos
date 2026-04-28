@@ -1124,6 +1124,7 @@ func (o *ZoneDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStack.Vsys = innerLocation.Vsys.ValueString()
 		}
 	}
 
@@ -2326,6 +2327,7 @@ func (o *ZoneResource) Create(ctx context.Context, req resource.CreateRequest, r
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStack.Vsys = innerLocation.Vsys.ValueString()
 		}
 	}
 
@@ -2436,6 +2438,7 @@ func (o *ZoneResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStack.Vsys = innerLocation.Vsys.ValueString()
 		}
 	}
 
@@ -2546,6 +2549,7 @@ func (o *ZoneResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStack.Vsys = innerLocation.Vsys.ValueString()
 		}
 	}
 
@@ -2689,6 +2693,7 @@ func (o *ZoneResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 			location.TemplateStack.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.TemplateStack.TemplateStack = innerLocation.Name.ValueString()
 			location.TemplateStack.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.TemplateStack.Vsys = innerLocation.Vsys.ValueString()
 		}
 	}
 
@@ -2841,6 +2846,7 @@ type ZoneTemplateStackLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
+	Vsys           types.String `tfsdk:"vsys"`
 }
 type ZoneLocation struct {
 	Vsys          types.Object `tfsdk:"vsys"`
@@ -2964,6 +2970,15 @@ func ZoneLocationSchema() rsschema.Attribute {
 							stringplanmodifier.RequiresReplace(),
 						},
 					},
+					"vsys": rsschema.StringAttribute{
+						Description: "The vsys.",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 				},
 				PlanModifiers: []planmodifier.Object{
 					objectplanmodifier.RequiresReplace(),
@@ -3044,12 +3059,14 @@ func (o ZoneTemplateStackLocation) MarshalJSON() ([]byte, error) {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `json:"vsys,omitempty"`
 	}
 
 	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		Vsys:           o.Vsys.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -3060,6 +3077,7 @@ func (o *ZoneTemplateStackLocation) UnmarshalJSON(data []byte) error {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `json:"vsys,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3069,6 +3087,7 @@ func (o *ZoneTemplateStackLocation) UnmarshalJSON(data []byte) error {
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Vsys = types.StringPointerValue(shadow.Vsys)
 
 	return nil
 }
@@ -3170,6 +3189,7 @@ func (o *ZoneTemplateStackLocation) AttributeTypes() map[string]attr.Type {
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
 		"ngfw_device":     types.StringType,
+		"vsys":            types.StringType,
 	}
 }
 func (o *ZoneLocation) AttributeTypes() map[string]attr.Type {

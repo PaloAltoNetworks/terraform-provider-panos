@@ -55,6 +55,7 @@ type TemplateDataSourceModel struct {
 	Location    types.Object `tfsdk:"location"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
+	DefaultVsys types.String `tfsdk:"default_vsys"`
 }
 
 func (o *TemplateDataSourceModel) AttributeTypes() map[string]attr.Type {
@@ -65,8 +66,9 @@ func (o *TemplateDataSourceModel) AttributeTypes() map[string]attr.Type {
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":        types.StringType,
-		"description": types.StringType,
+		"name":         types.StringType,
+		"description":  types.StringType,
+		"default_vsys": types.StringType,
 	}
 }
 
@@ -81,12 +83,14 @@ func (o TemplateDataSourceModel) EntryName() *string {
 func (o *TemplateDataSourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
+	defaultVsys_value := o.DefaultVsys.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(template.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Description = description_value
+	(*obj).DefaultVsys = defaultVsys_value
 
 	return diags
 }
@@ -98,8 +102,13 @@ func (o *TemplateDataSourceModel) CopyFromPango(ctx context.Context, client pang
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
+	var defaultVsys_value types.String
+	if obj.DefaultVsys != nil {
+		defaultVsys_value = types.StringValue(*obj.DefaultVsys)
+	}
 	o.Name = types.StringValue(obj.Name)
 	o.Description = description_value
+	o.DefaultVsys = defaultVsys_value
 
 	return diags
 }
@@ -122,6 +131,12 @@ func TemplateDataSourceSchema() dsschema.Schema {
 
 			"description": dsschema.StringAttribute{
 				Description: "The description.",
+				Optional:    true,
+				Computed:    true,
+			},
+
+			"default_vsys": dsschema.StringAttribute{
+				Description: "Default virtual system",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -268,6 +283,7 @@ func NewTemplateResource() resource.Resource {
 
 type TemplateResource struct {
 	client  *pango.Client
+	custom  *TemplateCustom
 	manager *sdkmanager.EntryObjectManager[*template.Entry, template.Location, *template.Service]
 }
 
@@ -279,6 +295,7 @@ type TemplateResourceModel struct {
 	Location    types.Object `tfsdk:"location"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
+	DefaultVsys types.String `tfsdk:"default_vsys"`
 }
 
 func (o *TemplateResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
@@ -309,6 +326,11 @@ func TemplateResourceSchema() rsschema.Schema {
 
 			"description": rsschema.StringAttribute{
 				Description: "The description.",
+				Optional:    true,
+			},
+
+			"default_vsys": rsschema.StringAttribute{
+				Description: "Default virtual system",
 				Optional:    true,
 			},
 		},
@@ -351,6 +373,12 @@ func (o *TemplateResource) Configure(ctx context.Context, req resource.Configure
 
 	providerData := req.ProviderData.(*ProviderData)
 	o.client = providerData.Client
+	custom, err := NewTemplateCustom(providerData)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
+		return
+	}
+	o.custom = custom
 	specifier, _, err := template.Versioning(o.client.Versioning())
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
@@ -368,8 +396,9 @@ func (o *TemplateResourceModel) AttributeTypes() map[string]attr.Type {
 		"location": types.ObjectType{
 			AttrTypes: locationObj.AttributeTypes(),
 		},
-		"name":        types.StringType,
-		"description": types.StringType,
+		"name":         types.StringType,
+		"description":  types.StringType,
+		"default_vsys": types.StringType,
 	}
 }
 
@@ -384,12 +413,14 @@ func (o TemplateResourceModel) EntryName() *string {
 func (o *TemplateResourceModel) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **template.Entry, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	description_value := o.Description.ValueStringPointer()
+	defaultVsys_value := o.DefaultVsys.ValueStringPointer()
 
 	if (*obj) == nil {
 		*obj = new(template.Entry)
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Description = description_value
+	(*obj).DefaultVsys = defaultVsys_value
 
 	return diags
 }
@@ -401,8 +432,13 @@ func (o *TemplateResourceModel) CopyFromPango(ctx context.Context, client pangou
 	if obj.Description != nil {
 		description_value = types.StringValue(*obj.Description)
 	}
+	var defaultVsys_value types.String
+	if obj.DefaultVsys != nil {
+		defaultVsys_value = types.StringValue(*obj.DefaultVsys)
+	}
 	o.Name = types.StringValue(obj.Name)
 	o.Description = description_value
+	o.DefaultVsys = defaultVsys_value
 
 	return diags
 }
@@ -472,6 +508,10 @@ func (o *TemplateResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	o.PreCreate(ctx, req, resp, &state, location, obj, ev)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	/*
 		// Timeout handling.
@@ -493,6 +533,16 @@ func (o *TemplateResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	// Checkpoint: save state so resource is not orphaned if post-create hook fails.
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	o.PostCreate(ctx, req, resp, &state, location, created, ev)
 	if resp.Diagnostics.HasError() {
 		return
 	}

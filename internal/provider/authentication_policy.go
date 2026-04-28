@@ -17,6 +17,7 @@ import (
 	pangoutil "github.com/PaloAltoNetworks/pango/util"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/objectvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	dsschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -62,6 +63,7 @@ type AuthenticationPolicyDataSourceModel struct {
 }
 type AuthenticationPolicyDataSourceRulesObject struct {
 	Name                      types.String `tfsdk:"name"`
+	AuditCommentVersion       types.String `tfsdk:"audit_comment_version"`
 	AuthenticationEnforcement types.String `tfsdk:"authentication_enforcement"`
 	Category                  types.Set    `tfsdk:"category"`
 	Description               types.String `tfsdk:"description"`
@@ -126,6 +128,7 @@ func (o *AuthenticationPolicyDataSourceRulesObject) AttributeTypes() map[string]
 
 	return map[string]attr.Type{
 		"name":                       types.StringType,
+		"audit_comment_version":      types.StringType,
 		"authentication_enforcement": types.StringType,
 		"category": types.SetType{
 			ElemType: types.StringType,
@@ -433,8 +436,14 @@ func (o *AuthenticationPolicyDataSourceRulesTargetObject) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		devices_existing_entries := make(map[string]*authentication.TargetDevices)
+		if *obj != nil {
+			for idx := range (*obj).Devices {
+				devices_existing_entries[(*obj).Devices[idx].Name] = &(*obj).Devices[idx]
+			}
+		}
 		for _, elt := range devices_tf_entries {
-			var entry *authentication.TargetDevices
+			entry := devices_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -476,8 +485,14 @@ func (o *AuthenticationPolicyDataSourceRulesTargetDevicesObject) CopyToPango(ctx
 		if diags.HasError() {
 			return diags
 		}
+		vsys_existing_entries := make(map[string]*authentication.TargetDevicesVsys)
+		if *obj != nil {
+			for idx := range (*obj).Vsys {
+				vsys_existing_entries[(*obj).Vsys[idx].Name] = &(*obj).Vsys[idx]
+			}
+		}
 		for _, elt := range vsys_tf_entries {
-			var entry *authentication.TargetDevicesVsys
+			entry := vsys_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -902,6 +917,12 @@ func AuthenticationPolicyDataSourceRulesSchema() dsschema.NestedAttributeObject 
 				Required:    true,
 			},
 
+			"audit_comment_version": dsschema.StringAttribute{
+				Description: "Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.",
+				Optional:    true,
+				Computed:    true,
+			},
+
 			"authentication_enforcement": dsschema.StringAttribute{
 				Description: "Authentication enforcement object to use for authentication.",
 				Optional:    true,
@@ -1286,9 +1307,14 @@ func (o *AuthenticationPolicyDataSource) Read(ctx context.Context, req datasourc
 		return
 	}
 
+	stateElementsByName := make(map[string]AuthenticationPolicyDataSourceRulesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	var objects []AuthenticationPolicyDataSourceRulesObject
 	for _, elt := range readEntries {
-		var object AuthenticationPolicyDataSourceRulesObject
+		object := stateElementsByName[elt.Name]
 		err := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
@@ -1339,6 +1365,8 @@ type AuthenticationPolicyResourceModel struct {
 }
 type AuthenticationPolicyResourceRulesObject struct {
 	Name                      types.String `tfsdk:"name"`
+	AuditCommentVersion       types.String `tfsdk:"audit_comment_version"`
+	AuditCommentWo            types.String `tfsdk:"audit_comment_wo"`
 	AuthenticationEnforcement types.String `tfsdk:"authentication_enforcement"`
 	Category                  types.Set    `tfsdk:"category"`
 	Description               types.String `tfsdk:"description"`
@@ -1523,6 +1551,29 @@ func AuthenticationPolicyResourceRulesSchema() rsschema.NestedAttributeObject {
 			"name": rsschema.StringAttribute{
 				Description: "",
 				Required:    true,
+			},
+
+			"audit_comment_version": rsschema.StringAttribute{
+				Description: "Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.",
+				Optional:    true,
+
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.Expressions{
+						path.MatchRelative().AtParent().AtName("audit_comment_wo"),
+					}...),
+				},
+			},
+
+			"audit_comment_wo": rsschema.StringAttribute{
+				Description: "Write-only audit comment for this rule. This value is sent to PAN-OS but not read back. Changes are only sent when audit_comment_version is modified. Each time audit_comment_version changes, this comment is added to the audit history with a timestamp.",
+				Optional:    true,
+				WriteOnly:   true,
+
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.Expressions{
+						path.MatchRelative().AtParent().AtName("audit_comment_version"),
+					}...),
+				},
 			},
 
 			"authentication_enforcement": rsschema.StringAttribute{
@@ -1822,6 +1873,8 @@ func (o *AuthenticationPolicyResourceRulesObject) AttributeTypes() map[string]at
 
 	return map[string]attr.Type{
 		"name":                       types.StringType,
+		"audit_comment_version":      types.StringType,
+		"audit_comment_wo":           types.StringType,
 		"authentication_enforcement": types.StringType,
 		"category": types.SetType{
 			ElemType: types.StringType,
@@ -2129,8 +2182,14 @@ func (o *AuthenticationPolicyResourceRulesTargetObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		devices_existing_entries := make(map[string]*authentication.TargetDevices)
+		if *obj != nil {
+			for idx := range (*obj).Devices {
+				devices_existing_entries[(*obj).Devices[idx].Name] = &(*obj).Devices[idx]
+			}
+		}
 		for _, elt := range devices_tf_entries {
-			var entry *authentication.TargetDevices
+			entry := devices_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2172,8 +2231,14 @@ func (o *AuthenticationPolicyResourceRulesTargetDevicesObject) CopyToPango(ctx c
 		if diags.HasError() {
 			return diags
 		}
+		vsys_existing_entries := make(map[string]*authentication.TargetDevicesVsys)
+		if *obj != nil {
+			for idx := range (*obj).Vsys {
+				vsys_existing_entries[(*obj).Vsys[idx].Name] = &(*obj).Vsys[idx]
+			}
+		}
 		for _, elt := range vsys_tf_entries {
-			var entry *authentication.TargetDevicesVsys
+			entry := vsys_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2620,6 +2685,31 @@ func (o *AuthenticationPolicyResource) Create(ctx context.Context, req resource.
 		}
 	}
 
+	// CreateMany signature requires auditComments parameter, so we initialize empty map for all resources
+	auditComments := make(map[string]string)
+
+	// Extract config for trigger_on_change_of parameters
+	var configState AuthenticationPolicyResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configState)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var configElements []AuthenticationPolicyResourceRulesObject
+	resp.Diagnostics.Append(configState.Rules.ElementsAs(ctx, &configElements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	for _, elt := range configElements {
+		if !elt.AuditCommentVersion.IsNull() &&
+			!elt.AuditCommentVersion.IsUnknown() &&
+			!elt.AuditCommentWo.IsNull() &&
+			!elt.AuditCommentWo.IsUnknown() {
+			auditComments[elt.Name.ValueString()] = elt.AuditCommentWo.ValueString()
+		}
+	}
+
 	var elements []AuthenticationPolicyResourceRulesObject
 	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
 	if resp.Diagnostics.HasError() {
@@ -2641,14 +2731,14 @@ func (o *AuthenticationPolicyResource) Create(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
-	processed, err := o.manager.CreateMany(ctx, location, components, entries, sdkmanager.Exhaustive, movement.PositionFirst{})
+	processed, err := o.manager.CreateMany(ctx, location, components, entries, sdkmanager.Exhaustive, movement.PositionFirst{}, auditComments)
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
 		return
 	}
 	objects := make([]AuthenticationPolicyResourceRulesObject, len(processed))
 	for idx, elt := range processed {
-		var object AuthenticationPolicyResourceRulesObject
+		object := elements[idx]
 		copy_diags := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {
@@ -2770,9 +2860,14 @@ func (o *AuthenticationPolicyResource) Read(ctx context.Context, req resource.Re
 		return
 	}
 
+	stateElementsByName := make(map[string]AuthenticationPolicyResourceRulesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	var objects []AuthenticationPolicyResourceRulesObject
 	for _, elt := range readEntries {
-		var object AuthenticationPolicyResourceRulesObject
+		object := stateElementsByName[elt.Name]
 		err := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
@@ -2895,6 +2990,48 @@ func (o *AuthenticationPolicyResource) Update(ctx context.Context, req resource.
 		existingEntriesByName[elt.Name] = elt
 	}
 
+	auditComments := make(map[string]string)
+
+	var configPlan, configState AuthenticationPolicyResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configPlan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &configState)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var configPlanElements, configStateElements []AuthenticationPolicyResourceRulesObject
+	resp.Diagnostics.Append(configPlan.Rules.ElementsAs(ctx, &configPlanElements, false)...)
+	resp.Diagnostics.Append(configState.Rules.ElementsAs(ctx, &configStateElements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	stateElementsByName := make(map[string]AuthenticationPolicyResourceRulesObject)
+	for _, elt := range configStateElements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
+	for _, planElt := range configPlanElements {
+		stateElt, existsInState := stateElementsByName[planElt.Name.ValueString()]
+		{
+			triggerChanged := false
+			if !existsInState {
+				triggerChanged = !planElt.AuditCommentVersion.IsNull() &&
+					!planElt.AuditCommentVersion.IsUnknown()
+			} else {
+				planTrigger := planElt.AuditCommentVersion.ValueString()
+				stateTrigger := stateElt.AuditCommentVersion.ValueString()
+				triggerChanged = planTrigger != stateTrigger &&
+					!planElt.AuditCommentVersion.IsNull() &&
+					!planElt.AuditCommentVersion.IsUnknown()
+			}
+			if triggerChanged && !planElt.AuditCommentWo.IsNull() &&
+				!planElt.AuditCommentWo.IsUnknown() {
+				auditComments[planElt.Name.ValueString()] = planElt.AuditCommentWo.ValueString()
+			}
+		}
+	}
+
 	resp.Diagnostics.Append(plan.Rules.ElementsAs(ctx, &elements, false)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -2916,14 +3053,14 @@ func (o *AuthenticationPolicyResource) Update(ctx context.Context, req resource.
 		return
 	}
 
-	processed, err := o.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.Exhaustive, position)
+	processed, err := o.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.Exhaustive, position, auditComments)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to udpate entries", err.Error())
 	}
 
 	objects := make([]*AuthenticationPolicyResourceRulesObject, len(processed))
 	for idx, elt := range processed {
-		var object AuthenticationPolicyResourceRulesObject
+		object := elements[idx]
 		copy_diags := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {

@@ -1100,8 +1100,14 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, cl
 		if diags.HasError() {
 			return diags
 		}
+		ikeGateway_existing_entries := make(map[string]*ipsec.AutoKeyIkeGateway)
+		if *obj != nil {
+			for idx := range (*obj).IkeGateway {
+				ikeGateway_existing_entries[(*obj).IkeGateway[idx].Name] = &(*obj).IkeGateway[idx]
+			}
+		}
 		for _, elt := range ikeGateway_tf_entries {
-			var entry *ipsec.AutoKeyIkeGateway
+			entry := ikeGateway_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1118,8 +1124,14 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, cl
 		if diags.HasError() {
 			return diags
 		}
+		proxyId_existing_entries := make(map[string]*ipsec.AutoKeyProxyId)
+		if *obj != nil {
+			for idx := range (*obj).ProxyId {
+				proxyId_existing_entries[(*obj).ProxyId[idx].Name] = &(*obj).ProxyId[idx]
+			}
+		}
 		for _, elt := range proxyId_tf_entries {
-			var entry *ipsec.AutoKeyProxyId
+			entry := proxyId_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1135,8 +1147,14 @@ func (o *IpsecTunnelDataSourceAutoKeyObject) CopyToPango(ctx context.Context, cl
 		if diags.HasError() {
 			return diags
 		}
+		proxyIdV6_existing_entries := make(map[string]*ipsec.AutoKeyProxyIdV6)
+		if *obj != nil {
+			for idx := range (*obj).ProxyIdV6 {
+				proxyIdV6_existing_entries[(*obj).ProxyIdV6[idx].Name] = &(*obj).ProxyIdV6[idx]
+			}
+		}
 		for _, elt := range proxyIdV6_tf_entries {
-			var entry *ipsec.AutoKeyProxyIdV6
+			entry := proxyIdV6_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8688,8 +8706,14 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, clie
 		if diags.HasError() {
 			return diags
 		}
+		ikeGateway_existing_entries := make(map[string]*ipsec.AutoKeyIkeGateway)
+		if *obj != nil {
+			for idx := range (*obj).IkeGateway {
+				ikeGateway_existing_entries[(*obj).IkeGateway[idx].Name] = &(*obj).IkeGateway[idx]
+			}
+		}
 		for _, elt := range ikeGateway_tf_entries {
-			var entry *ipsec.AutoKeyIkeGateway
+			entry := ikeGateway_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8706,8 +8730,14 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, clie
 		if diags.HasError() {
 			return diags
 		}
+		proxyId_existing_entries := make(map[string]*ipsec.AutoKeyProxyId)
+		if *obj != nil {
+			for idx := range (*obj).ProxyId {
+				proxyId_existing_entries[(*obj).ProxyId[idx].Name] = &(*obj).ProxyId[idx]
+			}
+		}
 		for _, elt := range proxyId_tf_entries {
-			var entry *ipsec.AutoKeyProxyId
+			entry := proxyId_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8723,8 +8753,14 @@ func (o *IpsecTunnelResourceAutoKeyObject) CopyToPango(ctx context.Context, clie
 		if diags.HasError() {
 			return diags
 		}
+		proxyIdV6_existing_entries := make(map[string]*ipsec.AutoKeyProxyIdV6)
+		if *obj != nil {
+			for idx := range (*obj).ProxyIdV6 {
+				proxyIdV6_existing_entries[(*obj).ProxyIdV6[idx].Name] = &(*obj).ProxyIdV6[idx]
+			}
+		}
 		for _, elt := range proxyIdV6_tf_entries {
-			var entry *ipsec.AutoKeyProxyIdV6
+			entry := proxyIdV6_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
