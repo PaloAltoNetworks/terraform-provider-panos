@@ -409,8 +409,14 @@ func (o *UrlFilteringSecurityProfileDataSourceModel) CopyToPango(ctx context.Con
 		if diags.HasError() {
 			return diags
 		}
+		httpHeaderInsertion_existing_entries := make(map[string]*urlfiltering.HttpHeaderInsertion)
+		if *obj != nil {
+			for idx := range (*obj).HttpHeaderInsertion {
+				httpHeaderInsertion_existing_entries[(*obj).HttpHeaderInsertion[idx].Name] = &(*obj).HttpHeaderInsertion[idx]
+			}
+		}
 		for _, elt := range httpHeaderInsertion_tf_entries {
-			var entry *urlfiltering.HttpHeaderInsertion
+			entry := httpHeaderInsertion_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -664,8 +670,14 @@ func (o *UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionObject) CopyToP
 		if diags.HasError() {
 			return diags
 		}
+		type_existing_entries := make(map[string]*urlfiltering.HttpHeaderInsertionType)
+		if *obj != nil {
+			for idx := range (*obj).Type {
+				type_existing_entries[(*obj).Type[idx].Name] = &(*obj).Type[idx]
+			}
+		}
 		for _, elt := range type_tf_entries {
-			var entry *urlfiltering.HttpHeaderInsertionType
+			entry := type_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -693,8 +705,14 @@ func (o *UrlFilteringSecurityProfileDataSourceHttpHeaderInsertionTypeObject) Cop
 		if diags.HasError() {
 			return diags
 		}
+		headers_existing_entries := make(map[string]*urlfiltering.HttpHeaderInsertionTypeHeaders)
+		if *obj != nil {
+			for idx := range (*obj).Headers {
+				headers_existing_entries[(*obj).Headers[idx].Name] = &(*obj).Headers[idx]
+			}
+		}
 		for _, elt := range headers_tf_entries {
-			var entry *urlfiltering.HttpHeaderInsertionTypeHeaders
+			entry := headers_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2883,8 +2901,14 @@ func (o *UrlFilteringSecurityProfileResourceModel) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		httpHeaderInsertion_existing_entries := make(map[string]*urlfiltering.HttpHeaderInsertion)
+		if *obj != nil {
+			for idx := range (*obj).HttpHeaderInsertion {
+				httpHeaderInsertion_existing_entries[(*obj).HttpHeaderInsertion[idx].Name] = &(*obj).HttpHeaderInsertion[idx]
+			}
+		}
 		for _, elt := range httpHeaderInsertion_tf_entries {
-			var entry *urlfiltering.HttpHeaderInsertion
+			entry := httpHeaderInsertion_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3138,8 +3162,14 @@ func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionObject) CopyToPan
 		if diags.HasError() {
 			return diags
 		}
+		type_existing_entries := make(map[string]*urlfiltering.HttpHeaderInsertionType)
+		if *obj != nil {
+			for idx := range (*obj).Type {
+				type_existing_entries[(*obj).Type[idx].Name] = &(*obj).Type[idx]
+			}
+		}
 		for _, elt := range type_tf_entries {
-			var entry *urlfiltering.HttpHeaderInsertionType
+			entry := type_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3167,8 +3197,14 @@ func (o *UrlFilteringSecurityProfileResourceHttpHeaderInsertionTypeObject) CopyT
 		if diags.HasError() {
 			return diags
 		}
+		headers_existing_entries := make(map[string]*urlfiltering.HttpHeaderInsertionTypeHeaders)
+		if *obj != nil {
+			for idx := range (*obj).Headers {
+				headers_existing_entries[(*obj).Headers[idx].Name] = &(*obj).Headers[idx]
+			}
+		}
 		for _, elt := range headers_tf_entries {
-			var entry *urlfiltering.HttpHeaderInsertionTypeHeaders
+			entry := headers_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

@@ -99,6 +99,8 @@ Optional:
 
 - `action` (String)
 - `applications` (Set of String)
+- `audit_comment_version` (String) Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.
+- `audit_comment_wo` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Write-only audit comment for this rule. This value is sent to PAN-OS but not read back. Changes are only sent when audit_comment_version is modified. Each time audit_comment_version changes, this comment is added to the audit history with a timestamp.
 - `category` (List of String)
 - `description` (String)
 - `destination_addresses` (Set of String)
@@ -220,8 +222,9 @@ Import is supported using the following syntax:
 #
 #
 #     names = [
-#         "rule-1", <- the first rule in the policy
+#         "rule-1", <- all rule names in the policy must be listed
+#         "rule-2",
 #     ]
 # }
-terraform import panos_security_policy.example $(echo '{"location":{"device_group":{"name":"example-device-group","panorama_device":"localhost.localdomain","rulebase":"pre-rulebase"}},"names":["rule-1"]}' | base64)
+terraform import panos_security_policy.example $(echo '{"location":{"device_group":{"name":"example-device-group","panorama_device":"localhost.localdomain","rulebase":"pre-rulebase"}},"names":["rule-1","rule-2"]}' | base64)
 ```

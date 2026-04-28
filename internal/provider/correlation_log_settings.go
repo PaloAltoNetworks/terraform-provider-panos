@@ -290,8 +290,14 @@ func (o *CorrelationLogSettingsDataSourceModel) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		actions_existing_entries := make(map[string]*correlation.Actions)
+		if *obj != nil {
+			for idx := range (*obj).Actions {
+				actions_existing_entries[(*obj).Actions[idx].Name] = &(*obj).Actions[idx]
+			}
+		}
 		for _, elt := range actions_tf_entries {
-			var entry *correlation.Actions
+			entry := actions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2319,8 +2325,14 @@ func (o *CorrelationLogSettingsResourceModel) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		actions_existing_entries := make(map[string]*correlation.Actions)
+		if *obj != nil {
+			for idx := range (*obj).Actions {
+				actions_existing_entries[(*obj).Actions[idx].Name] = &(*obj).Actions[idx]
+			}
+		}
 		for _, elt := range actions_tf_entries {
-			var entry *correlation.Actions
+			entry := actions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

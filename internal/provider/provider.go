@@ -339,6 +339,7 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewNtpSettingsDataSource,
 		NewDataFilteringProfileDataSource,
 		NewDosProtectionProfileDataSource,
+		NewEmailServerProfileDataSource,
 		NewLdapProfileDataSource,
 		NewMfaServerProfileDataSource,
 		NewPasswordProfileDataSource,
@@ -348,6 +349,7 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewTacacsPlusProfileDataSource,
 		NewProxySettingsDataSource,
 		NewSslDecryptDataSource,
+		NewVsysDataSource,
 		NewDhcpDataSource,
 		NewDnsProxyDataSource,
 		NewGlobalprotectPortalDataSource,
@@ -377,6 +379,14 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewFiltersPrefixListRoutingProfileDataSource,
 		NewFiltersRouteMapsRedistributionRoutingProfileDataSource,
 		NewMulticastPimInterfaceTimerRoutingProfileDataSource,
+		NewOspfAuthRoutingProfileDataSource,
+		NewOspfInterfaceTimerRoutingProfileDataSource,
+		NewOspfRedistributionRoutingProfileDataSource,
+		NewOspfSpfTimerRoutingProfileDataSource,
+		NewOspfv3AuthRoutingProfileDataSource,
+		NewOspfv3IfTimerRoutingProfileDataSource,
+		NewOspfv3RedistributionRoutingProfileDataSource,
+		NewOspfv3SpfTimerRoutingProfileDataSource,
 		NewAggregateLayer3SubinterfaceDataSource,
 		NewEthernetLayer3SubinterfaceDataSource,
 		NewGreTunnelDataSource,
@@ -425,8 +435,11 @@ func (p *PanosProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewDefaultSecurityPolicyDataSource,
 		NewNatPolicyDataSource,
 		NewNatPolicyRulesDataSource,
+		NewPbfPolicyDataSource,
+		NewPbfPolicyRulesDataSource,
 		NewSecurityPolicyDataSource,
 		NewSecurityPolicyRulesDataSource,
+		NewPredefinedDlpFileTypeDataSource,
 	}
 }
 
@@ -453,6 +466,7 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewNtpSettingsResource,
 		NewDataFilteringProfileResource,
 		NewDosProtectionProfileResource,
+		NewEmailServerProfileResource,
 		NewLdapProfileResource,
 		NewMfaServerProfileResource,
 		NewPasswordProfileResource,
@@ -462,6 +476,7 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewTacacsPlusProfileResource,
 		NewProxySettingsResource,
 		NewSslDecryptResource,
+		NewVsysResource,
 		NewDhcpResource,
 		NewDnsProxyResource,
 		NewGlobalprotectPortalResource,
@@ -491,6 +506,14 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewFiltersPrefixListRoutingProfileResource,
 		NewFiltersRouteMapsRedistributionRoutingProfileResource,
 		NewMulticastPimInterfaceTimerRoutingProfileResource,
+		NewOspfAuthRoutingProfileResource,
+		NewOspfInterfaceTimerRoutingProfileResource,
+		NewOspfRedistributionRoutingProfileResource,
+		NewOspfSpfTimerRoutingProfileResource,
+		NewOspfv3AuthRoutingProfileResource,
+		NewOspfv3IfTimerRoutingProfileResource,
+		NewOspfv3RedistributionRoutingProfileResource,
+		NewOspfv3SpfTimerRoutingProfileResource,
 		NewAggregateLayer3SubinterfaceResource,
 		NewEthernetLayer3SubinterfaceResource,
 		NewGreTunnelResource,
@@ -540,6 +563,8 @@ func (p *PanosProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewDefaultSecurityPolicyResource,
 		NewNatPolicyResource,
 		NewNatPolicyRulesResource,
+		NewPbfPolicyResource,
+		NewPbfPolicyRulesResource,
 		NewSecurityPolicyResource,
 		NewSecurityPolicyRulesResource,
 	}
@@ -693,6 +718,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_dynamic_user_group": resourceFuncs{
 		CreateImportId: DynamicUserGroupImportStateCreator,
 	},
+	"panos_email_server_profile": resourceFuncs{
+		CreateImportId: EmailServerProfileImportStateCreator,
+	},
 	"panos_ethernet_interface": resourceFuncs{
 		CreateImportId: EthernetInterfaceImportStateCreator,
 	},
@@ -792,8 +820,38 @@ var resourceFuncMap = map[string]resourceFuncs{
 	"panos_nat_policy_rules": resourceFuncs{
 		CreateImportId: NatPolicyRulesImportStateCreator,
 	},
+	"panos_ospf_auth_routing_profile": resourceFuncs{
+		CreateImportId: OspfAuthRoutingProfileImportStateCreator,
+	},
+	"panos_ospf_interface_timer_routing_profile": resourceFuncs{
+		CreateImportId: OspfInterfaceTimerRoutingProfileImportStateCreator,
+	},
+	"panos_ospf_redistribution_routing_profile": resourceFuncs{
+		CreateImportId: OspfRedistributionRoutingProfileImportStateCreator,
+	},
+	"panos_ospf_spf_timer_routing_profile": resourceFuncs{
+		CreateImportId: OspfSpfTimerRoutingProfileImportStateCreator,
+	},
+	"panos_ospfv3_auth_routing_profile": resourceFuncs{
+		CreateImportId: Ospfv3AuthRoutingProfileImportStateCreator,
+	},
+	"panos_ospfv3_if_timer_routing_profile": resourceFuncs{
+		CreateImportId: Ospfv3IfTimerRoutingProfileImportStateCreator,
+	},
+	"panos_ospfv3_redistribution_routing_profile": resourceFuncs{
+		CreateImportId: Ospfv3RedistributionRoutingProfileImportStateCreator,
+	},
+	"panos_ospfv3_spf_timer_routing_profile": resourceFuncs{
+		CreateImportId: Ospfv3SpfTimerRoutingProfileImportStateCreator,
+	},
 	"panos_password_profile": resourceFuncs{
 		CreateImportId: PasswordProfileImportStateCreator,
+	},
+	"panos_pbf_policy": resourceFuncs{
+		CreateImportId: PbfPolicyImportStateCreator,
+	},
+	"panos_pbf_policy_rules": resourceFuncs{
+		CreateImportId: PbfPolicyRulesImportStateCreator,
 	},
 	"panos_radius_profile": resourceFuncs{
 		CreateImportId: RadiusProfileImportStateCreator,
@@ -869,6 +927,9 @@ var resourceFuncMap = map[string]resourceFuncs{
 	},
 	"panos_vlan_interface": resourceFuncs{
 		CreateImportId: VlanInterfaceImportStateCreator,
+	},
+	"panos_vsys": resourceFuncs{
+		CreateImportId: VsysImportStateCreator,
 	},
 	"panos_vulnerability_security_profile": resourceFuncs{
 		CreateImportId: VulnerabilitySecurityProfileImportStateCreator,

@@ -418,8 +418,14 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeIpv4Object) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		ipv4Entries_existing_entries := make(map[string]*acl.TypeIpv4Ipv4Entry)
+		if *obj != nil {
+			for idx := range (*obj).Ipv4Entry {
+				ipv4Entries_existing_entries[(*obj).Ipv4Entry[idx].Name] = &(*obj).Ipv4Entry[idx]
+			}
+		}
 		for _, elt := range ipv4Entries_tf_entries {
-			var entry *acl.TypeIpv4Ipv4Entry
+			entry := ipv4Entries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -577,8 +583,14 @@ func (o *FiltersAccessListRoutingProfileDataSourceTypeIpv6Object) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		ipv6Entries_existing_entries := make(map[string]*acl.TypeIpv6Ipv6Entry)
+		if *obj != nil {
+			for idx := range (*obj).Ipv6Entry {
+				ipv6Entries_existing_entries[(*obj).Ipv6Entry[idx].Name] = &(*obj).Ipv6Entry[idx]
+			}
+		}
 		for _, elt := range ipv6Entries_tf_entries {
-			var entry *acl.TypeIpv6Ipv6Entry
+			entry := ipv6Entries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2767,8 +2779,14 @@ func (o *FiltersAccessListRoutingProfileResourceTypeIpv4Object) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		ipv4Entries_existing_entries := make(map[string]*acl.TypeIpv4Ipv4Entry)
+		if *obj != nil {
+			for idx := range (*obj).Ipv4Entry {
+				ipv4Entries_existing_entries[(*obj).Ipv4Entry[idx].Name] = &(*obj).Ipv4Entry[idx]
+			}
+		}
 		for _, elt := range ipv4Entries_tf_entries {
-			var entry *acl.TypeIpv4Ipv4Entry
+			entry := ipv4Entries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2926,8 +2944,14 @@ func (o *FiltersAccessListRoutingProfileResourceTypeIpv6Object) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		ipv6Entries_existing_entries := make(map[string]*acl.TypeIpv6Ipv6Entry)
+		if *obj != nil {
+			for idx := range (*obj).Ipv6Entry {
+				ipv6Entries_existing_entries[(*obj).Ipv6Entry[idx].Name] = &(*obj).Ipv6Entry[idx]
+			}
+		}
 		for _, elt := range ipv6Entries_tf_entries {
-			var entry *acl.TypeIpv6Ipv6Entry
+			entry := ipv6Entries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

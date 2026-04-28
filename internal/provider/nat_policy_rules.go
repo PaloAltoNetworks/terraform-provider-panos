@@ -64,6 +64,7 @@ type NatPolicyRulesDataSourceModel struct {
 type NatPolicyRulesDataSourceRulesObject struct {
 	Name                          types.String `tfsdk:"name"`
 	ActiveActiveDeviceBinding     types.String `tfsdk:"active_active_device_binding"`
+	AuditCommentVersion           types.String `tfsdk:"audit_comment_version"`
 	Description                   types.String `tfsdk:"description"`
 	DestinationAddresses          types.List   `tfsdk:"destination_addresses"`
 	Disabled                      types.Bool   `tfsdk:"disabled"`
@@ -178,6 +179,7 @@ func (o *NatPolicyRulesDataSourceRulesObject) AttributeTypes() map[string]attr.T
 	return map[string]attr.Type{
 		"name":                         types.StringType,
 		"active_active_device_binding": types.StringType,
+		"audit_comment_version":        types.StringType,
 		"description":                  types.StringType,
 		"destination_addresses": types.ListType{
 			ElemType: types.StringType,
@@ -872,8 +874,14 @@ func (o *NatPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		devices_existing_entries := make(map[string]*nat.TargetDevices)
+		if *obj != nil {
+			for idx := range (*obj).Devices {
+				devices_existing_entries[(*obj).Devices[idx].Name] = &(*obj).Devices[idx]
+			}
+		}
 		for _, elt := range devices_tf_entries {
-			var entry *nat.TargetDevices
+			entry := devices_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -915,8 +923,14 @@ func (o *NatPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ctx conte
 		if diags.HasError() {
 			return diags
 		}
+		vsys_existing_entries := make(map[string]*nat.TargetDevicesVsys)
+		if *obj != nil {
+			for idx := range (*obj).Vsys {
+				vsys_existing_entries[(*obj).Vsys[idx].Name] = &(*obj).Vsys[idx]
+			}
+		}
 		for _, elt := range vsys_tf_entries {
-			var entry *nat.TargetDevicesVsys
+			entry := vsys_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1744,6 +1758,12 @@ func NatPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject {
 				Computed:    true,
 			},
 
+			"audit_comment_version": dsschema.StringAttribute{
+				Description: "Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.",
+				Optional:    true,
+				Computed:    true,
+			},
+
 			"description": dsschema.StringAttribute{
 				Description: "",
 				Optional:    true,
@@ -2527,9 +2547,14 @@ func (o *NatPolicyRulesDataSource) Read(ctx context.Context, req datasource.Read
 		return
 	}
 
+	stateElementsByName := make(map[string]NatPolicyRulesDataSourceRulesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	var objects []NatPolicyRulesDataSourceRulesObject
 	for _, elt := range readEntries {
-		var object NatPolicyRulesDataSourceRulesObject
+		object := stateElementsByName[elt.Name]
 		err := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
@@ -2585,6 +2610,8 @@ type NatPolicyRulesResourceModel struct {
 type NatPolicyRulesResourceRulesObject struct {
 	Name                          types.String `tfsdk:"name"`
 	ActiveActiveDeviceBinding     types.String `tfsdk:"active_active_device_binding"`
+	AuditCommentVersion           types.String `tfsdk:"audit_comment_version"`
+	AuditCommentWo                types.String `tfsdk:"audit_comment_wo"`
 	Description                   types.String `tfsdk:"description"`
 	DestinationAddresses          types.List   `tfsdk:"destination_addresses"`
 	Disabled                      types.Bool   `tfsdk:"disabled"`
@@ -2953,6 +2980,29 @@ func NatPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 						"both",
 						"0",
 						"1",
+					}...),
+				},
+			},
+
+			"audit_comment_version": rsschema.StringAttribute{
+				Description: "Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.",
+				Optional:    true,
+
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.Expressions{
+						path.MatchRelative().AtParent().AtName("audit_comment_wo"),
+					}...),
+				},
+			},
+
+			"audit_comment_wo": rsschema.StringAttribute{
+				Description: "Write-only audit comment for this rule. This value is sent to PAN-OS but not read back. Changes are only sent when audit_comment_version is modified. Each time audit_comment_version changes, this comment is added to the audit history with a timestamp.",
+				Optional:    true,
+				WriteOnly:   true,
+
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.Expressions{
+						path.MatchRelative().AtParent().AtName("audit_comment_version"),
 					}...),
 				},
 			},
@@ -3675,6 +3725,8 @@ func (o *NatPolicyRulesResourceRulesObject) AttributeTypes() map[string]attr.Typ
 	return map[string]attr.Type{
 		"name":                         types.StringType,
 		"active_active_device_binding": types.StringType,
+		"audit_comment_version":        types.StringType,
+		"audit_comment_wo":             types.StringType,
 		"description":                  types.StringType,
 		"destination_addresses": types.ListType{
 			ElemType: types.StringType,
@@ -4369,8 +4421,14 @@ func (o *NatPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		devices_existing_entries := make(map[string]*nat.TargetDevices)
+		if *obj != nil {
+			for idx := range (*obj).Devices {
+				devices_existing_entries[(*obj).Devices[idx].Name] = &(*obj).Devices[idx]
+			}
+		}
 		for _, elt := range devices_tf_entries {
-			var entry *nat.TargetDevices
+			entry := devices_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4412,8 +4470,14 @@ func (o *NatPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx context
 		if diags.HasError() {
 			return diags
 		}
+		vsys_existing_entries := make(map[string]*nat.TargetDevicesVsys)
+		if *obj != nil {
+			for idx := range (*obj).Vsys {
+				vsys_existing_entries[(*obj).Vsys[idx].Name] = &(*obj).Vsys[idx]
+			}
+		}
 		for _, elt := range vsys_tf_entries {
-			var entry *nat.TargetDevicesVsys
+			entry := vsys_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -5255,6 +5319,31 @@ func (o *NatPolicyRulesResource) Create(ctx context.Context, req resource.Create
 		}
 	}
 
+	// CreateMany signature requires auditComments parameter, so we initialize empty map for all resources
+	auditComments := make(map[string]string)
+
+	// Extract config for trigger_on_change_of parameters
+	var configState NatPolicyRulesResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configState)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var configElements []NatPolicyRulesResourceRulesObject
+	resp.Diagnostics.Append(configState.Rules.ElementsAs(ctx, &configElements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	for _, elt := range configElements {
+		if !elt.AuditCommentVersion.IsNull() &&
+			!elt.AuditCommentVersion.IsUnknown() &&
+			!elt.AuditCommentWo.IsNull() &&
+			!elt.AuditCommentWo.IsUnknown() {
+			auditComments[elt.Name.ValueString()] = elt.AuditCommentWo.ValueString()
+		}
+	}
+
 	var elements []NatPolicyRulesResourceRulesObject
 	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
 	if resp.Diagnostics.HasError() {
@@ -5282,14 +5371,14 @@ func (o *NatPolicyRulesResource) Create(ctx context.Context, req resource.Create
 		return
 	}
 	position := positionAttribute.CopyToPango()
-	processed, err := o.manager.CreateMany(ctx, location, components, entries, sdkmanager.NonExhaustive, position)
+	processed, err := o.manager.CreateMany(ctx, location, components, entries, sdkmanager.NonExhaustive, position, auditComments)
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
 		return
 	}
 	objects := make([]NatPolicyRulesResourceRulesObject, len(processed))
 	for idx, elt := range processed {
-		var object NatPolicyRulesResourceRulesObject
+		object := elements[idx]
 		copy_diags := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {
@@ -5420,9 +5509,14 @@ func (o *NatPolicyRulesResource) Read(ctx context.Context, req resource.ReadRequ
 		return
 	}
 
+	stateElementsByName := make(map[string]NatPolicyRulesResourceRulesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	var objects []NatPolicyRulesResourceRulesObject
 	for _, elt := range readEntries {
-		var object NatPolicyRulesResourceRulesObject
+		object := stateElementsByName[elt.Name]
 		err := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
@@ -5556,6 +5650,48 @@ func (o *NatPolicyRulesResource) Update(ctx context.Context, req resource.Update
 		existingEntriesByName[elt.Name] = elt
 	}
 
+	auditComments := make(map[string]string)
+
+	var configPlan, configState NatPolicyRulesResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configPlan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &configState)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var configPlanElements, configStateElements []NatPolicyRulesResourceRulesObject
+	resp.Diagnostics.Append(configPlan.Rules.ElementsAs(ctx, &configPlanElements, false)...)
+	resp.Diagnostics.Append(configState.Rules.ElementsAs(ctx, &configStateElements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	stateElementsByName := make(map[string]NatPolicyRulesResourceRulesObject)
+	for _, elt := range configStateElements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
+	for _, planElt := range configPlanElements {
+		stateElt, existsInState := stateElementsByName[planElt.Name.ValueString()]
+		{
+			triggerChanged := false
+			if !existsInState {
+				triggerChanged = !planElt.AuditCommentVersion.IsNull() &&
+					!planElt.AuditCommentVersion.IsUnknown()
+			} else {
+				planTrigger := planElt.AuditCommentVersion.ValueString()
+				stateTrigger := stateElt.AuditCommentVersion.ValueString()
+				triggerChanged = planTrigger != stateTrigger &&
+					!planElt.AuditCommentVersion.IsNull() &&
+					!planElt.AuditCommentVersion.IsUnknown()
+			}
+			if triggerChanged && !planElt.AuditCommentWo.IsNull() &&
+				!planElt.AuditCommentWo.IsUnknown() {
+				auditComments[planElt.Name.ValueString()] = planElt.AuditCommentWo.ValueString()
+			}
+		}
+	}
+
 	resp.Diagnostics.Append(plan.Rules.ElementsAs(ctx, &elements, false)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -5577,14 +5713,14 @@ func (o *NatPolicyRulesResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	processed, err := o.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.NonExhaustive, position)
+	processed, err := o.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.NonExhaustive, position, auditComments)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to udpate entries", err.Error())
 	}
 
 	objects := make([]*NatPolicyRulesResourceRulesObject, len(processed))
 	for idx, elt := range processed {
-		var object NatPolicyRulesResourceRulesObject
+		object := elements[idx]
 		copy_diags := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {

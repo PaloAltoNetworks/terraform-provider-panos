@@ -894,8 +894,14 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		micaEngineSpywareEnabled_existing_entries := make(map[string]*spyware.MicaEngineSpywareEnabled)
+		if *obj != nil {
+			for idx := range (*obj).MicaEngineSpywareEnabled {
+				micaEngineSpywareEnabled_existing_entries[(*obj).MicaEngineSpywareEnabled[idx].Name] = &(*obj).MicaEngineSpywareEnabled[idx]
+			}
+		}
 		for _, elt := range micaEngineSpywareEnabled_tf_entries {
-			var entry *spyware.MicaEngineSpywareEnabled
+			entry := micaEngineSpywareEnabled_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -911,8 +917,14 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*spyware.Rules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *spyware.Rules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -928,8 +940,14 @@ func (o *AntiSpywareSecurityProfileDataSourceModel) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		threatException_existing_entries := make(map[string]*spyware.ThreatException)
+		if *obj != nil {
+			for idx := range (*obj).ThreatException {
+				threatException_existing_entries[(*obj).ThreatException[idx].Name] = &(*obj).ThreatException[idx]
+			}
+		}
 		for _, elt := range threatException_tf_entries {
-			var entry *spyware.ThreatException
+			entry := threatException_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -964,8 +982,14 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		dnsSecurityCategories_existing_entries := make(map[string]*spyware.BotnetDomainsDnsSecurityCategories)
+		if *obj != nil {
+			for idx := range (*obj).DnsSecurityCategories {
+				dnsSecurityCategories_existing_entries[(*obj).DnsSecurityCategories[idx].Name] = &(*obj).DnsSecurityCategories[idx]
+			}
+		}
 		for _, elt := range dnsSecurityCategories_tf_entries {
-			var entry *spyware.BotnetDomainsDnsSecurityCategories
+			entry := dnsSecurityCategories_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -981,8 +1005,14 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		lists_existing_entries := make(map[string]*spyware.BotnetDomainsLists)
+		if *obj != nil {
+			for idx := range (*obj).Lists {
+				lists_existing_entries[(*obj).Lists[idx].Name] = &(*obj).Lists[idx]
+			}
+		}
 		for _, elt := range lists_tf_entries {
-			var entry *spyware.BotnetDomainsLists
+			entry := lists_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1032,8 +1062,14 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		threatException_existing_entries := make(map[string]*spyware.BotnetDomainsThreatException)
+		if *obj != nil {
+			for idx := range (*obj).ThreatException {
+				threatException_existing_entries[(*obj).ThreatException[idx].Name] = &(*obj).ThreatException[idx]
+			}
+		}
 		for _, elt := range threatException_tf_entries {
-			var entry *spyware.BotnetDomainsThreatException
+			entry := threatException_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1049,8 +1085,14 @@ func (o *AntiSpywareSecurityProfileDataSourceBotnetDomainsObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		whitelist_existing_entries := make(map[string]*spyware.BotnetDomainsWhitelist)
+		if *obj != nil {
+			for idx := range (*obj).Whitelist {
+				whitelist_existing_entries[(*obj).Whitelist[idx].Name] = &(*obj).Whitelist[idx]
+			}
+		}
 		for _, elt := range whitelist_tf_entries {
-			var entry *spyware.BotnetDomainsWhitelist
+			entry := whitelist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1601,8 +1643,14 @@ func (o *AntiSpywareSecurityProfileDataSourceThreatExceptionObject) CopyToPango(
 		if diags.HasError() {
 			return diags
 		}
+		exemptIp_existing_entries := make(map[string]*spyware.ThreatExceptionExemptIp)
+		if *obj != nil {
+			for idx := range (*obj).ExemptIp {
+				exemptIp_existing_entries[(*obj).ExemptIp[idx].Name] = &(*obj).ExemptIp[idx]
+			}
+		}
 		for _, elt := range exemptIp_tf_entries {
-			var entry *spyware.ThreatExceptionExemptIp
+			entry := exemptIp_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7567,8 +7615,14 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		micaEngineSpywareEnabled_existing_entries := make(map[string]*spyware.MicaEngineSpywareEnabled)
+		if *obj != nil {
+			for idx := range (*obj).MicaEngineSpywareEnabled {
+				micaEngineSpywareEnabled_existing_entries[(*obj).MicaEngineSpywareEnabled[idx].Name] = &(*obj).MicaEngineSpywareEnabled[idx]
+			}
+		}
 		for _, elt := range micaEngineSpywareEnabled_tf_entries {
-			var entry *spyware.MicaEngineSpywareEnabled
+			entry := micaEngineSpywareEnabled_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7584,8 +7638,14 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*spyware.Rules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *spyware.Rules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7601,8 +7661,14 @@ func (o *AntiSpywareSecurityProfileResourceModel) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		threatException_existing_entries := make(map[string]*spyware.ThreatException)
+		if *obj != nil {
+			for idx := range (*obj).ThreatException {
+				threatException_existing_entries[(*obj).ThreatException[idx].Name] = &(*obj).ThreatException[idx]
+			}
+		}
 		for _, elt := range threatException_tf_entries {
-			var entry *spyware.ThreatException
+			entry := threatException_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7637,8 +7703,14 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		dnsSecurityCategories_existing_entries := make(map[string]*spyware.BotnetDomainsDnsSecurityCategories)
+		if *obj != nil {
+			for idx := range (*obj).DnsSecurityCategories {
+				dnsSecurityCategories_existing_entries[(*obj).DnsSecurityCategories[idx].Name] = &(*obj).DnsSecurityCategories[idx]
+			}
+		}
 		for _, elt := range dnsSecurityCategories_tf_entries {
-			var entry *spyware.BotnetDomainsDnsSecurityCategories
+			entry := dnsSecurityCategories_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7654,8 +7726,14 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		lists_existing_entries := make(map[string]*spyware.BotnetDomainsLists)
+		if *obj != nil {
+			for idx := range (*obj).Lists {
+				lists_existing_entries[(*obj).Lists[idx].Name] = &(*obj).Lists[idx]
+			}
+		}
 		for _, elt := range lists_tf_entries {
-			var entry *spyware.BotnetDomainsLists
+			entry := lists_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7705,8 +7783,14 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		threatException_existing_entries := make(map[string]*spyware.BotnetDomainsThreatException)
+		if *obj != nil {
+			for idx := range (*obj).ThreatException {
+				threatException_existing_entries[(*obj).ThreatException[idx].Name] = &(*obj).ThreatException[idx]
+			}
+		}
 		for _, elt := range threatException_tf_entries {
-			var entry *spyware.BotnetDomainsThreatException
+			entry := threatException_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7722,8 +7806,14 @@ func (o *AntiSpywareSecurityProfileResourceBotnetDomainsObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		whitelist_existing_entries := make(map[string]*spyware.BotnetDomainsWhitelist)
+		if *obj != nil {
+			for idx := range (*obj).Whitelist {
+				whitelist_existing_entries[(*obj).Whitelist[idx].Name] = &(*obj).Whitelist[idx]
+			}
+		}
 		for _, elt := range whitelist_tf_entries {
-			var entry *spyware.BotnetDomainsWhitelist
+			entry := whitelist_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8274,8 +8364,14 @@ func (o *AntiSpywareSecurityProfileResourceThreatExceptionObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		exemptIp_existing_entries := make(map[string]*spyware.ThreatExceptionExemptIp)
+		if *obj != nil {
+			for idx := range (*obj).ExemptIp {
+				exemptIp_existing_entries[(*obj).ExemptIp[idx].Name] = &(*obj).ExemptIp[idx]
+			}
+		}
 		for _, elt := range exemptIp_tf_entries {
-			var entry *spyware.ThreatExceptionExemptIp
+			entry := exemptIp_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

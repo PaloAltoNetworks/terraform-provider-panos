@@ -131,8 +131,14 @@ func (o *FileBlockingSecurityProfileDataSourceModel) CopyToPango(ctx context.Con
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*fileblocking.Rules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *fileblocking.Rules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -800,8 +806,14 @@ func (o *FileBlockingSecurityProfileResourceModel) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*fileblocking.Rules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *fileblocking.Rules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

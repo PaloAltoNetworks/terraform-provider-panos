@@ -21,6 +21,7 @@ description: |-
 
 ### Optional
 
+- `default_vsys` (String) Default virtual system
 - `description` (String) The description.
 
 <a id="nestedatt--location"></a>

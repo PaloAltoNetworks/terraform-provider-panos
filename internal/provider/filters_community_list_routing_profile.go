@@ -355,8 +355,14 @@ func (o *FiltersCommunityListRoutingProfileDataSourceTypeExtendedObject) CopyToP
 		if diags.HasError() {
 			return diags
 		}
+		extendedEntries_existing_entries := make(map[string]*communitylist.TypeExtendedExtendedEntry)
+		if *obj != nil {
+			for idx := range (*obj).ExtendedEntry {
+				extendedEntries_existing_entries[(*obj).ExtendedEntry[idx].Name] = &(*obj).ExtendedEntry[idx]
+			}
+		}
 		for _, elt := range extendedEntries_tf_entries {
-			var entry *communitylist.TypeExtendedExtendedEntry
+			entry := extendedEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -408,8 +414,14 @@ func (o *FiltersCommunityListRoutingProfileDataSourceTypeLargeObject) CopyToPang
 		if diags.HasError() {
 			return diags
 		}
+		largeEntries_existing_entries := make(map[string]*communitylist.TypeLargeLargeEntry)
+		if *obj != nil {
+			for idx := range (*obj).LargeEntry {
+				largeEntries_existing_entries[(*obj).LargeEntry[idx].Name] = &(*obj).LargeEntry[idx]
+			}
+		}
 		for _, elt := range largeEntries_tf_entries {
-			var entry *communitylist.TypeLargeLargeEntry
+			entry := largeEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -461,8 +473,14 @@ func (o *FiltersCommunityListRoutingProfileDataSourceTypeRegularObject) CopyToPa
 		if diags.HasError() {
 			return diags
 		}
+		regularEntries_existing_entries := make(map[string]*communitylist.TypeRegularRegularEntry)
+		if *obj != nil {
+			for idx := range (*obj).RegularEntry {
+				regularEntries_existing_entries[(*obj).RegularEntry[idx].Name] = &(*obj).RegularEntry[idx]
+			}
+		}
 		for _, elt := range regularEntries_tf_entries {
-			var entry *communitylist.TypeRegularRegularEntry
+			entry := regularEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2081,8 +2099,14 @@ func (o *FiltersCommunityListRoutingProfileResourceTypeExtendedObject) CopyToPan
 		if diags.HasError() {
 			return diags
 		}
+		extendedEntries_existing_entries := make(map[string]*communitylist.TypeExtendedExtendedEntry)
+		if *obj != nil {
+			for idx := range (*obj).ExtendedEntry {
+				extendedEntries_existing_entries[(*obj).ExtendedEntry[idx].Name] = &(*obj).ExtendedEntry[idx]
+			}
+		}
 		for _, elt := range extendedEntries_tf_entries {
-			var entry *communitylist.TypeExtendedExtendedEntry
+			entry := extendedEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2134,8 +2158,14 @@ func (o *FiltersCommunityListRoutingProfileResourceTypeLargeObject) CopyToPango(
 		if diags.HasError() {
 			return diags
 		}
+		largeEntries_existing_entries := make(map[string]*communitylist.TypeLargeLargeEntry)
+		if *obj != nil {
+			for idx := range (*obj).LargeEntry {
+				largeEntries_existing_entries[(*obj).LargeEntry[idx].Name] = &(*obj).LargeEntry[idx]
+			}
+		}
 		for _, elt := range largeEntries_tf_entries {
-			var entry *communitylist.TypeLargeLargeEntry
+			entry := largeEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2187,8 +2217,14 @@ func (o *FiltersCommunityListRoutingProfileResourceTypeRegularObject) CopyToPang
 		if diags.HasError() {
 			return diags
 		}
+		regularEntries_existing_entries := make(map[string]*communitylist.TypeRegularRegularEntry)
+		if *obj != nil {
+			for idx := range (*obj).RegularEntry {
+				regularEntries_existing_entries[(*obj).RegularEntry[idx].Name] = &(*obj).RegularEntry[idx]
+			}
+		}
 		for _, elt := range regularEntries_tf_entries {
-			var entry *communitylist.TypeRegularRegularEntry
+			entry := regularEntries_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

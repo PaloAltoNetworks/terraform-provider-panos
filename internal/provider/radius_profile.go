@@ -278,8 +278,14 @@ func (o *RadiusProfileDataSourceModel) CopyToPango(ctx context.Context, client p
 		if diags.HasError() {
 			return diags
 		}
+		servers_existing_entries := make(map[string]*radius.Server)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				servers_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range servers_tf_entries {
-			var entry *radius.Server
+			entry := servers_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2091,8 +2097,14 @@ func (o *RadiusProfileResourceModel) CopyToPango(ctx context.Context, client pan
 		if diags.HasError() {
 			return diags
 		}
+		servers_existing_entries := make(map[string]*radius.Server)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				servers_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range servers_tf_entries {
-			var entry *radius.Server
+			entry := servers_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

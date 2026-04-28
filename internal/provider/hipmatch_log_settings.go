@@ -292,8 +292,14 @@ func (o *HipmatchLogSettingsDataSourceModel) CopyToPango(ctx context.Context, cl
 		if diags.HasError() {
 			return diags
 		}
+		actions_existing_entries := make(map[string]*hipmatch.Actions)
+		if *obj != nil {
+			for idx := range (*obj).Actions {
+				actions_existing_entries[(*obj).Actions[idx].Name] = &(*obj).Actions[idx]
+			}
+		}
 		for _, elt := range actions_tf_entries {
-			var entry *hipmatch.Actions
+			entry := actions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2341,8 +2347,14 @@ func (o *HipmatchLogSettingsResourceModel) CopyToPango(ctx context.Context, clie
 		if diags.HasError() {
 			return diags
 		}
+		actions_existing_entries := make(map[string]*hipmatch.Actions)
+		if *obj != nil {
+			for idx := range (*obj).Actions {
+				actions_existing_entries[(*obj).Actions[idx].Name] = &(*obj).Actions[idx]
+			}
+		}
 		for _, elt := range actions_tf_entries {
-			var entry *hipmatch.Actions
+			entry := actions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

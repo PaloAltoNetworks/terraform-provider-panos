@@ -122,6 +122,11 @@ func (o *MockUuidClient[E]) MultiConfig(ctx context.Context, updates *xmlapi.Mul
 	return nil, nil, nil, nil
 }
 
+func (o *MockUuidClient[E]) Communicate(ctx context.Context, cmd util.PangoCommand, strip bool, ans any) ([]byte, *http.Response, error) {
+	// Mock implementation for Communicate API calls (audit comments, etc.)
+	return nil, nil, nil
+}
+
 func (o *MockUuidClient[E]) list() []E {
 	var entries []E
 	for e := o.Current.Front(); e != nil; e = e.Next() {

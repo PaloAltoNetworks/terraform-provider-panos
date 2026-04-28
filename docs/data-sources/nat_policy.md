@@ -66,6 +66,7 @@ Required:
 Optional:
 
 - `active_active_device_binding` (String) Device binding configuration in HA Active-Active mode
+- `audit_comment_version` (String) Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.
 - `description` (String)
 - `destination_addresses` (List of String)
 - `destination_translation` (Attributes) (see [below for nested schema](#nestedatt--rules--destination_translation))

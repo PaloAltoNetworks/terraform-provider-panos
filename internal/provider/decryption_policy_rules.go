@@ -64,6 +64,7 @@ type DecryptionPolicyRulesDataSourceModel struct {
 type DecryptionPolicyRulesDataSourceRulesObject struct {
 	Name                 types.String `tfsdk:"name"`
 	Action               types.String `tfsdk:"action"`
+	AuditCommentVersion  types.String `tfsdk:"audit_comment_version"`
 	Category             types.List   `tfsdk:"category"`
 	Description          types.String `tfsdk:"description"`
 	DestinationAddresses types.List   `tfsdk:"destination_addresses"`
@@ -147,8 +148,9 @@ func (o *DecryptionPolicyRulesDataSourceRulesObject) AttributeTypes() map[string
 
 	var typeObj *DecryptionPolicyRulesDataSourceRulesTypeObject
 	return map[string]attr.Type{
-		"name":   types.StringType,
-		"action": types.StringType,
+		"name":                  types.StringType,
+		"action":                types.StringType,
+		"audit_comment_version": types.StringType,
 		"category": types.ListType{
 			ElemType: types.StringType,
 		},
@@ -547,8 +549,14 @@ func (o *DecryptionPolicyRulesDataSourceRulesTargetObject) CopyToPango(ctx conte
 		if diags.HasError() {
 			return diags
 		}
+		devices_existing_entries := make(map[string]*decryption.TargetDevices)
+		if *obj != nil {
+			for idx := range (*obj).Devices {
+				devices_existing_entries[(*obj).Devices[idx].Name] = &(*obj).Devices[idx]
+			}
+		}
 		for _, elt := range devices_tf_entries {
-			var entry *decryption.TargetDevices
+			entry := devices_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -590,8 +598,14 @@ func (o *DecryptionPolicyRulesDataSourceRulesTargetDevicesObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		vsys_existing_entries := make(map[string]*decryption.TargetDevicesVsys)
+		if *obj != nil {
+			for idx := range (*obj).Vsys {
+				vsys_existing_entries[(*obj).Vsys[idx].Name] = &(*obj).Vsys[idx]
+			}
+		}
 		for _, elt := range vsys_tf_entries {
-			var entry *decryption.TargetDevicesVsys
+			entry := vsys_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1276,6 +1290,12 @@ func DecryptionPolicyRulesDataSourceRulesSchema() dsschema.NestedAttributeObject
 				Computed:    true,
 			},
 
+			"audit_comment_version": dsschema.StringAttribute{
+				Description: "Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.",
+				Optional:    true,
+				Computed:    true,
+			},
+
 			"category": dsschema.ListAttribute{
 				Description: "",
 				Optional:    true,
@@ -1824,9 +1844,14 @@ func (o *DecryptionPolicyRulesDataSource) Read(ctx context.Context, req datasour
 		return
 	}
 
+	stateElementsByName := make(map[string]DecryptionPolicyRulesDataSourceRulesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	var objects []DecryptionPolicyRulesDataSourceRulesObject
 	for _, elt := range readEntries {
-		var object DecryptionPolicyRulesDataSourceRulesObject
+		object := stateElementsByName[elt.Name]
 		err := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
@@ -1882,6 +1907,8 @@ type DecryptionPolicyRulesResourceModel struct {
 type DecryptionPolicyRulesResourceRulesObject struct {
 	Name                 types.String `tfsdk:"name"`
 	Action               types.String `tfsdk:"action"`
+	AuditCommentVersion  types.String `tfsdk:"audit_comment_version"`
+	AuditCommentWo       types.String `tfsdk:"audit_comment_wo"`
 	Category             types.List   `tfsdk:"category"`
 	Description          types.String `tfsdk:"description"`
 	DestinationAddresses types.List   `tfsdk:"destination_addresses"`
@@ -2154,6 +2181,29 @@ func DecryptionPolicyRulesResourceRulesSchema() rsschema.NestedAttributeObject {
 						"no-decrypt",
 						"decrypt",
 						"decrypt-and-forward",
+					}...),
+				},
+			},
+
+			"audit_comment_version": rsschema.StringAttribute{
+				Description: "Version trigger for audit comments. Change this value to send the audit_comment_wo to PAN-OS. This attribute is not sent to PAN-OS itself, but serves as a trigger to detect when the audit comment should be updated.",
+				Optional:    true,
+
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.Expressions{
+						path.MatchRelative().AtParent().AtName("audit_comment_wo"),
+					}...),
+				},
+			},
+
+			"audit_comment_wo": rsschema.StringAttribute{
+				Description: "Write-only audit comment for this rule. This value is sent to PAN-OS but not read back. Changes are only sent when audit_comment_version is modified. Each time audit_comment_version changes, this comment is added to the audit history with a timestamp.",
+				Optional:    true,
+				WriteOnly:   true,
+
+				Validators: []validator.String{
+					stringvalidator.AlsoRequires(path.Expressions{
+						path.MatchRelative().AtParent().AtName("audit_comment_version"),
 					}...),
 				},
 			},
@@ -2607,8 +2657,10 @@ func (o *DecryptionPolicyRulesResourceRulesObject) AttributeTypes() map[string]a
 
 	var typeObj *DecryptionPolicyRulesResourceRulesTypeObject
 	return map[string]attr.Type{
-		"name":   types.StringType,
-		"action": types.StringType,
+		"name":                  types.StringType,
+		"action":                types.StringType,
+		"audit_comment_version": types.StringType,
+		"audit_comment_wo":      types.StringType,
 		"category": types.ListType{
 			ElemType: types.StringType,
 		},
@@ -3007,8 +3059,14 @@ func (o *DecryptionPolicyRulesResourceRulesTargetObject) CopyToPango(ctx context
 		if diags.HasError() {
 			return diags
 		}
+		devices_existing_entries := make(map[string]*decryption.TargetDevices)
+		if *obj != nil {
+			for idx := range (*obj).Devices {
+				devices_existing_entries[(*obj).Devices[idx].Name] = &(*obj).Devices[idx]
+			}
+		}
 		for _, elt := range devices_tf_entries {
-			var entry *decryption.TargetDevices
+			entry := devices_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3050,8 +3108,14 @@ func (o *DecryptionPolicyRulesResourceRulesTargetDevicesObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		vsys_existing_entries := make(map[string]*decryption.TargetDevicesVsys)
+		if *obj != nil {
+			for idx := range (*obj).Vsys {
+				vsys_existing_entries[(*obj).Vsys[idx].Name] = &(*obj).Vsys[idx]
+			}
+		}
 		for _, elt := range vsys_tf_entries {
-			var entry *decryption.TargetDevicesVsys
+			entry := vsys_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3750,6 +3814,31 @@ func (o *DecryptionPolicyRulesResource) Create(ctx context.Context, req resource
 		}
 	}
 
+	// CreateMany signature requires auditComments parameter, so we initialize empty map for all resources
+	auditComments := make(map[string]string)
+
+	// Extract config for trigger_on_change_of parameters
+	var configState DecryptionPolicyRulesResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configState)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var configElements []DecryptionPolicyRulesResourceRulesObject
+	resp.Diagnostics.Append(configState.Rules.ElementsAs(ctx, &configElements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	for _, elt := range configElements {
+		if !elt.AuditCommentVersion.IsNull() &&
+			!elt.AuditCommentVersion.IsUnknown() &&
+			!elt.AuditCommentWo.IsNull() &&
+			!elt.AuditCommentWo.IsUnknown() {
+			auditComments[elt.Name.ValueString()] = elt.AuditCommentWo.ValueString()
+		}
+	}
+
 	var elements []DecryptionPolicyRulesResourceRulesObject
 	resp.Diagnostics.Append(state.Rules.ElementsAs(ctx, &elements, false)...)
 	if resp.Diagnostics.HasError() {
@@ -3777,14 +3866,14 @@ func (o *DecryptionPolicyRulesResource) Create(ctx context.Context, req resource
 		return
 	}
 	position := positionAttribute.CopyToPango()
-	processed, err := o.manager.CreateMany(ctx, location, components, entries, sdkmanager.NonExhaustive, position)
+	processed, err := o.manager.CreateMany(ctx, location, components, entries, sdkmanager.NonExhaustive, position, auditComments)
 	if err != nil {
 		resp.Diagnostics.AddError("Error during CreateMany() call", err.Error())
 		return
 	}
 	objects := make([]DecryptionPolicyRulesResourceRulesObject, len(processed))
 	for idx, elt := range processed {
-		var object DecryptionPolicyRulesResourceRulesObject
+		object := elements[idx]
 		copy_diags := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {
@@ -3915,9 +4004,14 @@ func (o *DecryptionPolicyRulesResource) Read(ctx context.Context, req resource.R
 		return
 	}
 
+	stateElementsByName := make(map[string]DecryptionPolicyRulesResourceRulesObject)
+	for _, elt := range elements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
 	var objects []DecryptionPolicyRulesResourceRulesObject
 	for _, elt := range readEntries {
-		var object DecryptionPolicyRulesResourceRulesObject
+		object := stateElementsByName[elt.Name]
 		err := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(err...)
 		if resp.Diagnostics.HasError() {
@@ -4051,6 +4145,48 @@ func (o *DecryptionPolicyRulesResource) Update(ctx context.Context, req resource
 		existingEntriesByName[elt.Name] = elt
 	}
 
+	auditComments := make(map[string]string)
+
+	var configPlan, configState DecryptionPolicyRulesResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &configPlan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &configState)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	var configPlanElements, configStateElements []DecryptionPolicyRulesResourceRulesObject
+	resp.Diagnostics.Append(configPlan.Rules.ElementsAs(ctx, &configPlanElements, false)...)
+	resp.Diagnostics.Append(configState.Rules.ElementsAs(ctx, &configStateElements, false)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	stateElementsByName := make(map[string]DecryptionPolicyRulesResourceRulesObject)
+	for _, elt := range configStateElements {
+		stateElementsByName[elt.Name.ValueString()] = elt
+	}
+
+	for _, planElt := range configPlanElements {
+		stateElt, existsInState := stateElementsByName[planElt.Name.ValueString()]
+		{
+			triggerChanged := false
+			if !existsInState {
+				triggerChanged = !planElt.AuditCommentVersion.IsNull() &&
+					!planElt.AuditCommentVersion.IsUnknown()
+			} else {
+				planTrigger := planElt.AuditCommentVersion.ValueString()
+				stateTrigger := stateElt.AuditCommentVersion.ValueString()
+				triggerChanged = planTrigger != stateTrigger &&
+					!planElt.AuditCommentVersion.IsNull() &&
+					!planElt.AuditCommentVersion.IsUnknown()
+			}
+			if triggerChanged && !planElt.AuditCommentWo.IsNull() &&
+				!planElt.AuditCommentWo.IsUnknown() {
+				auditComments[planElt.Name.ValueString()] = planElt.AuditCommentWo.ValueString()
+			}
+		}
+	}
+
 	resp.Diagnostics.Append(plan.Rules.ElementsAs(ctx, &elements, false)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -4072,14 +4208,14 @@ func (o *DecryptionPolicyRulesResource) Update(ctx context.Context, req resource
 		return
 	}
 
-	processed, err := o.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.NonExhaustive, position)
+	processed, err := o.manager.UpdateMany(ctx, location, components, stateEntries, planEntries, sdkmanager.NonExhaustive, position, auditComments)
 	if err != nil {
 		resp.Diagnostics.AddError("Failed to udpate entries", err.Error())
 	}
 
 	objects := make([]*DecryptionPolicyRulesResourceRulesObject, len(processed))
 	for idx, elt := range processed {
-		var object DecryptionPolicyRulesResourceRulesObject
+		object := elements[idx]
 		copy_diags := object.CopyFromPango(ctx, o.client, nil, elt, ev)
 		resp.Diagnostics.Append(copy_diags...)
 		if resp.Diagnostics.HasError() {

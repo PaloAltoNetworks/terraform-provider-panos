@@ -257,8 +257,14 @@ func (o *LoopbackInterfaceDataSourceModel) CopyToPango(ctx context.Context, clie
 		if diags.HasError() {
 			return diags
 		}
+		ip_existing_entries := make(map[string]*loopback.Ip)
+		if *obj != nil {
+			for idx := range (*obj).Ip {
+				ip_existing_entries[(*obj).Ip[idx].Name] = &(*obj).Ip[idx]
+			}
+		}
 		for _, elt := range ip_tf_entries {
-			var entry *loopback.Ip
+			entry := ip_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -335,8 +341,14 @@ func (o *LoopbackInterfaceDataSourceIpv6Object) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*loopback.Ipv6Address)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *loopback.Ipv6Address
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1724,8 +1736,14 @@ func (o *LoopbackInterfaceResourceModel) CopyToPango(ctx context.Context, client
 		if diags.HasError() {
 			return diags
 		}
+		ip_existing_entries := make(map[string]*loopback.Ip)
+		if *obj != nil {
+			for idx := range (*obj).Ip {
+				ip_existing_entries[(*obj).Ip[idx].Name] = &(*obj).Ip[idx]
+			}
+		}
 		for _, elt := range ip_tf_entries {
-			var entry *loopback.Ip
+			entry := ip_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1802,8 +1820,14 @@ func (o *LoopbackInterfaceResourceIpv6Object) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*loopback.Ipv6Address)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *loopback.Ipv6Address
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

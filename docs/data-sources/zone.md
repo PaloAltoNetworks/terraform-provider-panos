@@ -55,6 +55,7 @@ Optional:
 - `name` (String) Specific Panorama template stack
 - `ngfw_device` (String) The NGFW device
 - `panorama_device` (String) Specific Panorama device
+- `vsys` (String) The vsys.
 
 
 <a id="nestedatt--location--vsys"></a>

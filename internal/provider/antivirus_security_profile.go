@@ -236,8 +236,14 @@ func (o *AntivirusSecurityProfileDataSourceModel) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		applicationExceptions_existing_entries := make(map[string]*antivirus.Application)
+		if *obj != nil {
+			for idx := range (*obj).Application {
+				applicationExceptions_existing_entries[(*obj).Application[idx].Name] = &(*obj).Application[idx]
+			}
+		}
 		for _, elt := range applicationExceptions_tf_entries {
-			var entry *antivirus.Application
+			entry := applicationExceptions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -253,8 +259,14 @@ func (o *AntivirusSecurityProfileDataSourceModel) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		decoders_existing_entries := make(map[string]*antivirus.Decoder)
+		if *obj != nil {
+			for idx := range (*obj).Decoder {
+				decoders_existing_entries[(*obj).Decoder[idx].Name] = &(*obj).Decoder[idx]
+			}
+		}
 		for _, elt := range decoders_tf_entries {
-			var entry *antivirus.Decoder
+			entry := decoders_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -272,8 +284,14 @@ func (o *AntivirusSecurityProfileDataSourceModel) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		machineLearningModels_existing_entries := make(map[string]*antivirus.MlavEngineFilebasedEnabled)
+		if *obj != nil {
+			for idx := range (*obj).MlavEngineFilebasedEnabled {
+				machineLearningModels_existing_entries[(*obj).MlavEngineFilebasedEnabled[idx].Name] = &(*obj).MlavEngineFilebasedEnabled[idx]
+			}
+		}
 		for _, elt := range machineLearningModels_tf_entries {
-			var entry *antivirus.MlavEngineFilebasedEnabled
+			entry := machineLearningModels_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -289,8 +307,14 @@ func (o *AntivirusSecurityProfileDataSourceModel) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		machineLearningExceptions_existing_entries := make(map[string]*antivirus.MlavException)
+		if *obj != nil {
+			for idx := range (*obj).MlavException {
+				machineLearningExceptions_existing_entries[(*obj).MlavException[idx].Name] = &(*obj).MlavException[idx]
+			}
+		}
 		for _, elt := range machineLearningExceptions_tf_entries {
-			var entry *antivirus.MlavException
+			entry := machineLearningExceptions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -307,8 +331,14 @@ func (o *AntivirusSecurityProfileDataSourceModel) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		threatExceptions_existing_entries := make(map[string]*antivirus.ThreatException)
+		if *obj != nil {
+			for idx := range (*obj).ThreatException {
+				threatExceptions_existing_entries[(*obj).ThreatException[idx].Name] = &(*obj).ThreatException[idx]
+			}
+		}
 		for _, elt := range threatExceptions_tf_entries {
-			var entry *antivirus.ThreatException
+			entry := threatExceptions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1689,8 +1719,14 @@ func (o *AntivirusSecurityProfileResourceModel) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		applicationExceptions_existing_entries := make(map[string]*antivirus.Application)
+		if *obj != nil {
+			for idx := range (*obj).Application {
+				applicationExceptions_existing_entries[(*obj).Application[idx].Name] = &(*obj).Application[idx]
+			}
+		}
 		for _, elt := range applicationExceptions_tf_entries {
-			var entry *antivirus.Application
+			entry := applicationExceptions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1706,8 +1742,14 @@ func (o *AntivirusSecurityProfileResourceModel) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		decoders_existing_entries := make(map[string]*antivirus.Decoder)
+		if *obj != nil {
+			for idx := range (*obj).Decoder {
+				decoders_existing_entries[(*obj).Decoder[idx].Name] = &(*obj).Decoder[idx]
+			}
+		}
 		for _, elt := range decoders_tf_entries {
-			var entry *antivirus.Decoder
+			entry := decoders_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1725,8 +1767,14 @@ func (o *AntivirusSecurityProfileResourceModel) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		machineLearningModels_existing_entries := make(map[string]*antivirus.MlavEngineFilebasedEnabled)
+		if *obj != nil {
+			for idx := range (*obj).MlavEngineFilebasedEnabled {
+				machineLearningModels_existing_entries[(*obj).MlavEngineFilebasedEnabled[idx].Name] = &(*obj).MlavEngineFilebasedEnabled[idx]
+			}
+		}
 		for _, elt := range machineLearningModels_tf_entries {
-			var entry *antivirus.MlavEngineFilebasedEnabled
+			entry := machineLearningModels_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1742,8 +1790,14 @@ func (o *AntivirusSecurityProfileResourceModel) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		machineLearningExceptions_existing_entries := make(map[string]*antivirus.MlavException)
+		if *obj != nil {
+			for idx := range (*obj).MlavException {
+				machineLearningExceptions_existing_entries[(*obj).MlavException[idx].Name] = &(*obj).MlavException[idx]
+			}
+		}
 		for _, elt := range machineLearningExceptions_tf_entries {
-			var entry *antivirus.MlavException
+			entry := machineLearningExceptions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1760,8 +1814,14 @@ func (o *AntivirusSecurityProfileResourceModel) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		threatExceptions_existing_entries := make(map[string]*antivirus.ThreatException)
+		if *obj != nil {
+			for idx := range (*obj).ThreatException {
+				threatExceptions_existing_entries[(*obj).ThreatException[idx].Name] = &(*obj).ThreatException[idx]
+			}
+		}
 		for _, elt := range threatExceptions_tf_entries {
-			var entry *antivirus.ThreatException
+			entry := threatExceptions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

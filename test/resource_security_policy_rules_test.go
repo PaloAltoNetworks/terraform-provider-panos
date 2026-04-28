@@ -1298,6 +1298,278 @@ func TestAccSecurityPolicyRules_BeforePivotWithUpdate(t *testing.T) {
 	})
 }
 
+func TestAccSecurityPolicyRules_AuditComment(t *testing.T) {
+	// Not using t.Parallel() because PAN-OS audit comments are ephemeral
+	// metadata on the shared candidate config. Concurrent tests modifying
+	// config under the same admin user invalidate each other's comments.
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+	dgName := fmt.Sprintf("%s-dg", prefix)
+
+	sdkLoc := security.NewDeviceGroupLocation()
+	sdkLoc.DeviceGroup.DeviceGroup = dgName
+	sdkLoc.DeviceGroup.Rulebase = "pre-rulebase"
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			// Step 1: Create two rules with different initial audit comments
+			{
+				Config: securityPolicyRulesAuditCommentTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":                  config.StringVariable(prefix),
+					"comment_1":               config.StringVariable("Rule 1 initial comment"),
+					"audit_comment_version_1": config.StringVariable("v1"),
+					"comment_2":               config.StringVariable("Rule 2 initial comment"),
+					"audit_comment_version_2": config.StringVariable("v1"),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_security_policy_rules.test",
+						tfjsonpath.New("rules").AtSliceIndex(0).AtMapKey("name"),
+						knownvalue.StringExact(fmt.Sprintf("%s-rule-1", prefix)),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_security_policy_rules.test",
+						tfjsonpath.New("rules").AtSliceIndex(1).AtMapKey("name"),
+						knownvalue.StringExact(fmt.Sprintf("%s-rule-2", prefix)),
+					),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-1", "Rule 1 initial comment")
+					},
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-2", "Rule 2 initial comment")
+					},
+				),
+			},
+			// Step 2: Update only rule-1's audit comment (bump version), leave rule-2 unchanged
+			{
+				Config: securityPolicyRulesAuditCommentTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":                  config.StringVariable(prefix),
+					"comment_1":               config.StringVariable("Rule 1 updated comment"),
+					"audit_comment_version_1": config.StringVariable("v2"),
+					"comment_2":               config.StringVariable("Rule 2 initial comment"),
+					"audit_comment_version_2": config.StringVariable("v1"), // unchanged
+				},
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-1", "Rule 1 updated comment")
+					},
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-2", "Rule 2 initial comment")
+					},
+				),
+			},
+			// Step 3: Update only rule-2's audit comment (bump version), leave rule-1 unchanged
+			{
+				Config: securityPolicyRulesAuditCommentTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":                  config.StringVariable(prefix),
+					"comment_1":               config.StringVariable("Rule 1 updated comment"),
+					"audit_comment_version_1": config.StringVariable("v2"), // unchanged
+					"comment_2":               config.StringVariable("Rule 2 updated comment"),
+					"audit_comment_version_2": config.StringVariable("v2"),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-1", "Rule 1 updated comment")
+					},
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-2", "Rule 2 updated comment")
+					},
+				),
+			},
+			// Step 4: Change both comments but only bump rule-2's version.
+			// Rule-1 should keep its old comment, rule-2 should get the new one.
+			{
+				Config: securityPolicyRulesAuditCommentTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":                  config.StringVariable(prefix),
+					"comment_1":               config.StringVariable("Rule 1 should not update"),
+					"audit_comment_version_1": config.StringVariable("v2"), // unchanged
+					"comment_2":               config.StringVariable("Rule 2 version-gated update"),
+					"audit_comment_version_2": config.StringVariable("v3"),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-1", "Rule 1 updated comment")
+					},
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-2", "Rule 2 version-gated update")
+					},
+				),
+			},
+			// Step 5: Bump both versions simultaneously with different comments
+			{
+				Config: securityPolicyRulesAuditCommentTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix":                  config.StringVariable(prefix),
+					"comment_1":               config.StringVariable("Rule 1 final comment"),
+					"audit_comment_version_1": config.StringVariable("v3"),
+					"comment_2":               config.StringVariable("Rule 2 final comment"),
+					"audit_comment_version_2": config.StringVariable("v4"),
+				},
+				Check: resource.ComposeTestCheckFunc(
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-1", "Rule 1 final comment")
+					},
+					func(s *terraform.State) error {
+						return verifySecurityPolicyAuditCommentValue(s, *sdkLoc, prefix, "rule-2", "Rule 2 final comment")
+					},
+				),
+			},
+			// Step 6: Remove audit comment attributes from config
+			{
+				Config: securityPolicyRulesNoAuditCommentTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_security_policy_rules.test",
+						tfjsonpath.New("rules").AtSliceIndex(0).AtMapKey("name"),
+						knownvalue.StringExact(fmt.Sprintf("%s-rule-1", prefix)),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_security_policy_rules.test",
+						tfjsonpath.New("rules").AtSliceIndex(1).AtMapKey("name"),
+						knownvalue.StringExact(fmt.Sprintf("%s-rule-2", prefix)),
+					),
+				},
+			},
+			// Step 7: Re-apply without audit comment - should not cause drift
+			{
+				Config: securityPolicyRulesNoAuditCommentTmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				PlanOnly: true,
+			},
+		},
+	})
+}
+
+const securityPolicyRulesAuditCommentTmpl = `
+variable "prefix" { type = string }
+variable "comment_1" { type = string }
+variable "audit_comment_version_1" { type = string }
+variable "comment_2" { type = string }
+variable "audit_comment_version_2" { type = string }
+
+resource "panos_device_group" "test" {
+  location = { panorama = {} }
+  name = format("%s-dg", var.prefix)
+}
+
+resource "panos_security_policy_rules" "test" {
+  location = {
+    device_group = {
+      name     = panos_device_group.test.name
+      rulebase = "pre-rulebase"
+    }
+  }
+
+  position = {
+    where = "first"
+  }
+
+  rules = [
+    {
+      name                  = format("%s-rule-1", var.prefix)
+      audit_comment_wo      = var.comment_1
+      audit_comment_version = var.audit_comment_version_1
+      source_zones          = ["any"]
+      destination_zones     = ["any"]
+      source_addresses      = ["any"]
+      destination_addresses = ["any"]
+      applications          = ["any"]
+      services              = ["any"]
+      action                = "allow"
+    },
+    {
+      name                  = format("%s-rule-2", var.prefix)
+      audit_comment_wo      = var.comment_2
+      audit_comment_version = var.audit_comment_version_2
+      source_zones          = ["any"]
+      destination_zones     = ["any"]
+      source_addresses      = ["any"]
+      destination_addresses = ["any"]
+      applications          = ["any"]
+      services              = ["any"]
+      action                = "deny"
+    }
+  ]
+}
+`
+
+const securityPolicyRulesNoAuditCommentTmpl = `
+variable "prefix" { type = string }
+
+resource "panos_device_group" "test" {
+  location = { panorama = {} }
+  name = format("%s-dg", var.prefix)
+}
+
+resource "panos_security_policy_rules" "test" {
+  location = {
+    device_group = {
+      name     = panos_device_group.test.name
+      rulebase = "pre-rulebase"
+    }
+  }
+
+  position = {
+    where = "first"
+  }
+
+  rules = [
+    {
+      name                  = format("%s-rule-1", var.prefix)
+      source_zones          = ["any"]
+      destination_zones     = ["any"]
+      source_addresses      = ["any"]
+      destination_addresses = ["any"]
+      applications          = ["any"]
+      services              = ["any"]
+      action                = "allow"
+    },
+    {
+      name                  = format("%s-rule-2", var.prefix)
+      source_zones          = ["any"]
+      destination_zones     = ["any"]
+      source_addresses      = ["any"]
+      destination_addresses = ["any"]
+      applications          = ["any"]
+      services              = ["any"]
+      action                = "deny"
+    }
+  ]
+}
+`
+
+// verifySecurityPolicyAuditCommentValue checks the current uncommitted audit comment on a security policy rule.
+func verifySecurityPolicyAuditCommentValue(_ *terraform.State, loc security.Location, prefix, ruleName, expectedComment string) error {
+	ctx := context.Background()
+	fullRuleName := fmt.Sprintf("%s-%s", prefix, ruleName)
+
+	svc := security.NewService(sdkClient)
+	comment, err := svc.CurrentAuditComment(ctx, loc, fullRuleName)
+	if err != nil {
+		return fmt.Errorf("failed to get current audit comment: %w", err)
+	}
+
+	if comment != expectedComment {
+		return fmt.Errorf("audit comment mismatch: got %q, want %q", comment, expectedComment)
+	}
+
+	return nil
+}
+
 func mergeConfigs(configs ...string) string {
 	return strings.Join(configs, "\n")
 }

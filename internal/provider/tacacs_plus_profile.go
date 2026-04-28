@@ -129,8 +129,14 @@ func (o *TacacsPlusProfileDataSourceModel) CopyToPango(ctx context.Context, clie
 		if diags.HasError() {
 			return diags
 		}
+		servers_existing_entries := make(map[string]*tacacsplus.Server)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				servers_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range servers_tf_entries {
-			var entry *tacacsplus.Server
+			entry := servers_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -842,8 +848,14 @@ func (o *TacacsPlusProfileResourceModel) CopyToPango(ctx context.Context, client
 		if diags.HasError() {
 			return diags
 		}
+		servers_existing_entries := make(map[string]*tacacsplus.Server)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				servers_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range servers_tf_entries {
-			var entry *tacacsplus.Server
+			entry := servers_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

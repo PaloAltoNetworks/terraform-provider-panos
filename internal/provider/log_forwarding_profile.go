@@ -327,8 +327,14 @@ func (o *LogForwardingProfileDataSourceModel) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		matchList_existing_entries := make(map[string]*logforwarding.MatchList)
+		if *obj != nil {
+			for idx := range (*obj).MatchList {
+				matchList_existing_entries[(*obj).MatchList[idx].Name] = &(*obj).MatchList[idx]
+			}
+		}
 		for _, elt := range matchList_tf_entries {
-			var entry *logforwarding.MatchList
+			entry := matchList_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -415,8 +421,14 @@ func (o *LogForwardingProfileDataSourceMatchListObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		actions_existing_entries := make(map[string]*logforwarding.MatchListActions)
+		if *obj != nil {
+			for idx := range (*obj).Actions {
+				actions_existing_entries[(*obj).Actions[idx].Name] = &(*obj).Actions[idx]
+			}
+		}
 		for _, elt := range actions_tf_entries {
-			var entry *logforwarding.MatchListActions
+			entry := actions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2609,8 +2621,14 @@ func (o *LogForwardingProfileResourceModel) CopyToPango(ctx context.Context, cli
 		if diags.HasError() {
 			return diags
 		}
+		matchList_existing_entries := make(map[string]*logforwarding.MatchList)
+		if *obj != nil {
+			for idx := range (*obj).MatchList {
+				matchList_existing_entries[(*obj).MatchList[idx].Name] = &(*obj).MatchList[idx]
+			}
+		}
 		for _, elt := range matchList_tf_entries {
-			var entry *logforwarding.MatchList
+			entry := matchList_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2697,8 +2715,14 @@ func (o *LogForwardingProfileResourceMatchListObject) CopyToPango(ctx context.Co
 		if diags.HasError() {
 			return diags
 		}
+		actions_existing_entries := make(map[string]*logforwarding.MatchListActions)
+		if *obj != nil {
+			for idx := range (*obj).Actions {
+				actions_existing_entries[(*obj).Actions[idx].Name] = &(*obj).Actions[idx]
+			}
+		}
 		for _, elt := range actions_tf_entries {
-			var entry *logforwarding.MatchListActions
+			entry := actions_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

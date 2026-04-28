@@ -6054,8 +6054,14 @@ func (o *VirtualRouterDataSourceEcmpAlgorithmWeightedRoundRobinObject) CopyToPan
 		if diags.HasError() {
 			return diags
 		}
+		interface_existing_entries := make(map[string]*virtual_router.EcmpAlgorithmWeightedRoundRobinInterface)
+		if *obj != nil {
+			for idx := range (*obj).Interface {
+				interface_existing_entries[(*obj).Interface[idx].Name] = &(*obj).Interface[idx]
+			}
+		}
 		for _, elt := range interface_tf_entries {
-			var entry *virtual_router.EcmpAlgorithmWeightedRoundRobinInterface
+			entry := interface_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6094,8 +6100,14 @@ func (o *VirtualRouterDataSourceMulticastObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		interfaceGroup_existing_entries := make(map[string]*virtual_router.MulticastInterfaceGroup)
+		if *obj != nil {
+			for idx := range (*obj).InterfaceGroup {
+				interfaceGroup_existing_entries[(*obj).InterfaceGroup[idx].Name] = &(*obj).InterfaceGroup[idx]
+			}
+		}
 		for _, elt := range interfaceGroup_tf_entries {
-			var entry *virtual_router.MulticastInterfaceGroup
+			entry := interfaceGroup_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6129,8 +6141,14 @@ func (o *VirtualRouterDataSourceMulticastObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		sptThreshold_existing_entries := make(map[string]*virtual_router.MulticastSptThreshold)
+		if *obj != nil {
+			for idx := range (*obj).SptThreshold {
+				sptThreshold_existing_entries[(*obj).SptThreshold[idx].Name] = &(*obj).SptThreshold[idx]
+			}
+		}
 		for _, elt := range sptThreshold_tf_entries {
-			var entry *virtual_router.MulticastSptThreshold
+			entry := sptThreshold_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6146,8 +6164,14 @@ func (o *VirtualRouterDataSourceMulticastObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		ssmAddressSpace_existing_entries := make(map[string]*virtual_router.MulticastSsmAddressSpace)
+		if *obj != nil {
+			for idx := range (*obj).SsmAddressSpace {
+				ssmAddressSpace_existing_entries[(*obj).SsmAddressSpace[idx].Name] = &(*obj).SsmAddressSpace[idx]
+			}
+		}
 		for _, elt := range ssmAddressSpace_tf_entries {
-			var entry *virtual_router.MulticastSsmAddressSpace
+			entry := ssmAddressSpace_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6258,8 +6282,14 @@ func (o *VirtualRouterDataSourceMulticastInterfaceGroupGroupPermissionObject) Co
 		if diags.HasError() {
 			return diags
 		}
+		anySourceMulticast_existing_entries := make(map[string]*virtual_router.MulticastInterfaceGroupGroupPermissionAnySourceMulticast)
+		if *obj != nil {
+			for idx := range (*obj).AnySourceMulticast {
+				anySourceMulticast_existing_entries[(*obj).AnySourceMulticast[idx].Name] = &(*obj).AnySourceMulticast[idx]
+			}
+		}
 		for _, elt := range anySourceMulticast_tf_entries {
-			var entry *virtual_router.MulticastInterfaceGroupGroupPermissionAnySourceMulticast
+			entry := anySourceMulticast_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6275,8 +6305,14 @@ func (o *VirtualRouterDataSourceMulticastInterfaceGroupGroupPermissionObject) Co
 		if diags.HasError() {
 			return diags
 		}
+		sourceSpecificMulticast_existing_entries := make(map[string]*virtual_router.MulticastInterfaceGroupGroupPermissionSourceSpecificMulticast)
+		if *obj != nil {
+			for idx := range (*obj).SourceSpecificMulticast {
+				sourceSpecificMulticast_existing_entries[(*obj).SourceSpecificMulticast[idx].Name] = &(*obj).SourceSpecificMulticast[idx]
+			}
+		}
 		for _, elt := range sourceSpecificMulticast_tf_entries {
-			var entry *virtual_router.MulticastInterfaceGroupGroupPermissionSourceSpecificMulticast
+			entry := sourceSpecificMulticast_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6368,8 +6404,14 @@ func (o *VirtualRouterDataSourceMulticastInterfaceGroupPimObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		allowedNeighbors_existing_entries := make(map[string]*virtual_router.MulticastInterfaceGroupPimAllowedNeighbors)
+		if *obj != nil {
+			for idx := range (*obj).AllowedNeighbors {
+				allowedNeighbors_existing_entries[(*obj).AllowedNeighbors[idx].Name] = &(*obj).AllowedNeighbors[idx]
+			}
+		}
 		for _, elt := range allowedNeighbors_tf_entries {
-			var entry *virtual_router.MulticastInterfaceGroupPimAllowedNeighbors
+			entry := allowedNeighbors_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6411,8 +6453,14 @@ func (o *VirtualRouterDataSourceMulticastRpObject) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		externalRp_existing_entries := make(map[string]*virtual_router.MulticastRpExternalRp)
+		if *obj != nil {
+			for idx := range (*obj).ExternalRp {
+				externalRp_existing_entries[(*obj).ExternalRp[idx].Name] = &(*obj).ExternalRp[idx]
+			}
+		}
 		for _, elt := range externalRp_tf_entries {
-			var entry *virtual_router.MulticastRpExternalRp
+			entry := externalRp_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6664,8 +6712,14 @@ func (o *VirtualRouterDataSourceProtocolObject) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		redistProfile_existing_entries := make(map[string]*virtual_router.ProtocolRedistProfile)
+		if *obj != nil {
+			for idx := range (*obj).RedistProfile {
+				redistProfile_existing_entries[(*obj).RedistProfile[idx].Name] = &(*obj).RedistProfile[idx]
+			}
+		}
 		for _, elt := range redistProfile_tf_entries {
-			var entry *virtual_router.ProtocolRedistProfile
+			entry := redistProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6681,8 +6735,14 @@ func (o *VirtualRouterDataSourceProtocolObject) CopyToPango(ctx context.Context,
 		if diags.HasError() {
 			return diags
 		}
+		redistProfileIpv6_existing_entries := make(map[string]*virtual_router.ProtocolRedistProfileIpv6)
+		if *obj != nil {
+			for idx := range (*obj).RedistProfileIpv6 {
+				redistProfileIpv6_existing_entries[(*obj).RedistProfileIpv6[idx].Name] = &(*obj).RedistProfileIpv6[idx]
+			}
+		}
 		for _, elt := range redistProfileIpv6_tf_entries {
-			var entry *virtual_router.ProtocolRedistProfileIpv6
+			entry := redistProfileIpv6_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6731,8 +6791,14 @@ func (o *VirtualRouterDataSourceProtocolBgpObject) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		authProfile_existing_entries := make(map[string]*virtual_router.ProtocolBgpAuthProfile)
+		if *obj != nil {
+			for idx := range (*obj).AuthProfile {
+				authProfile_existing_entries[(*obj).AuthProfile[idx].Name] = &(*obj).AuthProfile[idx]
+			}
+		}
 		for _, elt := range authProfile_tf_entries {
-			var entry *virtual_router.ProtocolBgpAuthProfile
+			entry := authProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6748,8 +6814,14 @@ func (o *VirtualRouterDataSourceProtocolBgpObject) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		dampeningProfile_existing_entries := make(map[string]*virtual_router.ProtocolBgpDampeningProfile)
+		if *obj != nil {
+			for idx := range (*obj).DampeningProfile {
+				dampeningProfile_existing_entries[(*obj).DampeningProfile[idx].Name] = &(*obj).DampeningProfile[idx]
+			}
+		}
 		for _, elt := range dampeningProfile_tf_entries {
-			var entry *virtual_router.ProtocolBgpDampeningProfile
+			entry := dampeningProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6787,8 +6859,14 @@ func (o *VirtualRouterDataSourceProtocolBgpObject) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		peerGroup_existing_entries := make(map[string]*virtual_router.ProtocolBgpPeerGroup)
+		if *obj != nil {
+			for idx := range (*obj).PeerGroup {
+				peerGroup_existing_entries[(*obj).PeerGroup[idx].Name] = &(*obj).PeerGroup[idx]
+			}
+		}
 		for _, elt := range peerGroup_tf_entries {
-			var entry *virtual_router.ProtocolBgpPeerGroup
+			entry := peerGroup_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6821,8 +6899,14 @@ func (o *VirtualRouterDataSourceProtocolBgpObject) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		redistRules_existing_entries := make(map[string]*virtual_router.ProtocolBgpRedistRules)
+		if *obj != nil {
+			for idx := range (*obj).RedistRules {
+				redistRules_existing_entries[(*obj).RedistRules[idx].Name] = &(*obj).RedistRules[idx]
+			}
+		}
 		for _, elt := range redistRules_tf_entries {
-			var entry *virtual_router.ProtocolBgpRedistRules
+			entry := redistRules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6960,8 +7044,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPeerGroupObject) CopyToPango(ctx cont
 		if diags.HasError() {
 			return diags
 		}
+		peer_existing_entries := make(map[string]*virtual_router.ProtocolBgpPeerGroupPeer)
+		if *obj != nil {
+			for idx := range (*obj).Peer {
+				peer_existing_entries[(*obj).Peer[idx].Name] = &(*obj).Peer[idx]
+			}
+		}
 		for _, elt := range peer_tf_entries {
-			var entry *virtual_router.ProtocolBgpPeerGroupPeer
+			entry := peer_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7453,8 +7543,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationObject) CopyToPango(
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddress)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddress
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7501,8 +7597,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressObject) CopyT
 		if diags.HasError() {
 			return diags
 		}
+		suppressFilters_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddressSuppressFilters)
+		if *obj != nil {
+			for idx := range (*obj).SuppressFilters {
+				suppressFilters_existing_entries[(*obj).SuppressFilters[idx].Name] = &(*obj).SuppressFilters[idx]
+			}
+		}
 		for _, elt := range suppressFilters_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddressSuppressFilters
+			entry := suppressFilters_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7518,8 +7620,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressObject) CopyT
 		if diags.HasError() {
 			return diags
 		}
+		advertiseFilters_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddressAdvertiseFilters)
+		if *obj != nil {
+			for idx := range (*obj).AdvertiseFilters {
+				advertiseFilters_existing_entries[(*obj).AdvertiseFilters[idx].Name] = &(*obj).AdvertiseFilters[idx]
+			}
+		}
 		for _, elt := range advertiseFilters_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddressAdvertiseFilters
+			entry := advertiseFilters_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -7883,8 +7991,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressSuppressFilte
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8071,8 +8185,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyAggregationAddressAdvertiseFilt
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8227,8 +8347,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementObject)
 		if diags.HasError() {
 			return diags
 		}
+		policy_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicy)
+		if *obj != nil {
+			for idx := range (*obj).Policy {
+				policy_existing_entries[(*obj).Policy[idx].Name] = &(*obj).Policy[idx]
+			}
+		}
 		for _, elt := range policy_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicy
+			entry := policy_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8268,8 +8394,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyO
 		if diags.HasError() {
 			return diags
 		}
+		nonExistFilters_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFilters)
+		if *obj != nil {
+			for idx := range (*obj).NonExistFilters {
+				nonExistFilters_existing_entries[(*obj).NonExistFilters[idx].Name] = &(*obj).NonExistFilters[idx]
+			}
+		}
 		for _, elt := range nonExistFilters_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFilters
+			entry := nonExistFilters_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8285,8 +8417,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyO
 		if diags.HasError() {
 			return diags
 		}
+		advertiseFilters_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFilters)
+		if *obj != nil {
+			for idx := range (*obj).AdvertiseFilters {
+				advertiseFilters_existing_entries[(*obj).AdvertiseFilters[idx].Name] = &(*obj).AdvertiseFilters[idx]
+			}
+		}
 		for _, elt := range advertiseFilters_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFilters
+			entry := advertiseFilters_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8348,8 +8486,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyN
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8534,8 +8678,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyConditionalAdvertisementPolicyA
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8688,8 +8838,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyExportObject) CopyToPango(ctx c
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyExportRules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyExportRules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -8779,8 +8935,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyExportRulesMatchObject) CopyToP
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyExportRulesMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyExportRulesMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -9342,8 +9504,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyImportObject) CopyToPango(ctx c
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyImportRules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyImportRules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -9433,8 +9601,14 @@ func (o *VirtualRouterDataSourceProtocolBgpPolicyImportRulesMatchObject) CopyToP
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyImportRulesMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyImportRulesMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -10163,8 +10337,14 @@ func (o *VirtualRouterDataSourceProtocolOspfObject) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		area_existing_entries := make(map[string]*virtual_router.ProtocolOspfArea)
+		if *obj != nil {
+			for idx := range (*obj).Area {
+				area_existing_entries[(*obj).Area[idx].Name] = &(*obj).Area[idx]
+			}
+		}
 		for _, elt := range area_tf_entries {
-			var entry *virtual_router.ProtocolOspfArea
+			entry := area_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -10180,8 +10360,14 @@ func (o *VirtualRouterDataSourceProtocolOspfObject) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		authProfile_existing_entries := make(map[string]*virtual_router.ProtocolOspfAuthProfile)
+		if *obj != nil {
+			for idx := range (*obj).AuthProfile {
+				authProfile_existing_entries[(*obj).AuthProfile[idx].Name] = &(*obj).AuthProfile[idx]
+			}
+		}
 		for _, elt := range authProfile_tf_entries {
-			var entry *virtual_router.ProtocolOspfAuthProfile
+			entry := authProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -10198,8 +10384,14 @@ func (o *VirtualRouterDataSourceProtocolOspfObject) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		exportRules_existing_entries := make(map[string]*virtual_router.ProtocolOspfExportRules)
+		if *obj != nil {
+			for idx := range (*obj).ExportRules {
+				exportRules_existing_entries[(*obj).ExportRules[idx].Name] = &(*obj).ExportRules[idx]
+			}
+		}
 		for _, elt := range exportRules_tf_entries {
-			var entry *virtual_router.ProtocolOspfExportRules
+			entry := exportRules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -10306,8 +10498,14 @@ func (o *VirtualRouterDataSourceProtocolOspfAreaObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		range_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaRange)
+		if *obj != nil {
+			for idx := range (*obj).Range {
+				range_existing_entries[(*obj).Range[idx].Name] = &(*obj).Range[idx]
+			}
+		}
 		for _, elt := range range_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaRange
+			entry := range_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -10323,8 +10521,14 @@ func (o *VirtualRouterDataSourceProtocolOspfAreaObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		interface_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaInterface)
+		if *obj != nil {
+			for idx := range (*obj).Interface {
+				interface_existing_entries[(*obj).Interface[idx].Name] = &(*obj).Interface[idx]
+			}
+		}
 		for _, elt := range interface_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaInterface
+			entry := interface_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -10340,8 +10544,14 @@ func (o *VirtualRouterDataSourceProtocolOspfAreaObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		virtualLink_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaVirtualLink)
+		if *obj != nil {
+			for idx := range (*obj).VirtualLink {
+				virtualLink_existing_entries[(*obj).VirtualLink[idx].Name] = &(*obj).VirtualLink[idx]
+			}
+		}
 		for _, elt := range virtualLink_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaVirtualLink
+			entry := virtualLink_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -10555,8 +10765,14 @@ func (o *VirtualRouterDataSourceProtocolOspfAreaTypeNssaObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		nssaExtRange_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaTypeNssaNssaExtRange)
+		if *obj != nil {
+			for idx := range (*obj).NssaExtRange {
+				nssaExtRange_existing_entries[(*obj).NssaExtRange[idx].Name] = &(*obj).NssaExtRange[idx]
+			}
+		}
 		for _, elt := range nssaExtRange_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaTypeNssaNssaExtRange
+			entry := nssaExtRange_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -10806,8 +11022,14 @@ func (o *VirtualRouterDataSourceProtocolOspfAreaInterfaceObject) CopyToPango(ctx
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaInterfaceNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaInterfaceNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -11044,8 +11266,14 @@ func (o *VirtualRouterDataSourceProtocolOspfAuthProfileObject) CopyToPango(ctx c
 		if diags.HasError() {
 			return diags
 		}
+		md5_existing_entries := make(map[string]*virtual_router.ProtocolOspfAuthProfileMd5)
+		if *obj != nil {
+			for idx := range (*obj).Md5 {
+				md5_existing_entries[(*obj).Md5[idx].Name] = &(*obj).Md5[idx]
+			}
+		}
 		for _, elt := range md5_tf_entries {
-			var entry *virtual_router.ProtocolOspfAuthProfileMd5
+			entry := md5_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -11161,8 +11389,14 @@ func (o *VirtualRouterDataSourceProtocolOspfv3Object) CopyToPango(ctx context.Co
 		if diags.HasError() {
 			return diags
 		}
+		area_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3Area)
+		if *obj != nil {
+			for idx := range (*obj).Area {
+				area_existing_entries[(*obj).Area[idx].Name] = &(*obj).Area[idx]
+			}
+		}
 		for _, elt := range area_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3Area
+			entry := area_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -11178,8 +11412,14 @@ func (o *VirtualRouterDataSourceProtocolOspfv3Object) CopyToPango(ctx context.Co
 		if diags.HasError() {
 			return diags
 		}
+		authProfile_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AuthProfile)
+		if *obj != nil {
+			for idx := range (*obj).AuthProfile {
+				authProfile_existing_entries[(*obj).AuthProfile[idx].Name] = &(*obj).AuthProfile[idx]
+			}
+		}
 		for _, elt := range authProfile_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AuthProfile
+			entry := authProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -11197,8 +11437,14 @@ func (o *VirtualRouterDataSourceProtocolOspfv3Object) CopyToPango(ctx context.Co
 		if diags.HasError() {
 			return diags
 		}
+		exportRules_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3ExportRules)
+		if *obj != nil {
+			for idx := range (*obj).ExportRules {
+				exportRules_existing_entries[(*obj).ExportRules[idx].Name] = &(*obj).ExportRules[idx]
+			}
+		}
 		for _, elt := range exportRules_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3ExportRules
+			entry := exportRules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -11305,8 +11551,14 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AreaObject) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		range_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaRange)
+		if *obj != nil {
+			for idx := range (*obj).Range {
+				range_existing_entries[(*obj).Range[idx].Name] = &(*obj).Range[idx]
+			}
+		}
 		for _, elt := range range_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaRange
+			entry := range_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -11322,8 +11574,14 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AreaObject) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		interface_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaInterface)
+		if *obj != nil {
+			for idx := range (*obj).Interface {
+				interface_existing_entries[(*obj).Interface[idx].Name] = &(*obj).Interface[idx]
+			}
+		}
 		for _, elt := range interface_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaInterface
+			entry := interface_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -11339,8 +11597,14 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AreaObject) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		virtualLink_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaVirtualLink)
+		if *obj != nil {
+			for idx := range (*obj).VirtualLink {
+				virtualLink_existing_entries[(*obj).VirtualLink[idx].Name] = &(*obj).VirtualLink[idx]
+			}
+		}
 		for _, elt := range virtualLink_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaVirtualLink
+			entry := virtualLink_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -11555,8 +11819,14 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AreaTypeNssaObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		nssaExtRange_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaTypeNssaNssaExtRange)
+		if *obj != nil {
+			for idx := range (*obj).NssaExtRange {
+				nssaExtRange_existing_entries[(*obj).NssaExtRange[idx].Name] = &(*obj).NssaExtRange[idx]
+			}
+		}
 		for _, elt := range nssaExtRange_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaTypeNssaNssaExtRange
+			entry := nssaExtRange_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -11807,8 +12077,14 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AreaInterfaceObject) CopyToPango(c
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaInterfaceNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaInterfaceNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -13134,8 +13410,14 @@ func (o *VirtualRouterDataSourceProtocolRipObject) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		authProfile_existing_entries := make(map[string]*virtual_router.ProtocolRipAuthProfile)
+		if *obj != nil {
+			for idx := range (*obj).AuthProfile {
+				authProfile_existing_entries[(*obj).AuthProfile[idx].Name] = &(*obj).AuthProfile[idx]
+			}
+		}
 		for _, elt := range authProfile_tf_entries {
-			var entry *virtual_router.ProtocolRipAuthProfile
+			entry := authProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -13152,8 +13434,14 @@ func (o *VirtualRouterDataSourceProtocolRipObject) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		exportRules_existing_entries := make(map[string]*virtual_router.ProtocolRipExportRules)
+		if *obj != nil {
+			for idx := range (*obj).ExportRules {
+				exportRules_existing_entries[(*obj).ExportRules[idx].Name] = &(*obj).ExportRules[idx]
+			}
+		}
 		for _, elt := range exportRules_tf_entries {
-			var entry *virtual_router.ProtocolRipExportRules
+			entry := exportRules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -13186,8 +13474,14 @@ func (o *VirtualRouterDataSourceProtocolRipObject) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		interfaces_existing_entries := make(map[string]*virtual_router.ProtocolRipInterface)
+		if *obj != nil {
+			for idx := range (*obj).Interface {
+				interfaces_existing_entries[(*obj).Interface[idx].Name] = &(*obj).Interface[idx]
+			}
+		}
 		for _, elt := range interfaces_tf_entries {
-			var entry *virtual_router.ProtocolRipInterface
+			entry := interfaces_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -13253,8 +13547,14 @@ func (o *VirtualRouterDataSourceProtocolRipAuthProfileObject) CopyToPango(ctx co
 		if diags.HasError() {
 			return diags
 		}
+		md5_existing_entries := make(map[string]*virtual_router.ProtocolRipAuthProfileMd5)
+		if *obj != nil {
+			for idx := range (*obj).Md5 {
+				md5_existing_entries[(*obj).Md5[idx].Name] = &(*obj).Md5[idx]
+			}
+		}
 		for _, elt := range md5_tf_entries {
-			var entry *virtual_router.ProtocolRipAuthProfileMd5
+			entry := md5_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -52830,8 +53130,14 @@ func (o *VirtualRouterResourceEcmpAlgorithmWeightedRoundRobinObject) CopyToPango
 		if diags.HasError() {
 			return diags
 		}
+		interface_existing_entries := make(map[string]*virtual_router.EcmpAlgorithmWeightedRoundRobinInterface)
+		if *obj != nil {
+			for idx := range (*obj).Interface {
+				interface_existing_entries[(*obj).Interface[idx].Name] = &(*obj).Interface[idx]
+			}
+		}
 		for _, elt := range interface_tf_entries {
-			var entry *virtual_router.EcmpAlgorithmWeightedRoundRobinInterface
+			entry := interface_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -52870,8 +53176,14 @@ func (o *VirtualRouterResourceMulticastObject) CopyToPango(ctx context.Context, 
 		if diags.HasError() {
 			return diags
 		}
+		interfaceGroup_existing_entries := make(map[string]*virtual_router.MulticastInterfaceGroup)
+		if *obj != nil {
+			for idx := range (*obj).InterfaceGroup {
+				interfaceGroup_existing_entries[(*obj).InterfaceGroup[idx].Name] = &(*obj).InterfaceGroup[idx]
+			}
+		}
 		for _, elt := range interfaceGroup_tf_entries {
-			var entry *virtual_router.MulticastInterfaceGroup
+			entry := interfaceGroup_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -52905,8 +53217,14 @@ func (o *VirtualRouterResourceMulticastObject) CopyToPango(ctx context.Context, 
 		if diags.HasError() {
 			return diags
 		}
+		sptThreshold_existing_entries := make(map[string]*virtual_router.MulticastSptThreshold)
+		if *obj != nil {
+			for idx := range (*obj).SptThreshold {
+				sptThreshold_existing_entries[(*obj).SptThreshold[idx].Name] = &(*obj).SptThreshold[idx]
+			}
+		}
 		for _, elt := range sptThreshold_tf_entries {
-			var entry *virtual_router.MulticastSptThreshold
+			entry := sptThreshold_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -52922,8 +53240,14 @@ func (o *VirtualRouterResourceMulticastObject) CopyToPango(ctx context.Context, 
 		if diags.HasError() {
 			return diags
 		}
+		ssmAddressSpace_existing_entries := make(map[string]*virtual_router.MulticastSsmAddressSpace)
+		if *obj != nil {
+			for idx := range (*obj).SsmAddressSpace {
+				ssmAddressSpace_existing_entries[(*obj).SsmAddressSpace[idx].Name] = &(*obj).SsmAddressSpace[idx]
+			}
+		}
 		for _, elt := range ssmAddressSpace_tf_entries {
-			var entry *virtual_router.MulticastSsmAddressSpace
+			entry := ssmAddressSpace_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53034,8 +53358,14 @@ func (o *VirtualRouterResourceMulticastInterfaceGroupGroupPermissionObject) Copy
 		if diags.HasError() {
 			return diags
 		}
+		anySourceMulticast_existing_entries := make(map[string]*virtual_router.MulticastInterfaceGroupGroupPermissionAnySourceMulticast)
+		if *obj != nil {
+			for idx := range (*obj).AnySourceMulticast {
+				anySourceMulticast_existing_entries[(*obj).AnySourceMulticast[idx].Name] = &(*obj).AnySourceMulticast[idx]
+			}
+		}
 		for _, elt := range anySourceMulticast_tf_entries {
-			var entry *virtual_router.MulticastInterfaceGroupGroupPermissionAnySourceMulticast
+			entry := anySourceMulticast_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53051,8 +53381,14 @@ func (o *VirtualRouterResourceMulticastInterfaceGroupGroupPermissionObject) Copy
 		if diags.HasError() {
 			return diags
 		}
+		sourceSpecificMulticast_existing_entries := make(map[string]*virtual_router.MulticastInterfaceGroupGroupPermissionSourceSpecificMulticast)
+		if *obj != nil {
+			for idx := range (*obj).SourceSpecificMulticast {
+				sourceSpecificMulticast_existing_entries[(*obj).SourceSpecificMulticast[idx].Name] = &(*obj).SourceSpecificMulticast[idx]
+			}
+		}
 		for _, elt := range sourceSpecificMulticast_tf_entries {
-			var entry *virtual_router.MulticastInterfaceGroupGroupPermissionSourceSpecificMulticast
+			entry := sourceSpecificMulticast_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53144,8 +53480,14 @@ func (o *VirtualRouterResourceMulticastInterfaceGroupPimObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		allowedNeighbors_existing_entries := make(map[string]*virtual_router.MulticastInterfaceGroupPimAllowedNeighbors)
+		if *obj != nil {
+			for idx := range (*obj).AllowedNeighbors {
+				allowedNeighbors_existing_entries[(*obj).AllowedNeighbors[idx].Name] = &(*obj).AllowedNeighbors[idx]
+			}
+		}
 		for _, elt := range allowedNeighbors_tf_entries {
-			var entry *virtual_router.MulticastInterfaceGroupPimAllowedNeighbors
+			entry := allowedNeighbors_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53187,8 +53529,14 @@ func (o *VirtualRouterResourceMulticastRpObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		externalRp_existing_entries := make(map[string]*virtual_router.MulticastRpExternalRp)
+		if *obj != nil {
+			for idx := range (*obj).ExternalRp {
+				externalRp_existing_entries[(*obj).ExternalRp[idx].Name] = &(*obj).ExternalRp[idx]
+			}
+		}
 		for _, elt := range externalRp_tf_entries {
-			var entry *virtual_router.MulticastRpExternalRp
+			entry := externalRp_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53440,8 +53788,14 @@ func (o *VirtualRouterResourceProtocolObject) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		redistProfile_existing_entries := make(map[string]*virtual_router.ProtocolRedistProfile)
+		if *obj != nil {
+			for idx := range (*obj).RedistProfile {
+				redistProfile_existing_entries[(*obj).RedistProfile[idx].Name] = &(*obj).RedistProfile[idx]
+			}
+		}
 		for _, elt := range redistProfile_tf_entries {
-			var entry *virtual_router.ProtocolRedistProfile
+			entry := redistProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53457,8 +53811,14 @@ func (o *VirtualRouterResourceProtocolObject) CopyToPango(ctx context.Context, c
 		if diags.HasError() {
 			return diags
 		}
+		redistProfileIpv6_existing_entries := make(map[string]*virtual_router.ProtocolRedistProfileIpv6)
+		if *obj != nil {
+			for idx := range (*obj).RedistProfileIpv6 {
+				redistProfileIpv6_existing_entries[(*obj).RedistProfileIpv6[idx].Name] = &(*obj).RedistProfileIpv6[idx]
+			}
+		}
 		for _, elt := range redistProfileIpv6_tf_entries {
-			var entry *virtual_router.ProtocolRedistProfileIpv6
+			entry := redistProfileIpv6_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53507,8 +53867,14 @@ func (o *VirtualRouterResourceProtocolBgpObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		authProfile_existing_entries := make(map[string]*virtual_router.ProtocolBgpAuthProfile)
+		if *obj != nil {
+			for idx := range (*obj).AuthProfile {
+				authProfile_existing_entries[(*obj).AuthProfile[idx].Name] = &(*obj).AuthProfile[idx]
+			}
+		}
 		for _, elt := range authProfile_tf_entries {
-			var entry *virtual_router.ProtocolBgpAuthProfile
+			entry := authProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53524,8 +53890,14 @@ func (o *VirtualRouterResourceProtocolBgpObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		dampeningProfile_existing_entries := make(map[string]*virtual_router.ProtocolBgpDampeningProfile)
+		if *obj != nil {
+			for idx := range (*obj).DampeningProfile {
+				dampeningProfile_existing_entries[(*obj).DampeningProfile[idx].Name] = &(*obj).DampeningProfile[idx]
+			}
+		}
 		for _, elt := range dampeningProfile_tf_entries {
-			var entry *virtual_router.ProtocolBgpDampeningProfile
+			entry := dampeningProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53563,8 +53935,14 @@ func (o *VirtualRouterResourceProtocolBgpObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		peerGroup_existing_entries := make(map[string]*virtual_router.ProtocolBgpPeerGroup)
+		if *obj != nil {
+			for idx := range (*obj).PeerGroup {
+				peerGroup_existing_entries[(*obj).PeerGroup[idx].Name] = &(*obj).PeerGroup[idx]
+			}
+		}
 		for _, elt := range peerGroup_tf_entries {
-			var entry *virtual_router.ProtocolBgpPeerGroup
+			entry := peerGroup_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53597,8 +53975,14 @@ func (o *VirtualRouterResourceProtocolBgpObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		redistRules_existing_entries := make(map[string]*virtual_router.ProtocolBgpRedistRules)
+		if *obj != nil {
+			for idx := range (*obj).RedistRules {
+				redistRules_existing_entries[(*obj).RedistRules[idx].Name] = &(*obj).RedistRules[idx]
+			}
+		}
 		for _, elt := range redistRules_tf_entries {
-			var entry *virtual_router.ProtocolBgpRedistRules
+			entry := redistRules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -53736,8 +54120,14 @@ func (o *VirtualRouterResourceProtocolBgpPeerGroupObject) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		peer_existing_entries := make(map[string]*virtual_router.ProtocolBgpPeerGroupPeer)
+		if *obj != nil {
+			for idx := range (*obj).Peer {
+				peer_existing_entries[(*obj).Peer[idx].Name] = &(*obj).Peer[idx]
+			}
+		}
 		for _, elt := range peer_tf_entries {
-			var entry *virtual_router.ProtocolBgpPeerGroupPeer
+			entry := peer_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -54229,8 +54619,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyAggregationObject) CopyToPango(ct
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddress)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddress
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -54277,8 +54673,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressObject) CopyToP
 		if diags.HasError() {
 			return diags
 		}
+		suppressFilters_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddressSuppressFilters)
+		if *obj != nil {
+			for idx := range (*obj).SuppressFilters {
+				suppressFilters_existing_entries[(*obj).SuppressFilters[idx].Name] = &(*obj).SuppressFilters[idx]
+			}
+		}
 		for _, elt := range suppressFilters_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddressSuppressFilters
+			entry := suppressFilters_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -54294,8 +54696,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressObject) CopyToP
 		if diags.HasError() {
 			return diags
 		}
+		advertiseFilters_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddressAdvertiseFilters)
+		if *obj != nil {
+			for idx := range (*obj).AdvertiseFilters {
+				advertiseFilters_existing_entries[(*obj).AdvertiseFilters[idx].Name] = &(*obj).AdvertiseFilters[idx]
+			}
+		}
 		for _, elt := range advertiseFilters_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddressAdvertiseFilters
+			entry := advertiseFilters_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -54659,8 +55067,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressSuppressFilters
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddressSuppressFiltersMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -54847,8 +55261,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyAggregationAddressAdvertiseFilter
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyAggregationAddressAdvertiseFiltersMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -55003,8 +55423,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementObject) C
 		if diags.HasError() {
 			return diags
 		}
+		policy_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicy)
+		if *obj != nil {
+			for idx := range (*obj).Policy {
+				policy_existing_entries[(*obj).Policy[idx].Name] = &(*obj).Policy[idx]
+			}
+		}
 		for _, elt := range policy_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicy
+			entry := policy_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -55044,8 +55470,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyObj
 		if diags.HasError() {
 			return diags
 		}
+		nonExistFilters_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFilters)
+		if *obj != nil {
+			for idx := range (*obj).NonExistFilters {
+				nonExistFilters_existing_entries[(*obj).NonExistFilters[idx].Name] = &(*obj).NonExistFilters[idx]
+			}
+		}
 		for _, elt := range nonExistFilters_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFilters
+			entry := nonExistFilters_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -55061,8 +55493,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyObj
 		if diags.HasError() {
 			return diags
 		}
+		advertiseFilters_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFilters)
+		if *obj != nil {
+			for idx := range (*obj).AdvertiseFilters {
+				advertiseFilters_existing_entries[(*obj).AdvertiseFilters[idx].Name] = &(*obj).AdvertiseFilters[idx]
+			}
+		}
 		for _, elt := range advertiseFilters_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFilters
+			entry := advertiseFilters_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -55124,8 +55562,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyNon
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyNonExistFiltersMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -55310,8 +55754,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyConditionalAdvertisementPolicyAdv
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyConditionalAdvertisementPolicyAdvertiseFiltersMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -55464,8 +55914,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyExportObject) CopyToPango(ctx con
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyExportRules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyExportRules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -55555,8 +56011,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyExportRulesMatchObject) CopyToPan
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyExportRulesMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyExportRulesMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -56118,8 +56580,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyImportObject) CopyToPango(ctx con
 		if diags.HasError() {
 			return diags
 		}
+		rules_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyImportRules)
+		if *obj != nil {
+			for idx := range (*obj).Rules {
+				rules_existing_entries[(*obj).Rules[idx].Name] = &(*obj).Rules[idx]
+			}
+		}
 		for _, elt := range rules_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyImportRules
+			entry := rules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -56209,8 +56677,14 @@ func (o *VirtualRouterResourceProtocolBgpPolicyImportRulesMatchObject) CopyToPan
 		if diags.HasError() {
 			return diags
 		}
+		addressPrefix_existing_entries := make(map[string]*virtual_router.ProtocolBgpPolicyImportRulesMatchAddressPrefix)
+		if *obj != nil {
+			for idx := range (*obj).AddressPrefix {
+				addressPrefix_existing_entries[(*obj).AddressPrefix[idx].Name] = &(*obj).AddressPrefix[idx]
+			}
+		}
 		for _, elt := range addressPrefix_tf_entries {
-			var entry *virtual_router.ProtocolBgpPolicyImportRulesMatchAddressPrefix
+			entry := addressPrefix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -56939,8 +57413,14 @@ func (o *VirtualRouterResourceProtocolOspfObject) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		area_existing_entries := make(map[string]*virtual_router.ProtocolOspfArea)
+		if *obj != nil {
+			for idx := range (*obj).Area {
+				area_existing_entries[(*obj).Area[idx].Name] = &(*obj).Area[idx]
+			}
+		}
 		for _, elt := range area_tf_entries {
-			var entry *virtual_router.ProtocolOspfArea
+			entry := area_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -56956,8 +57436,14 @@ func (o *VirtualRouterResourceProtocolOspfObject) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		authProfile_existing_entries := make(map[string]*virtual_router.ProtocolOspfAuthProfile)
+		if *obj != nil {
+			for idx := range (*obj).AuthProfile {
+				authProfile_existing_entries[(*obj).AuthProfile[idx].Name] = &(*obj).AuthProfile[idx]
+			}
+		}
 		for _, elt := range authProfile_tf_entries {
-			var entry *virtual_router.ProtocolOspfAuthProfile
+			entry := authProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -56974,8 +57460,14 @@ func (o *VirtualRouterResourceProtocolOspfObject) CopyToPango(ctx context.Contex
 		if diags.HasError() {
 			return diags
 		}
+		exportRules_existing_entries := make(map[string]*virtual_router.ProtocolOspfExportRules)
+		if *obj != nil {
+			for idx := range (*obj).ExportRules {
+				exportRules_existing_entries[(*obj).ExportRules[idx].Name] = &(*obj).ExportRules[idx]
+			}
+		}
 		for _, elt := range exportRules_tf_entries {
-			var entry *virtual_router.ProtocolOspfExportRules
+			entry := exportRules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -57082,8 +57574,14 @@ func (o *VirtualRouterResourceProtocolOspfAreaObject) CopyToPango(ctx context.Co
 		if diags.HasError() {
 			return diags
 		}
+		range_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaRange)
+		if *obj != nil {
+			for idx := range (*obj).Range {
+				range_existing_entries[(*obj).Range[idx].Name] = &(*obj).Range[idx]
+			}
+		}
 		for _, elt := range range_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaRange
+			entry := range_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -57099,8 +57597,14 @@ func (o *VirtualRouterResourceProtocolOspfAreaObject) CopyToPango(ctx context.Co
 		if diags.HasError() {
 			return diags
 		}
+		interface_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaInterface)
+		if *obj != nil {
+			for idx := range (*obj).Interface {
+				interface_existing_entries[(*obj).Interface[idx].Name] = &(*obj).Interface[idx]
+			}
+		}
 		for _, elt := range interface_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaInterface
+			entry := interface_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -57116,8 +57620,14 @@ func (o *VirtualRouterResourceProtocolOspfAreaObject) CopyToPango(ctx context.Co
 		if diags.HasError() {
 			return diags
 		}
+		virtualLink_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaVirtualLink)
+		if *obj != nil {
+			for idx := range (*obj).VirtualLink {
+				virtualLink_existing_entries[(*obj).VirtualLink[idx].Name] = &(*obj).VirtualLink[idx]
+			}
+		}
 		for _, elt := range virtualLink_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaVirtualLink
+			entry := virtualLink_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -57331,8 +57841,14 @@ func (o *VirtualRouterResourceProtocolOspfAreaTypeNssaObject) CopyToPango(ctx co
 		if diags.HasError() {
 			return diags
 		}
+		nssaExtRange_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaTypeNssaNssaExtRange)
+		if *obj != nil {
+			for idx := range (*obj).NssaExtRange {
+				nssaExtRange_existing_entries[(*obj).NssaExtRange[idx].Name] = &(*obj).NssaExtRange[idx]
+			}
+		}
 		for _, elt := range nssaExtRange_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaTypeNssaNssaExtRange
+			entry := nssaExtRange_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -57582,8 +58098,14 @@ func (o *VirtualRouterResourceProtocolOspfAreaInterfaceObject) CopyToPango(ctx c
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*virtual_router.ProtocolOspfAreaInterfaceNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *virtual_router.ProtocolOspfAreaInterfaceNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -57820,8 +58342,14 @@ func (o *VirtualRouterResourceProtocolOspfAuthProfileObject) CopyToPango(ctx con
 		if diags.HasError() {
 			return diags
 		}
+		md5_existing_entries := make(map[string]*virtual_router.ProtocolOspfAuthProfileMd5)
+		if *obj != nil {
+			for idx := range (*obj).Md5 {
+				md5_existing_entries[(*obj).Md5[idx].Name] = &(*obj).Md5[idx]
+			}
+		}
 		for _, elt := range md5_tf_entries {
-			var entry *virtual_router.ProtocolOspfAuthProfileMd5
+			entry := md5_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -57937,8 +58465,14 @@ func (o *VirtualRouterResourceProtocolOspfv3Object) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		area_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3Area)
+		if *obj != nil {
+			for idx := range (*obj).Area {
+				area_existing_entries[(*obj).Area[idx].Name] = &(*obj).Area[idx]
+			}
+		}
 		for _, elt := range area_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3Area
+			entry := area_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -57954,8 +58488,14 @@ func (o *VirtualRouterResourceProtocolOspfv3Object) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		authProfile_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AuthProfile)
+		if *obj != nil {
+			for idx := range (*obj).AuthProfile {
+				authProfile_existing_entries[(*obj).AuthProfile[idx].Name] = &(*obj).AuthProfile[idx]
+			}
+		}
 		for _, elt := range authProfile_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AuthProfile
+			entry := authProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -57973,8 +58513,14 @@ func (o *VirtualRouterResourceProtocolOspfv3Object) CopyToPango(ctx context.Cont
 		if diags.HasError() {
 			return diags
 		}
+		exportRules_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3ExportRules)
+		if *obj != nil {
+			for idx := range (*obj).ExportRules {
+				exportRules_existing_entries[(*obj).ExportRules[idx].Name] = &(*obj).ExportRules[idx]
+			}
+		}
 		for _, elt := range exportRules_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3ExportRules
+			entry := exportRules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -58081,8 +58627,14 @@ func (o *VirtualRouterResourceProtocolOspfv3AreaObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		range_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaRange)
+		if *obj != nil {
+			for idx := range (*obj).Range {
+				range_existing_entries[(*obj).Range[idx].Name] = &(*obj).Range[idx]
+			}
+		}
 		for _, elt := range range_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaRange
+			entry := range_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -58098,8 +58650,14 @@ func (o *VirtualRouterResourceProtocolOspfv3AreaObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		interface_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaInterface)
+		if *obj != nil {
+			for idx := range (*obj).Interface {
+				interface_existing_entries[(*obj).Interface[idx].Name] = &(*obj).Interface[idx]
+			}
+		}
 		for _, elt := range interface_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaInterface
+			entry := interface_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -58115,8 +58673,14 @@ func (o *VirtualRouterResourceProtocolOspfv3AreaObject) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		virtualLink_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaVirtualLink)
+		if *obj != nil {
+			for idx := range (*obj).VirtualLink {
+				virtualLink_existing_entries[(*obj).VirtualLink[idx].Name] = &(*obj).VirtualLink[idx]
+			}
+		}
 		for _, elt := range virtualLink_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaVirtualLink
+			entry := virtualLink_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -58331,8 +58895,14 @@ func (o *VirtualRouterResourceProtocolOspfv3AreaTypeNssaObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		nssaExtRange_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaTypeNssaNssaExtRange)
+		if *obj != nil {
+			for idx := range (*obj).NssaExtRange {
+				nssaExtRange_existing_entries[(*obj).NssaExtRange[idx].Name] = &(*obj).NssaExtRange[idx]
+			}
+		}
 		for _, elt := range nssaExtRange_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaTypeNssaNssaExtRange
+			entry := nssaExtRange_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -58583,8 +59153,14 @@ func (o *VirtualRouterResourceProtocolOspfv3AreaInterfaceObject) CopyToPango(ctx
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*virtual_router.ProtocolOspfv3AreaInterfaceNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *virtual_router.ProtocolOspfv3AreaInterfaceNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -59910,8 +60486,14 @@ func (o *VirtualRouterResourceProtocolRipObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		authProfile_existing_entries := make(map[string]*virtual_router.ProtocolRipAuthProfile)
+		if *obj != nil {
+			for idx := range (*obj).AuthProfile {
+				authProfile_existing_entries[(*obj).AuthProfile[idx].Name] = &(*obj).AuthProfile[idx]
+			}
+		}
 		for _, elt := range authProfile_tf_entries {
-			var entry *virtual_router.ProtocolRipAuthProfile
+			entry := authProfile_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -59928,8 +60510,14 @@ func (o *VirtualRouterResourceProtocolRipObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		exportRules_existing_entries := make(map[string]*virtual_router.ProtocolRipExportRules)
+		if *obj != nil {
+			for idx := range (*obj).ExportRules {
+				exportRules_existing_entries[(*obj).ExportRules[idx].Name] = &(*obj).ExportRules[idx]
+			}
+		}
 		for _, elt := range exportRules_tf_entries {
-			var entry *virtual_router.ProtocolRipExportRules
+			entry := exportRules_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -59962,8 +60550,14 @@ func (o *VirtualRouterResourceProtocolRipObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		interfaces_existing_entries := make(map[string]*virtual_router.ProtocolRipInterface)
+		if *obj != nil {
+			for idx := range (*obj).Interface {
+				interfaces_existing_entries[(*obj).Interface[idx].Name] = &(*obj).Interface[idx]
+			}
+		}
 		for _, elt := range interfaces_tf_entries {
-			var entry *virtual_router.ProtocolRipInterface
+			entry := interfaces_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -60029,8 +60623,14 @@ func (o *VirtualRouterResourceProtocolRipAuthProfileObject) CopyToPango(ctx cont
 		if diags.HasError() {
 			return diags
 		}
+		md5_existing_entries := make(map[string]*virtual_router.ProtocolRipAuthProfileMd5)
+		if *obj != nil {
+			for idx := range (*obj).Md5 {
+				md5_existing_entries[(*obj).Md5[idx].Name] = &(*obj).Md5[idx]
+			}
+		}
 		for _, elt := range md5_tf_entries {
-			var entry *virtual_router.ProtocolRipAuthProfileMd5
+			entry := md5_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

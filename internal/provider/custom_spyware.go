@@ -1031,8 +1031,14 @@ func (o *CustomSpywareDataSourceSignatureObject) CopyToPango(ctx context.Context
 		if diags.HasError() {
 			return diags
 		}
+		standard_existing_entries := make(map[string]*spyware.SignatureStandard)
+		if *obj != nil {
+			for idx := range (*obj).Standard {
+				standard_existing_entries[(*obj).Standard[idx].Name] = &(*obj).Standard[idx]
+			}
+		}
 		for _, elt := range standard_tf_entries {
-			var entry *spyware.SignatureStandard
+			entry := standard_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1059,8 +1065,14 @@ func (o *CustomSpywareDataSourceSignatureCombinationObject) CopyToPango(ctx cont
 		if diags.HasError() {
 			return diags
 		}
+		andCondition_existing_entries := make(map[string]*spyware.SignatureCombinationAndCondition)
+		if *obj != nil {
+			for idx := range (*obj).AndCondition {
+				andCondition_existing_entries[(*obj).AndCondition[idx].Name] = &(*obj).AndCondition[idx]
+			}
+		}
 		for _, elt := range andCondition_tf_entries {
-			var entry *spyware.SignatureCombinationAndCondition
+			entry := andCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1106,8 +1118,14 @@ func (o *CustomSpywareDataSourceSignatureCombinationAndConditionObject) CopyToPa
 		if diags.HasError() {
 			return diags
 		}
+		orCondition_existing_entries := make(map[string]*spyware.SignatureCombinationAndConditionOrCondition)
+		if *obj != nil {
+			for idx := range (*obj).OrCondition {
+				orCondition_existing_entries[(*obj).OrCondition[idx].Name] = &(*obj).OrCondition[idx]
+			}
+		}
 		for _, elt := range orCondition_tf_entries {
-			var entry *spyware.SignatureCombinationAndConditionOrCondition
+			entry := orCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1164,8 +1182,14 @@ func (o *CustomSpywareDataSourceSignatureStandardObject) CopyToPango(ctx context
 		if diags.HasError() {
 			return diags
 		}
+		andCondition_existing_entries := make(map[string]*spyware.SignatureStandardAndCondition)
+		if *obj != nil {
+			for idx := range (*obj).AndCondition {
+				andCondition_existing_entries[(*obj).AndCondition[idx].Name] = &(*obj).AndCondition[idx]
+			}
+		}
 		for _, elt := range andCondition_tf_entries {
-			var entry *spyware.SignatureStandardAndCondition
+			entry := andCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1195,8 +1219,14 @@ func (o *CustomSpywareDataSourceSignatureStandardAndConditionObject) CopyToPango
 		if diags.HasError() {
 			return diags
 		}
+		orCondition_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrCondition)
+		if *obj != nil {
+			for idx := range (*obj).OrCondition {
+				orCondition_existing_entries[(*obj).OrCondition[idx].Name] = &(*obj).OrCondition[idx]
+			}
+		}
 		for _, elt := range orCondition_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrCondition
+			entry := orCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1334,8 +1364,14 @@ func (o *CustomSpywareDataSourceSignatureStandardAndConditionOrConditionOperator
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrConditionOperatorLessThanQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrConditionOperatorLessThanQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1378,8 +1414,14 @@ func (o *CustomSpywareDataSourceSignatureStandardAndConditionOrConditionOperator
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrConditionOperatorEqualToQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrConditionOperatorEqualToQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1422,8 +1464,14 @@ func (o *CustomSpywareDataSourceSignatureStandardAndConditionOrConditionOperator
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrConditionOperatorGreaterThanQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrConditionOperatorGreaterThanQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1466,8 +1514,14 @@ func (o *CustomSpywareDataSourceSignatureStandardAndConditionOrConditionOperator
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrConditionOperatorPatternMatchQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrConditionOperatorPatternMatchQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6359,8 +6413,14 @@ func (o *CustomSpywareResourceSignatureObject) CopyToPango(ctx context.Context, 
 		if diags.HasError() {
 			return diags
 		}
+		standard_existing_entries := make(map[string]*spyware.SignatureStandard)
+		if *obj != nil {
+			for idx := range (*obj).Standard {
+				standard_existing_entries[(*obj).Standard[idx].Name] = &(*obj).Standard[idx]
+			}
+		}
 		for _, elt := range standard_tf_entries {
-			var entry *spyware.SignatureStandard
+			entry := standard_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6387,8 +6447,14 @@ func (o *CustomSpywareResourceSignatureCombinationObject) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		andCondition_existing_entries := make(map[string]*spyware.SignatureCombinationAndCondition)
+		if *obj != nil {
+			for idx := range (*obj).AndCondition {
+				andCondition_existing_entries[(*obj).AndCondition[idx].Name] = &(*obj).AndCondition[idx]
+			}
+		}
 		for _, elt := range andCondition_tf_entries {
-			var entry *spyware.SignatureCombinationAndCondition
+			entry := andCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6434,8 +6500,14 @@ func (o *CustomSpywareResourceSignatureCombinationAndConditionObject) CopyToPang
 		if diags.HasError() {
 			return diags
 		}
+		orCondition_existing_entries := make(map[string]*spyware.SignatureCombinationAndConditionOrCondition)
+		if *obj != nil {
+			for idx := range (*obj).OrCondition {
+				orCondition_existing_entries[(*obj).OrCondition[idx].Name] = &(*obj).OrCondition[idx]
+			}
+		}
 		for _, elt := range orCondition_tf_entries {
-			var entry *spyware.SignatureCombinationAndConditionOrCondition
+			entry := orCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6492,8 +6564,14 @@ func (o *CustomSpywareResourceSignatureStandardObject) CopyToPango(ctx context.C
 		if diags.HasError() {
 			return diags
 		}
+		andCondition_existing_entries := make(map[string]*spyware.SignatureStandardAndCondition)
+		if *obj != nil {
+			for idx := range (*obj).AndCondition {
+				andCondition_existing_entries[(*obj).AndCondition[idx].Name] = &(*obj).AndCondition[idx]
+			}
+		}
 		for _, elt := range andCondition_tf_entries {
-			var entry *spyware.SignatureStandardAndCondition
+			entry := andCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6523,8 +6601,14 @@ func (o *CustomSpywareResourceSignatureStandardAndConditionObject) CopyToPango(c
 		if diags.HasError() {
 			return diags
 		}
+		orCondition_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrCondition)
+		if *obj != nil {
+			for idx := range (*obj).OrCondition {
+				orCondition_existing_entries[(*obj).OrCondition[idx].Name] = &(*obj).OrCondition[idx]
+			}
+		}
 		for _, elt := range orCondition_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrCondition
+			entry := orCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6662,8 +6746,14 @@ func (o *CustomSpywareResourceSignatureStandardAndConditionOrConditionOperatorLe
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrConditionOperatorLessThanQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrConditionOperatorLessThanQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6706,8 +6796,14 @@ func (o *CustomSpywareResourceSignatureStandardAndConditionOrConditionOperatorEq
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrConditionOperatorEqualToQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrConditionOperatorEqualToQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6750,8 +6846,14 @@ func (o *CustomSpywareResourceSignatureStandardAndConditionOrConditionOperatorGr
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrConditionOperatorGreaterThanQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrConditionOperatorGreaterThanQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -6794,8 +6896,14 @@ func (o *CustomSpywareResourceSignatureStandardAndConditionOrConditionOperatorPa
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*spyware.SignatureStandardAndConditionOrConditionOperatorPatternMatchQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *spyware.SignatureStandardAndConditionOrConditionOperatorPatternMatchQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

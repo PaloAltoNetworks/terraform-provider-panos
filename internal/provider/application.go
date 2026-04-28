@@ -530,8 +530,14 @@ func (o *ApplicationDataSourceModel) CopyToPango(ctx context.Context, client pan
 		if diags.HasError() {
 			return diags
 		}
+		signature_existing_entries := make(map[string]*application.Signature)
+		if *obj != nil {
+			for idx := range (*obj).Signature {
+				signature_existing_entries[(*obj).Signature[idx].Name] = &(*obj).Signature[idx]
+			}
+		}
 		for _, elt := range signature_tf_entries {
-			var entry *application.Signature
+			entry := signature_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -686,8 +692,14 @@ func (o *ApplicationDataSourceSignatureObject) CopyToPango(ctx context.Context, 
 		if diags.HasError() {
 			return diags
 		}
+		andCondition_existing_entries := make(map[string]*application.SignatureAndCondition)
+		if *obj != nil {
+			for idx := range (*obj).AndCondition {
+				andCondition_existing_entries[(*obj).AndCondition[idx].Name] = &(*obj).AndCondition[idx]
+			}
+		}
 		for _, elt := range andCondition_tf_entries {
-			var entry *application.SignatureAndCondition
+			entry := andCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -717,8 +729,14 @@ func (o *ApplicationDataSourceSignatureAndConditionObject) CopyToPango(ctx conte
 		if diags.HasError() {
 			return diags
 		}
+		orCondition_existing_entries := make(map[string]*application.SignatureAndConditionOrCondition)
+		if *obj != nil {
+			for idx := range (*obj).OrCondition {
+				orCondition_existing_entries[(*obj).OrCondition[idx].Name] = &(*obj).OrCondition[idx]
+			}
+		}
 		for _, elt := range orCondition_tf_entries {
-			var entry *application.SignatureAndConditionOrCondition
+			entry := orCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -856,8 +874,14 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorPatternMat
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -899,8 +923,14 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorGreaterTha
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -942,8 +972,14 @@ func (o *ApplicationDataSourceSignatureAndConditionOrConditionOperatorLessThanOb
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*application.SignatureAndConditionOrConditionOperatorLessThanQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *application.SignatureAndConditionOrConditionOperatorLessThanQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4229,8 +4265,14 @@ func (o *ApplicationResourceModel) CopyToPango(ctx context.Context, client pango
 		if diags.HasError() {
 			return diags
 		}
+		signature_existing_entries := make(map[string]*application.Signature)
+		if *obj != nil {
+			for idx := range (*obj).Signature {
+				signature_existing_entries[(*obj).Signature[idx].Name] = &(*obj).Signature[idx]
+			}
+		}
 		for _, elt := range signature_tf_entries {
-			var entry *application.Signature
+			entry := signature_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4385,8 +4427,14 @@ func (o *ApplicationResourceSignatureObject) CopyToPango(ctx context.Context, cl
 		if diags.HasError() {
 			return diags
 		}
+		andCondition_existing_entries := make(map[string]*application.SignatureAndCondition)
+		if *obj != nil {
+			for idx := range (*obj).AndCondition {
+				andCondition_existing_entries[(*obj).AndCondition[idx].Name] = &(*obj).AndCondition[idx]
+			}
+		}
 		for _, elt := range andCondition_tf_entries {
-			var entry *application.SignatureAndCondition
+			entry := andCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4416,8 +4464,14 @@ func (o *ApplicationResourceSignatureAndConditionObject) CopyToPango(ctx context
 		if diags.HasError() {
 			return diags
 		}
+		orCondition_existing_entries := make(map[string]*application.SignatureAndConditionOrCondition)
+		if *obj != nil {
+			for idx := range (*obj).OrCondition {
+				orCondition_existing_entries[(*obj).OrCondition[idx].Name] = &(*obj).OrCondition[idx]
+			}
+		}
 		for _, elt := range orCondition_tf_entries {
-			var entry *application.SignatureAndConditionOrCondition
+			entry := orCondition_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4555,8 +4609,14 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorPatternMatch
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *application.SignatureAndConditionOrConditionOperatorPatternMatchQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4598,8 +4658,14 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorGreaterThanO
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *application.SignatureAndConditionOrConditionOperatorGreaterThanQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -4641,8 +4707,14 @@ func (o *ApplicationResourceSignatureAndConditionOrConditionOperatorLessThanObje
 		if diags.HasError() {
 			return diags
 		}
+		qualifier_existing_entries := make(map[string]*application.SignatureAndConditionOrConditionOperatorLessThanQualifier)
+		if *obj != nil {
+			for idx := range (*obj).Qualifier {
+				qualifier_existing_entries[(*obj).Qualifier[idx].Name] = &(*obj).Qualifier[idx]
+			}
+		}
 		for _, elt := range qualifier_tf_entries {
-			var entry *application.SignatureAndConditionOrConditionOperatorLessThanQualifier
+			entry := qualifier_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

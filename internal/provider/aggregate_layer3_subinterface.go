@@ -1828,8 +1828,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Con
 		if diags.HasError() {
 			return diags
 		}
+		arp_existing_entries := make(map[string]*layer3.Arp)
+		if *obj != nil {
+			for idx := range (*obj).Arp {
+				arp_existing_entries[(*obj).Arp[idx].Name] = &(*obj).Arp[idx]
+			}
+		}
 		for _, elt := range arp_tf_entries {
-			var entry *layer3.Arp
+			entry := arp_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -1900,8 +1906,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceModel) CopyToPango(ctx context.Con
 		if diags.HasError() {
 			return diags
 		}
+		ip_existing_entries := make(map[string]*layer3.Ip)
+		if *obj != nil {
+			for idx := range (*obj).Ip {
+				ip_existing_entries[(*obj).Ip[idx].Name] = &(*obj).Ip[idx]
+			}
+		}
 		for _, elt := range ip_tf_entries {
-			var entry *layer3.Ip
+			entry := ip_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2070,8 +2082,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceDdnsConfigObject) CopyToPango(ctx 
 		if diags.HasError() {
 			return diags
 		}
+		ddnsVendorConfig_existing_entries := make(map[string]*layer3.DdnsConfigDdnsVendorConfig)
+		if *obj != nil {
+			for idx := range (*obj).DdnsVendorConfig {
+				ddnsVendorConfig_existing_entries[(*obj).DdnsVendorConfig[idx].Name] = &(*obj).DdnsVendorConfig[idx]
+			}
+		}
 		for _, elt := range ddnsVendorConfig_tf_entries {
-			var entry *layer3.DdnsConfigDdnsVendorConfig
+			entry := ddnsVendorConfig_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2174,8 +2192,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6Object) CopyToPango(ctx contex
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*layer3.Ipv6Address)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *layer3.Ipv6Address
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2470,8 +2494,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryObj
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2589,8 +2619,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDns
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2711,8 +2747,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6DhcpClientNeighborDiscoveryDns
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -2958,8 +3000,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6InheritedObject) CopyToPango(c
 		if diags.HasError() {
 			return diags
 		}
+		assignAddr_existing_entries := make(map[string]*layer3.Ipv6InheritedAssignAddr)
+		if *obj != nil {
+			for idx := range (*obj).AssignAddr {
+				assignAddr_existing_entries[(*obj).AssignAddr[idx].Name] = &(*obj).AssignAddr[idx]
+			}
+		}
 		for _, elt := range assignAddr_tf_entries {
-			var entry *layer3.Ipv6InheritedAssignAddr
+			entry := assignAddr_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3298,8 +3346,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryObje
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*layer3.Ipv6InheritedNeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *layer3.Ipv6InheritedNeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3437,8 +3491,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsS
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3561,8 +3621,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6InheritedNeighborDiscoveryDnsS
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3648,8 +3714,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryObject) CopyT
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*layer3.Ipv6NeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *layer3.Ipv6NeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3764,8 +3836,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdverti
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3781,8 +3859,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceIpv6NeighborDiscoveryRouterAdverti
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -3834,8 +3918,14 @@ func (o *AggregateLayer3SubinterfaceDataSourceNdpProxyObject) CopyToPango(ctx co
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*layer3.NdpProxyAddress)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *layer3.NdpProxyAddress
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -15856,8 +15946,14 @@ func (o *AggregateLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		arp_existing_entries := make(map[string]*layer3.Arp)
+		if *obj != nil {
+			for idx := range (*obj).Arp {
+				arp_existing_entries[(*obj).Arp[idx].Name] = &(*obj).Arp[idx]
+			}
+		}
 		for _, elt := range arp_tf_entries {
-			var entry *layer3.Arp
+			entry := arp_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -15928,8 +16024,14 @@ func (o *AggregateLayer3SubinterfaceResourceModel) CopyToPango(ctx context.Conte
 		if diags.HasError() {
 			return diags
 		}
+		ip_existing_entries := make(map[string]*layer3.Ip)
+		if *obj != nil {
+			for idx := range (*obj).Ip {
+				ip_existing_entries[(*obj).Ip[idx].Name] = &(*obj).Ip[idx]
+			}
+		}
 		for _, elt := range ip_tf_entries {
-			var entry *layer3.Ip
+			entry := ip_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16098,8 +16200,14 @@ func (o *AggregateLayer3SubinterfaceResourceDdnsConfigObject) CopyToPango(ctx co
 		if diags.HasError() {
 			return diags
 		}
+		ddnsVendorConfig_existing_entries := make(map[string]*layer3.DdnsConfigDdnsVendorConfig)
+		if *obj != nil {
+			for idx := range (*obj).DdnsVendorConfig {
+				ddnsVendorConfig_existing_entries[(*obj).DdnsVendorConfig[idx].Name] = &(*obj).DdnsVendorConfig[idx]
+			}
+		}
 		for _, elt := range ddnsVendorConfig_tf_entries {
-			var entry *layer3.DdnsConfigDdnsVendorConfig
+			entry := ddnsVendorConfig_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16202,8 +16310,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6Object) CopyToPango(ctx context.
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*layer3.Ipv6Address)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *layer3.Ipv6Address
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16498,8 +16612,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryObjec
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16617,8 +16737,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSe
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsServerSourceManualServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16739,8 +16865,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6DhcpClientNeighborDiscoveryDnsSu
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *layer3.Ipv6DhcpClientNeighborDiscoveryDnsSuffixSourceManualSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -16986,8 +17118,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6InheritedObject) CopyToPango(ctx
 		if diags.HasError() {
 			return diags
 		}
+		assignAddr_existing_entries := make(map[string]*layer3.Ipv6InheritedAssignAddr)
+		if *obj != nil {
+			for idx := range (*obj).AssignAddr {
+				assignAddr_existing_entries[(*obj).AssignAddr[idx].Name] = &(*obj).AssignAddr[idx]
+			}
+		}
 		for _, elt := range assignAddr_tf_entries {
-			var entry *layer3.Ipv6InheritedAssignAddr
+			entry := assignAddr_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17326,8 +17464,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryObject
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*layer3.Ipv6InheritedNeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *layer3.Ipv6InheritedNeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17465,8 +17609,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSer
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *layer3.Ipv6InheritedNeighborDiscoveryDnsServerSourceManualServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17589,8 +17739,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6InheritedNeighborDiscoveryDnsSuf
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *layer3.Ipv6InheritedNeighborDiscoveryDnsSuffixSourceManualSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17676,8 +17832,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6NeighborDiscoveryObject) CopyToP
 		if diags.HasError() {
 			return diags
 		}
+		neighbor_existing_entries := make(map[string]*layer3.Ipv6NeighborDiscoveryNeighbor)
+		if *obj != nil {
+			for idx := range (*obj).Neighbor {
+				neighbor_existing_entries[(*obj).Neighbor[idx].Name] = &(*obj).Neighbor[idx]
+			}
+		}
 		for _, elt := range neighbor_tf_entries {
-			var entry *layer3.Ipv6NeighborDiscoveryNeighbor
+			entry := neighbor_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17792,8 +17954,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertise
 		if diags.HasError() {
 			return diags
 		}
+		server_existing_entries := make(map[string]*layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer)
+		if *obj != nil {
+			for idx := range (*obj).Server {
+				server_existing_entries[(*obj).Server[idx].Name] = &(*obj).Server[idx]
+			}
+		}
 		for _, elt := range server_tf_entries {
-			var entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportServer
+			entry := server_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17809,8 +17977,14 @@ func (o *AggregateLayer3SubinterfaceResourceIpv6NeighborDiscoveryRouterAdvertise
 		if diags.HasError() {
 			return diags
 		}
+		suffix_existing_entries := make(map[string]*layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix)
+		if *obj != nil {
+			for idx := range (*obj).Suffix {
+				suffix_existing_entries[(*obj).Suffix[idx].Name] = &(*obj).Suffix[idx]
+			}
+		}
 		for _, elt := range suffix_tf_entries {
-			var entry *layer3.Ipv6NeighborDiscoveryRouterAdvertisementDnsSupportSuffix
+			entry := suffix_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags
@@ -17862,8 +18036,14 @@ func (o *AggregateLayer3SubinterfaceResourceNdpProxyObject) CopyToPango(ctx cont
 		if diags.HasError() {
 			return diags
 		}
+		address_existing_entries := make(map[string]*layer3.NdpProxyAddress)
+		if *obj != nil {
+			for idx := range (*obj).Address {
+				address_existing_entries[(*obj).Address[idx].Name] = &(*obj).Address[idx]
+			}
+		}
 		for _, elt := range address_tf_entries {
-			var entry *layer3.NdpProxyAddress
+			entry := address_existing_entries[elt.Name.ValueString()]
 			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
 			if diags.HasError() {
 				return diags

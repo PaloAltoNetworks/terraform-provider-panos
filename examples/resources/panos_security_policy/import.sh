@@ -10,7 +10,8 @@
 #
 #
 #     names = [
-#         "rule-1", <- the first rule in the policy
+#         "rule-1", <- all rule names in the policy must be listed
+#         "rule-2",
 #     ]
 # }
-terraform import panos_security_policy.example $(echo '{"location":{"device_group":{"name":"example-device-group","panorama_device":"localhost.localdomain","rulebase":"pre-rulebase"}},"names":["rule-1"]}' | base64)
+terraform import panos_security_policy.example $(echo '{"location":{"device_group":{"name":"example-device-group","panorama_device":"localhost.localdomain","rulebase":"pre-rulebase"}},"names":["rule-1","rule-2"]}' | base64)
