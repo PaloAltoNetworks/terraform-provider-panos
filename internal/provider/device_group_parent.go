@@ -297,7 +297,7 @@ func (o *DeviceGroupParentResource) Delete(ctx context.Context, req resource.Del
 }
 
 func (o *DeviceGroupParentResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-
+	o.ImportStateCustom(ctx, req, resp)
 }
 
 type DeviceGroupParentPanoramaLocation struct {

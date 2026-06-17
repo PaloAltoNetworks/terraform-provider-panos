@@ -21,10 +21,10 @@ description: |-
 
 ### Optional
 
-- `data_capture` (Boolean)
+- `data_capture` (Boolean) Enable data capture
 - `description` (String)
-- `disable_override` (String) disable object override in child device groups
-- `rules` (Attributes List) (see [below for nested schema](#nestedatt--rules))
+- `disable_override` (String) Disable object override in child device groups
+- `rules` (Attributes List) Data filtering rules (see [below for nested schema](#nestedatt--rules))
 
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
@@ -57,10 +57,10 @@ Required:
 
 Optional:
 
-- `alert_threshold` (Number)
-- `application` (List of String)
-- `block_threshold` (Number)
-- `data_object` (String)
-- `direction` (String)
-- `file_type` (List of String)
-- `log_severity` (String)
+- `alert_threshold` (Number) Alert threshold count
+- `application` (List of String) Applications to match
+- `block_threshold` (Number) Block threshold count
+- `data_object` (String) Name of the data pattern object
+- `direction` (String) Direction of data transfer to monitor
+- `file_type` (List of String) File types to match
+- `log_severity` (String) Log severity for matched traffic

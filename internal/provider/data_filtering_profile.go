@@ -357,7 +357,7 @@ func DataFilteringProfileDataSourceSchema() dsschema.Schema {
 			},
 
 			"data_capture": dsschema.BoolAttribute{
-				Description: "",
+				Description: "Enable data capture",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -369,13 +369,13 @@ func DataFilteringProfileDataSourceSchema() dsschema.Schema {
 			},
 
 			"disable_override": dsschema.StringAttribute{
-				Description: "disable object override in child device groups",
+				Description: "Disable object override in child device groups",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"rules": dsschema.ListNestedAttribute{
-				Description:  "",
+				Description:  "Data filtering rules",
 				Optional:     true,
 				Computed:     true,
 				NestedObject: DataFilteringProfileDataSourceRulesSchema(),
@@ -412,44 +412,44 @@ func DataFilteringProfileDataSourceRulesSchema() dsschema.NestedAttributeObject 
 			},
 
 			"data_object": dsschema.StringAttribute{
-				Description: "",
+				Description: "Name of the data pattern object",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"direction": dsschema.StringAttribute{
-				Description: "",
+				Description: "Direction of data transfer to monitor",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"alert_threshold": dsschema.Int64Attribute{
-				Description: "",
+				Description: "Alert threshold count",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"block_threshold": dsschema.Int64Attribute{
-				Description: "",
+				Description: "Block threshold count",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"log_severity": dsschema.StringAttribute{
-				Description: "",
+				Description: "Log severity for matched traffic",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"application": dsschema.ListAttribute{
-				Description: "",
+				Description: "Applications to match",
 				Optional:    true,
 				Computed:    true,
 				ElementType: types.StringType,
 			},
 
 			"file_type": dsschema.ListAttribute{
-				Description: "",
+				Description: "File types to match",
 				Optional:    true,
 				Computed:    true,
 				ElementType: types.StringType,
@@ -674,7 +674,7 @@ func DataFilteringProfileResourceSchema() rsschema.Schema {
 			},
 
 			"data_capture": rsschema.BoolAttribute{
-				Description: "",
+				Description: "Enable data capture",
 				Optional:    true,
 			},
 
@@ -684,7 +684,7 @@ func DataFilteringProfileResourceSchema() rsschema.Schema {
 			},
 
 			"disable_override": rsschema.StringAttribute{
-				Description: "disable object override in child device groups",
+				Description: "Disable object override in child device groups",
 				Optional:    true,
 				Computed:    true,
 				Default:     stringdefault.StaticString("no"),
@@ -698,7 +698,7 @@ func DataFilteringProfileResourceSchema() rsschema.Schema {
 			},
 
 			"rules": rsschema.ListNestedAttribute{
-				Description:  "",
+				Description:  "Data filtering rules",
 				Optional:     true,
 				NestedObject: DataFilteringProfileResourceRulesSchema(),
 			},
@@ -734,44 +734,46 @@ func DataFilteringProfileResourceRulesSchema() rsschema.NestedAttributeObject {
 			},
 
 			"data_object": rsschema.StringAttribute{
-				Description: "",
+				Description: "Name of the data pattern object",
 				Optional:    true,
 			},
 
 			"direction": rsschema.StringAttribute{
-				Description: "",
+				Description: "Direction of data transfer to monitor",
 				Optional:    true,
+				Computed:    true,
+				Default:     stringdefault.StaticString("both"),
 			},
 
 			"alert_threshold": rsschema.Int64Attribute{
-				Description: "",
+				Description: "Alert threshold count",
 				Optional:    true,
 				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"block_threshold": rsschema.Int64Attribute{
-				Description: "",
+				Description: "Block threshold count",
 				Optional:    true,
 				Computed:    true,
 				Default:     int64default.StaticInt64(1),
 			},
 
 			"log_severity": rsschema.StringAttribute{
-				Description: "",
+				Description: "Log severity for matched traffic",
 				Optional:    true,
 				Computed:    true,
 				Default:     stringdefault.StaticString("informational"),
 			},
 
 			"application": rsschema.ListAttribute{
-				Description: "",
+				Description: "Applications to match",
 				Optional:    true,
 				ElementType: types.StringType,
 			},
 
 			"file_type": rsschema.ListAttribute{
-				Description: "",
+				Description: "File types to match",
 				Optional:    true,
 				ElementType: types.StringType,
 			},

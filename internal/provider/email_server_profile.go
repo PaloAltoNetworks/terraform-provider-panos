@@ -691,7 +691,7 @@ func EmailServerProfileDataSourceSchema() dsschema.Schema {
 			"format": EmailServerProfileDataSourceFormatSchema(),
 
 			"servers": dsschema.ListNestedAttribute{
-				Description:  "",
+				Description:  "List of email servers",
 				Optional:     true,
 				Computed:     true,
 				NestedObject: EmailServerProfileDataSourceServersSchema(),
@@ -726,31 +726,31 @@ func EmailServerProfileDataSourceFormatSchema() dsschema.SingleNestedAttribute {
 		Attributes: map[string]dsschema.Attribute{
 
 			"auth": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for auth log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"config": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for config log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"correlation": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for correlation log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"data": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for data log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"decryption": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for decryption log",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -758,73 +758,73 @@ func EmailServerProfileDataSourceFormatSchema() dsschema.SingleNestedAttribute {
 			"escaping": EmailServerProfileDataSourceFormatEscapingSchema(),
 
 			"globalprotect": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for globalprotect log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"gtp": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for gtp log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"hip_match": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for hip-match log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"iptag": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for iptag log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"sctp": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for sctp log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"system": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for system log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"threat": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for threat log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"traffic": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for traffic log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"tunnel": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for tunnel log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"url": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for url log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"userid": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for userid log",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"wildfire": dsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for wildfire log",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -906,25 +906,25 @@ func EmailServerProfileDataSourceServersSchema() dsschema.NestedAttributeObject 
 			},
 
 			"from": dsschema.StringAttribute{
-				Description: "email address (e.g. admin@mycompany.com)",
+				Description: "From email address",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"to": dsschema.StringAttribute{
-				Description: "email address (e.g. admin@mycompany.com)",
+				Description: "To email address",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"and_also_to": dsschema.StringAttribute{
-				Description: "email address (e.g. admin@mycompany.com)",
+				Description: "Additional CC email address",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"gateway": dsschema.StringAttribute{
-				Description: "IP address or FQDN of SMTP gateway to use",
+				Description: "IP address or FQDN of SMTP gateway",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -936,7 +936,7 @@ func EmailServerProfileDataSourceServersSchema() dsschema.NestedAttributeObject 
 			},
 
 			"port": dsschema.Int64Attribute{
-				Description: "Port number (Standard EMAIL ports SMTP:25, TLS:587)",
+				Description: "SMTP port number",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -948,13 +948,13 @@ func EmailServerProfileDataSourceServersSchema() dsschema.NestedAttributeObject 
 			},
 
 			"authentication_type": dsschema.StringAttribute{
-				Description: "",
+				Description: "Authentication method for SMTP",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"certificate_profile": dsschema.StringAttribute{
-				Description: "Certificate Profile for validating server certificate",
+				Description: "Certificate profile for TLS verification",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -1302,7 +1302,7 @@ func EmailServerProfileResourceSchema() rsschema.Schema {
 			"format": EmailServerProfileResourceFormatSchema(),
 
 			"servers": rsschema.ListNestedAttribute{
-				Description:  "",
+				Description:  "List of email servers",
 				Optional:     true,
 				NestedObject: EmailServerProfileResourceServersSchema(),
 			},
@@ -1335,89 +1335,89 @@ func EmailServerProfileResourceFormatSchema() rsschema.SingleNestedAttribute {
 		Attributes: map[string]rsschema.Attribute{
 
 			"auth": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for auth log",
 				Optional:    true,
 			},
 
 			"config": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for config log",
 				Optional:    true,
 			},
 
 			"correlation": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for correlation log",
 				Optional:    true,
 			},
 
 			"data": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for data log",
 				Optional:    true,
 			},
 
 			"decryption": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for decryption log",
 				Optional:    true,
 			},
 
 			"escaping": EmailServerProfileResourceFormatEscapingSchema(),
 
 			"globalprotect": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for globalprotect log",
 				Optional:    true,
 			},
 
 			"gtp": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for gtp log",
 				Optional:    true,
 			},
 
 			"hip_match": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for hip-match log",
 				Optional:    true,
 			},
 
 			"iptag": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for iptag log",
 				Optional:    true,
 			},
 
 			"sctp": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for sctp log",
 				Optional:    true,
 			},
 
 			"system": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for system log",
 				Optional:    true,
 			},
 
 			"threat": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for threat log",
 				Optional:    true,
 			},
 
 			"traffic": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for traffic log",
 				Optional:    true,
 			},
 
 			"tunnel": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for tunnel log",
 				Optional:    true,
 			},
 
 			"url": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for url log",
 				Optional:    true,
 			},
 
 			"userid": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for userid log",
 				Optional:    true,
 			},
 
 			"wildfire": rsschema.StringAttribute{
-				Description: "",
+				Description: "Custom format for wildfire log",
 				Optional:    true,
 			},
 		},
@@ -1494,22 +1494,22 @@ func EmailServerProfileResourceServersSchema() rsschema.NestedAttributeObject {
 			},
 
 			"from": rsschema.StringAttribute{
-				Description: "email address (e.g. admin@mycompany.com)",
+				Description: "From email address",
 				Optional:    true,
 			},
 
 			"to": rsschema.StringAttribute{
-				Description: "email address (e.g. admin@mycompany.com)",
+				Description: "To email address",
 				Optional:    true,
 			},
 
 			"and_also_to": rsschema.StringAttribute{
-				Description: "email address (e.g. admin@mycompany.com)",
+				Description: "Additional CC email address",
 				Optional:    true,
 			},
 
 			"gateway": rsschema.StringAttribute{
-				Description: "IP address or FQDN of SMTP gateway to use",
+				Description: "IP address or FQDN of SMTP gateway",
 				Optional:    true,
 			},
 
@@ -1521,7 +1521,7 @@ func EmailServerProfileResourceServersSchema() rsschema.NestedAttributeObject {
 			},
 
 			"port": rsschema.Int64Attribute{
-				Description: "Port number (Standard EMAIL ports SMTP:25, TLS:587)",
+				Description: "SMTP port number",
 				Optional:    true,
 				Computed:    true,
 				Default:     int64default.StaticInt64(25),
@@ -1535,12 +1535,12 @@ func EmailServerProfileResourceServersSchema() rsschema.NestedAttributeObject {
 			},
 
 			"authentication_type": rsschema.StringAttribute{
-				Description: "",
+				Description: "Authentication method for SMTP",
 				Optional:    true,
 			},
 
 			"certificate_profile": rsschema.StringAttribute{
-				Description: "Certificate Profile for validating server certificate",
+				Description: "Certificate profile for TLS verification",
 				Optional:    true,
 				Computed:    true,
 				Default:     stringdefault.StaticString("None"),

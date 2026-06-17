@@ -12,55 +12,23 @@ description: |-
 ## Example Usage
 
 ```terraform
-resource "panos_template" "example" {
-  location = { panorama = {} }
-  name     = "example-template"
-}
-
-# Email server profile forwarding security logs to a corporate SMTP relay
-# with authenticated SMTP and custom log format strings.
 resource "panos_email_server_profile" "example" {
   location = {
-    template = {
-      name = panos_template.example.name
+    vsys = {
+      name = "vsys1"
     }
   }
-
-  name = "security-alerts-email"
+  name = "my-email-server-profile"
 
   servers = [
     {
-      name         = "corporate-smtp"
-      display_name = "Corporate SMTP Relay"
-      from         = "panos-alerts@corp.example.com"
-      to           = "security-team@corp.example.com"
-      and_also_to  = "noc@corp.example.com"
-      gateway      = "smtp.corp.example.com"
-      protocol     = "SMTP"
-      port         = 587
-
-      # Use Login authentication with SMTP credentials
-      authentication_type = "Login"
-      username            = "panos-svc"
-      password            = "Str0ngP@ssw0rd!"
+      name    = "email-server-1"
+      from    = "panos@example.com"
+      to      = "alerts@example.com"
+      gateway = "smtp.example.com"
+      port    = 25
     }
   ]
-
-  # Custom format strings for log types relevant to security operations.
-  # These override the default PAN-OS email log format.
-  format = {
-    traffic  = "$receive_time,$serial,$type,$subtype,$src,$dst,$proto,$action"
-    threat   = "$receive_time,$serial,$type,$subtype,$src,$dst,$threat_name,$severity"
-    system   = "$receive_time,$serial,$type,$subtype,$severity,$opaque"
-    url      = "$receive_time,$serial,$type,$subtype,$src,$dst,$url"
-    wildfire = "$receive_time,$serial,$type,$subtype,$src,$dst,$threat_name,$filetype"
-
-    # Escape backslashes and double-quotes in log field values
-    escaping = {
-      escape_character   = "\\"
-      escaped_characters = "\""
-    }
-  }
 }
 ```
 
@@ -75,7 +43,7 @@ resource "panos_email_server_profile" "example" {
 ### Optional
 
 - `format` (Attributes) (see [below for nested schema](#nestedatt--format))
-- `servers` (Attributes List) (see [below for nested schema](#nestedatt--servers))
+- `servers` (Attributes List) List of email servers (see [below for nested schema](#nestedatt--servers))
 
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
@@ -148,24 +116,24 @@ Optional:
 
 Optional:
 
-- `auth` (String)
-- `config` (String)
-- `correlation` (String)
-- `data` (String)
-- `decryption` (String)
+- `auth` (String) Custom format for auth log
+- `config` (String) Custom format for config log
+- `correlation` (String) Custom format for correlation log
+- `data` (String) Custom format for data log
+- `decryption` (String) Custom format for decryption log
 - `escaping` (Attributes) (see [below for nested schema](#nestedatt--format--escaping))
-- `globalprotect` (String)
-- `gtp` (String)
-- `hip_match` (String)
-- `iptag` (String)
-- `sctp` (String)
-- `system` (String)
-- `threat` (String)
-- `traffic` (String)
-- `tunnel` (String)
-- `url` (String)
-- `userid` (String)
-- `wildfire` (String)
+- `globalprotect` (String) Custom format for globalprotect log
+- `gtp` (String) Custom format for gtp log
+- `hip_match` (String) Custom format for hip-match log
+- `iptag` (String) Custom format for iptag log
+- `sctp` (String) Custom format for sctp log
+- `system` (String) Custom format for system log
+- `threat` (String) Custom format for threat log
+- `traffic` (String) Custom format for traffic log
+- `tunnel` (String) Custom format for tunnel log
+- `url` (String) Custom format for url log
+- `userid` (String) Custom format for userid log
+- `wildfire` (String) Custom format for wildfire log
 
 <a id="nestedatt--format--escaping"></a>
 ### Nested Schema for `format.escaping`
@@ -186,17 +154,17 @@ Required:
 
 Optional:
 
-- `and_also_to` (String) email address (e.g. admin@mycompany.com)
-- `authentication_type` (String)
-- `certificate_profile` (String) Certificate Profile for validating server certificate
+- `and_also_to` (String) Additional CC email address
+- `authentication_type` (String) Authentication method for SMTP
+- `certificate_profile` (String) Certificate profile for TLS verification
 - `display_name` (String)
-- `from` (String) email address (e.g. admin@mycompany.com)
-- `gateway` (String) IP address or FQDN of SMTP gateway to use
+- `from` (String) From email address
+- `gateway` (String) IP address or FQDN of SMTP gateway
 - `password` (String, Sensitive)
-- `port` (Number) Port number (Standard EMAIL ports SMTP:25, TLS:587)
+- `port` (Number) SMTP port number
 - `protocol` (String)
 - `tls_version` (String) TLS handshake protocol version
-- `to` (String) email address (e.g. admin@mycompany.com)
+- `to` (String) To email address
 - `username` (String) username for authentication
 
 ## Import

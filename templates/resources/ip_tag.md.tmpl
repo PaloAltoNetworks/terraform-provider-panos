@@ -1,0 +1,52 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: "Objects"
+description: |-
+{{ .Description | plainmarkdown | trimspace | prefixlines "  " }}
+---
+
+# {{.Name}} ({{.Type}})
+
+{{ .Description | trimspace }}
+
+This resource registers a set of dynamic tags against an IP address through the
+PAN-OS User-ID API. It manages *only* the tags it declares: tags registered on
+the same IP by other means (other resources, the User-ID agent, scripts) are
+left untouched. Registration is non-destructive and idempotent.
+
+~> **Runtime, not configuration.** Dynamic IP-to-tag registrations live in the
+firewall's User-ID table, not in the candidate config, so this resource does
+**not** require a commit and is **not** importable. Adopt an existing
+registration simply by declaring it and running `terraform apply` — re-registering
+tags that are already present is a no-op.
+
+{{ if .HasExample -}}
+## Example Usage
+
+{{ tffile .ExampleFile }}
+{{- end }}
+
+## Drift Reconciliation
+
+On every read the provider intersects the tags it manages with the tags actually
+present on the firewall, and stores only that intersection in state. Tags it does
+not manage are ignored entirely.
+
+For example, if this resource manages `{web, prod}` but the firewall reports
+`{web, db}` for the IP:
+
+* `web` is kept — it is managed and present.
+* `prod` drifted away (someone unregistered it) — it is dropped from state and
+  re-registered on the next `terraform apply`.
+* `db` is unmanaged — it is ignored, never added to state, and never removed.
+
+If none of the managed tags remain on the IP, the resource is removed from state.
+
+## Limitations
+
+-> **Overlapping ownership.** The firewall has no reference counting for
+registered tags. If two `panos_ip_tag` resources (or two configurations) register
+the *same* tag on the *same* IP, deleting either one unregisters that shared tag,
+affecting the other. Avoid declaring the same IP+tag pair from more than one place.
+
+{{ .SchemaMarkdown | trimspace }}

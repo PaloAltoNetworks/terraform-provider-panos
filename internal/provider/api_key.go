@@ -146,5 +146,5 @@ func (o *ApiKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest, re
 }
 
 func (o *ApiKeyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-
+	o.ImportStateCustom(ctx, req, resp)
 }
