@@ -22,7 +22,7 @@ description: |-
 ### Optional
 
 - `format` (Attributes) (see [below for nested schema](#nestedatt--format))
-- `servers` (Attributes List) (see [below for nested schema](#nestedatt--servers))
+- `servers` (Attributes List) List of email servers (see [below for nested schema](#nestedatt--servers))
 
 <a id="nestedatt--location"></a>
 ### Nested Schema for `location`
@@ -95,24 +95,24 @@ Optional:
 
 Optional:
 
-- `auth` (String)
-- `config` (String)
-- `correlation` (String)
-- `data` (String)
-- `decryption` (String)
+- `auth` (String) Custom format for auth log
+- `config` (String) Custom format for config log
+- `correlation` (String) Custom format for correlation log
+- `data` (String) Custom format for data log
+- `decryption` (String) Custom format for decryption log
 - `escaping` (Attributes) (see [below for nested schema](#nestedatt--format--escaping))
-- `globalprotect` (String)
-- `gtp` (String)
-- `hip_match` (String)
-- `iptag` (String)
-- `sctp` (String)
-- `system` (String)
-- `threat` (String)
-- `traffic` (String)
-- `tunnel` (String)
-- `url` (String)
-- `userid` (String)
-- `wildfire` (String)
+- `globalprotect` (String) Custom format for globalprotect log
+- `gtp` (String) Custom format for gtp log
+- `hip_match` (String) Custom format for hip-match log
+- `iptag` (String) Custom format for iptag log
+- `sctp` (String) Custom format for sctp log
+- `system` (String) Custom format for system log
+- `threat` (String) Custom format for threat log
+- `traffic` (String) Custom format for traffic log
+- `tunnel` (String) Custom format for tunnel log
+- `url` (String) Custom format for url log
+- `userid` (String) Custom format for userid log
+- `wildfire` (String) Custom format for wildfire log
 
 <a id="nestedatt--format--escaping"></a>
 ### Nested Schema for `format.escaping`
@@ -133,15 +133,15 @@ Required:
 
 Optional:
 
-- `and_also_to` (String) email address (e.g. admin@mycompany.com)
-- `authentication_type` (String)
-- `certificate_profile` (String) Certificate Profile for validating server certificate
+- `and_also_to` (String) Additional CC email address
+- `authentication_type` (String) Authentication method for SMTP
+- `certificate_profile` (String) Certificate profile for TLS verification
 - `display_name` (String)
-- `from` (String) email address (e.g. admin@mycompany.com)
-- `gateway` (String) IP address or FQDN of SMTP gateway to use
+- `from` (String) From email address
+- `gateway` (String) IP address or FQDN of SMTP gateway
 - `password` (String, Sensitive)
-- `port` (Number) Port number (Standard EMAIL ports SMTP:25, TLS:587)
+- `port` (Number) SMTP port number
 - `protocol` (String)
 - `tls_version` (String) TLS handshake protocol version
-- `to` (String) email address (e.g. admin@mycompany.com)
+- `to` (String) To email address
 - `username` (String) username for authentication

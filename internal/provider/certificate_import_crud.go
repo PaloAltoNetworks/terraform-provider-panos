@@ -515,3 +515,7 @@ func (o *CertificateImportResource) DeleteCustom(ctx context.Context, req resour
 		resp.Diagnostics.AddError("Failed to delete certificate from the device", err.Error())
 	}
 }
+
+func (o *CertificateImportResource) ImportStateCustom(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resp.Diagnostics.AddError("Import not supported", "The panos_certificate_import resource does not support terraform import.")
+}

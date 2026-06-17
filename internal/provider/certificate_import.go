@@ -372,7 +372,7 @@ func (o *CertificateImportResource) Delete(ctx context.Context, req resource.Del
 }
 
 func (o *CertificateImportResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-
+	o.ImportStateCustom(ctx, req, resp)
 }
 
 type CertificateImportPanoramaLocation struct {

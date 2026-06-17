@@ -366,3 +366,7 @@ func (o *VirtualRouterInterfaceResource) DeleteCustom(ctx context.Context, req r
 
 	return
 }
+
+func (o *VirtualRouterInterfaceResource) ImportStateCustom(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resp.Diagnostics.AddError("Import not supported", "The panos_virtual_router_interface resource does not support terraform import.")
+}

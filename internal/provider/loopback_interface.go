@@ -47,7 +47,7 @@ func NewLoopbackInterfaceDataSource() datasource.DataSource {
 
 type LoopbackInterfaceDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*loopback.Entry, loopback.Location, *loopback.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*loopback.Entry, loopback.Location, *loopback.Service]
 }
 
 type LoopbackInterfaceDataSourceFilter struct {
@@ -1017,7 +1017,7 @@ func (d *LoopbackInterfaceDataSource) Configure(_ context.Context, req datasourc
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager[*loopback.Entry, loopback.Location, *loopback.Service](d.client, loopback.NewService(d.client), batchSize, specifier, loopback.SpecMatches)
+	d.manager = sdkmanager.NewImportableEntryObjectManager(d.client, loopback.NewService(d.client), batchSize, specifier, loopback.SpecMatches)
 }
 func (o *LoopbackInterfaceDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -1134,7 +1134,7 @@ func NewLoopbackInterfaceResource() resource.Resource {
 
 type LoopbackInterfaceResource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*loopback.Entry, loopback.Location, *loopback.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*loopback.Entry, loopback.Location, *loopback.Service]
 }
 
 func LoopbackInterfaceResourceLocationSchema() rsschema.Attribute {
@@ -1564,8 +1564,9 @@ func (o *LoopbackInterfaceResource) Configure(ctx context.Context, req resource.
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
+
 	batchSize := providerData.MultiConfigBatchSize
-	o.manager = sdkmanager.NewEntryObjectManager[*loopback.Entry, loopback.Location, *loopback.Service](o.client, loopback.NewService(o.client), batchSize, specifier, loopback.SpecMatches)
+	o.manager = sdkmanager.NewImportableEntryObjectManager(o.client, loopback.NewService(o.client), batchSize, specifier, loopback.SpecMatches)
 }
 
 func (o *LoopbackInterfaceResourceModel) AttributeTypes() map[string]attr.Type {
@@ -2288,6 +2289,54 @@ func (o *LoopbackInterfaceResource) Create(ctx context.Context, req resource.Cre
 		return
 	}
 
+	var importVsys string
+
+	{
+		var terraformLocation LoopbackInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		locationRequiresImport := true
+
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation LoopbackInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
+			}
+		}
+
+	}
+
+	if importVsys != "" {
+		err = o.manager.ImportToLocation(ctx, location, importVsys, obj.Name)
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to import resource into location", err.Error())
+			return
+		}
+	}
+
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -2619,6 +2668,53 @@ func (o *LoopbackInterfaceResource) Delete(ctx context.Context, req resource.Del
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
+	var importVsys string
+
+	{
+		var terraformLocation LoopbackInterfaceLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		locationRequiresImport := true
+
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation LoopbackInterfaceTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
+			}
+		}
+
+	}
+
+	if importVsys != "" {
+		err = o.manager.UnimportFromLocation(ctx, location, importVsys, state.Name.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to unimport resource from location", err.Error())
+			return
+		}
+	}
 
 	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
@@ -2753,6 +2849,7 @@ type LoopbackInterfaceNgfwLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 }
 type LoopbackInterfaceTemplateLocation struct {
+	Vsys           types.String `tfsdk:"vsys"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
@@ -2803,6 +2900,15 @@ func LoopbackInterfaceLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"vsys": rsschema.StringAttribute{
+						Description: "",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -2905,12 +3011,14 @@ func (o LoopbackInterfaceTemplateLocation) MarshalJSON() ([]byte, error) {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
 	}
 
 	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		Vsys:           o.Vsys.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -2921,6 +3029,7 @@ func (o *LoopbackInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -2930,6 +3039,7 @@ func (o *LoopbackInterfaceTemplateLocation) UnmarshalJSON(data []byte) error {
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Vsys = types.StringPointerValue(shadow.Vsys)
 
 	return nil
 }
@@ -3052,6 +3162,7 @@ func (o *LoopbackInterfaceNgfwLocation) AttributeTypes() map[string]attr.Type {
 }
 func (o *LoopbackInterfaceTemplateLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
+		"vsys":            types.StringType,
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
 		"ngfw_device":     types.StringType,

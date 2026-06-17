@@ -2,13 +2,17 @@ package provider
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"encoding/xml"
+	"errors"
 	"fmt"
 
 	sdkerrors "github.com/PaloAltoNetworks/pango/errors"
 	"github.com/PaloAltoNetworks/pango/util"
 	"github.com/PaloAltoNetworks/pango/xmlapi"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -224,4 +228,104 @@ func (o *DeviceGroupParentResource) DeleteCustom(ctx context.Context, req resour
 		}
 	}
 
+}
+
+type DeviceGroupParentImportState struct {
+	Location    types.Object `json:"location"`
+	DeviceGroup types.String `json:"device_group"`
+}
+
+func (o DeviceGroupParentImportState) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		Location    interface{} `json:"location"`
+		DeviceGroup *string     `json:"device_group"`
+	}
+	location_object, err := TypesObjectToMap(o.Location, DeviceGroupParentLocationSchema())
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal location into JSON document: %w", err)
+	}
+
+	return json.Marshal(shadow{
+		Location:    location_object,
+		DeviceGroup: o.DeviceGroup.ValueStringPointer(),
+	})
+}
+
+func (o *DeviceGroupParentImportState) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		Location    interface{} `json:"location"`
+		DeviceGroup *string     `json:"device_group"`
+	}
+
+	if err := json.Unmarshal(data, &shadow); err != nil {
+		return err
+	}
+
+	location_map, ok := shadow.Location.(map[string]interface{})
+	if !ok {
+		return NewDiagnosticsError("Failed to unmarshal JSON document into location: expected map[string]interface{}", nil)
+	}
+	location_object, err := MapToTypesObject(location_map, DeviceGroupParentLocationSchema())
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal location from JSON: %w", err)
+	}
+	o.Location = location_object
+	o.DeviceGroup = types.StringPointerValue(shadow.DeviceGroup)
+
+	return nil
+}
+
+func DeviceGroupParentImportStateCreator(ctx context.Context, resource types.Object) ([]byte, error) {
+	attrs := resource.Attributes()
+	if attrs == nil {
+		return nil, fmt.Errorf("Object has no attributes")
+	}
+
+	locationAttr, ok := attrs["location"]
+	if !ok {
+		return nil, fmt.Errorf("location attribute missing")
+	}
+	location, ok := locationAttr.(types.Object)
+	if !ok {
+		return nil, fmt.Errorf("location attribute expected to be an object")
+	}
+
+	deviceGroupAttr, ok := attrs["device_group"]
+	if !ok {
+		return nil, fmt.Errorf("device_group attribute missing")
+	}
+	deviceGroup, ok := deviceGroupAttr.(types.String)
+	if !ok {
+		return nil, fmt.Errorf("device_group attribute expected to be a string")
+	}
+
+	return json.Marshal(DeviceGroupParentImportState{
+		Location:    location,
+		DeviceGroup: deviceGroup,
+	})
+}
+
+func (o *DeviceGroupParentResource) ImportStateCustom(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	data, err := base64.StdEncoding.DecodeString(req.ID)
+	if err != nil {
+		resp.Diagnostics.AddError("Failed to decode Import ID", err.Error())
+		return
+	}
+
+	var obj DeviceGroupParentImportState
+	if err := json.Unmarshal(data, &obj); err != nil {
+		var diagsErr *DiagnosticsError
+		if errors.As(err, &diagsErr) {
+			resp.Diagnostics.Append(diagsErr.Diagnostics()...)
+		} else {
+			resp.Diagnostics.AddError("Failed to unmarshal Import ID", err.Error())
+		}
+		return
+	}
+
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("location"), obj.Location)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("device_group"), obj.DeviceGroup)...)
 }

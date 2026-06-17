@@ -4307,3 +4307,257 @@ resource "panos_virtual_router" "test" {
     name = var.router_name
 }
 `
+
+// BFD Global Profile Tests
+
+func TestAccPanosVirtualRouter_Bgp_GlobalBfd(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccVirtualRouterBgpGlobalBfd,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_virtual_router.test",
+						tfjsonpath.New("protocol").AtMapKey("bgp").AtMapKey("enable"),
+						knownvalue.Bool(true),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_virtual_router.test",
+						tfjsonpath.New("protocol").AtMapKey("bgp").AtMapKey("global_bfd").AtMapKey("profile"),
+						knownvalue.StringExact(fmt.Sprintf("%s-bfd", prefix)),
+					),
+				},
+			},
+		},
+	})
+}
+
+const testAccVirtualRouterBgpGlobalBfd = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name     = var.prefix
+}
+
+resource "panos_bfd_network_profile" "test" {
+  depends_on = [panos_template.test]
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name                 = "${var.prefix}-bfd"
+  mode                 = "active"
+  detection_multiplier = 5
+}
+
+resource "panos_virtual_router" "test" {
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = var.prefix
+
+  protocol = {
+    bgp = {
+      enable    = true
+      router_id = "10.0.20.1"
+      local_as  = "65020"
+      global_bfd = {
+        profile = panos_bfd_network_profile.test.name
+      }
+    }
+  }
+}
+`
+
+func TestAccPanosVirtualRouter_Ospf_GlobalBfd(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccVirtualRouterOspfGlobalBfd,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_virtual_router.test",
+						tfjsonpath.New("protocol").AtMapKey("ospf").AtMapKey("global_bfd").AtMapKey("profile"),
+						knownvalue.StringExact(fmt.Sprintf("%s-bfd", prefix)),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_virtual_router.test",
+						tfjsonpath.New("protocol").AtMapKey("ospf").AtMapKey("area").AtSliceIndex(0).AtMapKey("interface").AtSliceIndex(0).AtMapKey("bfd").AtMapKey("profile"),
+						knownvalue.StringExact("Inherit-vr-global-setting"),
+					),
+				},
+			},
+		},
+	})
+}
+
+const testAccVirtualRouterOspfGlobalBfd = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name     = var.prefix
+}
+
+resource "panos_ethernet_interface" "test" {
+  location = {
+    template = {
+      vsys = "vsys1"
+      name = panos_template.test.name
+    }
+  }
+
+  name = "ethernet1/9"
+
+  layer3 = {
+    mtu = 1500
+    ips = [{ name = "10.0.9.1/24" }]
+  }
+}
+
+resource "panos_bfd_network_profile" "test" {
+  depends_on = [panos_template.test]
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name                 = "${var.prefix}-bfd"
+  mode                 = "active"
+  detection_multiplier = 5
+}
+
+resource "panos_virtual_router" "test" {
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = var.prefix
+
+  interfaces = [panos_ethernet_interface.test.name]
+
+  protocol = {
+    ospf = {
+      enable    = true
+      router_id = "10.0.1.9"
+      global_bfd = {
+        profile = panos_bfd_network_profile.test.name
+      }
+      area = [
+        {
+          name = "0.0.0.0"
+          type = {
+            normal = {}
+          }
+          interface = [
+            {
+              name   = "ethernet1/9"
+              enable = true
+              bfd = {
+                profile = "Inherit-vr-global-setting"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+`
+
+func TestAccPanosVirtualRouter_Rip_GlobalBfd(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: testAccVirtualRouterRipGlobalBfd,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_virtual_router.test",
+						tfjsonpath.New("protocol").AtMapKey("rip").AtMapKey("global_bfd").AtMapKey("profile"),
+						knownvalue.StringExact(fmt.Sprintf("%s-bfd", prefix)),
+					),
+				},
+			},
+		},
+	})
+}
+
+const testAccVirtualRouterRipGlobalBfd = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name     = var.prefix
+}
+
+resource "panos_bfd_network_profile" "test" {
+  depends_on = [panos_template.test]
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name                 = "${var.prefix}-bfd"
+  mode                 = "active"
+  detection_multiplier = 5
+}
+
+resource "panos_virtual_router" "test" {
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = var.prefix
+
+  protocol = {
+    rip = {
+      enable = true
+      global_bfd = {
+        profile = panos_bfd_network_profile.test.name
+      }
+    }
+  }
+}
+`

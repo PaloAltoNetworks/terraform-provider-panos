@@ -173,7 +173,7 @@ func (o *VirtualRouterInterfaceResource) Delete(ctx context.Context, req resourc
 }
 
 func (o *VirtualRouterInterfaceResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-
+	o.ImportStateCustom(ctx, req, resp)
 }
 
 type VirtualRouterInterfaceNgfwLocation struct {

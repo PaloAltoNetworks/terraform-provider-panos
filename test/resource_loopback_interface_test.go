@@ -85,6 +85,115 @@ func TestAccLoopbackInterface(t *testing.T) {
 	})
 }
 
+// TestAccLoopbackInterface_NoVsysImport verifies that a loopback interface
+// created without explicit vsys is NOT imported (default_value is "").
+func TestAccLoopbackInterface_NoVsysImport(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: loopbackInterface_NoVsysImport_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_loopback_interface.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("loopback.2"),
+					),
+					ExpectVsysImportAbsent(
+						"panos_loopback_interface.test",
+						"vsys1",
+						ImportTypeInterface,
+					),
+				},
+			},
+		},
+	})
+}
+
+const loopbackInterface_NoVsysImport_Tmpl = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_loopback_interface" "test" {
+  depends_on = [panos_template.test]
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = "loopback.2"
+}
+`
+
+// TestAccLoopbackInterface_VsysImport verifies that a loopback interface
+// with explicit vsys = "vsys1" IS imported to that vsys.
+func TestAccLoopbackInterface_VsysImport(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: loopbackInterface_VsysImport_Tmpl,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_loopback_interface.test",
+						tfjsonpath.New("name"),
+						knownvalue.StringExact("loopback.3"),
+					),
+					ExpectVsysImportExists(
+						"panos_loopback_interface.test",
+						"vsys1",
+						ImportTypeInterface,
+					),
+				},
+			},
+		},
+	})
+}
+
+const loopbackInterface_VsysImport_Tmpl = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = var.prefix
+}
+
+resource "panos_loopback_interface" "test" {
+  depends_on = [panos_template.test]
+  location = {
+    template = {
+      name = panos_template.test.name
+      vsys = "vsys1"
+    }
+  }
+
+  name = "loopback.3"
+}
+`
+
 const loopbackInterfaceResource1 = `
 variable "prefix" { type = string }
 variable "interface_name" { type = string }

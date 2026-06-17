@@ -40,25 +40,21 @@ func TestAccEmailServerProfile_Basic(t *testing.T) {
 						tfjsonpath.New("name"),
 						knownvalue.StringExact(prefix),
 					),
+					// All 17 format log-type params
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("traffic"),
-						knownvalue.StringExact("traffic-fmt"),
+						tfjsonpath.New("format").AtMapKey("auth"),
+						knownvalue.StringExact("auth-fmt"),
 					),
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("threat"),
-						knownvalue.StringExact("threat-fmt"),
+						tfjsonpath.New("format").AtMapKey("config"),
+						knownvalue.StringExact("config-fmt"),
 					),
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("system"),
-						knownvalue.StringExact("system-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("url"),
-						knownvalue.StringExact("url-fmt"),
+						tfjsonpath.New("format").AtMapKey("correlation"),
+						knownvalue.StringExact("correlation-fmt"),
 					),
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
@@ -67,9 +63,70 @@ func TestAccEmailServerProfile_Basic(t *testing.T) {
 					),
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("decryption"),
+						knownvalue.StringExact("decryption-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("globalprotect"),
+						knownvalue.StringExact("globalprotect-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("gtp"),
+						knownvalue.StringExact("gtp-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("hip_match"),
+						knownvalue.StringExact("hip-match-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("iptag"),
+						knownvalue.StringExact("iptag-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("sctp"),
+						knownvalue.StringExact("sctp-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("system"),
+						knownvalue.StringExact("system-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("threat"),
+						knownvalue.StringExact("threat-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("traffic"),
+						knownvalue.StringExact("traffic-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("tunnel"),
+						knownvalue.StringExact("tunnel-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("url"),
+						knownvalue.StringExact("url-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("format").AtMapKey("userid"),
+						knownvalue.StringExact("userid-fmt"),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
 						tfjsonpath.New("format").AtMapKey("wildfire"),
 						knownvalue.StringExact("wildfire-fmt"),
 					),
+					// Escaping sub-object
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
 						tfjsonpath.New("format").AtMapKey("escaping").AtMapKey("escape_character"),
@@ -80,6 +137,7 @@ func TestAccEmailServerProfile_Basic(t *testing.T) {
 						tfjsonpath.New("format").AtMapKey("escaping").AtMapKey("escaped_characters"),
 						knownvalue.StringExact(`'"`),
 					),
+					// Fully-parameterized SMTP server with credentials
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
 						tfjsonpath.New("servers").AtSliceIndex(0).AtMapKey("name"),
@@ -119,6 +177,12 @@ func TestAccEmailServerProfile_Basic(t *testing.T) {
 						"panos_email_server_profile.example",
 						tfjsonpath.New("servers").AtSliceIndex(0).AtMapKey("port"),
 						knownvalue.Int64Exact(587),
+					),
+					// tls_version defaults to "1.2" even for SMTP protocol
+					statecheck.ExpectKnownValue(
+						"panos_email_server_profile.example",
+						tfjsonpath.New("servers").AtSliceIndex(0).AtMapKey("tls_version"),
+						knownvalue.StringExact("1.2"),
 					),
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
@@ -163,12 +227,23 @@ resource "panos_email_server_profile" "example" {
   name = var.prefix
 
   format = {
-    traffic  = "traffic-fmt"
-    threat   = "threat-fmt"
-    system   = "system-fmt"
-    url      = "url-fmt"
-    data     = "data-fmt"
-    wildfire = "wildfire-fmt"
+    auth          = "auth-fmt"
+    config        = "config-fmt"
+    correlation   = "correlation-fmt"
+    data          = "data-fmt"
+    decryption    = "decryption-fmt"
+    globalprotect = "globalprotect-fmt"
+    gtp           = "gtp-fmt"
+    hip_match     = "hip-match-fmt"
+    iptag         = "iptag-fmt"
+    sctp          = "sctp-fmt"
+    system        = "system-fmt"
+    threat        = "threat-fmt"
+    traffic       = "traffic-fmt"
+    tunnel        = "tunnel-fmt"
+    url           = "url-fmt"
+    userid        = "userid-fmt"
+    wildfire      = "wildfire-fmt"
     escaping = {
       escape_character   = "\\"
       escaped_characters = "'\""
@@ -194,7 +269,7 @@ resource "panos_email_server_profile" "example" {
 }
 `
 
-func TestAccEmailServerProfile_TlsProtocol(t *testing.T) {
+func TestAccEmailServerProfile_Protocol_TLS(t *testing.T) {
 	t.Parallel()
 
 	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
@@ -211,7 +286,7 @@ func TestAccEmailServerProfile_TlsProtocol(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: emailServerProfile_TlsProtocol_Tmpl,
+				Config: emailServerProfile_Protocol_TLS_Tmpl,
 				ConfigVariables: map[string]config.Variable{
 					"prefix":   config.StringVariable(prefix),
 					"location": location,
@@ -253,7 +328,7 @@ func TestAccEmailServerProfile_TlsProtocol(t *testing.T) {
 	})
 }
 
-const emailServerProfile_TlsProtocol_Tmpl = `
+const emailServerProfile_Protocol_TLS_Tmpl = `
 variable "prefix" { type = string }
 variable "location" { type = any }
 
@@ -392,7 +467,7 @@ resource "panos_email_server_profile" "example" {
 }
 `
 
-func TestAccEmailServerProfile_FormatOnly(t *testing.T) {
+func TestAccEmailServerProfile_TlsVersion_1_0(t *testing.T) {
 	t.Parallel()
 
 	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
@@ -409,7 +484,7 @@ func TestAccEmailServerProfile_FormatOnly(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProviders,
 		Steps: []resource.TestStep{
 			{
-				Config: emailServerProfile_FormatOnly_Tmpl,
+				Config: emailServerProfile_TlsVersion_1_0_Tmpl,
 				ConfigVariables: map[string]config.Variable{
 					"prefix":   config.StringVariable(prefix),
 					"location": location,
@@ -422,88 +497,13 @@ func TestAccEmailServerProfile_FormatOnly(t *testing.T) {
 					),
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("auth"),
-						knownvalue.StringExact("auth-fmt"),
+						tfjsonpath.New("servers").AtSliceIndex(0).AtMapKey("protocol"),
+						knownvalue.StringExact("TLS"),
 					),
 					statecheck.ExpectKnownValue(
 						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("config"),
-						knownvalue.StringExact("config-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("correlation"),
-						knownvalue.StringExact("correlation-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("data"),
-						knownvalue.StringExact("data-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("decryption"),
-						knownvalue.StringExact("decryption-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("globalprotect"),
-						knownvalue.StringExact("globalprotect-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("gtp"),
-						knownvalue.StringExact("gtp-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("hip_match"),
-						knownvalue.StringExact("hip-match-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("iptag"),
-						knownvalue.StringExact("iptag-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("sctp"),
-						knownvalue.StringExact("sctp-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("system"),
-						knownvalue.StringExact("system-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("threat"),
-						knownvalue.StringExact("threat-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("traffic"),
-						knownvalue.StringExact("traffic-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("tunnel"),
-						knownvalue.StringExact("tunnel-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("url"),
-						knownvalue.StringExact("url-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("userid"),
-						knownvalue.StringExact("userid-fmt"),
-					),
-					statecheck.ExpectKnownValue(
-						"panos_email_server_profile.example",
-						tfjsonpath.New("format").AtMapKey("wildfire"),
-						knownvalue.StringExact("wildfire-fmt"),
+						tfjsonpath.New("servers").AtSliceIndex(0).AtMapKey("tls_version"),
+						knownvalue.StringExact("1.0"),
 					),
 				},
 			},
@@ -511,7 +511,9 @@ func TestAccEmailServerProfile_FormatOnly(t *testing.T) {
 	})
 }
 
-const emailServerProfile_FormatOnly_Tmpl = `
+// tls_version "1.0" is from the PR spec — not in the XML schema.
+// This test verifies whether the device actually accepts it.
+const emailServerProfile_TlsVersion_1_0_Tmpl = `
 variable "prefix" { type = string }
 variable "location" { type = any }
 
@@ -526,24 +528,16 @@ resource "panos_email_server_profile" "example" {
 
   name = var.prefix
 
-  format = {
-    auth          = "auth-fmt"
-    config        = "config-fmt"
-    correlation   = "correlation-fmt"
-    data          = "data-fmt"
-    decryption    = "decryption-fmt"
-    globalprotect = "globalprotect-fmt"
-    gtp           = "gtp-fmt"
-    hip_match     = "hip-match-fmt"
-    iptag         = "iptag-fmt"
-    sctp          = "sctp-fmt"
-    system        = "system-fmt"
-    threat        = "threat-fmt"
-    traffic       = "traffic-fmt"
-    tunnel        = "tunnel-fmt"
-    url           = "url-fmt"
-    userid        = "userid-fmt"
-    wildfire      = "wildfire-fmt"
-  }
+  servers = [
+    {
+      name        = "tls10-server"
+      from        = "alerts@example.com"
+      to          = "admin@example.com"
+      gateway     = "smtp.example.com"
+      protocol    = "TLS"
+      tls_version = "1.0"
+      port        = 587
+    }
+  ]
 }
 `

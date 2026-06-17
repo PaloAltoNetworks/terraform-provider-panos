@@ -7,6 +7,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/config"
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/statecheck"
+	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
 )
 
 // TestAccPanosLogicalRouter_Basic is a comprehensive test covering:
@@ -1227,3 +1230,78 @@ resource "panos_logical_router" "example" {
 func TestAccPanosLogicalRouter_Bgp_PeerAddress_Fqdn(t *testing.T) {
 	t.Skip("Skipping test - BGP peer-groups require address-family profiles which are not available in this test")
 }
+
+// TestAccPanosLogicalRouter_Bgp_GlobalBfd tests BGP global BFD profile reference
+// in a logical router VRF, using a panos_bfd_routing_profile resource.
+func TestAccPanosLogicalRouter_Bgp_GlobalBfd(t *testing.T) {
+	t.Parallel()
+
+	nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+	prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+
+	resource.Test(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProviders,
+		Steps: []resource.TestStep{
+			{
+				Config: panosLogicalRouterBgpGlobalBfd,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigStateChecks: []statecheck.StateCheck{
+					statecheck.ExpectKnownValue(
+						"panos_logical_router.test",
+						tfjsonpath.New("vrf").AtSliceIndex(0).AtMapKey("bgp").AtMapKey("global_bfd").AtMapKey("profile"),
+						knownvalue.StringExact(fmt.Sprintf("%s-bfd", prefix)),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_logical_router.test",
+						tfjsonpath.New("vrf").AtSliceIndex(0).AtMapKey("bgp").AtMapKey("enable"),
+						knownvalue.Bool(true),
+					),
+				},
+			},
+		},
+	})
+}
+
+const panosLogicalRouterBgpGlobalBfd = `
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name = format("%s-tmpl", var.prefix)
+}
+
+resource "panos_bfd_routing_profile" "test" {
+  depends_on = [panos_template.test]
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = format("%s-bfd", var.prefix)
+  mode = "active"
+  detection_multiplier = 5
+}
+
+resource "panos_logical_router" "test" {
+  location = { template = { name = panos_template.test.name } }
+  name = format("%s-router", var.prefix)
+
+  vrf = [{
+    name = "default"
+
+    bgp = {
+      enable = true
+      router_id = "10.0.0.1"
+      local_as = "65001"
+
+      global_bfd = {
+        profile = panos_bfd_routing_profile.test.name
+      }
+    }
+  }]
+}
+`

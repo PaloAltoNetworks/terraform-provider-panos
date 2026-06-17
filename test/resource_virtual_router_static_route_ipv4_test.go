@@ -91,6 +91,11 @@ func TestAccVirtualRouterStaticRouteIpv4(t *testing.T) {
 					),
 					statecheck.ExpectKnownValue(
 						"panos_virtual_router_static_route_ipv4.example",
+						tfjsonpath.New("bfd").AtMapKey("profile"),
+						knownvalue.StringExact(fmt.Sprintf("%s-bfd", prefix)),
+					),
+					statecheck.ExpectKnownValue(
+						"panos_virtual_router_static_route_ipv4.example",
 						tfjsonpath.New("route_table"),
 						knownvalue.ObjectExact(map[string]knownvalue.Check{
 							"unicast":    knownvalue.MapExact(map[string]knownvalue.Check{}),
@@ -154,6 +159,15 @@ resource "panos_virtual_router" "example2" {
   name = format("%s-vr2", var.prefix)
 }
 
+resource "panos_bfd_network_profile" "example" {
+  depends_on = [panos_template.example]
+  location = var.location
+
+  name = format("%s-bfd", var.prefix)
+  mode = "active"
+  detection_multiplier = 3
+}
+
 resource "panos_virtual_router_static_route_ipv4" "example" {
   location = var.location
 
@@ -166,9 +180,9 @@ resource "panos_virtual_router_static_route_ipv4" "example" {
   interface = panos_ethernet_interface.example.name
   metric = 100
 
-  #bfd = {
-  #  profile = "BFD-profile"
-  #}
+  bfd = {
+    profile = panos_bfd_network_profile.example.name
+  }
 
   nexthop = {
     ip_address = "192.168.1.254"

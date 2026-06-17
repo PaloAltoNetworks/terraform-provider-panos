@@ -913,6 +913,15 @@ func (o *SyslogProfileDataSource) Read(ctx context.Context, req datasource.ReadR
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &syslog.SharedLocation{}
+			var innerLocation SyslogProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
 		if !terraformLocation.Vsys.IsNull() {
 			location.Vsys = &syslog.VsysLocation{}
 			var innerLocation SyslogProfileVsysLocation
@@ -1939,6 +1948,15 @@ func (o *SyslogProfileResource) Create(ctx context.Context, req resource.CreateR
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &syslog.SharedLocation{}
+			var innerLocation SyslogProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
 		if !terraformLocation.Vsys.IsNull() {
 			location.Vsys = &syslog.VsysLocation{}
 			var innerLocation SyslogProfileVsysLocation
@@ -2081,6 +2099,15 @@ func (o *SyslogProfileResource) Read(ctx context.Context, req resource.ReadReque
 			}
 		}
 
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &syslog.SharedLocation{}
+			var innerLocation SyslogProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
 		if !terraformLocation.Vsys.IsNull() {
 			location.Vsys = &syslog.VsysLocation{}
 			var innerLocation SyslogProfileVsysLocation
@@ -2218,6 +2245,15 @@ func (o *SyslogProfileResource) Update(ctx context.Context, req resource.UpdateR
 			location.Panorama = &syslog.PanoramaLocation{}
 			var innerLocation SyslogProfilePanoramaLocation
 			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &syslog.SharedLocation{}
+			var innerLocation SyslogProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
 			}
@@ -2393,6 +2429,15 @@ func (o *SyslogProfileResource) Delete(ctx context.Context, req resource.DeleteR
 			location.Panorama = &syslog.PanoramaLocation{}
 			var innerLocation SyslogProfilePanoramaLocation
 			resp.Diagnostics.Append(terraformLocation.Panorama.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+		}
+
+		if !terraformLocation.Shared.IsNull() {
+			location.Shared = &syslog.SharedLocation{}
+			var innerLocation SyslogProfileSharedLocation
+			resp.Diagnostics.Append(terraformLocation.Shared.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
 			if resp.Diagnostics.HasError() {
 				return
 			}
@@ -2595,6 +2640,8 @@ func (o *SyslogProfileResource) ImportState(ctx context.Context, req resource.Im
 
 type SyslogProfilePanoramaLocation struct {
 }
+type SyslogProfileSharedLocation struct {
+}
 type SyslogProfileVsysLocation struct {
 	NgfwDevice types.String `tfsdk:"ngfw_device"`
 	Name       types.String `tfsdk:"name"`
@@ -2621,6 +2668,7 @@ type SyslogProfileTemplateStackVsysLocation struct {
 }
 type SyslogProfileLocation struct {
 	Panorama          types.Object `tfsdk:"panorama"`
+	Shared            types.Object `tfsdk:"shared"`
 	Vsys              types.Object `tfsdk:"vsys"`
 	Template          types.Object `tfsdk:"template"`
 	TemplateVsys      types.Object `tfsdk:"template_vsys"`
@@ -2643,12 +2691,20 @@ func SyslogProfileLocationSchema() rsschema.Attribute {
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("panorama"),
+						path.MatchRelative().AtParent().AtName("shared"),
 						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("template"),
 						path.MatchRelative().AtParent().AtName("template_vsys"),
 						path.MatchRelative().AtParent().AtName("template_stack"),
 						path.MatchRelative().AtParent().AtName("template_stack_vsys"),
 					}...),
+				},
+			},
+			"shared": rsschema.SingleNestedAttribute{
+				Description: "Panorama shared object",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
 				},
 			},
 			"vsys": rsschema.SingleNestedAttribute{
@@ -2846,6 +2902,26 @@ func (o *SyslogProfilePanoramaLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+func (o SyslogProfileSharedLocation) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+	}
+
+	obj := shadow{}
+
+	return json.Marshal(obj)
+}
+
+func (o *SyslogProfileSharedLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (o SyslogProfileVsysLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		NgfwDevice *string `json:"ngfw_device,omitempty"`
@@ -3010,6 +3086,7 @@ func (o *SyslogProfileTemplateStackVsysLocation) UnmarshalJSON(data []byte) erro
 func (o SyslogProfileLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		Panorama          *SyslogProfilePanoramaLocation          `json:"panorama,omitempty"`
+		Shared            *SyslogProfileSharedLocation            `json:"shared,omitempty"`
 		Vsys              *SyslogProfileVsysLocation              `json:"vsys,omitempty"`
 		Template          *SyslogProfileTemplateLocation          `json:"template,omitempty"`
 		TemplateVsys      *SyslogProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
@@ -3021,6 +3098,13 @@ func (o SyslogProfileLocation) MarshalJSON() ([]byte, error) {
 		diags := o.Panorama.As(context.TODO(), &panorama_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
 			return nil, NewDiagnosticsError("Failed to marshal panorama into JSON document", diags.Errors())
+		}
+	}
+	var shared_object *SyslogProfileSharedLocation
+	{
+		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
 		}
 	}
 	var vsys_object *SyslogProfileVsysLocation
@@ -3061,6 +3145,7 @@ func (o SyslogProfileLocation) MarshalJSON() ([]byte, error) {
 
 	obj := shadow{
 		Panorama:          panorama_object,
+		Shared:            shared_object,
 		Vsys:              vsys_object,
 		Template:          template_object,
 		TemplateVsys:      templateVsys_object,
@@ -3074,6 +3159,7 @@ func (o SyslogProfileLocation) MarshalJSON() ([]byte, error) {
 func (o *SyslogProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 		Panorama          *SyslogProfilePanoramaLocation          `json:"panorama,omitempty"`
+		Shared            *SyslogProfileSharedLocation            `json:"shared,omitempty"`
 		Vsys              *SyslogProfileVsysLocation              `json:"vsys,omitempty"`
 		Template          *SyslogProfileTemplateLocation          `json:"template,omitempty"`
 		TemplateVsys      *SyslogProfileTemplateVsysLocation      `json:"template_vsys,omitempty"`
@@ -3091,6 +3177,14 @@ func (o *SyslogProfileLocation) UnmarshalJSON(data []byte) error {
 		panorama_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Panorama.AttributeTypes(), shadow.Panorama)
 		if diags_tmp.HasError() {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into panorama", diags_tmp.Errors())
+		}
+	}
+	var shared_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		shared_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Shared.AttributeTypes(), shadow.Shared)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
 		}
 	}
 	var vsys_object types.Object
@@ -3134,6 +3228,7 @@ func (o *SyslogProfileLocation) UnmarshalJSON(data []byte) error {
 		}
 	}
 	o.Panorama = panorama_object
+	o.Shared = shared_object
 	o.Vsys = vsys_object
 	o.Template = template_object
 	o.TemplateVsys = templateVsys_object
@@ -3144,6 +3239,9 @@ func (o *SyslogProfileLocation) UnmarshalJSON(data []byte) error {
 }
 
 func (o *SyslogProfilePanoramaLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{}
+}
+func (o *SyslogProfileSharedLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
 func (o *SyslogProfileVsysLocation) AttributeTypes() map[string]attr.Type {
@@ -3182,6 +3280,7 @@ func (o *SyslogProfileTemplateStackVsysLocation) AttributeTypes() map[string]att
 }
 func (o *SyslogProfileLocation) AttributeTypes() map[string]attr.Type {
 	var panoramaObj SyslogProfilePanoramaLocation
+	var sharedObj SyslogProfileSharedLocation
 	var vsysObj SyslogProfileVsysLocation
 	var templateObj SyslogProfileTemplateLocation
 	var templateVsysObj SyslogProfileTemplateVsysLocation
@@ -3190,6 +3289,9 @@ func (o *SyslogProfileLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"panorama": types.ObjectType{
 			AttrTypes: panoramaObj.AttributeTypes(),
+		},
+		"shared": types.ObjectType{
+			AttrTypes: sharedObj.AttributeTypes(),
 		},
 		"vsys": types.ObjectType{
 			AttrTypes: vsysObj.AttributeTypes(),

@@ -146,5 +146,5 @@ func (o *VmAuthKeyResource) Open(ctx context.Context, req ephemeral.OpenRequest,
 }
 
 func (o *VmAuthKeyResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-
+	o.ImportStateCustom(ctx, req, resp)
 }

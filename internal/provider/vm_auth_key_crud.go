@@ -7,8 +7,13 @@ import (
 
 	"github.com/PaloAltoNetworks/pango/xmlapi"
 	"github.com/hashicorp/terraform-plugin-framework/ephemeral"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
+
+func (o *VmAuthKeyResource) ImportStateCustom(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resp.Diagnostics.AddError("Import not supported", "The panos_vm_auth_key resource does not support terraform import.")
+}
 
 type VmAuthKeyCustom struct{}
 
