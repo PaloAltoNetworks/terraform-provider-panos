@@ -11,6 +11,8 @@ import (
 	rsschema "github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+
+	pangoutil "github.com/PaloAltoNetworks/pango/util"
 )
 
 type Locationer interface {
@@ -107,8 +109,9 @@ func CreateXpathForAttributeWithAncestors(ancestors []Ancestor, attribute string
 		elts := []string{"/" + attr.AncestorName()}
 		name := attr.EntryName()
 		if name != nil {
-			elts = append(elts, fmt.Sprintf("/entry[@name=\"%s\"]", *name))
-
+			// Route through the SDK's injection-safe builder (CWE-643) instead
+			// of interpolating the name into the predicate directly.
+			elts = append(elts, "/"+pangoutil.AsEntryXpath(*name))
 		}
 
 		return elts, nil

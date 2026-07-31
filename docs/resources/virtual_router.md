@@ -2204,7 +2204,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 4 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 4 sections
 
 
 <a id="nestedatt--protocol--ospfv3--auth_profile--ah--sha1"></a>
@@ -2212,7 +2212,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 5 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 5 sections
 
 
 <a id="nestedatt--protocol--ospfv3--auth_profile--ah--sha256"></a>
@@ -2220,7 +2220,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 8 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 8 sections
 
 
 <a id="nestedatt--protocol--ospfv3--auth_profile--ah--sha384"></a>
@@ -2228,7 +2228,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 12 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 12 sections
 
 
 <a id="nestedatt--protocol--ospfv3--auth_profile--ah--sha512"></a>
@@ -2236,7 +2236,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 16 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 16 sections
 
 
 
@@ -2265,7 +2265,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 4 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 4 sections
 
 
 <a id="nestedatt--protocol--ospfv3--auth_profile--esp--authentication--none"></a>
@@ -2277,7 +2277,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 5 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 5 sections
 
 
 <a id="nestedatt--protocol--ospfv3--auth_profile--esp--authentication--sha256"></a>
@@ -2285,7 +2285,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 8 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 8 sections
 
 
 <a id="nestedatt--protocol--ospfv3--auth_profile--esp--authentication--sha384"></a>
@@ -2293,7 +2293,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 12 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 12 sections
 
 
 <a id="nestedatt--protocol--ospfv3--auth_profile--esp--authentication--sha512"></a>
@@ -2301,7 +2301,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 16 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 16 sections
 
 
 
@@ -2311,7 +2311,7 @@ Optional:
 Optional:
 
 - `algorithm` (String)
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total number of sections: 3des: 6, aes128: 4, aes192: 6, aes256: 8
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total number of sections: 3des: 6, aes128: 4, aes192: 6, aes256: 8
 
 
 

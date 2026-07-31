@@ -273,7 +273,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 4 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 4 sections
 
 
 <a id="nestedatt--manual_key--ah--sha1"></a>
@@ -281,7 +281,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 5 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 5 sections
 
 
 <a id="nestedatt--manual_key--ah--sha256"></a>
@@ -289,7 +289,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 8 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 8 sections
 
 
 <a id="nestedatt--manual_key--ah--sha384"></a>
@@ -297,7 +297,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 12 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 12 sections
 
 
 <a id="nestedatt--manual_key--ah--sha512"></a>
@@ -305,7 +305,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 16 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 16 sections
 
 
 
@@ -334,7 +334,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 4 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 4 sections
 
 
 <a id="nestedatt--manual_key--esp--authentication--none"></a>
@@ -346,7 +346,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 5 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 5 sections
 
 
 <a id="nestedatt--manual_key--esp--authentication--sha256"></a>
@@ -354,7 +354,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 8 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 8 sections
 
 
 <a id="nestedatt--manual_key--esp--authentication--sha384"></a>
@@ -362,7 +362,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 12 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 12 sections
 
 
 <a id="nestedatt--manual_key--esp--authentication--sha512"></a>
@@ -370,7 +370,7 @@ Optional:
 
 Optional:
 
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total 16 sections
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total 16 sections
 
 
 
@@ -380,7 +380,7 @@ Optional:
 Optional:
 
 - `algorithm` (String)
-- `key` (String) hex format xxxxxxxx[-xxxxxxxx]... total number of sections: des: 2, 3des: 6, aes-128-cbc: 4, aes-192-cbc: 6, aes-256-cbc: 8
+- `key` (String, Sensitive) hex format xxxxxxxx[-xxxxxxxx]... total number of sections: des: 2, 3des: 6, aes-128-cbc: 4, aes-192-cbc: 6, aes-256-cbc: 8
 
 
 

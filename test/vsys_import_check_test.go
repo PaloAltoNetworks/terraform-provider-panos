@@ -17,6 +17,7 @@ type ImportType string
 const (
 	ImportTypeInterface     ImportType = "interface"
 	ImportTypeVirtualRouter ImportType = "virtual-router"
+	ImportTypeLogicalRouter ImportType = "logical-router"
 )
 
 type expectVsysImport struct {
@@ -131,6 +132,19 @@ func (o *expectVsysImport) CheckState(ctx context.Context, req statecheck.CheckS
 			return
 		}
 		for _, m := range vrResponse.Members {
+			members = append(members, m.Name)
+		}
+	} else if o.ImportType == ImportTypeLogicalRouter {
+		var lrResponse struct {
+			Members []struct {
+				Name string `xml:",chardata"`
+			} `xml:"result>logical-router>member"`
+		}
+		if err := xml.Unmarshal(bytes, &lrResponse); err != nil {
+			resp.Error = fmt.Errorf("failed to parse logical-router import response: %w", err)
+			return
+		}
+		for _, m := range lrResponse.Members {
 			members = append(members, m.Name)
 		}
 	} else {

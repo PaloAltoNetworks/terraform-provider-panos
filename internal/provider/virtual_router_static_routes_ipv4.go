@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/virtual_router/ipv4/staticroute"
@@ -1844,10 +1843,9 @@ func (o *VirtualRouterStaticRoutesIpv4DataSource) Read(ctx context.Context, req 
 	}
 
 	{
-		component := components[0]
-		component = strings.TrimPrefix(component, "entry[@name='")
-		component = strings.TrimSuffix(component, "']")
-		state.VirtualRouter = types.StringValue(component)
+		// Decode via the SDK's inverse of AsEntryXpath so the injection-safe
+		// concat(...) form (CWE-643) round-trips correctly.
+		state.VirtualRouter = types.StringValue(pangoutil.EntryName(components[0]))
 	}
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -3947,10 +3945,9 @@ func (o *VirtualRouterStaticRoutesIpv4Resource) Read(ctx context.Context, req re
 	}
 
 	{
-		component := components[0]
-		component = strings.TrimPrefix(component, "entry[@name='")
-		component = strings.TrimSuffix(component, "']")
-		state.VirtualRouter = types.StringValue(component)
+		// Decode via the SDK's inverse of AsEntryXpath so the injection-safe
+		// concat(...) form (CWE-643) round-trips correctly.
+		state.VirtualRouter = types.StringValue(pangoutil.EntryName(components[0]))
 	}
 
 	payload, err := json.Marshal(ev)

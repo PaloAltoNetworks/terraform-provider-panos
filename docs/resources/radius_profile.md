@@ -192,7 +192,7 @@ Optional:
 
 - `ip_address` (String) RADIUS server IP or host name
 - `port` (Number) RADIUS server port
-- `secret` (String) Shared secret for RADIUS communication
+- `secret` (String, Sensitive) Shared secret for RADIUS communication
 
 ## Import
 

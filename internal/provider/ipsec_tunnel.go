@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/tunnel/ipsec"
@@ -1837,7 +1838,21 @@ func (o *IpsecTunnelDataSourceManualKeyAhObject) CopyToPango(ctx context.Context
 }
 func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhMd5)
@@ -1848,7 +1863,21 @@ func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyToPango(ctx context.Cont
 }
 func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhSha1)
@@ -1859,7 +1888,21 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyToPango(ctx context.Con
 }
 func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhSha256)
@@ -1870,7 +1913,21 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyToPango(ctx context.C
 }
 func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhSha384)
@@ -1881,7 +1938,21 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyToPango(ctx context.C
 }
 func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhSha512)
@@ -2054,7 +2125,21 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationObject) CopyToPango(ctx 
 }
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationMd5)
@@ -2074,7 +2159,21 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationNoneObject) CopyToPango(
 }
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationSha1)
@@ -2085,7 +2184,21 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyToPango(
 }
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationSha256)
@@ -2096,7 +2209,21 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyToPang
 }
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationSha384)
@@ -2107,7 +2234,21 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyToPang
 }
 func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationSha512)
@@ -2119,7 +2260,21 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyToPang
 func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspEncryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	algorithm_value := o.Algorithm.ValueStringPointer()
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspEncryption)
@@ -3274,7 +3429,28 @@ func (o *IpsecTunnelDataSourceManualKeyAhMd5Object) CopyFromPango(ctx context.Co
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3286,7 +3462,28 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha1Object) CopyFromPango(ctx context.C
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3298,7 +3495,28 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha256Object) CopyFromPango(ctx context
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3310,7 +3528,28 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha384Object) CopyFromPango(ctx context
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3322,7 +3561,28 @@ func (o *IpsecTunnelDataSourceManualKeyAhSha512Object) CopyFromPango(ctx context
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3540,7 +3800,28 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Object) CopyFromPango
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3558,7 +3839,28 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Object) CopyFromPang
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3570,7 +3872,28 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Object) CopyFromPa
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3582,7 +3905,28 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Object) CopyFromPa
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3594,7 +3938,28 @@ func (o *IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Object) CopyFromPa
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -3610,7 +3975,28 @@ func (o *IpsecTunnelDataSourceManualKeyEspEncryptionObject) CopyFromPango(ctx co
 	}
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Algorithm = algorithm_value
 	o.Key = key_value
@@ -4749,6 +5135,7 @@ func IpsecTunnelDataSourceManualKeyAhMd5Schema() dsschema.SingleNestedAttribute 
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -4793,6 +5180,7 @@ func IpsecTunnelDataSourceManualKeyAhSha1Schema() dsschema.SingleNestedAttribute
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -4837,6 +5225,7 @@ func IpsecTunnelDataSourceManualKeyAhSha256Schema() dsschema.SingleNestedAttribu
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -4881,6 +5270,7 @@ func IpsecTunnelDataSourceManualKeyAhSha384Schema() dsschema.SingleNestedAttribu
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -4925,6 +5315,7 @@ func IpsecTunnelDataSourceManualKeyAhSha512Schema() dsschema.SingleNestedAttribu
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -5049,6 +5440,7 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationMd5Schema() dsschema.SingleN
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -5132,6 +5524,7 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha1Schema() dsschema.Single
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -5177,6 +5570,7 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha256Schema() dsschema.Sing
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -5222,6 +5616,7 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha384Schema() dsschema.Sing
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -5267,6 +5662,7 @@ func IpsecTunnelDataSourceManualKeyEspAuthenticationSha512Schema() dsschema.Sing
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -5307,6 +5703,7 @@ func IpsecTunnelDataSourceManualKeyEspEncryptionSchema() dsschema.SingleNestedAt
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total number of sections: des: 2, 3des: 6, aes-128-cbc: 4, aes-192-cbc: 6, aes-256-cbc: 8",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -5999,18 +6396,68 @@ func (o *IpsecTunnelResourceManualKeyAhObject) ValidateConfig(ctx context.Contex
 }
 
 func (o *IpsecTunnelResourceManualKeyAhMd5Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyAhSha1Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyAhSha256Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyAhSha384Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyAhSha512Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyEspObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
@@ -6092,24 +6539,84 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) ValidateConfig(ctx
 }
 
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
 }
 
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *IpsecTunnelResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -7253,6 +7760,7 @@ func IpsecTunnelResourceManualKeyAhMd5Schema() rsschema.SingleNestedAttribute {
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7295,6 +7803,7 @@ func IpsecTunnelResourceManualKeyAhSha1Schema() rsschema.SingleNestedAttribute {
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7337,6 +7846,7 @@ func IpsecTunnelResourceManualKeyAhSha256Schema() rsschema.SingleNestedAttribute
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7379,6 +7889,7 @@ func IpsecTunnelResourceManualKeyAhSha384Schema() rsschema.SingleNestedAttribute
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7421,6 +7932,7 @@ func IpsecTunnelResourceManualKeyAhSha512Schema() rsschema.SingleNestedAttribute
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7541,6 +8053,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationMd5Schema() rsschema.SingleNes
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7621,6 +8134,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha1Schema() rsschema.SingleNe
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7664,6 +8178,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha256Schema() rsschema.Single
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7707,6 +8222,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha384Schema() rsschema.Single
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7750,6 +8266,7 @@ func IpsecTunnelResourceManualKeyEspAuthenticationSha512Schema() rsschema.Single
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -7789,6 +8306,7 @@ func IpsecTunnelResourceManualKeyEspEncryptionSchema() rsschema.SingleNestedAttr
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total number of sections: des: 2, 3des: 6, aes-128-cbc: 4, aes-192-cbc: 6, aes-256-cbc: 8",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -9443,7 +9961,21 @@ func (o *IpsecTunnelResourceManualKeyAhObject) CopyToPango(ctx context.Context, 
 }
 func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhMd5)
@@ -9454,7 +9986,21 @@ func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyToPango(ctx context.Contex
 }
 func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhSha1)
@@ -9465,7 +10011,21 @@ func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyToPango(ctx context.Conte
 }
 func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhSha256)
@@ -9476,7 +10036,21 @@ func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyToPango(ctx context.Con
 }
 func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhSha384)
@@ -9487,7 +10061,21 @@ func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyToPango(ctx context.Con
 }
 func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyAhSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyAhSha512)
@@ -9660,7 +10248,21 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationObject) CopyToPango(ctx co
 }
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationMd5)
@@ -9680,7 +10282,21 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationNoneObject) CopyToPango(ct
 }
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationSha1)
@@ -9691,7 +10307,21 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) CopyToPango(ct
 }
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationSha256)
@@ -9702,7 +10332,21 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) CopyToPango(
 }
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationSha384)
@@ -9713,7 +10357,21 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) CopyToPango(
 }
 func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspAuthenticationSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspAuthenticationSha512)
@@ -9725,7 +10383,21 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyToPango(
 func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **ipsec.ManualKeyEspEncryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	algorithm_value := o.Algorithm.ValueStringPointer()
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(ipsec.ManualKeyEspEncryption)
@@ -10880,7 +11552,28 @@ func (o *IpsecTunnelResourceManualKeyAhMd5Object) CopyFromPango(ctx context.Cont
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -10892,7 +11585,28 @@ func (o *IpsecTunnelResourceManualKeyAhSha1Object) CopyFromPango(ctx context.Con
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -10904,7 +11618,28 @@ func (o *IpsecTunnelResourceManualKeyAhSha256Object) CopyFromPango(ctx context.C
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -10916,7 +11651,28 @@ func (o *IpsecTunnelResourceManualKeyAhSha384Object) CopyFromPango(ctx context.C
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -10928,7 +11684,28 @@ func (o *IpsecTunnelResourceManualKeyAhSha512Object) CopyFromPango(ctx context.C
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -11146,7 +11923,28 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationMd5Object) CopyFromPango(c
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -11164,7 +11962,28 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha1Object) CopyFromPango(
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -11176,7 +11995,28 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha256Object) CopyFromPang
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -11188,7 +12028,28 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha384Object) CopyFromPang
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -11200,7 +12061,28 @@ func (o *IpsecTunnelResourceManualKeyEspAuthenticationSha512Object) CopyFromPang
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -11216,7 +12098,28 @@ func (o *IpsecTunnelResourceManualKeyEspEncryptionObject) CopyFromPango(ctx cont
 	}
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Algorithm = algorithm_value
 	o.Key = key_value

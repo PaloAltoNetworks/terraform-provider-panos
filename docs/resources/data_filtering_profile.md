@@ -70,7 +70,7 @@ resource "panos_data_filtering_profile" "example" {
 
 - `data_capture` (Boolean) Enable data capture
 - `description` (String)
-- `disable_override` (String) Disable object override in child device groups
+- `disable_override` (String) disable object override in child device groups
 - `rules` (Attributes List) Data filtering rules (see [below for nested schema](#nestedatt--rules))
 
 <a id="nestedatt--location"></a>

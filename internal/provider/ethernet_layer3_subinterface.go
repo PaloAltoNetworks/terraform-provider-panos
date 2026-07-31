@@ -10767,10 +10767,9 @@ func (o *EthernetLayer3SubinterfaceDataSource) Read(ctx context.Context, req dat
 	state.Location = state.Location
 
 	{
-		component := components[0]
-		component = strings.TrimPrefix(component, "entry[@name='")
-		component = strings.TrimSuffix(component, "']")
-		state.Parent = types.StringValue(component)
+		// Decode via the SDK's inverse of AsEntryXpath so the injection-safe
+		// concat(...) form (CWE-643) round-trips correctly.
+		state.Parent = types.StringValue(pangoutil.EntryName(components[0]))
 	}
 
 	// Done.
@@ -22502,10 +22501,9 @@ func (o *EthernetLayer3SubinterfaceResource) Read(ctx context.Context, req resou
 	state.Location = state.Location
 
 	{
-		component := components[0]
-		component = strings.TrimPrefix(component, "entry[@name='")
-		component = strings.TrimSuffix(component, "']")
-		state.Parent = types.StringValue(component)
+		// Decode via the SDK's inverse of AsEntryXpath so the injection-safe
+		// concat(...) form (CWE-643) round-trips correctly.
+		state.Parent = types.StringValue(pangoutil.EntryName(components[0]))
 	}
 
 	payload, err := json.Marshal(ev)

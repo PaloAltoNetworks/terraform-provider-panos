@@ -842,7 +842,7 @@ Optional:
 - `default_route_metric` (Number) metric of the default route created
 - `enable` (Boolean)
 - `passive` (Attributes) (see [below for nested schema](#nestedatt--layer3--pppoe--passive))
-- `password` (String) password for ppp autentication
+- `password` (String, Sensitive) password for ppp autentication
 - `service` (String) desired service
 - `static_address` (Attributes) (see [below for nested schema](#nestedatt--layer3--pppoe--static_address))
 - `username` (String) username for ppp authentication

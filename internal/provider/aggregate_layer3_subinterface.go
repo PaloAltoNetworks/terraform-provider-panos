@@ -9,7 +9,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/interface/aggregate/subinterface/layer3"
@@ -10245,10 +10244,9 @@ func (o *AggregateLayer3SubinterfaceDataSource) Read(ctx context.Context, req da
 	state.Location = state.Location
 
 	{
-		component := components[0]
-		component = strings.TrimPrefix(component, "entry[@name='")
-		component = strings.TrimSuffix(component, "']")
-		state.Parent = types.StringValue(component)
+		// Decode via the SDK's inverse of AsEntryXpath so the injection-safe
+		// concat(...) form (CWE-643) round-trips correctly.
+		state.Parent = types.StringValue(pangoutil.EntryName(components[0]))
 	}
 
 	// Done.
@@ -21414,10 +21412,9 @@ func (o *AggregateLayer3SubinterfaceResource) Read(ctx context.Context, req reso
 	state.Location = state.Location
 
 	{
-		component := components[0]
-		component = strings.TrimPrefix(component, "entry[@name='")
-		component = strings.TrimSuffix(component, "']")
-		state.Parent = types.StringValue(component)
+		// Decode via the SDK's inverse of AsEntryXpath so the injection-safe
+		// concat(...) form (CWE-643) round-trips correctly.
+		state.Parent = types.StringValue(pangoutil.EntryName(components[0]))
 	}
 
 	payload, err := json.Marshal(ev)

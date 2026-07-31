@@ -12511,7 +12511,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationObject
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationMd5Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationMd5)
@@ -12522,7 +12536,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationMd5Obj
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha1Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha1)
@@ -12533,7 +12561,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha1Ob
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha256Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha256)
@@ -12544,7 +12586,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha256
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha384Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha384)
@@ -12555,7 +12611,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha384
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha512Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha512)
@@ -12576,7 +12646,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationNoneOb
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspEncryptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspEncryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	algorithm_value := o.Algorithm.ValueStringPointer()
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspEncryption)
@@ -12687,7 +12771,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhObject) CopyToPango(c
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhMd5Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhMd5)
@@ -12698,7 +12796,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhMd5Object) CopyToPang
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha1Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhSha1)
@@ -12709,7 +12821,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha1Object) CopyToPan
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha256Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhSha256)
@@ -12720,7 +12846,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha256Object) CopyToP
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha384Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhSha384)
@@ -12731,7 +12871,21 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha384Object) CopyToP
 }
 func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha512Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhSha512)
@@ -22440,7 +22594,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationMd5Obj
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -22452,7 +22627,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha1Ob
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -22464,7 +22660,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha256
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -22476,7 +22693,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha384
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -22488,7 +22726,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha512
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -22510,7 +22769,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileEspEncryptionObject) Co
 	}
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Algorithm = algorithm_value
 	o.Key = key_value
@@ -22650,7 +22930,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhMd5Object) CopyFromPa
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -22662,7 +22963,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha1Object) CopyFromP
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -22674,7 +22996,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha256Object) CopyFro
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -22686,7 +23029,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha384Object) CopyFro
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -22698,7 +23062,28 @@ func (o *VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha512Object) CopyFro
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -32327,6 +32712,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationMd5Schema(
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32372,6 +32758,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha1Schema
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32417,6 +32804,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha256Sche
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32462,6 +32850,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha384Sche
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32507,6 +32896,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileEspAuthenticationSha512Sche
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32585,6 +32975,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileEspEncryptionSchema() dssch
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total number of sections: 3des: 6, aes128: 4, aes192: 6, aes256: 8",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32674,6 +33065,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileAhMd5Schema() dsschema.Sing
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32718,6 +33110,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha1Schema() dsschema.Sin
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32762,6 +33155,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha256Schema() dsschema.S
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32806,6 +33200,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha384Schema() dsschema.S
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -32850,6 +33245,7 @@ func VirtualRouterDataSourceProtocolOspfv3AuthProfileAhSha512Schema() dsschema.S
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -37925,24 +38321,84 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationObject) 
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationMd5Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha1Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha256Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha384Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha512Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationNoneObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspEncryptionObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
@@ -37994,18 +38450,68 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhObject) ValidateConfig(
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhMd5Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha1Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha256Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha384Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha512Object) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Key.IsUnknown() && !o.Key.IsNull() {
+		value := o.Key.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("key"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("key").String()),
+			)
+		}
+	}
 }
 
 func (o *VirtualRouterResourceProtocolOspfv3ExportRulesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
@@ -46507,6 +47013,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationMd5Schema() 
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -46550,6 +47057,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha1Schema()
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -46593,6 +47101,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha256Schema
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -46636,6 +47145,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha384Schema
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -46679,6 +47189,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha512Schema
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -46753,6 +47264,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileEspEncryptionSchema() rsschem
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total number of sections: 3des: 6, aes128: 4, aes192: 6, aes256: 8",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -46839,6 +47351,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileAhMd5Schema() rsschema.Single
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 4 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -46881,6 +47394,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileAhSha1Schema() rsschema.Singl
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 5 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -46923,6 +47437,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileAhSha256Schema() rsschema.Sin
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 8 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -46965,6 +47480,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileAhSha384Schema() rsschema.Sin
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 12 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -47007,6 +47523,7 @@ func VirtualRouterResourceProtocolOspfv3AuthProfileAhSha512Schema() rsschema.Sin
 			"key": rsschema.StringAttribute{
 				Description: "hex format xxxxxxxx[-xxxxxxxx]... total 16 sections",
 				Optional:    true,
+				Sensitive:   true,
 			},
 		},
 	}
@@ -59587,7 +60104,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationObject) 
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationMd5Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationMd5)
@@ -59598,7 +60129,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationMd5Objec
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha1Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha1)
@@ -59609,7 +60154,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha1Obje
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha256Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha256)
@@ -59620,7 +60179,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha256Ob
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha384Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha384)
@@ -59631,7 +60204,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha384Ob
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha512Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspAuthenticationSha512)
@@ -59652,7 +60239,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationNoneObje
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspEncryptionObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileEspEncryption, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
 	algorithm_value := o.Algorithm.ValueStringPointer()
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileEspEncryption)
@@ -59763,7 +60364,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhObject) CopyToPango(ctx
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhMd5Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhMd5, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhMd5)
@@ -59774,7 +60389,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhMd5Object) CopyToPango(
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha1Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhSha1, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhSha1)
@@ -59785,7 +60414,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha1Object) CopyToPango
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha256Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhSha256, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhSha256)
@@ -59796,7 +60439,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha256Object) CopyToPan
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha384Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhSha384, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhSha384)
@@ -59807,7 +60464,21 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha384Object) CopyToPan
 }
 func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha512Object) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **virtual_router.ProtocolOspfv3AuthProfileAhSha512, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	key_value := o.Key.ValueStringPointer()
+
+	var key_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Key.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		key_value = o.Key.ValueStringPointer()
+	}
 
 	if (*obj) == nil {
 		*obj = new(virtual_router.ProtocolOspfv3AuthProfileAhSha512)
@@ -69516,7 +70187,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationMd5Objec
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -69528,7 +70220,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha1Obje
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -69540,7 +70253,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha256Ob
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -69552,7 +70286,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha384Ob
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -69564,7 +70319,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspAuthenticationSha512Ob
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -69586,7 +70362,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileEspEncryptionObject) Copy
 	}
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Algorithm = algorithm_value
 	o.Key = key_value
@@ -69726,7 +70523,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhMd5Object) CopyFromPang
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -69738,7 +70556,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha1Object) CopyFromPan
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -69750,7 +70589,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha256Object) CopyFromP
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -69762,7 +70622,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha384Object) CopyFromP
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
@@ -69774,7 +70655,28 @@ func (o *VirtualRouterResourceProtocolOspfv3AuthProfileAhSha512Object) CopyFromP
 
 	var key_value types.String
 	if obj.Key != nil {
-		key_value = types.StringValue(*obj.Key)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "key")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Key != evFromState {
+			key_value = types.StringPointerValue(obj.Key)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			key_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			key_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Key)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	o.Key = key_value
 
