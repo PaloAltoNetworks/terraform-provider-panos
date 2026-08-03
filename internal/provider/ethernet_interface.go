@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/PaloAltoNetworks/pango"
 	"github.com/PaloAltoNetworks/pango/network/interface/ethernet"
@@ -4838,7 +4839,21 @@ func (o *EthernetInterfaceDataSourceLayer3PppoeObject) CopyToPango(ctx context.C
 			return diags
 		}
 	}
-	password_value := o.Password.ValueStringPointer()
+
+	var password_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		password_value = o.Password.ValueStringPointer()
+	}
 	service_value := o.Service.ValueStringPointer()
 	var staticAddress_entry *ethernet.Layer3PppoeStaticAddress
 	if !o.StaticAddress.IsUnknown() && !o.StaticAddress.IsNull() {
@@ -8557,7 +8572,28 @@ func (o *EthernetInterfaceDataSourceLayer3PppoeObject) CopyFromPango(ctx context
 	}
 	var password_value types.String
 	if obj.Password != nil {
-		password_value = types.StringValue(*obj.Password)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	var service_value types.String
 	if obj.Service != nil {
@@ -12301,6 +12337,7 @@ func EthernetInterfaceDataSourceLayer3PppoeSchema() dsschema.SingleNestedAttribu
 				Description: "password for ppp autentication",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 
 			"service": dsschema.StringAttribute{
@@ -14427,6 +14464,16 @@ func (o *EthernetInterfaceResourceLayer3NdpProxyAddressesObject) ValidateConfig(
 }
 
 func (o *EthernetInterfaceResourceLayer3PppoeObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Password.IsUnknown() && !o.Password.IsNull() {
+		value := o.Password.ValueString()
+		if strings.Contains(value, "[PLAINTEXT-VALUE-MISSING]") {
+			resp.Diagnostics.AddAttributeError(
+				path.AtName("password"),
+				"Invalid Encrypted/Hashed Field Value",
+				fmt.Sprintf("The attribute at path %s contains the placeholder value '[PLAINTEXT-VALUE-MISSING]'. This value is likely from an import operation. The provider cannot decrypt encrypted/hashed values from the device during import. Please provide a valid plaintext value.", path.AtName("password").String()),
+			)
+		}
+	}
 	if !o.Passive.IsUnknown() && !o.Passive.IsNull() {
 		var nestedObj EthernetInterfaceResourceLayer3PppoePassiveObject
 		diags := o.Passive.As(ctx, &nestedObj, basetypes.ObjectAsOptions{})
@@ -17854,6 +17901,7 @@ func EthernetInterfaceResourceLayer3PppoeSchema() rsschema.SingleNestedAttribute
 			"password": rsschema.StringAttribute{
 				Description: "password for ppp autentication",
 				Optional:    true,
+				Sensitive:   true,
 			},
 
 			"service": rsschema.StringAttribute{
@@ -22725,7 +22773,21 @@ func (o *EthernetInterfaceResourceLayer3PppoeObject) CopyToPango(ctx context.Con
 			return diags
 		}
 	}
-	password_value := o.Password.ValueStringPointer()
+
+	var password_value *string
+	{
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+		err = ev.StorePlaintextValue(valueKey, "solo", o.Password.ValueString())
+		if err != nil {
+			diags.AddError("Failed to manage encrypted values state", err.Error())
+			return diags
+		}
+		password_value = o.Password.ValueStringPointer()
+	}
 	service_value := o.Service.ValueStringPointer()
 	var staticAddress_entry *ethernet.Layer3PppoeStaticAddress
 	if !o.StaticAddress.IsUnknown() && !o.StaticAddress.IsNull() {
@@ -26444,7 +26506,28 @@ func (o *EthernetInterfaceResourceLayer3PppoeObject) CopyFromPango(ctx context.C
 	}
 	var password_value types.String
 	if obj.Password != nil {
-		password_value = types.StringValue(*obj.Password)
+		valueKey, err := CreateXpathForAttributeWithAncestors(ancestors, "password")
+		if err != nil {
+			diags.AddError("Failed to create encrypted values state key", err.Error())
+			return diags
+		}
+
+		if evFromState, found := ev.GetEncryptedValue(valueKey); found && ev.PreferServerState() && *obj.Password != evFromState {
+			password_value = types.StringPointerValue(obj.Password)
+		} else if value, found := ev.GetPlaintextValue(valueKey); found {
+			password_value = types.StringValue(value)
+		} else {
+			diags.AddWarning("Failed to read plaintext value from encrypted state, fallback value used", fmt.Sprintf("Missing plaintext value for %s", valueKey))
+			password_value = types.StringValue("[PLAINTEXT-VALUE-MISSING]")
+		}
+
+		if !ev.PreferServerState() {
+			err = ev.StoreEncryptedValue(valueKey, "solo", *obj.Password)
+			if err != nil {
+				diags.AddError("Failed to store encrypted values state", err.Error())
+				return diags
+			}
+		}
 	}
 	var service_value types.String
 	if obj.Service != nil {

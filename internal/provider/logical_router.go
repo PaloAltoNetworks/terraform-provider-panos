@@ -48,7 +48,7 @@ func NewLogicalRouterDataSource() datasource.DataSource {
 
 type LogicalRouterDataSource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*logical_router.Entry, logical_router.Location, *logical_router.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*logical_router.Entry, logical_router.Location, *logical_router.Service]
 }
 
 type LogicalRouterDataSourceFilter struct {
@@ -20899,7 +20899,7 @@ func (d *LogicalRouterDataSource) Configure(_ context.Context, req datasource.Co
 		return
 	}
 	batchSize := providerData.MultiConfigBatchSize
-	d.manager = sdkmanager.NewEntryObjectManager[*logical_router.Entry, logical_router.Location, *logical_router.Service](d.client, logical_router.NewService(d.client), batchSize, specifier, logical_router.SpecMatches)
+	d.manager = sdkmanager.NewImportableEntryObjectManager(d.client, logical_router.NewService(d.client), batchSize, specifier, logical_router.SpecMatches)
 }
 func (o *LogicalRouterDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 
@@ -21027,7 +21027,7 @@ func NewLogicalRouterResource() resource.Resource {
 
 type LogicalRouterResource struct {
 	client  *pango.Client
-	manager *sdkmanager.EntryObjectManager[*logical_router.Entry, logical_router.Location, *logical_router.Service]
+	manager *sdkmanager.ImportableEntryObjectManager[*logical_router.Entry, logical_router.Location, *logical_router.Service]
 }
 
 func LogicalRouterResourceLocationSchema() rsschema.Attribute {
@@ -29731,8 +29731,9 @@ func (o *LogicalRouterResource) Configure(ctx context.Context, req resource.Conf
 		resp.Diagnostics.AddError("Failed to configure SDK client", err.Error())
 		return
 	}
+
 	batchSize := providerData.MultiConfigBatchSize
-	o.manager = sdkmanager.NewEntryObjectManager[*logical_router.Entry, logical_router.Location, *logical_router.Service](o.client, logical_router.NewService(o.client), batchSize, specifier, logical_router.SpecMatches)
+	o.manager = sdkmanager.NewImportableEntryObjectManager(o.client, logical_router.NewService(o.client), batchSize, specifier, logical_router.SpecMatches)
 }
 
 func (o *LogicalRouterResourceModel) AttributeTypes() map[string]attr.Type {
@@ -43523,6 +43524,54 @@ func (o *LogicalRouterResource) Create(ctx context.Context, req resource.CreateR
 		return
 	}
 
+	var importVsys string
+
+	{
+		var terraformLocation LogicalRouterLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		locationRequiresImport := true
+
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation LogicalRouterTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
+			}
+		}
+
+	}
+
+	if importVsys != "" {
+		err = o.manager.ImportToLocation(ctx, location, importVsys, obj.Name)
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to import resource into location", err.Error())
+			return
+		}
+	}
+
 	resp.Diagnostics.Append(state.CopyFromPango(ctx, o.client, nil, created, ev)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -43887,6 +43936,53 @@ func (o *LogicalRouterResource) Delete(ctx context.Context, req resource.DeleteR
 		resp.Diagnostics.AddError("Error creating resource xpath", err.Error())
 		return
 	}
+	var importVsys string
+
+	{
+		var terraformLocation LogicalRouterLocation
+		resp.Diagnostics.Append(state.Location.As(ctx, &terraformLocation, basetypes.ObjectAsOptions{})...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		locationRequiresImport := true
+
+		if !terraformLocation.Template.IsNull() {
+			var terraformInnerLocation LogicalRouterTemplateLocation
+			resp.Diagnostics.Append(terraformLocation.Template.As(ctx, &terraformInnerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+
+			// if the vsys value is not known at this stage, we must explicitly set it to null ourselves.
+			if terraformInnerLocation.Vsys.IsUnknown() {
+				terraformInnerLocation.Vsys = types.StringNull()
+				object, diags := types.ObjectValueFrom(ctx, terraformInnerLocation.AttributeTypes(), terraformInnerLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				terraformLocation.Template = object
+
+				object, diags = types.ObjectValueFrom(ctx, terraformLocation.AttributeTypes(), terraformLocation)
+				resp.Diagnostics.Append(diags...)
+				if resp.Diagnostics.HasError() {
+					return
+				}
+				state.Location = object
+			} else if locationRequiresImport && !terraformInnerLocation.Vsys.IsNull() && terraformInnerLocation.Vsys.ValueString() != "" {
+				importVsys = terraformInnerLocation.Vsys.ValueString()
+			}
+		}
+
+	}
+
+	if importVsys != "" {
+		err = o.manager.UnimportFromLocation(ctx, location, importVsys, state.Name.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Failed to unimport resource from location", err.Error())
+			return
+		}
+	}
 
 	err = o.manager.Delete(ctx, location, components, []string{state.Name.ValueString()})
 	if err != nil && !errors.Is(err, sdkmanager.ErrObjectNotFound) {
@@ -44022,6 +44118,7 @@ type LogicalRouterVsysLocation struct {
 	Name       types.String `tfsdk:"name"`
 }
 type LogicalRouterTemplateLocation struct {
+	Vsys           types.String `tfsdk:"vsys"`
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 	NgfwDevice     types.String `tfsdk:"ngfw_device"`
@@ -44086,6 +44183,14 @@ func LogicalRouterLocationSchema() rsschema.Attribute {
 				Description: "Located in a specific template",
 				Optional:    true,
 				Attributes: map[string]rsschema.Attribute{
+					"vsys": rsschema.StringAttribute{
+						Description: "",
+						Optional:    true,
+						Computed:    true,
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
 					"panorama_device": rsschema.StringAttribute{
 						Description: "Specific Panorama device",
 						Optional:    true,
@@ -44210,12 +44315,14 @@ func (o LogicalRouterTemplateLocation) MarshalJSON() ([]byte, error) {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
 	}
 
 	obj := shadow{
 		PanoramaDevice: o.PanoramaDevice.ValueStringPointer(),
 		Name:           o.Name.ValueStringPointer(),
 		NgfwDevice:     o.NgfwDevice.ValueStringPointer(),
+		Vsys:           o.Vsys.ValueStringPointer(),
 	}
 
 	return json.Marshal(obj)
@@ -44226,6 +44333,7 @@ func (o *LogicalRouterTemplateLocation) UnmarshalJSON(data []byte) error {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
 		Name           *string `json:"name,omitempty"`
 		NgfwDevice     *string `json:"ngfw_device,omitempty"`
+		Vsys           *string `tfsdk:"vsys"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -44235,6 +44343,7 @@ func (o *LogicalRouterTemplateLocation) UnmarshalJSON(data []byte) error {
 	o.PanoramaDevice = types.StringPointerValue(shadow.PanoramaDevice)
 	o.Name = types.StringPointerValue(shadow.Name)
 	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Vsys = types.StringPointerValue(shadow.Vsys)
 
 	return nil
 }
@@ -44402,6 +44511,7 @@ func (o *LogicalRouterVsysLocation) AttributeTypes() map[string]attr.Type {
 }
 func (o *LogicalRouterTemplateLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
+		"vsys":            types.StringType,
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
 		"ngfw_device":     types.StringType,

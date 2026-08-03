@@ -96,10 +96,10 @@ Optional:
 
 Optional:
 
-- `block_if_no_resource` (Boolean) whether to block sessions if device has no enough resources
+- `block_if_no_resource` (Boolean) Block sessions when decryption resources are not available
 - `block_ssh_errors` (Boolean) whether to block sessions if ssh errors are encountered
 - `block_unsupported_alg` (Boolean) whether to block sessions if ssh algorithm is not supported
-- `block_unsupported_version` (Boolean) whether to block sessions if ssh version is not supported
+- `block_unsupported_version` (Boolean) Block sessions with unsupported protocol versions
 
 
 <a id="nestedatt--ssl_forward_proxy"></a>
@@ -110,11 +110,11 @@ Optional:
 - `auto_include_altname` (Boolean) whether to automatically append SAN to impersonating certificate if server certificate is missing SAN
 - `block_client_cert` (Boolean) Block sessions with client certificate
 - `block_expired_certificate` (Boolean) Block sessions with expired certificates
-- `block_if_hsm_unavailable` (Boolean) whether to block sessions if HSM is unavailable
-- `block_if_no_resource` (Boolean) whether to block sessions if device has no enough resources
+- `block_if_hsm_unavailable` (Boolean) Block sessions when HSM is unavailable
+- `block_if_no_resource` (Boolean) Block sessions when decryption resources are not available
 - `block_if_sni_mismatch` (Boolean) whether to block a session when certificate's subject name or SAN doesn't match SNI
 - `block_timeout_cert` (Boolean) Block sessions if certificate status cannot be retrieved within timeout
-- `block_tls13_downgrade_no_resource` (Boolean) whether to downgrade from tls1.3 if device has not enough resources
+- `block_tls13_downgrade_no_resource` (Boolean) Block TLS 1.3 downgrade when no resources are available
 - `block_unknown_cert` (Boolean) Block sessions if certificate status is unknown
 - `block_unsupported_cipher` (Boolean) Block sessions with unsupported cipher suites
 - `block_unsupported_version` (Boolean) Block sessions with unsupported protocol versions

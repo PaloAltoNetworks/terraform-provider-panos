@@ -1156,6 +1156,7 @@ func RadiusProfileDataSourceServersSchema() dsschema.NestedAttributeObject {
 				Description: "Shared secret for RADIUS communication",
 				Optional:    true,
 				Computed:    true,
+				Sensitive:   true,
 			},
 
 			"port": dsschema.Int64Attribute{
@@ -1856,6 +1857,7 @@ func RadiusProfileResourceServersSchema() rsschema.NestedAttributeObject {
 			"secret": rsschema.StringAttribute{
 				Description: "Shared secret for RADIUS communication",
 				Optional:    true,
+				Sensitive:   true,
 			},
 
 			"port": rsschema.Int64Attribute{

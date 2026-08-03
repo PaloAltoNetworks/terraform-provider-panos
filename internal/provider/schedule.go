@@ -1096,8 +1096,6 @@ func ScheduleResourceSchema() rsschema.Schema {
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Optional:    true,
-				Computed:    true,
-				Default:     stringdefault.StaticString("no"),
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{

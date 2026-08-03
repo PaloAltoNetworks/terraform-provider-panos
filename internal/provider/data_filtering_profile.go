@@ -369,7 +369,7 @@ func DataFilteringProfileDataSourceSchema() dsschema.Schema {
 			},
 
 			"disable_override": dsschema.StringAttribute{
-				Description: "Disable object override in child device groups",
+				Description: "disable object override in child device groups",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -684,10 +684,8 @@ func DataFilteringProfileResourceSchema() rsschema.Schema {
 			},
 
 			"disable_override": rsschema.StringAttribute{
-				Description: "Disable object override in child device groups",
+				Description: "disable object override in child device groups",
 				Optional:    true,
-				Computed:    true,
-				Default:     stringdefault.StaticString("no"),
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{

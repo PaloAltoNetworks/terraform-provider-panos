@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/knownvalue"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-plugin-testing/statecheck"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfjsonpath"
@@ -2264,6 +2265,27 @@ func TestAccPanosVirtualRouter_Ospf_AuthProfile(t *testing.T) {
 						tfjsonpath.New("protocol").AtMapKey("ospf").AtMapKey("auth_profile"),
 						knownvalue.NotNull(),
 					),
+					// The md5 key is hashing.type: solo, so the configured
+					// plaintext round-trips exactly in state.
+					statecheck.ExpectKnownValue(
+						"panos_virtual_router.test",
+						tfjsonpath.New("protocol").AtMapKey("ospf").AtMapKey("auth_profile").AtSliceIndex(0).AtMapKey("md5").AtSliceIndex(0).AtMapKey("key"),
+						knownvalue.StringExact("ospf-secret-key"),
+					),
+				},
+			},
+			{
+				// Re-applying the identical config must produce no diff. If
+				// the key were only sensitive (not solo), the device-returned
+				// hash would land in state and this plan would be non-empty.
+				Config: testAccVirtualRouterOspfAuthProfile,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectEmptyPlan(),
+					},
 				},
 			},
 		},
@@ -2615,6 +2637,27 @@ func TestAccPanosVirtualRouter_Rip_AuthProfile_Md5(t *testing.T) {
 						tfjsonpath.New("protocol").AtMapKey("rip").AtMapKey("auth_profile").AtSliceIndex(0).AtMapKey("md5"),
 						knownvalue.NotNull(),
 					),
+					// The md5 key is hashing.type: solo, so the configured
+					// plaintext round-trips exactly in state.
+					statecheck.ExpectKnownValue(
+						"panos_virtual_router.test",
+						tfjsonpath.New("protocol").AtMapKey("rip").AtMapKey("auth_profile").AtSliceIndex(0).AtMapKey("md5").AtSliceIndex(0).AtMapKey("key"),
+						knownvalue.StringExact("rip-secret-md5"),
+					),
+				},
+			},
+			{
+				// Re-applying the identical config must produce no diff. If
+				// the key were only sensitive (not solo), the device-returned
+				// hash would land in state and this plan would be non-empty.
+				Config: testAccVirtualRouterRipAuthProfileMd5,
+				ConfigVariables: map[string]config.Variable{
+					"prefix": config.StringVariable(prefix),
+				},
+				ConfigPlanChecks: resource.ConfigPlanChecks{
+					PreApply: []plancheck.PlanCheck{
+						plancheck.ExpectEmptyPlan(),
+					},
 				},
 			},
 		},
@@ -4561,3 +4604,197 @@ resource "panos_virtual_router" "test" {
   }
 }
 `
+
+// OSPFv3 auth_profile uses the IPSec-style AH/ESP structure with hex key
+// material (unlike OSPFv2/RIP which use a simple md5 list). These tests verify
+// that each AH/ESP key leaf behaves as a hashing.type: solo field: the
+// configured plaintext round-trips exactly in state, and re-applying the
+// identical config produces no diff. A key that is only sensitive (not solo)
+// would fail the ExpectEmptyPlan step because the device returns a hashed
+// value on read.
+//
+// Hex key lengths are the PAN-OS manual-key requirements per algorithm
+// (md5=32, sha1=40, sha256=64, sha384=96, sha512=128 hex digits; aes-128-cbc=32,
+// aes-256-cbc=64). Adjust the spi/key values if a specific PAN-OS build rejects
+// them.
+const (
+	ospfv3KeyMd5    = "00112233445566778899aabbccddeeff"
+	ospfv3KeySha1   = "00112233445566778899aabbccddeeff00112233"
+	ospfv3KeySha256 = "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+	ospfv3KeySha384 = "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+	ospfv3KeySha512 = "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+	ospfv3KeyEnc256 = "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff"
+)
+
+func TestAccPanosVirtualRouter_Ospfv3_AuthProfile(t *testing.T) {
+	t.Parallel()
+
+	base := tfjsonpath.New("protocol").AtMapKey("ospfv3").AtMapKey("auth_profile").AtSliceIndex(0)
+
+	cases := []struct {
+		name     string
+		authAttr string
+		keyPath  tfjsonpath.Path
+		keyValue string
+	}{
+		{
+			name:     "Ah_Md5",
+			authAttr: `ah = { md5 = { key = "` + ospfv3KeyMd5 + `" } }`,
+			keyPath:  base.AtMapKey("ah").AtMapKey("md5").AtMapKey("key"),
+			keyValue: ospfv3KeyMd5,
+		},
+		{
+			name:     "Ah_Sha1",
+			authAttr: `ah = { sha1 = { key = "` + ospfv3KeySha1 + `" } }`,
+			keyPath:  base.AtMapKey("ah").AtMapKey("sha1").AtMapKey("key"),
+			keyValue: ospfv3KeySha1,
+		},
+		{
+			name:     "Ah_Sha256",
+			authAttr: `ah = { sha256 = { key = "` + ospfv3KeySha256 + `" } }`,
+			keyPath:  base.AtMapKey("ah").AtMapKey("sha256").AtMapKey("key"),
+			keyValue: ospfv3KeySha256,
+		},
+		{
+			name:     "Ah_Sha384",
+			authAttr: `ah = { sha384 = { key = "` + ospfv3KeySha384 + `" } }`,
+			keyPath:  base.AtMapKey("ah").AtMapKey("sha384").AtMapKey("key"),
+			keyValue: ospfv3KeySha384,
+		},
+		{
+			name:     "Ah_Sha512",
+			authAttr: `ah = { sha512 = { key = "` + ospfv3KeySha512 + `" } }`,
+			keyPath:  base.AtMapKey("ah").AtMapKey("sha512").AtMapKey("key"),
+			keyValue: ospfv3KeySha512,
+		},
+		{
+			name: "Esp_Auth_Md5",
+			authAttr: `esp = {
+            authentication = { md5 = { key = "` + ospfv3KeyMd5 + `" } }
+            encryption     = { algorithm = "aes-128-cbc", key = "` + ospfv3KeyMd5 + `" }
+          }`,
+			keyPath:  base.AtMapKey("esp").AtMapKey("authentication").AtMapKey("md5").AtMapKey("key"),
+			keyValue: ospfv3KeyMd5,
+		},
+		{
+			name: "Esp_Auth_Sha1",
+			authAttr: `esp = {
+            authentication = { sha1 = { key = "` + ospfv3KeySha1 + `" } }
+            encryption     = { algorithm = "aes-128-cbc", key = "` + ospfv3KeyMd5 + `" }
+          }`,
+			keyPath:  base.AtMapKey("esp").AtMapKey("authentication").AtMapKey("sha1").AtMapKey("key"),
+			keyValue: ospfv3KeySha1,
+		},
+		{
+			name: "Esp_Auth_Sha256",
+			authAttr: `esp = {
+            authentication = { sha256 = { key = "` + ospfv3KeySha256 + `" } }
+            encryption     = { algorithm = "aes-128-cbc", key = "` + ospfv3KeyMd5 + `" }
+          }`,
+			keyPath:  base.AtMapKey("esp").AtMapKey("authentication").AtMapKey("sha256").AtMapKey("key"),
+			keyValue: ospfv3KeySha256,
+		},
+		{
+			name: "Esp_Auth_Sha384",
+			authAttr: `esp = {
+            authentication = { sha384 = { key = "` + ospfv3KeySha384 + `" } }
+            encryption     = { algorithm = "aes-128-cbc", key = "` + ospfv3KeyMd5 + `" }
+          }`,
+			keyPath:  base.AtMapKey("esp").AtMapKey("authentication").AtMapKey("sha384").AtMapKey("key"),
+			keyValue: ospfv3KeySha384,
+		},
+		{
+			name: "Esp_Auth_Sha512",
+			authAttr: `esp = {
+            authentication = { sha512 = { key = "` + ospfv3KeySha512 + `" } }
+            encryption     = { algorithm = "aes-128-cbc", key = "` + ospfv3KeyMd5 + `" }
+          }`,
+			keyPath:  base.AtMapKey("esp").AtMapKey("authentication").AtMapKey("sha512").AtMapKey("key"),
+			keyValue: ospfv3KeySha512,
+		},
+		{
+			name: "Esp_Encryption",
+			authAttr: `esp = {
+            authentication = { md5 = { key = "` + ospfv3KeyMd5 + `" } }
+            encryption     = { algorithm = "aes-256-cbc", key = "` + ospfv3KeyEnc256 + `" }
+          }`,
+			keyPath:  base.AtMapKey("esp").AtMapKey("encryption").AtMapKey("key"),
+			keyValue: ospfv3KeyEnc256,
+		},
+	}
+
+	for _, tc := range cases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			nameSuffix := acctest.RandStringFromCharSet(6, acctest.CharSetAlphaNum)
+			prefix := fmt.Sprintf("test-acc-%s", nameSuffix)
+			cfg := testAccVirtualRouterOspfv3AuthProfileConfig(tc.authAttr)
+			vars := map[string]config.Variable{"prefix": config.StringVariable(prefix)}
+
+			resource.Test(t, resource.TestCase{
+				PreCheck:                 func() { testAccPreCheck(t) },
+				ProtoV6ProviderFactories: testAccProviders,
+				Steps: []resource.TestStep{
+					{
+						Config:          cfg,
+						ConfigVariables: vars,
+						ConfigStateChecks: []statecheck.StateCheck{
+							statecheck.ExpectKnownValue(
+								"panos_virtual_router.test",
+								tc.keyPath,
+								knownvalue.StringExact(tc.keyValue),
+							),
+						},
+					},
+					{
+						// Re-applying the identical config must produce no diff.
+						Config:          cfg,
+						ConfigVariables: vars,
+						ConfigPlanChecks: resource.ConfigPlanChecks{
+							PreApply: []plancheck.PlanCheck{
+								plancheck.ExpectEmptyPlan(),
+							},
+						},
+					},
+				},
+			})
+		})
+	}
+}
+
+func testAccVirtualRouterOspfv3AuthProfileConfig(authAttr string) string {
+	return fmt.Sprintf(`
+variable "prefix" { type = string }
+
+resource "panos_template" "test" {
+  location = { panorama = {} }
+  name     = var.prefix
+}
+
+resource "panos_virtual_router" "test" {
+  location = {
+    template = {
+      name = panos_template.test.name
+    }
+  }
+
+  name = var.prefix
+
+  protocol = {
+    ospfv3 = {
+      enable    = true
+      router_id = "10.0.2.9"
+      auth_profile = [
+        {
+          name = "ospfv3-auth-1"
+          spi  = "00001000"
+          %s
+        }
+      ]
+    }
+  }
+}
+`, authAttr)
+}

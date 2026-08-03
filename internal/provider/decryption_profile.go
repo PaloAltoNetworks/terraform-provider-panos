@@ -961,7 +961,7 @@ func DecryptionProfileDataSourceSshProxySchema() dsschema.SingleNestedAttribute 
 		Attributes: map[string]dsschema.Attribute{
 
 			"block_if_no_resource": dsschema.BoolAttribute{
-				Description: "whether to block sessions if device has no enough resources",
+				Description: "Block sessions when decryption resources are not available",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -979,7 +979,7 @@ func DecryptionProfileDataSourceSshProxySchema() dsschema.SingleNestedAttribute 
 			},
 
 			"block_unsupported_version": dsschema.BoolAttribute{
-				Description: "whether to block sessions if ssh version is not supported",
+				Description: "Block sessions with unsupported protocol versions",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -1031,13 +1031,13 @@ func DecryptionProfileDataSourceSslForwardProxySchema() dsschema.SingleNestedAtt
 			},
 
 			"block_if_hsm_unavailable": dsschema.BoolAttribute{
-				Description: "whether to block sessions if HSM is unavailable",
+				Description: "Block sessions when HSM is unavailable",
 				Optional:    true,
 				Computed:    true,
 			},
 
 			"block_if_no_resource": dsschema.BoolAttribute{
-				Description: "whether to block sessions if device has no enough resources",
+				Description: "Block sessions when decryption resources are not available",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -1055,7 +1055,7 @@ func DecryptionProfileDataSourceSslForwardProxySchema() dsschema.SingleNestedAtt
 			},
 
 			"block_tls13_downgrade_no_resource": dsschema.BoolAttribute{
-				Description: "whether to downgrade from tls1.3 if device has not enough resources",
+				Description: "Block TLS 1.3 downgrade when no resources are available",
 				Optional:    true,
 				Computed:    true,
 			},
@@ -1402,17 +1402,6 @@ func (o *DecryptionProfileDataSource) Read(ctx context.Context, req datasource.R
 			}
 		}
 
-		if !terraformLocation.Vsys.IsNull() {
-			location.Vsys = &decryption.VsysLocation{}
-			var innerLocation DecryptionProfileVsysLocation
-			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
-			location.Vsys.Vsys = innerLocation.Name.ValueString()
-		}
-
 		if !terraformLocation.DeviceGroup.IsNull() {
 			location.DeviceGroup = &decryption.DeviceGroupLocation{}
 			var innerLocation DecryptionProfileDeviceGroupLocation
@@ -1422,6 +1411,17 @@ func (o *DecryptionProfileDataSource) Read(ctx context.Context, req datasource.R
 			}
 			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -1641,8 +1641,6 @@ func DecryptionProfileResourceSchema() rsschema.Schema {
 			"disable_override": rsschema.StringAttribute{
 				Description: "disable object override in child device groups",
 				Optional:    true,
-				Computed:    true,
-				Default:     stringdefault.StaticString("no"),
 
 				Validators: []validator.String{
 					stringvalidator.OneOf([]string{
@@ -1700,7 +1698,7 @@ func DecryptionProfileResourceSshProxySchema() rsschema.SingleNestedAttribute {
 		Attributes: map[string]rsschema.Attribute{
 
 			"block_if_no_resource": rsschema.BoolAttribute{
-				Description: "whether to block sessions if device has no enough resources",
+				Description: "Block sessions when decryption resources are not available",
 				Optional:    true,
 			},
 
@@ -1715,7 +1713,7 @@ func DecryptionProfileResourceSshProxySchema() rsschema.SingleNestedAttribute {
 			},
 
 			"block_unsupported_version": rsschema.BoolAttribute{
-				Description: "whether to block sessions if ssh version is not supported",
+				Description: "Block sessions with unsupported protocol versions",
 				Optional:    true,
 			},
 		},
@@ -1762,12 +1760,12 @@ func DecryptionProfileResourceSslForwardProxySchema() rsschema.SingleNestedAttri
 			},
 
 			"block_if_hsm_unavailable": rsschema.BoolAttribute{
-				Description: "whether to block sessions if HSM is unavailable",
+				Description: "Block sessions when HSM is unavailable",
 				Optional:    true,
 			},
 
 			"block_if_no_resource": rsschema.BoolAttribute{
-				Description: "whether to block sessions if device has no enough resources",
+				Description: "Block sessions when decryption resources are not available",
 				Optional:    true,
 			},
 
@@ -1782,7 +1780,7 @@ func DecryptionProfileResourceSslForwardProxySchema() rsschema.SingleNestedAttri
 			},
 
 			"block_tls13_downgrade_no_resource": rsschema.BoolAttribute{
-				Description: "whether to downgrade from tls1.3 if device has not enough resources",
+				Description: "Block TLS 1.3 downgrade when no resources are available",
 				Optional:    true,
 			},
 
@@ -2886,17 +2884,6 @@ func (o *DecryptionProfileResource) Create(ctx context.Context, req resource.Cre
 			}
 		}
 
-		if !terraformLocation.Vsys.IsNull() {
-			location.Vsys = &decryption.VsysLocation{}
-			var innerLocation DecryptionProfileVsysLocation
-			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
-			location.Vsys.Vsys = innerLocation.Name.ValueString()
-		}
-
 		if !terraformLocation.DeviceGroup.IsNull() {
 			location.DeviceGroup = &decryption.DeviceGroupLocation{}
 			var innerLocation DecryptionProfileDeviceGroupLocation
@@ -2906,6 +2893,17 @@ func (o *DecryptionProfileResource) Create(ctx context.Context, req resource.Cre
 			}
 			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -2991,17 +2989,6 @@ func (o *DecryptionProfileResource) Read(ctx context.Context, req resource.ReadR
 			}
 		}
 
-		if !terraformLocation.Vsys.IsNull() {
-			location.Vsys = &decryption.VsysLocation{}
-			var innerLocation DecryptionProfileVsysLocation
-			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
-			location.Vsys.Vsys = innerLocation.Name.ValueString()
-		}
-
 		if !terraformLocation.DeviceGroup.IsNull() {
 			location.DeviceGroup = &decryption.DeviceGroupLocation{}
 			var innerLocation DecryptionProfileDeviceGroupLocation
@@ -3011,6 +2998,17 @@ func (o *DecryptionProfileResource) Read(ctx context.Context, req resource.ReadR
 			}
 			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -3096,17 +3094,6 @@ func (o *DecryptionProfileResource) Update(ctx context.Context, req resource.Upd
 			}
 		}
 
-		if !terraformLocation.Vsys.IsNull() {
-			location.Vsys = &decryption.VsysLocation{}
-			var innerLocation DecryptionProfileVsysLocation
-			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
-			location.Vsys.Vsys = innerLocation.Name.ValueString()
-		}
-
 		if !terraformLocation.DeviceGroup.IsNull() {
 			location.DeviceGroup = &decryption.DeviceGroupLocation{}
 			var innerLocation DecryptionProfileDeviceGroupLocation
@@ -3116,6 +3103,17 @@ func (o *DecryptionProfileResource) Update(ctx context.Context, req resource.Upd
 			}
 			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -3234,17 +3232,6 @@ func (o *DecryptionProfileResource) Delete(ctx context.Context, req resource.Del
 			}
 		}
 
-		if !terraformLocation.Vsys.IsNull() {
-			location.Vsys = &decryption.VsysLocation{}
-			var innerLocation DecryptionProfileVsysLocation
-			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
-			if resp.Diagnostics.HasError() {
-				return
-			}
-			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
-			location.Vsys.Vsys = innerLocation.Name.ValueString()
-		}
-
 		if !terraformLocation.DeviceGroup.IsNull() {
 			location.DeviceGroup = &decryption.DeviceGroupLocation{}
 			var innerLocation DecryptionProfileDeviceGroupLocation
@@ -3254,6 +3241,17 @@ func (o *DecryptionProfileResource) Delete(ctx context.Context, req resource.Del
 			}
 			location.DeviceGroup.PanoramaDevice = innerLocation.PanoramaDevice.ValueString()
 			location.DeviceGroup.DeviceGroup = innerLocation.Name.ValueString()
+		}
+
+		if !terraformLocation.Vsys.IsNull() {
+			location.Vsys = &decryption.VsysLocation{}
+			var innerLocation DecryptionProfileVsysLocation
+			resp.Diagnostics.Append(terraformLocation.Vsys.As(ctx, &innerLocation, basetypes.ObjectAsOptions{})...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			location.Vsys.NgfwDevice = innerLocation.NgfwDevice.ValueString()
+			location.Vsys.Vsys = innerLocation.Name.ValueString()
 		}
 	}
 
@@ -3394,18 +3392,18 @@ func (o *DecryptionProfileResource) ImportState(ctx context.Context, req resourc
 
 type DecryptionProfileSharedLocation struct {
 }
-type DecryptionProfileVsysLocation struct {
-	NgfwDevice types.String `tfsdk:"ngfw_device"`
-	Name       types.String `tfsdk:"name"`
-}
 type DecryptionProfileDeviceGroupLocation struct {
 	PanoramaDevice types.String `tfsdk:"panorama_device"`
 	Name           types.String `tfsdk:"name"`
 }
+type DecryptionProfileVsysLocation struct {
+	NgfwDevice types.String `tfsdk:"ngfw_device"`
+	Name       types.String `tfsdk:"name"`
+}
 type DecryptionProfileLocation struct {
 	Shared      types.Object `tfsdk:"shared"`
-	Vsys        types.Object `tfsdk:"vsys"`
 	DeviceGroup types.Object `tfsdk:"device_group"`
+	Vsys        types.Object `tfsdk:"vsys"`
 }
 
 func DecryptionProfileLocationSchema() rsschema.Attribute {
@@ -3423,36 +3421,9 @@ func DecryptionProfileLocationSchema() rsschema.Attribute {
 				Validators: []validator.Object{
 					objectvalidator.ExactlyOneOf(path.Expressions{
 						path.MatchRelative().AtParent().AtName("shared"),
-						path.MatchRelative().AtParent().AtName("vsys"),
 						path.MatchRelative().AtParent().AtName("device_group"),
+						path.MatchRelative().AtParent().AtName("vsys"),
 					}...),
-				},
-			},
-			"vsys": rsschema.SingleNestedAttribute{
-				Description: "Located in a specific Virtual System",
-				Optional:    true,
-				Attributes: map[string]rsschema.Attribute{
-					"ngfw_device": rsschema.StringAttribute{
-						Description: "The NGFW device name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("localhost.localdomain"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-					"name": rsschema.StringAttribute{
-						Description: "The Virtual System name",
-						Optional:    true,
-						Computed:    true,
-						Default:     stringdefault.StaticString("vsys1"),
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.RequiresReplace(),
-						},
-					},
-				},
-				PlanModifiers: []planmodifier.Object{
-					objectplanmodifier.RequiresReplace(),
 				},
 			},
 			"device_group": rsschema.SingleNestedAttribute{
@@ -3473,6 +3444,33 @@ func DecryptionProfileLocationSchema() rsschema.Attribute {
 						Optional:    true,
 						Computed:    true,
 						Default:     stringdefault.StaticString(""),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+				},
+				PlanModifiers: []planmodifier.Object{
+					objectplanmodifier.RequiresReplace(),
+				},
+			},
+			"vsys": rsschema.SingleNestedAttribute{
+				Description: "Located in a specific Virtual System",
+				Optional:    true,
+				Attributes: map[string]rsschema.Attribute{
+					"ngfw_device": rsschema.StringAttribute{
+						Description: "The NGFW device name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("localhost.localdomain"),
+						PlanModifiers: []planmodifier.String{
+							stringplanmodifier.RequiresReplace(),
+						},
+					},
+					"name": rsschema.StringAttribute{
+						Description: "The Virtual System name",
+						Optional:    true,
+						Computed:    true,
+						Default:     stringdefault.StaticString("vsys1"),
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.RequiresReplace(),
 						},
@@ -3506,35 +3504,6 @@ func (o *DecryptionProfileSharedLocation) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
-func (o DecryptionProfileVsysLocation) MarshalJSON() ([]byte, error) {
-	type shadow struct {
-		NgfwDevice *string `json:"ngfw_device,omitempty"`
-		Name       *string `json:"name,omitempty"`
-	}
-
-	obj := shadow{
-		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
-		Name:       o.Name.ValueStringPointer(),
-	}
-
-	return json.Marshal(obj)
-}
-
-func (o *DecryptionProfileVsysLocation) UnmarshalJSON(data []byte) error {
-	var shadow struct {
-		NgfwDevice *string `json:"ngfw_device,omitempty"`
-		Name       *string `json:"name,omitempty"`
-	}
-
-	err := json.Unmarshal(data, &shadow)
-	if err != nil {
-		return err
-	}
-	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
-	o.Name = types.StringPointerValue(shadow.Name)
-
-	return nil
-}
 func (o DecryptionProfileDeviceGroupLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		PanoramaDevice *string `json:"panorama_device,omitempty"`
@@ -3564,24 +3533,46 @@ func (o *DecryptionProfileDeviceGroupLocation) UnmarshalJSON(data []byte) error 
 
 	return nil
 }
+func (o DecryptionProfileVsysLocation) MarshalJSON() ([]byte, error) {
+	type shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	obj := shadow{
+		NgfwDevice: o.NgfwDevice.ValueStringPointer(),
+		Name:       o.Name.ValueStringPointer(),
+	}
+
+	return json.Marshal(obj)
+}
+
+func (o *DecryptionProfileVsysLocation) UnmarshalJSON(data []byte) error {
+	var shadow struct {
+		NgfwDevice *string `json:"ngfw_device,omitempty"`
+		Name       *string `json:"name,omitempty"`
+	}
+
+	err := json.Unmarshal(data, &shadow)
+	if err != nil {
+		return err
+	}
+	o.NgfwDevice = types.StringPointerValue(shadow.NgfwDevice)
+	o.Name = types.StringPointerValue(shadow.Name)
+
+	return nil
+}
 func (o DecryptionProfileLocation) MarshalJSON() ([]byte, error) {
 	type shadow struct {
 		Shared      *DecryptionProfileSharedLocation      `json:"shared,omitempty"`
-		Vsys        *DecryptionProfileVsysLocation        `json:"vsys,omitempty"`
 		DeviceGroup *DecryptionProfileDeviceGroupLocation `json:"device_group,omitempty"`
+		Vsys        *DecryptionProfileVsysLocation        `json:"vsys,omitempty"`
 	}
 	var shared_object *DecryptionProfileSharedLocation
 	{
 		diags := o.Shared.As(context.TODO(), &shared_object, basetypes.ObjectAsOptions{})
 		if diags.HasError() {
 			return nil, NewDiagnosticsError("Failed to marshal shared into JSON document", diags.Errors())
-		}
-	}
-	var vsys_object *DecryptionProfileVsysLocation
-	{
-		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
-		if diags.HasError() {
-			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
 		}
 	}
 	var deviceGroup_object *DecryptionProfileDeviceGroupLocation
@@ -3591,11 +3582,18 @@ func (o DecryptionProfileLocation) MarshalJSON() ([]byte, error) {
 			return nil, NewDiagnosticsError("Failed to marshal device_group into JSON document", diags.Errors())
 		}
 	}
+	var vsys_object *DecryptionProfileVsysLocation
+	{
+		diags := o.Vsys.As(context.TODO(), &vsys_object, basetypes.ObjectAsOptions{})
+		if diags.HasError() {
+			return nil, NewDiagnosticsError("Failed to marshal vsys into JSON document", diags.Errors())
+		}
+	}
 
 	obj := shadow{
 		Shared:      shared_object,
-		Vsys:        vsys_object,
 		DeviceGroup: deviceGroup_object,
+		Vsys:        vsys_object,
 	}
 
 	return json.Marshal(obj)
@@ -3604,8 +3602,8 @@ func (o DecryptionProfileLocation) MarshalJSON() ([]byte, error) {
 func (o *DecryptionProfileLocation) UnmarshalJSON(data []byte) error {
 	var shadow struct {
 		Shared      *DecryptionProfileSharedLocation      `json:"shared,omitempty"`
-		Vsys        *DecryptionProfileVsysLocation        `json:"vsys,omitempty"`
 		DeviceGroup *DecryptionProfileDeviceGroupLocation `json:"device_group,omitempty"`
+		Vsys        *DecryptionProfileVsysLocation        `json:"vsys,omitempty"`
 	}
 
 	err := json.Unmarshal(data, &shadow)
@@ -3620,14 +3618,6 @@ func (o *DecryptionProfileLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into shared", diags_tmp.Errors())
 		}
 	}
-	var vsys_object types.Object
-	{
-		var diags_tmp diag.Diagnostics
-		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
-		if diags_tmp.HasError() {
-			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
-		}
-	}
 	var deviceGroup_object types.Object
 	{
 		var diags_tmp diag.Diagnostics
@@ -3636,9 +3626,17 @@ func (o *DecryptionProfileLocation) UnmarshalJSON(data []byte) error {
 			return NewDiagnosticsError("Failed to unmarshal JSON document into device_group", diags_tmp.Errors())
 		}
 	}
+	var vsys_object types.Object
+	{
+		var diags_tmp diag.Diagnostics
+		vsys_object, diags_tmp = types.ObjectValueFrom(context.TODO(), shadow.Vsys.AttributeTypes(), shadow.Vsys)
+		if diags_tmp.HasError() {
+			return NewDiagnosticsError("Failed to unmarshal JSON document into vsys", diags_tmp.Errors())
+		}
+	}
 	o.Shared = shared_object
-	o.Vsys = vsys_object
 	o.DeviceGroup = deviceGroup_object
+	o.Vsys = vsys_object
 
 	return nil
 }
@@ -3646,31 +3644,31 @@ func (o *DecryptionProfileLocation) UnmarshalJSON(data []byte) error {
 func (o *DecryptionProfileSharedLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{}
 }
-func (o *DecryptionProfileVsysLocation) AttributeTypes() map[string]attr.Type {
-	return map[string]attr.Type{
-		"ngfw_device": types.StringType,
-		"name":        types.StringType,
-	}
-}
 func (o *DecryptionProfileDeviceGroupLocation) AttributeTypes() map[string]attr.Type {
 	return map[string]attr.Type{
 		"panorama_device": types.StringType,
 		"name":            types.StringType,
 	}
 }
+func (o *DecryptionProfileVsysLocation) AttributeTypes() map[string]attr.Type {
+	return map[string]attr.Type{
+		"ngfw_device": types.StringType,
+		"name":        types.StringType,
+	}
+}
 func (o *DecryptionProfileLocation) AttributeTypes() map[string]attr.Type {
 	var sharedObj DecryptionProfileSharedLocation
-	var vsysObj DecryptionProfileVsysLocation
 	var deviceGroupObj DecryptionProfileDeviceGroupLocation
+	var vsysObj DecryptionProfileVsysLocation
 	return map[string]attr.Type{
 		"shared": types.ObjectType{
 			AttrTypes: sharedObj.AttributeTypes(),
 		},
-		"vsys": types.ObjectType{
-			AttrTypes: vsysObj.AttributeTypes(),
-		},
 		"device_group": types.ObjectType{
 			AttrTypes: deviceGroupObj.AttributeTypes(),
+		},
+		"vsys": types.ObjectType{
+			AttrTypes: vsysObj.AttributeTypes(),
 		},
 	}
 }
