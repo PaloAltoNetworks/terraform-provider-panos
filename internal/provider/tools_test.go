@@ -61,7 +61,7 @@ var _ = Describe("CreateXpathForParameterWithAncestors", func() {
 
 				xpath, err := provider.CreateXpathForAttributeWithAncestors(ancestors, "attr-3")
 				Expect(err).ToNot(HaveOccurred())
-				Expect(xpath).To(Equal(`/attr-1/attr-2/entry[@name="element-1"]/attr-3`))
+				Expect(xpath).To(Equal(`/attr-1/attr-2/entry[@name='element-1']/attr-3`))
 			})
 		})
 
