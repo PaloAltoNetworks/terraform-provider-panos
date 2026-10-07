@@ -94,6 +94,7 @@ Optional:
 <a id="nestedatt--location--shared"></a>
 ### Nested Schema for `location.shared`
 
+If object is shared, you only need to set shared under location: shared = {}
 
 <a id="nestedatt--location--vsys"></a>
 ### Nested Schema for `location.vsys`
@@ -128,5 +129,8 @@ Import is supported using the following syntax:
 #
 #   name = "example-address-group"
 # }
+#
+# For shared objects, set location to this both for the import and resource:
+#   location = { shared = {} }
 terraform import panos_address_group.example $(echo '{"location":{"device_group":{"name":"example-device-group","panorama_device":"localhost.localdomain"}},"name":"example-address-group"}' | base64)
 ```
