@@ -63,6 +63,9 @@ type DeviceGroupDataSourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
 	Vsys types.List   `tfsdk:"vsys"`
 }
+type DeviceGroupDataSourceDevicesVsysObject struct {
+	Name types.String `tfsdk:"name"`
+}
 
 func (o *DeviceGroupDataSourceModel) AttributeTypes() map[string]attr.Type {
 
@@ -97,10 +100,13 @@ func (o DeviceGroupDataSourceModel) EntryName() *string {
 }
 func (o *DeviceGroupDataSourceDevicesObject) AttributeTypes() map[string]attr.Type {
 
+	var vsysObj *DeviceGroupDataSourceDevicesVsysObject
 	return map[string]attr.Type{
 		"name": types.StringType,
 		"vsys": types.ListType{
-			ElemType: types.StringType,
+			ElemType: types.ObjectType{
+				AttrTypes: vsysObj.AttributeTypes(),
+			},
 		},
 	}
 }
@@ -110,6 +116,20 @@ func (o DeviceGroupDataSourceDevicesObject) AncestorName() string {
 }
 
 func (o DeviceGroupDataSourceDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+func (o *DeviceGroupDataSourceDevicesVsysObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+
+func (o DeviceGroupDataSourceDevicesVsysObject) AncestorName() string {
+	return "vsys"
+}
+
+func (o DeviceGroupDataSourceDevicesVsysObject) EntryName() *string {
 	return o.Name.ValueStringPointer()
 }
 
@@ -167,17 +187,27 @@ func (o *DeviceGroupDataSourceModel) CopyToPango(ctx context.Context, client pan
 }
 func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **devicegroup.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var vsys_pango_entries []string
-	if !o.Vsys.IsUnknown() && !o.Vsys.IsNull() {
-		object_entries := make([]types.String, 0, len(o.Vsys.Elements()))
-		diags.Append(o.Vsys.ElementsAs(ctx, &object_entries, false)...)
+	var vsys_tf_entries []DeviceGroupDataSourceDevicesVsysObject
+	var vsys_pango_entries []devicegroup.DevicesVsys
+	{
+		d := o.Vsys.ElementsAs(ctx, &vsys_tf_entries, false)
+		diags.Append(d...)
 		if diags.HasError() {
-			diags.AddError("Explicit Error", "Failed something")
 			return diags
 		}
-
-		for _, elt := range object_entries {
-			vsys_pango_entries = append(vsys_pango_entries, elt.ValueString())
+		vsys_existing_entries := make(map[string]*devicegroup.DevicesVsys)
+		if *obj != nil {
+			for idx := range (*obj).Vsys {
+				vsys_existing_entries[(*obj).Vsys[idx].Name] = &(*obj).Vsys[idx]
+			}
+		}
+		for _, elt := range vsys_tf_entries {
+			entry := vsys_existing_entries[elt.Name.ValueString()]
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			vsys_pango_entries = append(vsys_pango_entries, *entry)
 		}
 	}
 
@@ -186,6 +216,16 @@ func (o *DeviceGroupDataSourceDevicesObject) CopyToPango(ctx context.Context, cl
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Vsys = vsys_pango_entries
+
+	return diags
+}
+func (o *DeviceGroupDataSourceDevicesVsysObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **devicegroup.DevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(devicegroup.DevicesVsys)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
@@ -263,22 +303,48 @@ func (o *DeviceGroupDataSourceDevicesObject) CopyFromPango(ctx context.Context, 
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
+		var vsys_tf_entries []DeviceGroupDataSourceDevicesVsysObject
+		if !o.Vsys.IsNull() {
+			diags.Append(o.Vsys.ElementsAs(ctx, &vsys_tf_entries, false)...)
+			if diags.HasError() {
+				return diags
+			}
+		}
+
+		for idx, elt := range obj.Vsys {
+			entry := DeviceGroupDataSourceDevicesVsysObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(vsys_tf_entries) {
+				entry = vsys_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(vsys_tf_entries) {
+				vsys_tf_entries[idx] = entry
+			} else {
+				vsys_tf_entries = append(vsys_tf_entries, entry)
+			}
+		}
 		var list_diags diag.Diagnostics
-
-		entries := make([]string, 0)
-		if o.Vsys.IsNull() || len(obj.Vsys) > 0 {
-			entries = obj.Vsys
-		}
-
-		vsys_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
+		schemaType := o.getTypeFor("vsys")
+		vsys_list, list_diags = types.ListValueFrom(ctx, schemaType, vsys_tf_entries)
 		diags.Append(list_diags...)
-		if diags.HasError() {
-			return diags
-		}
 	}
 
 	o.Name = types.StringValue(obj.Name)
 	o.Vsys = vsys_list
+
+	return diags
+}
+
+func (o *DeviceGroupDataSourceDevicesVsysObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *devicegroup.DevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }
@@ -355,11 +421,11 @@ func DeviceGroupDataSourceDevicesSchema() dsschema.NestedAttributeObject {
 				Required:    true,
 			},
 
-			"vsys": dsschema.ListAttribute{
-				Description: "",
-				Optional:    true,
-				Computed:    true,
-				ElementType: types.StringType,
+			"vsys": dsschema.ListNestedAttribute{
+				Description:  "",
+				Optional:     true,
+				Computed:     true,
+				NestedObject: DeviceGroupDataSourceDevicesVsysSchema(),
 			},
 		},
 	}
@@ -367,6 +433,36 @@ func DeviceGroupDataSourceDevicesSchema() dsschema.NestedAttributeObject {
 
 func (o *DeviceGroupDataSourceDevicesObject) getTypeFor(name string) attr.Type {
 	schema := DeviceGroupDataSourceDevicesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case dsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case dsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DeviceGroupDataSourceDevicesVsysSchema() dsschema.NestedAttributeObject {
+	return dsschema.NestedAttributeObject{
+		Attributes: map[string]dsschema.Attribute{
+
+			"name": dsschema.StringAttribute{
+				Description: "",
+				Required:    true,
+			},
+		},
+	}
+}
+
+func (o *DeviceGroupDataSourceDevicesVsysObject) getTypeFor(name string) attr.Type {
+	schema := DeviceGroupDataSourceDevicesVsysSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -523,6 +619,9 @@ type DeviceGroupResourceDevicesObject struct {
 	Name types.String `tfsdk:"name"`
 	Vsys types.List   `tfsdk:"vsys"`
 }
+type DeviceGroupResourceDevicesVsysObject struct {
+	Name types.String `tfsdk:"name"`
+}
 
 func (o *DeviceGroupResourceModel) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
 	if !o.Devices.IsUnknown() && !o.Devices.IsNull() {
@@ -539,6 +638,20 @@ func (o *DeviceGroupResourceModel) ValidateConfig(ctx context.Context, resp *res
 }
 
 func (o *DeviceGroupResourceDevicesObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
+	if !o.Vsys.IsUnknown() && !o.Vsys.IsNull() {
+		var elements []DeviceGroupResourceDevicesVsysObject
+		diags := o.Vsys.ElementsAs(ctx, &elements, false)
+		if diags.HasError() {
+			resp.Diagnostics.Append(diags...)
+		} else {
+			for i, element := range elements {
+				element.ValidateConfig(ctx, resp, path.AtName("vsys").AtListIndex(i))
+			}
+		}
+	}
+}
+
+func (o *DeviceGroupResourceDevicesVsysObject) ValidateConfig(ctx context.Context, resp *resource.ValidateConfigResponse, path path.Path) {
 }
 
 func (o *DeviceGroupResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
@@ -616,10 +729,10 @@ func DeviceGroupResourceDevicesSchema() rsschema.NestedAttributeObject {
 				Required:    true,
 			},
 
-			"vsys": rsschema.ListAttribute{
-				Description: "",
-				Optional:    true,
-				ElementType: types.StringType,
+			"vsys": rsschema.ListNestedAttribute{
+				Description:  "",
+				Optional:     true,
+				NestedObject: DeviceGroupResourceDevicesVsysSchema(),
 			},
 		},
 	}
@@ -627,6 +740,36 @@ func DeviceGroupResourceDevicesSchema() rsschema.NestedAttributeObject {
 
 func (o *DeviceGroupResourceDevicesObject) getTypeFor(name string) attr.Type {
 	schema := DeviceGroupResourceDevicesSchema()
+	if attr, ok := schema.Attributes[name]; !ok {
+		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
+	} else {
+		switch attr := attr.(type) {
+		case rsschema.ListNestedAttribute:
+			return attr.NestedObject.Type()
+		case rsschema.MapNestedAttribute:
+			return attr.NestedObject.Type()
+		default:
+			return attr.GetType()
+		}
+	}
+
+	panic("unreachable")
+}
+
+func DeviceGroupResourceDevicesVsysSchema() rsschema.NestedAttributeObject {
+	return rsschema.NestedAttributeObject{
+		Attributes: map[string]rsschema.Attribute{
+
+			"name": rsschema.StringAttribute{
+				Description: "",
+				Required:    true,
+			},
+		},
+	}
+}
+
+func (o *DeviceGroupResourceDevicesVsysObject) getTypeFor(name string) attr.Type {
+	schema := DeviceGroupResourceDevicesVsysSchema()
 	if attr, ok := schema.Attributes[name]; !ok {
 		panic(fmt.Sprintf("could not resolve schema for attribute %s", name))
 	} else {
@@ -703,10 +846,13 @@ func (o DeviceGroupResourceModel) EntryName() *string {
 }
 func (o *DeviceGroupResourceDevicesObject) AttributeTypes() map[string]attr.Type {
 
+	var vsysObj *DeviceGroupResourceDevicesVsysObject
 	return map[string]attr.Type{
 		"name": types.StringType,
 		"vsys": types.ListType{
-			ElemType: types.StringType,
+			ElemType: types.ObjectType{
+				AttrTypes: vsysObj.AttributeTypes(),
+			},
 		},
 	}
 }
@@ -716,6 +862,20 @@ func (o DeviceGroupResourceDevicesObject) AncestorName() string {
 }
 
 func (o DeviceGroupResourceDevicesObject) EntryName() *string {
+	return o.Name.ValueStringPointer()
+}
+func (o *DeviceGroupResourceDevicesVsysObject) AttributeTypes() map[string]attr.Type {
+
+	return map[string]attr.Type{
+		"name": types.StringType,
+	}
+}
+
+func (o DeviceGroupResourceDevicesVsysObject) AncestorName() string {
+	return "vsys"
+}
+
+func (o DeviceGroupResourceDevicesVsysObject) EntryName() *string {
 	return o.Name.ValueStringPointer()
 }
 
@@ -773,17 +933,27 @@ func (o *DeviceGroupResourceModel) CopyToPango(ctx context.Context, client pango
 }
 func (o *DeviceGroupResourceDevicesObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **devicegroup.Devices, ev *EncryptedValuesManager) diag.Diagnostics {
 	var diags diag.Diagnostics
-	var vsys_pango_entries []string
-	if !o.Vsys.IsUnknown() && !o.Vsys.IsNull() {
-		object_entries := make([]types.String, 0, len(o.Vsys.Elements()))
-		diags.Append(o.Vsys.ElementsAs(ctx, &object_entries, false)...)
+	var vsys_tf_entries []DeviceGroupResourceDevicesVsysObject
+	var vsys_pango_entries []devicegroup.DevicesVsys
+	{
+		d := o.Vsys.ElementsAs(ctx, &vsys_tf_entries, false)
+		diags.Append(d...)
 		if diags.HasError() {
-			diags.AddError("Explicit Error", "Failed something")
 			return diags
 		}
-
-		for _, elt := range object_entries {
-			vsys_pango_entries = append(vsys_pango_entries, elt.ValueString())
+		vsys_existing_entries := make(map[string]*devicegroup.DevicesVsys)
+		if *obj != nil {
+			for idx := range (*obj).Vsys {
+				vsys_existing_entries[(*obj).Vsys[idx].Name] = &(*obj).Vsys[idx]
+			}
+		}
+		for _, elt := range vsys_tf_entries {
+			entry := vsys_existing_entries[elt.Name.ValueString()]
+			diags.Append(elt.CopyToPango(ctx, client, append(ancestors, elt), &entry, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+			vsys_pango_entries = append(vsys_pango_entries, *entry)
 		}
 	}
 
@@ -792,6 +962,16 @@ func (o *DeviceGroupResourceDevicesObject) CopyToPango(ctx context.Context, clie
 	}
 	(*obj).Name = o.Name.ValueString()
 	(*obj).Vsys = vsys_pango_entries
+
+	return diags
+}
+func (o *DeviceGroupResourceDevicesVsysObject) CopyToPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj **devicegroup.DevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	if (*obj) == nil {
+		*obj = new(devicegroup.DevicesVsys)
+	}
+	(*obj).Name = o.Name.ValueString()
 
 	return diags
 }
@@ -869,22 +1049,48 @@ func (o *DeviceGroupResourceDevicesObject) CopyFromPango(ctx context.Context, cl
 	var diags diag.Diagnostics
 	var vsys_list types.List
 	{
+		var vsys_tf_entries []DeviceGroupResourceDevicesVsysObject
+		if !o.Vsys.IsNull() {
+			diags.Append(o.Vsys.ElementsAs(ctx, &vsys_tf_entries, false)...)
+			if diags.HasError() {
+				return diags
+			}
+		}
+
+		for idx, elt := range obj.Vsys {
+			entry := DeviceGroupResourceDevicesVsysObject{
+				Name: types.StringValue(elt.Name),
+			}
+			if idx < len(vsys_tf_entries) {
+				entry = vsys_tf_entries[idx]
+			}
+
+			diags.Append(entry.CopyFromPango(ctx, client, append(ancestors, entry), &elt, ev)...)
+			if diags.HasError() {
+				return diags
+			}
+
+			if idx < len(vsys_tf_entries) {
+				vsys_tf_entries[idx] = entry
+			} else {
+				vsys_tf_entries = append(vsys_tf_entries, entry)
+			}
+		}
 		var list_diags diag.Diagnostics
-
-		entries := make([]string, 0)
-		if o.Vsys.IsNull() || len(obj.Vsys) > 0 {
-			entries = obj.Vsys
-		}
-
-		vsys_list, list_diags = types.ListValueFrom(ctx, types.StringType, entries)
+		schemaType := o.getTypeFor("vsys")
+		vsys_list, list_diags = types.ListValueFrom(ctx, schemaType, vsys_tf_entries)
 		diags.Append(list_diags...)
-		if diags.HasError() {
-			return diags
-		}
 	}
 
 	o.Name = types.StringValue(obj.Name)
 	o.Vsys = vsys_list
+
+	return diags
+}
+
+func (o *DeviceGroupResourceDevicesVsysObject) CopyFromPango(ctx context.Context, client pangoutil.PangoClient, ancestors []Ancestor, obj *devicegroup.DevicesVsys, ev *EncryptedValuesManager) diag.Diagnostics {
+	var diags diag.Diagnostics
+	o.Name = types.StringValue(obj.Name)
 
 	return diags
 }

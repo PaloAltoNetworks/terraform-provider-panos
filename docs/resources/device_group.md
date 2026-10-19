@@ -61,6 +61,13 @@ Required:
 
 Optional:
 
-- `vsys` (List of String)
+- `vsys` (Attributes List) (see [below for nested schema](#nestedatt--devices--vsys))
+
+<a id="nestedatt--devices--vsys"></a>
+### Nested Schema for `devices.vsys`
+
+Required:
+
+- `name` (String)
 
 
