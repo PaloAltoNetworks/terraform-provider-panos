@@ -19,6 +19,7 @@ jobs:
       github.event.pull_request.merged == true &&
       startsWith(github.event.pull_request.head.ref, 'auto-release/v')
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     permissions:
       contents: write
     steps:
@@ -40,8 +41,32 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
+          # Re-runs must not fail if a previous attempt already pushed the tag.
+          if git rev-parse -q --verify "refs/tags/$VERSION" >/dev/null; then
+            TAG_SHA=$(git rev-list -n 1 "$VERSION")
+            HEAD_SHA=$(git rev-parse HEAD)
+            if [ "$TAG_SHA" = "$HEAD_SHA" ]; then
+              echo "Tag $VERSION already exists at HEAD ($HEAD_SHA), skipping"
+              exit 0
+            fi
+            echo "::error::Tag $VERSION already exists at $TAG_SHA, expected HEAD $HEAD_SHA"
+            exit 1
+          fi
           git tag "$VERSION"
           git push origin "$VERSION"
+
+      # Cross-compiling the provider for all targets exhausts the default
+      # runner resources, which shows up as "The runner has received a
+      # shutdown signal" mid-build. Free disk space and add swap headroom.
+      - name: Prepare runner for build
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo fallocate -l 8G /swapfile-release
+          sudo chmod 600 /swapfile-release
+          sudo mkswap /swapfile-release
+          sudo swapon /swapfile-release
+          free -h
+          df -h /
 
       - name: Set up Go
         uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5
@@ -60,7 +85,7 @@ jobs:
         uses: goreleaser/goreleaser-action@e435ccd777264be153ace6237001ef4d979d3a7a # v6.4.0
         with:
           version: latest
-          args: release --clean --parallelism 2
+          args: release --clean --parallelism 1
         env:
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
